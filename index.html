@@ -67,7 +67,7 @@ h1 a{color:var(--gold)}
 <div id="topbar">
   <a id="topbar-title" href="https://DWRPGDC.github.io/DW-RPG-Data/">&#9670; Dawn Winery RPG</a>
   <div id="topbar-bottom">
-    <div id="topbar-nav"><a class="nav-page-btn" href="Quests/Quest.html">Quests</a><a class="nav-page-btn" href="Items/Item.html">Items</a></div>
+    <div id="topbar-nav"><a class="nav-page-btn" href="Quests/Quest.html">Quests</a><a class="nav-page-btn" href="https://DWRPGDC.github.io/DW-RPG-Data/Items/Item.html">Items</a></div>
     <div id="search-wrap">
       <input id="search" type="text" placeholder="Search files…" autocomplete="off">
       <span id="search-icon">&#128269;</span>
@@ -90,54 +90,42 @@ h1 a{color:var(--gold)}
   </main>
 </div>
 <script>
-var FOLDER_ICONS={"Quests":"📄"};
-var FOLDER_LABELS={"Quests":"Quest list"};
-var FOLDER_NAMES={"Quests":"Quick Access"};
-var fallback={
-  "files": [
-    "Quests/Quest.html"
-  ]
-};
+var STATIC_FOLDERS=[{"name":"Quick Access","icon":"📄","label":"Quest list","files":["Quests/Quest.html"]}];
 function filename(p){return p.split("/").pop().replace(/\.html$/i,"");}
-function folderOf(p){var s=p.split("/");return s.length>1?s[0]:"Other";}
-function renderWiki(data){
-  var files=data.files||[];
-  var groups={},order=[];
-  files.forEach(function(f){var fo=folderOf(f);if(!groups[fo]){groups[fo]=[];order.push(fo);}groups[fo].push(f);});
-  document.getElementById("sidebar-links").innerHTML="";
+// ── Render folders from static baked-in data (standalone, no GitHub) ──
+function renderFolders(){
   var main=document.getElementById("folders");main.innerHTML="";
-  order.forEach(function(fo){
-    var icon=FOLDER_ICONS[fo]||"📁";
-    var displayName=FOLDER_NAMES[fo]||fo;
-    var sec=document.createElement("div");sec.className="folder-section";sec.id="folder-"+fo;
+  var sidebar=document.getElementById("sidebar-links");sidebar.innerHTML="";
+  STATIC_FOLDERS.forEach(function(fo){
+    var foId="folder-"+fo.name.replace(/[^a-zA-Z0-9_-]/g,"_");
+    var sec=document.createElement("div");sec.className="folder-section";sec.id=foId;
     var titleDiv=document.createElement("div");titleDiv.className="folder-title";titleDiv.style.cursor="pointer";
     titleDiv.onclick=function(){toggleFolder(this);};
     var arrow=document.createElement("span");arrow.className="fold-arrow";arrow.style.cssText="font-size:9px;display:inline-block;transition:transform .18s";arrow.innerHTML="&#9660;";
-    titleDiv.appendChild(arrow);titleDiv.appendChild(document.createTextNode(" "+icon+" "+displayName));
+    titleDiv.appendChild(arrow);titleDiv.appendChild(document.createTextNode(" "+fo.icon+" "+fo.name));
     sec.appendChild(titleDiv);
-    var lbl=FOLDER_LABELS[fo];
-    var fl=document.createElement("div");fl.className="file-list";fl.id="list-"+fo;sec.appendChild(fl);
+    var fl=document.createElement("div");fl.className="file-list";sec.appendChild(fl);
     main.appendChild(sec);
-    var nl=document.createElement("a");nl.className="nav-link";nl.href="#folder-"+fo;nl.innerHTML=icon+" "+displayName;
-    document.getElementById("sidebar-links").appendChild(nl);
-    groups[fo].forEach(function(f){
+    var nl=document.createElement("a");nl.className="nav-link";nl.href="#"+foId;nl.innerHTML=fo.icon+" "+fo.name;
+    sidebar.appendChild(nl);
+    fo.files.forEach(function(f){
       var a=document.createElement("a");a.className="file-link";a.href=f;
-      var btnText=(lbl&&lbl.trim()&&groups[fo].length===1)?lbl.trim():filename(f);
-      a.textContent=btnText;a.dataset.search=btnText.toLowerCase();fl.appendChild(a);
+      var btnText=(fo.label&&fo.label.trim()&&fo.files.length===1)?fo.label.trim():filename(f);
+      a.textContent=btnText;fl.appendChild(a);
     });
   });
 }
+renderFolders();
+// ── Search bar: GitHub API only, no effect on folder display ──
 var GH_API_URL="https://api.github.com/repos/DWRPGDC/DW-RPG-Data/git/trees/main?recursive=1";
-var allRepoFiles=fallback.files.slice();
-function escHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-renderWiki(fallback);
+var allRepoFiles=[];
 if(GH_API_URL){
   fetch(GH_API_URL).then(function(r){return r.ok?r.json():Promise.reject();})
   .then(function(d){
     allRepoFiles=(d.tree||[]).filter(function(f){return f.type==="blob"&&f.path.toLowerCase().endsWith(".html")&&f.path!=="index.html";}).map(function(f){return f.path;});
-    renderWiki({files:allRepoFiles});
   }).catch(function(){});
 }
+function escHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function showSearchResults(q){
   var box=document.getElementById("search-results");
   if(!q){box.classList.remove("open");box.innerHTML="";return;}
