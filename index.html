@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dawn Winery RPG</title>
+<style>
+:root{--bg:#ffffff;--bg2:#f5f5f5;--bg3:#ebebeb;--border:#ddd;--border2:#ccc;--text:#1a1a1a;--text2:#444;--text3:#888;--gold:#7a5c10;--gold-bg:#f9f3e3;--gold-border:#d4b870}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14px;min-height:100vh}
+#topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 24px 8px;position:sticky;top:0;z-index:10}
+#topbar-title{font-family:Georgia,serif;font-size:18px;color:var(--gold);letter-spacing:.04em;margin-bottom:8px;text-decoration:none;display:inline-block}
+#topbar-title:hover{opacity:.75}
+#topbar-bottom{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#topbar-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nav-page-btn{display:inline-block;padding:6px 14px;background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:5px;font-size:12px;font-weight:700;color:var(--gold);text-decoration:none;letter-spacing:.04em;transition:background .12s,box-shadow .12s}.nav-page-btn:hover{background:var(--gold);color:#fff8ee;box-shadow:0 2px 8px rgba(122,92,16,.18)}
+#search-wrap{position:relative;width:220px;margin-left:auto}
+#search{width:100%;border:1px solid var(--border2);border-radius:5px;padding:6px 30px 6px 10px;font-size:13px;background:var(--bg);color:var(--text);outline:none}
+#search:focus{border-color:var(--gold)}
+#search-icon{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none}
+#layout{display:flex;min-height:calc(100vh - 90px)}
+#sidebar{width:220px;min-width:180px;border-right:1px solid var(--border);padding:18px 0;flex-shrink:0;background:var(--bg2)}
+.nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding:6px 16px 4px}
+.nav-link{display:block;padding:6px 16px;font-size:13px;color:var(--text2);text-decoration:none;border-left:2px solid transparent;transition:background .1s,color .1s,border-color .1s}
+.nav-link:hover{background:var(--bg3);color:var(--gold);border-left-color:var(--gold)}
+#main{flex:1;padding:28px 32px;max-width:900px}
+h1{font-family:Georgia,serif;font-size:26px;color:var(--gold);margin-bottom:6px;line-height:1.3}
+h1 a{color:var(--gold)}
+.page-sub{font-size:13px;color:var(--text2);margin-bottom:10px;line-height:1.6}
+.page-sub a{color:var(--gold)}
+.page-body-text{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.7}
+.page-body-text a{color:var(--gold)}
+.page-sub ul,.page-sub ol,.page-body-text ul,.page-body-text ol,.rte-collapse-body ul,.rte-collapse-body ol{padding-left:24px;margin:4px 0}
+.page-sub ul ul,.page-sub ul ol,.page-sub ol ul,.page-sub ol ol,.page-body-text ul ul,.page-body-text ul ol,.page-body-text ol ul,.page-body-text ol ol,.rte-collapse-body ul ul,.rte-collapse-body ul ol,.rte-collapse-body ol ul,.rte-collapse-body ol ol{padding-left:24px;margin:2px 0}
+.folder-section{margin-bottom:28px}
+.folder-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;user-select:none;transition:color .12s}
+.folder-title:hover{color:var(--gold)}
+.folder-section.collapsed .fold-arrow{transform:rotate(-90deg)}
+.folder-section.collapsed .file-list{display:none}
+.file-list{display:flex;flex-direction:column;gap:5px}
+.file-link{display:block;padding:9px 13px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;text-decoration:none;color:var(--text);font-size:13px;transition:border-color .13s,box-shadow .13s}
+.file-link:hover{border-color:var(--gold);box-shadow:0 0 0 2px rgba(122,92,16,.12);color:var(--gold)}
+.file-link.hidden{display:none}
+.folder-section.hidden{display:none}
+.no-results{font-size:13px;color:var(--text3);padding:16px 0;display:none}
+.rte-collapse{border:1px solid var(--gold-border);border-radius:6px;margin:8px 0;background:var(--gold-bg);overflow:hidden}
+.rte-collapse-head{display:flex;align-items:center;gap:6px;padding:7px 12px;cursor:pointer;user-select:none;border-bottom:1px solid var(--gold-border)}
+.rte-collapse-arrow{font-size:9px;display:inline-block;transition:transform .18s;color:var(--gold);flex-shrink:0}
+.rte-collapse-title{font-size:13px;font-weight:700;color:var(--gold)}
+.rte-collapse-body{padding:10px 14px;font-size:13px;color:var(--text2);line-height:1.7}
+.rte-collapse-body a{color:var(--gold)}
+.rte-collapse.collapsed .rte-collapse-body{display:none}
+.rte-collapse.collapsed .rte-collapse-arrow{transform:rotate(-90deg)}
+@media(max-width:680px){#sidebar{display:none}#main{padding:18px 16px}#search-wrap{width:140px}#topbar{padding:8px 16px}}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a id="topbar-title" href="index.html">&#9670; Dawn Winery RPG</a>
+  <div id="topbar-bottom">
+    <div id="topbar-nav"><a class="nav-page-btn" href="Quests/quest.html">Quests</a><a class="nav-page-btn" href="Items/items.html">Items</a></div>
+    <div id="search-wrap">
+      <input id="search" type="text" placeholder="Search files…" autocomplete="off">
+      <span id="search-icon">&#128269;</span>
+    </div>
+  </div>
+</div>
+<div id="layout">
+  <nav id="sidebar">
+    <div class="nav-label">Folders</div>
+    <div id="sidebar-links"></div>
+  </nav>
+  <main id="main">
+    <h1>Dawn Winery RPG</h1>
+    <div class="page-sub">Exists only because of sheet's limitation</div>
+    <div class="page-body-text">basically a wiki, but yknow more scuffed<div><br></div><div><div><font size="4"><a href="Quests/quest.html">Quest</a></font></div><div>List of quests</div></div></div>
+    <div id="folders"></div>
+    <div class="no-results" id="no-results">No files match your search.</div>
+  </main>
+</div>
+<script>
+var FOLDER_ICONS={"Quests":"📄","Items":"⚙","Functions":"🔧"};
+var fallback={
+  "files": [
+    "Quests/Flowers for Marla.html"
+  ]
+};
+function filename(path){var p=path.split("/");return p[p.length-1].replace(/\.html$/i,"");}
+function folder(path){var p=path.split("/");return p.length>1?p[0]:"Other";}
+function renderWiki(data){
+  var files=data.files||[];
+  var groups={};
+  var order=[];
+  files.forEach(function(f){var fo=folder(f);if(!groups[fo]){groups[fo]=[];order.push(fo);}groups[fo].push(f);});
+  var nav=document.getElementById("sidebar-links");
+  nav.innerHTML="";
+  var main=document.getElementById("folders");
+  main.innerHTML="";
+  order.forEach(function(fo){
+    var icon=FOLDER_ICONS[fo]||"&#128193;";
+    var sec=document.createElement("div");
+    sec.className="folder-section";
+    sec.id="folder-"+fo;
+    sec.innerHTML='<div class="folder-title" onclick="toggleFolder(this)" style="cursor:pointer"><span class="fold-arrow" style="font-size:9px;display:inline-block;transition:transform .18s">&#9660;</span>'+icon+' '+fo+'</div><div class="file-list" id="list-'+fo+'"></div>';
+    main.appendChild(sec);
+    var nl=document.createElement("a");
+    nl.className="nav-link";
+    nl.href="#folder-"+fo;
+    nl.innerHTML=icon+" "+fo;
+    nav.appendChild(nl);
+    var list=sec.querySelector(".file-list");
+    groups[fo].forEach(function(f){
+      var a=document.createElement("a");
+      a.className="file-link";
+      a.href=f;
+      a.textContent=filename(f);
+      a.dataset.search=filename(f).toLowerCase();
+      list.appendChild(a);
+    });
+  });
+}
+function applySearch(val){
+  var q=val.toLowerCase().trim();
+  var any=false;
+  document.querySelectorAll(".folder-section").forEach(function(sec){
+    var links=sec.querySelectorAll(".file-link");
+    var vis=false;
+    links.forEach(function(a){var m=!q||a.dataset.search.includes(q);a.classList.toggle("hidden",!m);if(m)vis=true;});
+    sec.classList.toggle("hidden",!vis);
+    if(vis)any=true;
+  });
+  document.getElementById("no-results").style.display=any?"none":"block";
+}
+fetch("files.json")
+  .then(function(r){return r.ok?r.json():Promise.reject();})
+  .then(renderWiki)
+  .catch(function(){renderWiki(fallback);});
+document.getElementById("search").addEventListener("input",function(){applySearch(this.value);});\nfunction toggleFolder(el){var s=el.closest(".folder-section");if(s){s.classList.toggle("collapsed");var a=el.querySelector(".fold-arrow");if(a)a.style.transform=s.classList.contains("collapsed")?"rotate(-90deg)":"rotate(0deg)";}}
+document.addEventListener("click",function(e){var h=e.target.closest(".rte-collapse-head");if(h){var box=h.closest(".rte-collapse");if(box){box.classList.toggle("collapsed");var arr=h.querySelector(".rte-collapse-arrow");if(arr)arr.style.transform=box.classList.contains("collapsed")?"rotate(-90deg)":"rotate(0deg)";}}})
+</script>
+</body>
+</html>
