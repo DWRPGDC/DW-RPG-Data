@@ -17,6 +17,14 @@ body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14p
 #search-wrap{position:relative;width:220px;margin-left:auto}
 #search{width:100%;border:1px solid var(--border2);border-radius:5px;padding:6px 30px 6px 10px;font-size:13px;background:var(--bg);color:var(--text);outline:none}
 #search:focus{border-color:var(--gold)}
+#search-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg);border:1px solid var(--border2);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.12);z-index:200;display:none;max-height:320px;overflow-y:auto}
+#search-results.open{display:block}
+.sr-item{display:flex;align-items:baseline;gap:6px;padding:8px 12px;text-decoration:none;color:var(--text);font-size:13px;border-bottom:1px solid var(--border)}
+.sr-item:last-child{border-bottom:none}
+.sr-item:hover,.sr-item:focus{background:var(--gold-bg);color:var(--gold);outline:none}
+.sr-name{font-weight:600}
+.sr-folder{font-size:10px;color:var(--text3);flex-shrink:0}
+.sr-empty{padding:10px 12px;font-size:12px;color:var(--text3)}
 #search-icon{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none}
 #layout{display:flex;min-height:calc(100vh - 90px)}
 #sidebar{display:none}
@@ -59,10 +67,11 @@ h1 a{color:var(--gold)}
 <div id="topbar">
   <a id="topbar-title" href="https://DWRPGDC.github.io/DW-RPG-Data/">&#9670; Dawn Winery RPG</a>
   <div id="topbar-bottom">
-    <div id="topbar-nav"><a class="nav-page-btn" href="Quests/quest.html">Quests</a><a class="nav-page-btn" href="Items/items.html">Items</a></div>
+    <div id="topbar-nav"><a class="nav-page-btn" href="Quests/Quest.html">Quests</a><a class="nav-page-btn" href="Items/Item.html">Items</a></div>
     <div id="search-wrap">
       <input id="search" type="text" placeholder="Search files…" autocomplete="off">
       <span id="search-icon">&#128269;</span>
+    <div id="search-results"></div>
     </div>
   </div>
 </div>
@@ -74,19 +83,19 @@ h1 a{color:var(--gold)}
   <main id="main">
     <h1>Dawn Winery RPG<br></h1>
 <div class="page-sub"><div><hr style="border-right: none; border-bottom: none; border-left: none; border-image: initial; border-top: 2px solid rgb(204, 204, 204); margin-top: 8px; margin-bottom: 8px;"></div>Exists only because of sheet's limitations<div>Basically a wiki, navigate it like one.</div></div>
-<div class="page-body-text"><font size="3"><a href="Quests/quest.html">Quests</a> list</font><div><font size="3"><br></font></div><div><font size="3"><br></font></div><div><font size="3">or use button in the quick access folder idk</font></div></div>
+<div class="page-body-text"><font size="3"><a href="Quests/Quest.html">Quests</a> list</font><div><font size="3"><br></font></div><div><font size="3"><br></font></div><div><font size="3">or use button below idk</font></div></div>
 
     <div id="folders"></div>
     <div class="no-results" id="no-results">No files match your search.</div>
   </main>
 </div>
 <script>
-var FOLDER_ICONS={"Quests":"📄","Items":"⚙","Functions":"🔧"};
-var FOLDER_LABELS={"Quests":"Quest list","Items":"","Functions":""};
-var FOLDER_NAMES={"Quests":"Quick access","Items":"Items","Functions":"Functions"};
+var FOLDER_ICONS={"Quests":"📄"};
+var FOLDER_LABELS={"Quests":"Quest list"};
+var FOLDER_NAMES={"Quests":"Quick Access"};
 var fallback={
   "files": [
-    "Quests/quest.html"
+    "Quests/Quest.html"
   ]
 };
 function filename(p){return p.split("/").pop().replace(/\.html$/i,"");}
@@ -118,19 +127,45 @@ function renderWiki(data){
     });
   });
 }
-function applySearch(val){
-  var q=val.toLowerCase().trim(),any=false;
-  document.querySelectorAll(".folder-section").forEach(function(sec){
-    var vis=false;
-    sec.querySelectorAll(".file-link").forEach(function(a){var m=!q||a.dataset.search.includes(q);a.classList.toggle("hidden",!m);if(m)vis=true;});
-    sec.classList.toggle("hidden",!vis);if(vis)any=true;
-  });
-  document.getElementById("no-results").style.display=any?"none":"block";
+var GH_API_URL="https://api.github.com/repos/DWRPGDC/DW-RPG-Data/git/trees/main?recursive=1";
+var allRepoFiles=[];
+function escHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+renderWiki(fallback);
+if(GH_API_URL){
+  fetch(GH_API_URL).then(function(r){return r.ok?r.json():Promise.reject();})
+  .then(function(d){
+    allRepoFiles=(d.tree||[]).filter(function(f){return f.type==="blob"&&f.path.toLowerCase().endsWith(".html")&&f.path!=="index.html";}).map(function(f){return f.path;});
+    renderWiki({files:allRepoFiles});
+  }).catch(function(){});
 }
-fetch("files.json")
-  .then(function(r){return r.ok?r.json():Promise.reject();})
-  .then(renderWiki).catch(function(){renderWiki(fallback);});
-document.getElementById("search").addEventListener("input",function(){applySearch(this.value);});
+function showSearchResults(q){
+  var box=document.getElementById("search-results");
+  if(!q){box.classList.remove("open");box.innerHTML="";return;}
+  var matches=allRepoFiles.filter(function(p){return filename(p).toLowerCase().includes(q);});
+  box.innerHTML="";
+  if(!matches.length){
+    if(GH_API_URL){var em=document.createElement("div");em.className="sr-empty";em.textContent="No pages found.";box.appendChild(em);}
+  } else {
+    matches.slice(0,30).forEach(function(p){
+      var parts=p.split("/");var fname=parts.pop().replace(/\.html$/i,"");var folder=parts.join("/");
+      var a=document.createElement("a");a.className="sr-item";a.href=p;
+      var nm=document.createElement("span");nm.className="sr-name";
+      var ql=q.toLowerCase();var fl=fname.toLowerCase();var si=fl.indexOf(ql);
+      if(si>=0){nm.innerHTML=escHtml(fname.slice(0,si))+"<b>"+escHtml(fname.slice(si,si+ql.length))+"</b>"+escHtml(fname.slice(si+ql.length));}
+      else{nm.textContent=fname;}
+      a.appendChild(nm);
+      if(folder){var fd=document.createElement("span");fd.className="sr-folder";fd.textContent=folder;a.appendChild(fd);}
+      box.appendChild(a);
+    });
+  }
+  if(GH_API_URL)box.classList.add("open");
+}
+var _srch=document.getElementById("search");
+_srch.addEventListener("input",function(){
+  var q=this.value.toLowerCase().trim();
+  showSearchResults(q);
+});
+document.addEventListener("click",function(e){if(!e.target.closest("#search-wrap")){var b=document.getElementById("search-results");if(b){b.classList.remove("open");}}});
 function toggleFolder(el){var s=el.closest(".folder-section");if(s){s.classList.toggle("collapsed");var a=el.querySelector(".fold-arrow");if(a)a.style.transform=s.classList.contains("collapsed")?"rotate(-90deg)":"rotate(0deg)";}}
 document.addEventListener("click",function(e){var h=e.target.closest(".rte-collapse-head");if(h){var box=h.closest(".rte-collapse");if(box){box.classList.toggle("collapsed");var arr=h.querySelector(".rte-collapse-arrow");if(arr)arr.style.transform=box.classList.contains("collapsed")?"rotate(-90deg)":"rotate(0deg)";}}});
 </script>
