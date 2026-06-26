@@ -128,7 +128,7 @@ function renderWiki(data){
   });
 }
 var GH_API_URL="https://api.github.com/repos/DWRPGDC/DW-RPG-Data/git/trees/main?recursive=1";
-var allRepoFiles=[];
+var allRepoFiles=fallback.files.slice();
 function escHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 renderWiki(fallback);
 if(GH_API_URL){
@@ -144,7 +144,7 @@ function showSearchResults(q){
   var matches=allRepoFiles.filter(function(p){return filename(p).toLowerCase().includes(q);});
   box.innerHTML="";
   if(!matches.length){
-    if(GH_API_URL){var em=document.createElement("div");em.className="sr-empty";em.textContent="No pages found.";box.appendChild(em);}
+    var em=document.createElement("div");em.className="sr-empty";em.textContent="No pages found.";box.appendChild(em);
   } else {
     matches.slice(0,30).forEach(function(p){
       var parts=p.split("/");var fname=parts.pop().replace(/\.html$/i,"");var folder=parts.join("/");
@@ -158,7 +158,7 @@ function showSearchResults(q){
       box.appendChild(a);
     });
   }
-  if(GH_API_URL)box.classList.add("open");
+  box.classList.add("open");
 }
 var _srch=document.getElementById("search");
 _srch.addEventListener("input",function(){
