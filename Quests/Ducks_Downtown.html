@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ducks Downtown</title>
+<style>
+:root{--bg:#ffffff;--bg2:#f5f5f5;--bg3:#ebebeb;--border:#ddd;--border2:#ccc;--text:#1a1a1a;--text2:#444;--text3:#888;--gold:#7a5c10;--tab-h:52px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14px;height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+#app{display:flex;flex:1;overflow:hidden}
+#branch-panel{width:100%;display:flex;flex-direction:column;overflow:hidden}
+#branch-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+#branch-header::-webkit-scrollbar{display:none}
+#back-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;align-items:center;gap:4px;text-decoration:none;font-family:sans-serif}
+#back-btn.visible{display:inline-flex}
+#back-btn:hover{background:var(--bg3);color:var(--text)}
+.panel-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);flex:1}
+#mode-toggle{display:flex;border:1px solid var(--border2);border-radius:5px;overflow:hidden}
+#mode-toggle button{background:none;border:none;padding:5px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:background .12s,color .12s}
+#mode-toggle button.active{background:var(--gold);color:#fff8ee}
+#best-route-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+#best-route-btn:hover{background:var(--bg3);color:var(--text)}
+#best-route-btn.active-normal{background:#fff0ee;border-color:#e03020;color:#b02010}
+#best-route-btn.active-important{background:#e03020;border-color:#b02010;color:#fff8ee}
+.ellipsis-card{text-align:center;color:var(--text3);font-size:20px;letter-spacing:4px;padding:8px 0;user-select:none}
+#collapse-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none}
+#collapse-btn.visible{display:inline-flex;align-items:center;gap:4px}
+#branch-body{flex:1;overflow:auto;padding:12px 12px 40px}
+#sim-fab{position:fixed;bottom:24px;right:24px;z-index:400;width:68px;height:68px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:background .15s,transform .15s;padding:0}
+#sim-fab:hover{background:#6b5010;transform:scale(1.07)}
+#sim-fab .fab-icon{font-size:22px;line-height:1;color:#fff8ee}
+#sim-fab .fab-label{font-size:7px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#fff8ee;text-align:center;line-height:1.2;max-width:58px}
+#sim-modal{display:none;position:fixed;inset:0;z-index:450;align-items:center;justify-content:center;padding:20px}
+#sim-modal.open{display:flex}
+#sim-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+#sim-box{position:relative;background:var(--bg);border:1px solid var(--border2);border-radius:12px;width:460px;max-width:100%;max-height:90dvh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.28);z-index:1}
+#play-header{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0}
+#play-title{font-size:13px;font-weight:700;color:var(--gold);font-family:sans-serif;letter-spacing:.07em;text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sim-header-actions{display:flex;align-items:center;gap:6px}
+#restart-btn{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:sans-serif;font-size:12px;padding:5px 12px;border-radius:5px;cursor:pointer;white-space:nowrap}
+#restart-btn:hover{border-color:var(--text);color:var(--text)}
+#sim-close{background:none;border:none;font-size:20px;color:var(--text3);cursor:pointer;line-height:1;padding:2px 6px;border-radius:4px;min-width:30px;min-height:30px;display:flex;align-items:center;justify-content:center}
+#sim-close:hover{color:var(--text);background:var(--bg3)}
+#play-body{flex:1;overflow-y:auto;padding:22px 24px 40px;font-family:Georgia,serif;font-size:16px;line-height:1.8;color:var(--text)}
+#scene-title{font-size:11px;font-weight:700;font-family:sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px}
+#scene-text{line-height:1.8;margin-bottom:18px;white-space:pre-wrap}
+#dialogues{margin-bottom:4px}
+.dlg-visible{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:10px;overflow:hidden;padding:10px 14px}
+.dlg-vis-spk{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:6px}
+.bbody .dlg-visible{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;margin-bottom:4px}
+.bbody .dlg-vis-spk{font-size:10px;margin-bottom:2px}
+.bbody .dlg-visible .dlg-text{font-size:11px;color:var(--text2);border-top:none;padding:0}
+.dlg-vis-spk{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:6px}
+details{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:10px;overflow:hidden}
+summary{cursor:pointer;padding:10px 14px;font-family:sans-serif;font-size:13px;font-weight:600;color:var(--gold);list-style:none;display:flex;align-items:center;gap:6px}
+summary::before{content:"\25B6";font-size:9px}
+details[open] summary::before{content:"\25BC"}
+summary::-webkit-details-marker{display:none}
+.dlg-text{padding:10px 14px 12px;font-size:14px;line-height:1.7;color:var(--text2);border-top:1px solid var(--border);white-space:pre-wrap}
+#choices{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+.choice-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:Georgia,serif;font-size:15px;padding:12px 16px;cursor:pointer;text-align:left;transition:background .12s,border-color .12s,color .12s;min-height:46px;width:100%;display:flex;align-items:center;gap:10px}
+.choice-btn:hover,.choice-btn:active{background:var(--bg3);border-color:var(--gold);color:var(--gold)}
+.choice-btn.best{background:#fff0ee;border-color:#e03020}
+.choice-btn.best:hover,.choice-btn.best:active{background:#ffe8e4;border-color:#c02010;color:var(--gold)}
+.choice-btn-label{flex:1}
+.choice-btn-badge{display:inline-flex;align-items:center;gap:3px;background:#e03020;color:#fff8ee;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0;font-family:sans-serif}
+.ending-msg{text-align:center;padding:24px 0 8px;color:var(--text3);font-family:sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+#reward-box{background:#f0e8d0;border:1px solid #c8b870;border-radius:6px;padding:11px 16px;margin-top:12px;display:none;flex-direction:column;gap:6px}
+.reward-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7a5a18}
+.reward-items{display:flex;flex-wrap:wrap;gap:8px}
+.reward-item{display:flex;align-items:center;gap:5px;background:#e8d8b8;border:1px solid #c8b870;border-radius:4px;padding:4px 10px}
+.reward-item img{width:20px;height:20px;object-fit:contain;image-rendering:pixelated}
+.reward-item-name{font-size:12px;font-weight:600;color:#4a3810}
+.reward-item-qty{font-size:14px;color:#4a3810;font-family:Georgia,serif}
+#unlocks-box{background:#e8f0e8;border:1px solid #9ab89a;border-radius:6px;padding:11px 16px;margin-top:8px;display:none;flex-direction:column;gap:3px}
+.unlocks-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2e6b2e}
+.unlocks-text{font-size:14px;color:#1e4e1e;line-height:1.6}
+.unlocks-text a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.bscene{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;margin-bottom:12px;overflow:hidden;transition:border-color .15s,box-shadow .15s;scroll-margin-top:10px}
+.bscene.playing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.2)}
+.bscene.has-best{border-left:3px solid #e03020}
+.bscene.has-best.playing{border-color:var(--gold);border-left-color:#e03020}
+.bhead{display:flex;align-items:center;gap:7px;padding:9px 11px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.bbadge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.b-start{background:#c8e8c8;color:#1e4e1e}
+.b-scene{background:#ddd0ee;color:#3e2458}
+.b-ending{background:#f0d8c8;color:#7a3a18}
+.btitle{font-size:13px;font-weight:600;color:var(--gold);flex:1}
+.bid{font-size:10px;color:var(--text3);font-family:monospace}
+.bplay-btn{background:var(--gold);border:none;color:#fff8ee;font-size:10px;font-weight:700;padding:4px 9px;border-radius:4px;cursor:pointer;flex-shrink:0}
+.bplay-btn:hover{background:#6b5010}
+.bbody{padding:9px 11px;font-size:12px;line-height:1.6;color:var(--text2)}
+.btext{color:var(--text);white-space:pre-wrap;margin-bottom:7px;font-size:12px}
+.bdlg-wrap{margin-bottom:7px}
+.bchoices{display:flex;flex-direction:column;gap:5px;margin-top:5px}
+.bchoice{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:6px 9px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:background .12s,border-color .12s}
+.bchoice:hover{background:#ddd;border-color:var(--gold)}
+.bchoice.best{background:#fff0ee;border-color:#e03020}
+.bchoice-arrow{color:var(--text3);font-size:11px}
+.bchoice-label{flex:1;color:var(--text);font-size:11px;font-weight:700}
+.bchoice-dest{font-size:10px;color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.best-route-badge{display:inline-flex;align-items:center;gap:3px;background:#e03020;color:#fff8ee;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.choice-btn.best{background:#fff0ee;border-color:#e03020}
+.choice-btn.best:hover,.choice-btn.best:active{background:#ffe8e4;border-color:#c02010;color:var(--gold)}
+.breward{background:#f0e8d0;border:1px solid #c8b870;border-radius:4px;padding:7px 10px;margin-top:5px;display:flex;flex-direction:column;gap:4px}
+.breward-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7a5a18;display:block}
+.breward-items{display:flex;flex-direction:column;gap:4px;margin-top:2px}
+.breward-item{display:flex;align-items:center;gap:5px}
+.breward-item img{width:16px;height:16px;object-fit:contain;image-rendering:pixelated}
+.breward-item-txt{font-size:12px;color:#4a3810}
+.bunlocks{background:#e8f0e8;border:1px solid #9ab89a;border-radius:4px;padding:5px 9px;margin-top:4px;display:flex;gap:7px;align-items:baseline}
+.bunlocks-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#2e6b2e;flex-shrink:0}
+.bunlocks-text{font-size:11px;color:#1e4e1e;line-height:1.5}
+.bunlocks-text a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.req-box{background:#fff0ee;border:1px solid #d4b870;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#5a4010;line-height:1.5;display:block}
+.req-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;color:#7a5a18}
+.req-box a{color:#7a5a18;text-decoration:underline}
+.loc-box{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#1a4a5a;line-height:1.5;display:block}
+.loc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;color:#1a4a5a}
+.loc-box a{color:#1a4a5a;text-decoration:underline}
+.breq{background:#fff0ee;border:1px solid #d4b870;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:#5a4010;line-height:1.6;display:block}
+.breq-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#7a5a18}
+.breq a{color:#7a5a18;text-decoration:underline}
+.bloc{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:#1a4a5a;line-height:1.6;display:block}
+.bloc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#1a4a5a}
+.bloc a{color:#1a4a5a;text-decoration:underline}
+.treq{background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:6px 10px;margin-bottom:5px;font-size:13px;color:#5a4010;line-height:1.6;display:block}
+.treq-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#7a5a18}
+.treq a{color:#7a5a18;text-decoration:underline}
+.tloc{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:3px;padding:6px 10px;margin-bottom:5px;font-size:13px;color:#1a4a5a;line-height:1.6;display:block}
+.tloc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#1a4a5a}
+.tloc a{color:#1a4a5a;text-decoration:underline}
+.meta-banner{margin-bottom:8px}
+.troot{padding-left:4px;display:table;min-width:100%}
+.tnode{margin-top:0;display:block}
+.tcard{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px 6px 0 0;cursor:pointer;transition:border-color .12s,box-shadow .15s;scroll-margin-top:10px;width:100%;box-sizing:border-box}
+.tcard:hover{border-color:var(--gold)}
+.tcard.playing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.2)}
+.ttitle{font-size:13px;font-weight:600;color:var(--gold);flex:1}
+.tnode-body{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-radius:0 0 6px 6px;padding:8px 10px 9px;display:flex;flex-direction:column;gap:6px}
+.tree-collapsed .tnode-body{display:none}
+.tscene-text{font-size:12px;color:var(--text);line-height:1.55;white-space:pre-wrap}
+.tdlgs{display:flex;flex-direction:column;gap:4px}
+.tdlg{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:12px;line-height:1.5}
+.tdlg-spk{font-weight:700;color:var(--gold);display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.tdlg-txt{color:var(--text2);white-space:pre-wrap}
+.tdlgs details{background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:4px;font-size:12px}
+.tdlgs details summary{padding:5px 8px;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.05em}
+.tdlgs details .dlg-text{padding:4px 8px 6px;font-size:12px;border-top:1px solid var(--border)}
+.bdlg-wrap details{margin-bottom:5px}
+.treward-inline{background:#f0e8d0;border:1px solid #c8b870;border-radius:4px;padding:7px 10px;margin-top:4px;display:flex;flex-direction:column;gap:4px}
+.treward-inline-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7a5a18;display:block}
+.treward-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#4a3810}
+.treward-item img{width:16px;height:16px;object-fit:contain;image-rendering:pixelated}
+.tunlocks-inline{font-size:11px;color:#2e6b2e;background:#e8f0e8;border:1px solid #9ab89a;border-radius:3px;padding:3px 8px;margin-top:3px;display:block;line-height:1.5}
+.tunlocks-inline a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.tchoices{margin-left:12px;padding-left:12px;border-left:none;margin-top:6px;display:flex;flex-direction:column;gap:0;position:relative;box-sizing:border-box}
+.tchoices.has-best{border-left:none}
+.tchoice{position:relative;padding-top:7px;display:flex;flex-direction:column;box-sizing:border-box}
+.tc-vert{position:absolute;left:0;width:4px;pointer-events:none;border-radius:1px}
+.tc-horiz{position:absolute;left:-12px;top:19px;width:12px;height:2px;pointer-events:none}
+.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:inline-flex;align-items:center;gap:5px;max-width:90%;white-space:normal;word-break:break-word;vertical-align:top}
+.tchoice-label.tchoice-best{background:#fff0ee;border-color:#e03020}
+.tvisited{font-size:11px;color:var(--text3);font-style:italic;padding:4px 0 4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;display:block}
+.tvisited:hover{color:var(--gold)}
+.tmissing{font-size:11px;color:#b03020;padding:4px;font-style:italic}
+.tchoice-inline{margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;box-sizing:border-box}
+.tchoice-inline>.tchoice-label{display:inline-flex;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;max-width:90%}
+.tchoice-inline>.tchoice-label.tchoice-best{color:var(--text);background:#fff0ee;border-color:#e03020}
+.tchoice-inline>.tnode{margin-top:10px;display:block}
+.tcard-best{border-left:3px solid #e03020!important}
+.tnbody-best{border-left:3px solid #e03020!important}
+.tcontinue-arrow{font-size:13px;color:var(--text3);padding:2px 0 2px 2px}
+@media(max-width:680px){
+#app{height:100dvh}
+#branch-panel{width:100%;max-width:none;border-right:none}
+#branch-body{padding-bottom:100px}
+#sim-fab{bottom:20px;right:16px;width:58px;height:58px}
+#sim-fab .fab-icon{font-size:18px}
+#sim-fab .fab-label{font-size:6.5px}
+#sim-box{max-height:92dvh}
+#play-body{padding:16px 16px 32px}
+}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.obj-icon{width:18px;height:18px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin:0 2px;display:inline-block}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="branch-panel">
+    <div id="branch-header">
+      <button id="back-btn" onclick="goBack()">&#8592; Back</button>
+      <span class="panel-label">🌿 Branches</span>
+      <button id="collapse-btn" onclick="toggleTreeCollapse()">▼ Collapse</button>
+      <button id="best-route-btn" onclick="toggleBestRoute()">⭐ Best Route</button>
+      <div id="mode-toggle">
+        <button id="btn-tree" class="active" onclick="setBranchMode('tree')">Tree</button>
+        <button id="btn-cards" onclick="setBranchMode('cards')">Cards</button>
+      </div>
+    </div>
+    <div id="branch-body"></div>
+  </div>
+</div>
+
+<!-- Simulate FAB -->
+<button id="sim-fab" onclick="openPlay()" title="Simulate Quest">
+  <span class="fab-icon">▶</span>
+  <span class="fab-label">Simulate</span>
+</button>
+
+<!-- Simulate Modal -->
+<div id="sim-modal" onclick="if(event.target===this||event.target.id==='sim-overlay')closePlay()">
+  <div id="sim-overlay"></div>
+  <div id="sim-box">
+    <div id="play-header">
+      <div id="play-title">Ducks Downtown</div>
+      <div id="sim-header-actions">
+        <button id="restart-btn" onclick="go('start')">&#8635; Restart</button>
+        <button id="sim-close" onclick="closePlay()">&#x2715;</button>
+      </div>
+    </div>
+    <div id="play-body">
+      <div id="scene-title"></div>
+      <div id="scene-req" class="req-box" style="display:none"></div>
+      <div id="scene-loc" class="loc-box" style="display:none"></div>
+      <div id="scene-text"></div>
+      <div id="dialogues"></div>
+      <div id="choices"></div>
+      <div id="reward-box"><span class="reward-label">&#127873; Reward</span><span class="reward-text" id="reward-text"></span></div>
+      <div id="unlocks-box"><span class="unlocks-label">&#128275; Unlocks</span><span class="unlocks-text" id="unlocks-text"></span></div>
+    </div>
+  </div>
+</div>
+<script>
+const scenes={"start":{"id":"start","type":"start","title":"Ducks Downtown","text":"''Near the small pond at the edge of Springvale, you spot a boy no older than ten sitting on a rock and sobbing so hard he can barely breathe. An empty wooden coop sits open beside him.''\n\nOliver: ''sniffles'' W-Wadsworth... where are you...?","dialogues":[],"choices":[{"label":"Are you alright?","next":"ruok"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"ruok":{"id":"ruok","type":"scene","title":"","text":"Oliver: ''looks up with red, puffy eyes'' N-no I am NOT alright, stranger! My duck is GONE! Wadsworth has been missing since this morning and nobody cares and I have looked EVERYWHERE.","dialogues":[],"choices":[{"label":"Who is Wadsworth?","next":"Who_is_Wadsworth"},{"label":"I'm sure he'll turn up","next":"turnup"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"turnup":{"id":"turnup","type":"scene","title":"","text":"''Oliver stares at you, lip trembling''.\n\nOliver: Turn up? TURN UP?! Wadsworth is not a misplaced sock! He is my best friend and companion of SEVEN YEARS. You are not very helpful, stranger.","dialogues":[],"choices":[{"label":"Okay. Who is Wadsworth?","next":"Who_is_Wadsworth"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"Who_is_Wadsworth":{"id":"Who_is_Wadsworth","type":"scene","title":"","text":"Oliver: Wadsworth came to me when I was three years old. My uncle brought him as an egg. I watched him hatch. I named him. I have hand-fed him bread every single morning for seven years. He knows my voice. He follows me to school. ''voice cracks'' He is my BEST FRIEND.","dialogues":[],"choices":[{"label":"I'll help you look for him","next":"helplook"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"helplook":{"id":"helplook","type":"scene","title":"","text":"Oliver: ''wipes his nose on his sleeve'' You mean it? Oh, thank you, stranger! His feathers are white and brown. He is quite fat because I feed him very well. He makes a sound like -- ''ahem'' -- BWAAAK. Not like other ducks. He is very distinguished. Perhaps ask around town?","dialogues":[{"speaker":"Objective","text":"Ask the townspeople of Springvale about Wadsworth the duck","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"askrpsing","label":"Do /rpg again and click ask the townspeople button"}]},"askrpsing":{"id":"askrpsing","type":"scene","title":"","text":"''You begin asking around Springvale. The villagers have mixed opinions about Wadsworth''.","dialogues":[],"choices":[{"label":"Ask the farmer near the field","next":"askfarm"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"askfarm":{"id":"askfarm","type":"scene","title":"","text":"Bram the Farmer: ''looks up from his hoe'' That fat duck? Gone, is he? ''mutters'' About time. Seven years that bird has been waddling into my cabbage patch. I found him in there just yesterday morning, sitting on my best turnip like it was a throne. Good riddance, I say.","dialogues":[],"choices":[{"label":"Did YOU do something to him?","next":"didudosmth"},{"label":"Did you see where he went?","next":"Fine__What_did_you_see_"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"didudosmth":{"id":"didudosmth","type":"scene","title":"","text":"Bram: ''splutters'' ME?! I am a farmer, not a duck murderer! I shoo'd him out of my field and went back to work. Now take your suspicions elsewhere before I set my dog on you.","dialogues":[],"choices":[{"label":"Fine. What did you see?","next":"Fine__What_did_you_see_"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"oldwom":{"id":"oldwom","type":"scene","title":"","text":"''An elderly woman named Elsa is knitting by the well. She lights up when you mention the duck''.\n\nElsa: Oh, yes! That dear fat duck! I always give him bread on my morning walk. Lovely creature. This morning I saw those Rook boys, you know the ones, the older lads from the east side. They had a cage. Headed up the main road toward Mondstadt. I did think it strange.","dialogues":[],"choices":[{"label":"The Rook boys? Who are they?","next":"rookboi"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"rookboi":{"id":"rookboi","type":"scene","title":"","text":"Elsa: A handful, those three. Older than young Oliver by a few years, maybe thirteen or fourteen. They call themselves his friends but I have never trusted them. Always looking to make a quick Mora. ''lowers voice'' Word is they have been gambling on marbles again.","dialogues":[],"choices":[{"label":"Gambling on marbles?","next":"lesgoogambaaa"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"lesgoogambaaa":{"id":"lesgoogambaaa","type":"scene","title":"","text":"Elsa: ''nods gravely'' Very serious business around here. Lost a fortune in marbles myself back in '92. But I digress. If those boys headed toward Mondstadt with a duck, I would check the market district, dear. Someone may have seen something.","dialogues":[{"speaker":"Objective","text":"Follow up on the lead in Mondstadt City","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"travmond","label":"Travel to Mondstadt City (Mondstadt)"}]},"Fine__What_did_you_see_":{"id":"Fine__What_did_you_see_","type":"scene","title":"","text":"Bram: Saw a group of boys over by the old mill road carrying something in a cage. Heard a noise that sounded very much like -- ''he pauses'' -- BWAAAK. Thought nothing of it. Boys will be boys.","dialogues":[],"choices":[{"label":"Ask the old woman by the well","next":"oldwom"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"travmond":{"id":"travmond","type":"scene","title":"","text":"''You arrive in Mondstadt City and begin asking around the market district. Most people shrug. Then, near the Good Hunter tavern, you notice a handwritten chalkboard sign by the entrance.''\n\n''It reads: \"Today's Special: Crispy Roasted Duck Confit, served with seasonal herbs. Fresh from Springvale!\"''\n\n''Your stomach drops''.","dialogues":[],"choices":[{"label":"Go inside the Good Hunter","next":"good_hunt"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"good_hunt":{"id":"good_hunt","type":"scene","title":"","text":"''Sara, the cook, is beaming with professional pride''.\n\nSara: Welcome! You are just in time. I got the most wonderful duck this morning. Very fresh. Came from some boys out of Springvale. Fat little thing, lovely feathers. I have never heard a duck make that particular sound before. Very distinctive.","dialogues":[],"choices":[{"label":"What sound?","next":"whtsnd"},{"label":"Did the duck have a name?","next":"namedyck"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"whtsnd":{"id":"whtsnd","type":"scene","title":"","text":"Sara: ''cheerfully imitates'' BWAAAK. Like that! Very unusual. Anyway, he is in the oven now --","dialogues":[],"choices":[{"label":"...His name was Wadsworth","next":"His_name_was_Wadsworth"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"namedyck":{"id":"namedyck","type":"scene","title":"","text":"Sara: A name? ''laughs'' I did not ask. I bought him from three boys for fifty Mora. They seemed very eager to sell. Very, very eager. ''she pauses'' Why do you ask?","dialogues":[],"choices":[{"label":"His name was Wadsworth","next":"His_name_was_Wadsworth"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"His_name_was_Wadsworth":{"id":"His_name_was_Wadsworth","type":"scene","title":"","text":"Sara: ''expression falls'' Oh. Oh no.\n\n''An awkward silence hangs over the kitchen. The smell of roasting duck drifts in from the back.''\n\nSara: I am so sorry. I did not know. The boys said he belonged to their uncle. ''She hands you a crumpled receipt: \"Springvale Boys x3, 1 live Pekin duck, 50 Mora''.\"\n\n''Fifty Mora. Wadsworth was sold for fifty Mora. They probably spent it on marbles''.","dialogues":[{"speaker":"Objective","text":"Return to Springvale with what you have learned","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"rtrnwithwhatlrn","label":"Travel to Springvale (Mondstadt)"}]},"rtrnwithwhatlrn":{"id":"rtrnwithwhatlrn","type":"scene","title":"","text":"''You return to Springvale. Oliver is still by the pond, clutching a piece of bread he saved for Wadsworth's breakfast. A short distance away, three older boys sit on a fence, snickering and counting small coins.''\n\nOliver: ''looks up with hopeful eyes'' Did you find him? Did you find Wadsworth?","dialogues":[],"choices":[{"label":"Tell Oliver the truth","next":"tellolivtruth"},{"label":"Tell Oliver that Wadsworth flew away to a beautiful pond","next":"wadsflew"},{"label":"Confront the boys first","next":"confrontbois","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"confrontbois":{"id":"confrontbois","type":"scene","title":"","text":"''You walk toward the boys on the fence. They tense up immediately. The oldest one, Thomas, crosses his arms''.\n\nThomas: What do you want, stranger?\n\nYou: I just came from the Good Hunter in Mondstadt. Had a very interesting chat about a duck.","dialogues":[],"choices":[{"label":"Show them the receipt","next":"showrcpt","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"showrcpt":{"id":"showrcpt","type":"scene","title":"","text":"''You hold up the crumpled receipt. Thomas goes pale. The other two boys look anywhere but at you''.\n\nThomas: Look, we just thought... he was always around and we --\n\nYou: Fifty Mora. You sold your friend's duck. His companion of seven years. For fifty Mora.\n\nThomas: ''very small voice'' We already spent it.","dialogues":[],"choices":[{"label":"On what?","next":"onwhatmf","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"onwhatmf":{"id":"onwhatmf","type":"scene","title":"","text":"Thomas: ...Marbles.\n\n''A long pause.''\n\nThomas: ...And some toffee.\n\n''Another pause.''\n\nYou: You are going to fix this. Springvale market has a livestock stall. You will pool whatever Mora you have left and buy Oliver a new duckling. Right now. I will be watching.","dialogues":[],"choices":[{"label":"Walk with them to the market","next":"buynewduck","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"buynewduck":{"id":"buynewduck","type":"scene","title":"","text":"''Twenty minutes later, the three boys stand before Oliver, holding a small wooden box with air holes poked through the lid. From inside comes a very small, very confident sound: BWAAAK.''\n\nThomas: ''staring at the ground'' ...We're sorry, Oliver. We did something bad.\n\nOliver: ''stares at the box'' ...Is that a duck?","dialogues":[],"choices":[{"label":"Open the box, Thomas","next":"wadsworth2","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"wadsworth2":{"id":"wadsworth2","type":"ending","title":"Wadsworth II","text":"''Thomas opens the box. A tiny duckling blinks up at Oliver with great seriousness.''\n\nOliver: ''whispers'' ...Oh.\n\n''He reaches in and the duckling immediately waddles onto his palm.''\n\nOliver: He makes the same sound. ''looks up at you, eyes wide'' Can I name him Wadsworth?\n\n''You nod. Oliver looks back down.''\n\nOliver: Hello, Wadsworth. I am Oliver. I have been waiting for you.\n\n''Thomas and his friends slink away in quiet shame. The toffee was not worth it.''","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":150},{"item":"AEXP","qty":100}],"unlocks":"","requirement":"","continues":[]},"tellolivtruth":{"id":"tellolivtruth","type":"scene","title":"","text":"''You crouch down to Oliver's level. There is no good way to say this.''\n\nYou: Oliver... Wadsworth was taken to Mondstadt. Those boys over there sold him to a cook. I am so sorry.","dialogues":[],"choices":[{"label":"...","next":"dotdotdot"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"dotdotdot":{"id":"dotdotdot","type":"scene","title":"","text":"''Oliver stares at you. His face does not move for a very long time.''\n\nOliver: ...Sold him?\n\n''The bread falls from his hand.''\n\nOliver: They SOLD him?\n\n''He turns and looks at the boys on the fence. They notice. One of them starts to whistle innocently.''\n\nOliver: ''very quietly'' ...Those are my friends.","dialogues":[],"choices":[{"label":"Were your friends","next":"ending_mqvri311"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"ending_mqvri311":{"id":"ending_mqvri311","type":"ending","title":"The Whole Truth","text":"''Oliver stands up. He is very small. The boys are much bigger. None of that appears to matter to him right now.''\n\nOliver: THOMAS ROOK, YOU SOLD MY DUCK!\n\n''He charges at them like a cannonball. The boys scatter in three different directions, screaming. The whole village turns to watch.''\n\n''You stand by the empty coop, holding a crumpled receipt for fifty Mora, and say nothing.''","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":100},{"item":"AEXP","qty":100}],"unlocks":"","requirement":"","continues":[]},"wadsflew":{"id":"wadsflew","type":"scene","title":"","text":"''You look at Oliver's tear-streaked face, at the bread in his hand, at the empty coop''.\n\n''You think of Sara's kitchen. Of the chalkboard sign. Of fifty Mora''.\n\nYou: I found out what happened. Wadsworth found the gate to the old mill road on his own. He waddled all the way to a beautiful pond outside Mondstadt. He seemed very happy. Very free.","dialogues":[],"choices":[{"label":"...","next":"dot3"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"dot3":{"id":"dot3","type":"scene","title":"","text":"Oliver: ''sniffles'' A pond? A real pond?\n\nYou: Big and clear. With lily pads. He was swimming in circles and making that BWAAAK sound at the fish.\n\nOliver: ''small laugh through tears'' He always did that to our fish pond too.\n\n''He stares out toward the fields for a long moment.''\n\nOliver: ...As long as he is happy.","dialogues":[],"choices":[{"label":"He is","next":"fuckingliar"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"fuckingliar":{"id":"fuckingliar","type":"ending","title":"A Merciful Lie","text":"''You walk away. Oliver sets the bread down on top of the empty coop, a small offering to a duck that will never come home''.\n\n''Behind you, the Rook boys have heard everything. The oldest one catches your eye and gives you a slow, smug smile''.\n\n''You keep walking''.","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":75},{"item":"AEXP","qty":100}],"unlocks":"","requirement":"","continues":[]}};
+const questMeta={"requirement":"Minimum 5% exploration in Springvale","locations":["Springvale"],"questType":"normal"};
+const ICONS_OBJ={};
+let currentPlayId="start";
+let branchMode="tree";
+let treeVisited={};
+function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  var lines=String(s||"").split("\n");  return lines.map(function(line){    var rest=line;    function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}    var headM=rest.match(/^==(.+?)==\s*$/);    if(headM)return "<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+e(headM[1])+"</span>";    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[img:([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+e(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+e(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+e(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+e(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+e(m[5])+"</s>";      else if(m[6]!==undefined){var u=m[7].replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+e(m[6])+'</a>';}      else if(m[8]!==undefined){var n=m[8].trim();var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/";var src=isPath?n:ICONS_OBJ[n];result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(n)+'" title="'+e(n)+'">':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[9]!==undefined){var clr=WCLR[m[9]]||m[9];result+='<span style="color:'+clr+'">'+e(m[10])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }).join("<br>");}
+var ICONS={Silver:"../Textures/silver.png",AEXP:"../Textures/aexp.png",Mora:"../Textures/mora.png"};
+function rewardItemsHtml(rewards,imgW){var h="";(rewards||[]).forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\""+imgW+"\" height=\""+imgW+"\" style=\"object-fit:contain;image-rendering:pixelated\">":"";h+="<span class=\"reward-it\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});return h;}
+function openPlay(){go(currentPlayId);document.getElementById("sim-modal").classList.add("open");}
+function closePlay(){document.getElementById("sim-modal").classList.remove("open");}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closePlay();});
+function setBranchMode(m){
+  branchMode=m;
+  document.getElementById("btn-cards").classList.toggle("active",m==="cards");
+  document.getElementById("btn-tree").classList.toggle("active",m==="tree");
+  var cb=document.getElementById("collapse-btn");
+  cb.classList.toggle("visible",m==="tree");
+  if(m==="cards"){renderCards();}else{treeCollapsed=false;cb.textContent="▼ Collapse";renderTree();}
+}
+var treeCollapsed=false;
+var bestRouteMode=0;
+function getBestRouteIds(){
+  var ids={};
+  function walk(id){
+    if(!id||!scenes[id]||ids[id])return;
+    ids[id]=true;
+    var s=scenes[id];
+    var bestChoices=(s.choices||[]).filter(function(c){return c.best;});
+    if(bestChoices.length>0){
+      bestChoices.forEach(function(c){if(c.next)walk(c.next);});
+    } else {
+      (s.choices||[]).forEach(function(c){if(c.next)walk(c.next);});
+    }
+    (s.continues||[]).forEach(function(c){if(c.next)walk(c.next);});
+  }
+  walk("start");
+  return ids;
+}
+function getImportantOnlyOrder(){
+  var bestIds=getBestRouteIds();
+  var fullOrder=["start"].concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="scene"&&k!=="start";})).concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="ending";}));
+  var triggerIds={};
+  fullOrder.forEach(function(id){if(scenes[id]&&(scenes[id].choices||[]).some(function(c){return c.best;}))triggerIds[id]=true;});
+  var postTriggerIds={};
+  function walkBest(id,afterTrigger,visited){
+    visited=visited||{};
+    if(!id||!scenes[id]||visited[id])return;
+    visited[id]=true;
+    if(afterTrigger)postTriggerIds[id]=true;
+    var s=scenes[id];
+    var bc=(s.choices||[]).filter(function(c){return c.best;});
+    var nowAfter=afterTrigger||!!triggerIds[id];
+    if(bc.length>0){bc.forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
+    else{(s.choices||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
+    (s.continues||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});
+  }
+  walkBest("start",false);
+  var importantSet={};
+  importantSet["start"]=true;
+  var filteredOrder=fullOrder.filter(function(id){return bestIds[id];});
+  filteredOrder.forEach(function(id,idx){
+    if(triggerIds[id]){importantSet[id]=true;if(idx>0)importantSet[filteredOrder[idx-1]]=true;}
+    if(postTriggerIds[id])importantSet[id]=true;
+  });
+  var result=[];var lastWasImportant=false;
+  fullOrder.forEach(function(id){
+    if(!bestIds[id])return;
+    if(importantSet[id]){
+      if(!lastWasImportant&&result.length>0&&result[result.length-1]!=="...")result.push("...");
+      result.push(id);lastWasImportant=true;
+    } else {lastWasImportant=false;}
+  });
+  return result;
+}
+function toggleBestRoute(){
+  bestRouteMode=(bestRouteMode+1)%3;
+  var btn=document.getElementById("best-route-btn");
+  btn.classList.remove("active-normal","active-important");
+  if(bestRouteMode===0){btn.textContent="⭐ Best Route";}
+  else if(bestRouteMode===1){btn.textContent="⭐ Best Route";btn.classList.add("active-normal");}
+  else{btn.textContent="⭐ Important Only";btn.classList.add("active-important");}
+  if(branchMode==="tree")renderTree();else renderCards();
+}
+function toggleTreeCollapse(){
+  treeCollapsed=!treeCollapsed;
+  var bv=document.getElementById("branch-body");
+  bv.classList.toggle("tree-collapsed",treeCollapsed);
+  var cb=document.getElementById("collapse-btn");
+  cb.textContent=treeCollapsed?"▶ Expand":"▼ Collapse";
+  requestAnimationFrame(drawTreeLines);
+}
+function go(id){
+  var s=scenes[id];if(!s)return;
+  currentPlayId=id;
+  document.getElementById("scene-title").textContent=s.title||"";
+  document.getElementById("scene-title").style.display=s.title?"":"none";
+  var reqEl=document.getElementById("scene-req");reqEl.style.display="none";
+  var locEl=document.getElementById("scene-loc");locEl.style.display="none";
+  if(questMeta.requirement){reqEl.innerHTML="<span class=\"req-lbl\">⚠ Requirement</span>"+wl(questMeta.requirement);reqEl.style.display="block";}
+  var _locs=(questMeta.locations||[]).filter(function(l){return l.trim();});
+  if(_locs.length){locEl.innerHTML="<span class=\"loc-lbl\">📍 Locations</span>"+_locs.map(function(l){return wl(l);}).join("<br>");locEl.style.display="block";}
+  document.getElementById("scene-text").innerHTML=wl(s.text||"");
+  var dEl=document.getElementById("dialogues");dEl.innerHTML="";
+  (s.dialogues||[]).forEach(function(d){
+    if(d.collapsed){
+      var det=document.createElement("details");
+      var sum=document.createElement("summary");sum.textContent=d.speaker||"Objective";
+      var txt=document.createElement("div");txt.className="dlg-text";txt.innerHTML=wl(d.text||"");
+      det.appendChild(sum);det.appendChild(txt);dEl.appendChild(det);
+    } else {
+      var vis=document.createElement("div");vis.className="dlg-visible";
+      vis.innerHTML="<span class=\"dlg-vis-spk\">"+(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div>";
+      dEl.appendChild(vis);
+    }
+  });
+  var cEl=document.getElementById("choices");cEl.innerHTML="";
+  var rwb=document.getElementById("reward-box");rwb.style.display="none";
+  var uwb=document.getElementById("unlocks-box");uwb.style.display="none";
+  if(s.choices&&s.choices.length){
+    s.choices.forEach(function(c,ci){
+      var btn=document.createElement("button");btn.className="choice-btn"+(c.best?" best":"");
+      btn.innerHTML="<span class=\"choice-btn-label\">"+(c.label||"...")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">\u2B50 Best Route</span>":"");
+      if(c.next&&scenes[c.next]){btn.onclick=function(){go(c.next);};}
+      else if(c.responseText){
+        (function(b,rt){b.onclick=function(){
+          if(b.disabled)return;
+          var rd=document.createElement("div");
+          rd.style.cssText="padding:4px 2px 8px;font-size:15px;line-height:1.7;color:var(--text);font-family:Georgia,serif";
+          rd.innerHTML=wl(rt);
+          b.parentNode.insertBefore(rd,b.nextSibling);
+          b.disabled=true;b.style.opacity=".65";
+        };}(btn,c.responseText));
+      }
+      else{btn.disabled=true;btn.style.opacity=".4";}
+      cEl.appendChild(btn);
+      if(c.objectives&&c.objectives.length){
+        c.objectives.forEach(function(obj){
+          if(obj.collapsed){
+            var det=document.createElement("details");
+            det.style.cssText="background:#f5f5f5;border:1px solid #ccc;border-radius:6px;margin-top:4px;overflow:hidden";
+            var sum=document.createElement("summary");sum.style.cssText="cursor:pointer;padding:9px 12px;font-family:var(--font-ui,sans-serif);font-size:12px;font-weight:600;color:var(--gold,#7a5c10);list-style:none;display:flex;align-items:center;gap:6px";sum.textContent=obj.speaker||"Objective";
+            var txt=document.createElement("div");txt.className="dlg-text";txt.innerHTML=wl(obj.text||"");
+            det.appendChild(sum);det.appendChild(txt);cEl.appendChild(det);
+          } else {
+            var vis=document.createElement("div");vis.className="dlg-visible";vis.style.cssText="margin-top:4px";
+            vis.innerHTML="<span class=\"dlg-vis-spk\">"+(obj.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(obj.text||"")+"</div>";
+            cEl.appendChild(vis);
+          }
+        });
+      }
+    });
+    (s.continues||[]).forEach(function(c){
+      if(!c.next||!scenes[c.next])return;
+      var cntBtn=document.createElement("button");cntBtn.className="choice-btn";cntBtn.style.cssText="background:#f0f0f0;border-style:dashed";
+      cntBtn.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>";
+      cntBtn.onclick=function(){go(c.next);};
+      cEl.appendChild(cntBtn);
+    });
+  } else if((s.continues||[]).some(function(c){return c.next&&scenes[c.next];})){
+    s.continues.forEach(function(c){
+      if(!c.next||!scenes[c.next])return;
+      var cntBtn2=document.createElement("button");cntBtn2.className="choice-btn";
+      cntBtn2.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>";
+      cntBtn2.onclick=function(){go(c.next);};
+      cEl.appendChild(cntBtn2);
+    });
+  } else {
+    if(s.rewards&&s.rewards.length){
+      var rEl=document.getElementById("reward-box");
+      var ri="<div class=\"reward-items\">";
+      s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"20\" height=\"20\" style=\"object-fit:contain;image-rendering:pixelated\">":"";ri+="<div class=\"reward-item\">"+ic+"<span class=\"reward-item-name\">"+eh(r.item)+"</span><span class=\"reward-item-qty\">×"+r.qty+"</span></div>";});
+      ri+="</div>";
+      rEl.innerHTML="<span class=\"reward-label\">🎁 Rewards</span>"+ri;
+      rEl.style.display="flex";
+    }
+    if(s.unlocks){document.getElementById("unlocks-text").innerHTML=wl(s.unlocks);uwb.style.display="flex";}
+  }
+  document.getElementById("play-body").scrollTo({top:0,behavior:"smooth"});
+  document.querySelectorAll(".bscene").forEach(function(el){el.classList.toggle("playing",el.id==="bscene-"+id);});
+  document.querySelectorAll(".tcard").forEach(function(el){el.classList.toggle("playing",el.id==="tcard-"+id);});
+}
+function renderCards(){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var _metaHtml="";
+  if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)){
+    var _mb=document.createElement("div");_mb.className="meta-banner";
+    var _ls=(questMeta.locations||[]).filter(function(l){return l.trim();});
+    if(_ls.length)_metaHtml+="<div class=\"bloc\"><span class=\"bloc-lbl\">📍 Locations</span>"+_ls.map(function(l){return wl(l);}).join("<br>")+"</div>";
+    if(questMeta.requirement)_metaHtml+="<div class=\"breq\"><span class=\"breq-lbl\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";
+    _mb.innerHTML=_metaHtml;bv.appendChild(_mb);
+  }
+  var order=["start"].concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="scene"&&k!=="start"})).concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="ending"}));
+  var _bestIds=(bestRouteMode===1)?getBestRouteIds():null;
+  var _importantOrder=bestRouteMode===2?getImportantOnlyOrder():null;
+  var _renderOrder=_importantOrder||order;
+  _renderOrder.forEach(function(id){
+    if(id==="..."){var sep=document.createElement("div");sep.className="ellipsis-card";sep.textContent="•••";bv.appendChild(sep);return;}
+    var s=scenes[id];if(!s)return;
+    if(_bestIds&&!_bestIds[id])return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    var el=document.createElement("div");
+    var hasBest=(s.choices||[]).some(function(c){return c.best;});
+    el.className="bscene"+(id===currentPlayId?" playing":"")+(hasBest?" has-best":"");
+    el.id="bscene-"+id;
+    var inner="<div class=\"bhead\"><span class=\"bbadge "+bclass+"\">"+blabel+"</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"<button class=\"bplay-btn\" onclick=\"go('"+id+"')\">&#9654;</button></div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.dialogues&&s.dialogues.length){
+      inner+="<div class=\"bdlg-wrap\">";
+      s.dialogues.forEach(function(d){if(d.collapsed){inner+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{inner+="<div class=\"dlg-visible\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";}});
+      inner+="</div>";
+    }
+    if(s.choices&&s.choices.length){
+      var _bcs=s.choices.filter(function(c){return c.best;});
+      var _vcs=bestRouteMode>0&&_bcs.length>0?_bcs:s.choices;
+      inner+="<div class=\"bchoices\">";
+      _vcs.forEach(function(c){
+        var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
+        if(dest){inner+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"jumpToCard('"+c.next+"')\">"+"<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+"</div>";}
+        else if(c.responseText){inner+="<div class=\"bchoice\" style=\"opacity:.7;cursor:default;flex-direction:column;align-items:flex-start\"><div style=\"display:flex;align-items:center;gap:6px\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span></div><div style=\"font-size:11px;color:var(--text2);line-height:1.5;padding-left:16px\">"+wl(c.responseText)+"</div></div>";}
+        else{inner+="<div class=\"bchoice\" style=\"opacity:.5;cursor:default\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span></div>";}
+        if(c.objectives&&c.objectives.length){c.objectives.forEach(function(obj){if(obj.collapsed){inner+="<details style=\"background:var(--bg2);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>";}else{inner+="<div class=\"dlg-visible\" style=\"margin-top:4px\"><span class=\"dlg-vis-spk\">"+eh(obj.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(obj.text||"")+"</div></div>";}});}
+      });
+      inner+="</div>";
+    }
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";ri+="<span class=\"breward-item\">"+ic+"<span class=\"breward-item-txt\">"+eh(r.item)+" ×"+r.qty+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;bv.appendChild(el);
+  });
+}
+function jumpToCard(id){var el=document.getElementById("bscene-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function renderTree(){
+  treeVisited={};
+  var bv=document.getElementById("branch-body");
+  var _th="";
+  if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)){
+    var _tls=(questMeta.locations||[]).filter(function(l){return l.trim();});
+    if(_tls.length)_th+="<div class=\"tloc\" style=\"margin-bottom:6px\"><span class=\"tloc-lbl\">📍 Locations</span>"+_tls.map(function(l){return wl(l);}).join("<br>")+"</div>";
+    if(questMeta.requirement)_th+="<div class=\"treq\" style=\"margin-bottom:6px\"><span class=\"treq-lbl\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";
+  }
+  if(bestRouteMode===2){
+    var _impOrder=getImportantOnlyOrder();
+    var _impHtml="";
+    _impOrder.forEach(function(id){
+      if(id==="..."){_impHtml+="<div class=\"ellipsis-card\">•••</div>";return;}
+      var s=scenes[id];if(!s)return;
+      var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+      var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+      _impHtml+="<div class=\"tnode\">";
+      _impHtml+="<div class=\"tcard"+(id===currentPlayId?" playing":"")+" \" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+      _impHtml+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span>";
+      _impHtml+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
+      _impHtml+="</div>";
+      var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+      if(hasBody){
+        _impHtml+="<div class=\"tnode-body\">";
+        if(s.text)_impHtml+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";
+        if(s.dialogues&&s.dialogues.length){_impHtml+="<div class=\"tdlgs\">";s.dialogues.forEach(function(d){if(d.collapsed){_impHtml+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{_impHtml+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}});_impHtml+="</div>";}
+        if(s.type==="ending"&&s.rewards&&s.rewards.length){_impHtml+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";_impHtml+="<span class=\"treward-item\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});_impHtml+="</div>";}
+        if(s.type==="ending"&&s.unlocks){_impHtml+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+        _impHtml+="</div>";
+      }
+      if(s.choices&&s.choices.length){
+        var _bcs=s.choices.filter(function(c){return c.best;});
+        var _vcs=_bcs.length>0?_bcs:s.choices;
+        _impHtml+="<div class=\"bchoices\">";
+        _vcs.forEach(function(c){
+          var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
+          _impHtml+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"go('"+c.next+"')\">";
+          _impHtml+="<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"");
+          _impHtml+="</div>";
+        });
+        _impHtml+="</div>";
+      }
+      _impHtml+="</div>";
+    });
+    bv.innerHTML="<div class=\"troot\">"+_th+_impHtml+"</div>";
+  } else {
+    bv.innerHTML="<div class=\"troot\">"+_th+buildTreeNode("start",true)+"</div>";
+  }
+  requestAnimationFrame(drawTreeLines);
+}
+function buildTreeNode(id,isLast,isBestDest){
+  var s=scenes[id];
+  if(!s)return "<div class=\"tmissing\">(missing: "+eh(id)+")</div>";
+  var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+  var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+  var alreadyVisited=treeVisited[id];
+  treeVisited[id]=true;
+  var html="<div class=\"tnode\">";
+  html+="<div class=\"tcard"+(isBestDest?" tcard-best":"")+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+  html+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span>";
+  html+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
+  html+="</div>";
+  if(alreadyVisited){
+    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+eh(s.title||id)+"</div>";
+    html+="</div>";return html;
+  }
+  var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+  if(hasBody){
+    html+="<div class=\"tnode-body"+(isBestDest?" tnbody-best":"")+"\">";
+    if(s.text){html+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";}
+    if(s.dialogues&&s.dialogues.length){
+      html+="<div class=\"tdlgs\">";
+      s.dialogues.forEach(function(d){
+        if(d.collapsed){html+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}
+        else{html+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}
+      });
+      html+="</div>";
+    }
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";html+="<span class=\"treward-item\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});html+="</div>";}
+    if(s.type==="ending"&&s.unlocks){html+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+    html+="</div>";
+  }
+  if(s.choices&&s.choices.length){
+    var bestChoices=s.choices.filter(function(c){return c.best;});
+    var visibleChoices=bestRouteMode>0&&bestChoices.length>0?bestChoices:s.choices;
+    if(visibleChoices.length===1){
+      var c1=visibleChoices[0];
+      var c1Objs=(c1.objectives&&c1.objectives.length)?c1.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
+      html+="<div class=\"tchoice-inline\">";
+      html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\">"+(c1.label||"...")+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+      if(c1Objs)html+="<div style=\"margin:2px 0 4px\">"+c1Objs+"</div>";
+      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best);}
+      else if(c1.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c1.responseText)+"</div>";}
+      else{html+="<div class=\"tmissing\">(no destination)</div>";}
+      html+="</div>";
+    } else {
+      var anyBest=visibleChoices.some(function(c){return c.best;});
+      html+="<div class=\"tchoices"+(anyBest?" has-best":"")+"\">";
+      visibleChoices.forEach(function(c,i){
+        var last=i===visibleChoices.length-1;
+        var cObjs=(c.objectives&&c.objectives.length)?c.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
+        html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">"; 
+        html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\">"+(c.label||"...")+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+        if(cObjs)html+="<div style=\"margin:2px 0 4px\">"+cObjs+"</div>";
+        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best);}
+        else if(c.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c.responseText)+"</div>";}
+        else{html+="<div class=\"tmissing\">(no destination)</div>";}
+        html+="</div>";
+      });
+      html+="</div>";
+    }
+  }
+  var _bestC=s.choices?(s.choices.filter(function(c){return c.best;})):[]; 
+  var _visLen=(s.choices&&s.choices.length)?(bestRouteMode>0&&_bestC.length>0?_bestC.length:s.choices.length):0;
+  (s.continues||[]).forEach(function(c){
+    if(!c.next||!scenes[c.next])return;
+    if(_visLen===0){
+      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+"</div>"+buildTreeNode(c.next,true,isBestDest)+"</div>";
+    } else {
+      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓ also continues to")+"</div>"+buildTreeNode(c.next,true,isBestDest)+"</div>";
+    }
+  });
+  html+="</div>";return html;
+}
+function jumpToTreeCard(id){var el=document.getElementById("tcard-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function drawTreeLines(){
+  var RED="#e03020",GREY="#cccccc";
+  document.querySelectorAll(".tchoices").forEach(function(group){
+    group.querySelectorAll(":scope>.tc-vert,:scope>.tc-horiz").forEach(function(el){el.remove();});
+    group.querySelectorAll(":scope>.tchoice").forEach(function(ch){
+      var h=ch.querySelector(".tc-horiz");if(h)h.remove();
+    });
+    var choices=Array.from(group.querySelectorAll(":scope>.tchoice"));
+    if(!choices.length)return;
+    var bestIdx=-1;
+    choices.forEach(function(ch,i){if(ch.classList.contains("best-branch"))bestIdx=i;});
+    var groupRect=group.getBoundingClientRect();
+    var prevStubY=-5;
+    choices.forEach(function(ch,i){
+      var chRect=ch.getBoundingClientRect();
+      var stubY=chRect.top-groupRect.top+19;
+      var vertColor=(bestIdx>=0&&i<=bestIdx)?RED:GREY;
+      var horizColor=(i===bestIdx)?RED:GREY;
+      var horizH=(i===bestIdx)?4:2;
+      var vert=document.createElement("div");
+      vert.className="tc-vert";
+      vert.style.cssText="top:"+prevStubY+"px;height:"+(stubY-prevStubY)+"px;background:"+vertColor;
+      group.appendChild(vert);
+      var horiz=document.createElement("div");
+      horiz.className="tc-horiz";
+      horiz.style.cssText="top:"+(19-(horizH===4?1:0))+"px;height:"+horizH+"px;background:"+horizColor;
+      ch.appendChild(horiz);
+      prevStubY=stubY;
+    });
+  });
+}
+(function(){
+  var ref=document.referrer;
+  var btn=document.getElementById("back-btn");
+  if(ref&&ref!==location.href){btn.classList.add("visible");}
+})();
+function goBack(){history.back();}
+go("start");
+renderTree();
+document.getElementById("collapse-btn").classList.add("visible");
+</script>
+</body>
+</html>

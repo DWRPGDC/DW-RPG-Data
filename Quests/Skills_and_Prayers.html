@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Skills and Prayers</title>
+<style>
+:root{--bg:#ffffff;--bg2:#f5f5f5;--bg3:#ebebeb;--border:#ddd;--border2:#ccc;--text:#1a1a1a;--text2:#444;--text3:#888;--gold:#7a5c10;--tab-h:52px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14px;height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+#app{display:flex;flex:1;overflow:hidden}
+#branch-panel{width:100%;display:flex;flex-direction:column;overflow:hidden}
+#branch-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+#branch-header::-webkit-scrollbar{display:none}
+#back-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;align-items:center;gap:4px;text-decoration:none;font-family:sans-serif}
+#back-btn.visible{display:inline-flex}
+#back-btn:hover{background:var(--bg3);color:var(--text)}
+.panel-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);flex:1}
+#mode-toggle{display:flex;border:1px solid var(--border2);border-radius:5px;overflow:hidden}
+#mode-toggle button{background:none;border:none;padding:5px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:background .12s,color .12s}
+#mode-toggle button.active{background:var(--gold);color:#fff8ee}
+#best-route-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+#best-route-btn:hover{background:var(--bg3);color:var(--text)}
+#best-route-btn.active-normal{background:#fff0ee;border-color:#e03020;color:#b02010}
+#best-route-btn.active-important{background:#e03020;border-color:#b02010;color:#fff8ee}
+.ellipsis-card{text-align:center;color:var(--text3);font-size:20px;letter-spacing:4px;padding:8px 0;user-select:none}
+#collapse-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none}
+#collapse-btn.visible{display:inline-flex;align-items:center;gap:4px}
+#branch-body{flex:1;overflow:auto;padding:12px 12px 40px}
+#sim-fab{position:fixed;bottom:24px;right:24px;z-index:400;width:68px;height:68px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:background .15s,transform .15s;padding:0}
+#sim-fab:hover{background:#6b5010;transform:scale(1.07)}
+#sim-fab .fab-icon{font-size:22px;line-height:1;color:#fff8ee}
+#sim-fab .fab-label{font-size:7px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#fff8ee;text-align:center;line-height:1.2;max-width:58px}
+#sim-modal{display:none;position:fixed;inset:0;z-index:450;align-items:center;justify-content:center;padding:20px}
+#sim-modal.open{display:flex}
+#sim-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+#sim-box{position:relative;background:var(--bg);border:1px solid var(--border2);border-radius:12px;width:460px;max-width:100%;max-height:90dvh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.28);z-index:1}
+#play-header{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0}
+#play-title{font-size:13px;font-weight:700;color:var(--gold);font-family:sans-serif;letter-spacing:.07em;text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sim-header-actions{display:flex;align-items:center;gap:6px}
+#restart-btn{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:sans-serif;font-size:12px;padding:5px 12px;border-radius:5px;cursor:pointer;white-space:nowrap}
+#restart-btn:hover{border-color:var(--text);color:var(--text)}
+#sim-close{background:none;border:none;font-size:20px;color:var(--text3);cursor:pointer;line-height:1;padding:2px 6px;border-radius:4px;min-width:30px;min-height:30px;display:flex;align-items:center;justify-content:center}
+#sim-close:hover{color:var(--text);background:var(--bg3)}
+#play-body{flex:1;overflow-y:auto;padding:22px 24px 40px;font-family:Georgia,serif;font-size:16px;line-height:1.8;color:var(--text)}
+#scene-title{font-size:11px;font-weight:700;font-family:sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px}
+#scene-text{line-height:1.8;margin-bottom:18px;white-space:pre-wrap}
+#dialogues{margin-bottom:4px}
+.dlg-visible{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:10px;overflow:hidden;padding:10px 14px}
+.dlg-vis-spk{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:6px}
+.bbody .dlg-visible{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;margin-bottom:4px}
+.bbody .dlg-vis-spk{font-size:10px;margin-bottom:2px}
+.bbody .dlg-visible .dlg-text{font-size:11px;color:var(--text2);border-top:none;padding:0}
+.dlg-vis-spk{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:6px}
+details{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:10px;overflow:hidden}
+summary{cursor:pointer;padding:10px 14px;font-family:sans-serif;font-size:13px;font-weight:600;color:var(--gold);list-style:none;display:flex;align-items:center;gap:6px}
+summary::before{content:"\25B6";font-size:9px}
+details[open] summary::before{content:"\25BC"}
+summary::-webkit-details-marker{display:none}
+.dlg-text{padding:10px 14px 12px;font-size:14px;line-height:1.7;color:var(--text2);border-top:1px solid var(--border);white-space:pre-wrap}
+#choices{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+.choice-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:Georgia,serif;font-size:15px;padding:12px 16px;cursor:pointer;text-align:left;transition:background .12s,border-color .12s,color .12s;min-height:46px;width:100%;display:flex;align-items:center;gap:10px}
+.choice-btn:hover,.choice-btn:active{background:var(--bg3);border-color:var(--gold);color:var(--gold)}
+.choice-btn.best{background:#fff0ee;border-color:#e03020}
+.choice-btn.best:hover,.choice-btn.best:active{background:#ffe8e4;border-color:#c02010;color:var(--gold)}
+.choice-btn-label{flex:1}
+.choice-btn-badge{display:inline-flex;align-items:center;gap:3px;background:#e03020;color:#fff8ee;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0;font-family:sans-serif}
+.ending-msg{text-align:center;padding:24px 0 8px;color:var(--text3);font-family:sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+#reward-box{background:#f0e8d0;border:1px solid #c8b870;border-radius:6px;padding:11px 16px;margin-top:12px;display:none;flex-direction:column;gap:6px}
+.reward-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7a5a18}
+.reward-items{display:flex;flex-wrap:wrap;gap:8px}
+.reward-item{display:flex;align-items:center;gap:5px;background:#e8d8b8;border:1px solid #c8b870;border-radius:4px;padding:4px 10px}
+.reward-item img{width:20px;height:20px;object-fit:contain;image-rendering:pixelated}
+.reward-item-name{font-size:12px;font-weight:600;color:#4a3810}
+.reward-item-qty{font-size:14px;color:#4a3810;font-family:Georgia,serif}
+#unlocks-box{background:#e8f0e8;border:1px solid #9ab89a;border-radius:6px;padding:11px 16px;margin-top:8px;display:none;flex-direction:column;gap:3px}
+.unlocks-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2e6b2e}
+.unlocks-text{font-size:14px;color:#1e4e1e;line-height:1.6}
+.unlocks-text a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.bscene{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;margin-bottom:12px;overflow:hidden;transition:border-color .15s,box-shadow .15s;scroll-margin-top:10px}
+.bscene.playing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.2)}
+.bscene.has-best{border-left:3px solid #e03020}
+.bscene.has-best.playing{border-color:var(--gold);border-left-color:#e03020}
+.bhead{display:flex;align-items:center;gap:7px;padding:9px 11px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.bbadge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.b-start{background:#c8e8c8;color:#1e4e1e}
+.b-scene{background:#ddd0ee;color:#3e2458}
+.b-ending{background:#f0d8c8;color:#7a3a18}
+.btitle{font-size:13px;font-weight:600;color:var(--gold);flex:1}
+.bid{font-size:10px;color:var(--text3);font-family:monospace}
+.bplay-btn{background:var(--gold);border:none;color:#fff8ee;font-size:10px;font-weight:700;padding:4px 9px;border-radius:4px;cursor:pointer;flex-shrink:0}
+.bplay-btn:hover{background:#6b5010}
+.bbody{padding:9px 11px;font-size:12px;line-height:1.6;color:var(--text2)}
+.btext{color:var(--text);white-space:pre-wrap;margin-bottom:7px;font-size:12px}
+.bdlg-wrap{margin-bottom:7px}
+.bchoices{display:flex;flex-direction:column;gap:5px;margin-top:5px}
+.bchoice{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:6px 9px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:background .12s,border-color .12s}
+.bchoice:hover{background:#ddd;border-color:var(--gold)}
+.bchoice.best{background:#fff0ee;border-color:#e03020}
+.bchoice-arrow{color:var(--text3);font-size:11px}
+.bchoice-label{flex:1;color:var(--text);font-size:11px;font-weight:700}
+.bchoice-dest{font-size:10px;color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.best-route-badge{display:inline-flex;align-items:center;gap:3px;background:#e03020;color:#fff8ee;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.choice-btn.best{background:#fff0ee;border-color:#e03020}
+.choice-btn.best:hover,.choice-btn.best:active{background:#ffe8e4;border-color:#c02010;color:var(--gold)}
+.breward{background:#f0e8d0;border:1px solid #c8b870;border-radius:4px;padding:7px 10px;margin-top:5px;display:flex;flex-direction:column;gap:4px}
+.breward-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7a5a18;display:block}
+.breward-items{display:flex;flex-direction:column;gap:4px;margin-top:2px}
+.breward-item{display:flex;align-items:center;gap:5px}
+.breward-item img{width:16px;height:16px;object-fit:contain;image-rendering:pixelated}
+.breward-item-txt{font-size:12px;color:#4a3810}
+.bunlocks{background:#e8f0e8;border:1px solid #9ab89a;border-radius:4px;padding:5px 9px;margin-top:4px;display:flex;gap:7px;align-items:baseline}
+.bunlocks-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#2e6b2e;flex-shrink:0}
+.bunlocks-text{font-size:11px;color:#1e4e1e;line-height:1.5}
+.bunlocks-text a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.req-box{background:#fff0ee;border:1px solid #d4b870;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#5a4010;line-height:1.5;display:block}
+.req-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;color:#7a5a18}
+.req-box a{color:#7a5a18;text-decoration:underline}
+.loc-box{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#1a4a5a;line-height:1.5;display:block}
+.loc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;color:#1a4a5a}
+.loc-box a{color:#1a4a5a;text-decoration:underline}
+.breq{background:#fff0ee;border:1px solid #d4b870;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:#5a4010;line-height:1.6;display:block}
+.breq-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#7a5a18}
+.breq a{color:#7a5a18;text-decoration:underline}
+.bloc{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:#1a4a5a;line-height:1.6;display:block}
+.bloc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#1a4a5a}
+.bloc a{color:#1a4a5a;text-decoration:underline}
+.treq{background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:6px 10px;margin-bottom:5px;font-size:13px;color:#5a4010;line-height:1.6;display:block}
+.treq-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#7a5a18}
+.treq a{color:#7a5a18;text-decoration:underline}
+.tloc{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:3px;padding:6px 10px;margin-bottom:5px;font-size:13px;color:#1a4a5a;line-height:1.6;display:block}
+.tloc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#1a4a5a}
+.tloc a{color:#1a4a5a;text-decoration:underline}
+.meta-banner{margin-bottom:8px}
+.troot{padding-left:4px;display:table;min-width:100%}
+.tnode{margin-top:0;display:block}
+.tcard{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px 6px 0 0;cursor:pointer;transition:border-color .12s,box-shadow .15s;scroll-margin-top:10px;width:100%;box-sizing:border-box}
+.tcard:hover{border-color:var(--gold)}
+.tcard.playing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.2)}
+.ttitle{font-size:13px;font-weight:600;color:var(--gold);flex:1}
+.tnode-body{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-radius:0 0 6px 6px;padding:8px 10px 9px;display:flex;flex-direction:column;gap:6px}
+.tree-collapsed .tnode-body{display:none}
+.tscene-text{font-size:12px;color:var(--text);line-height:1.55;white-space:pre-wrap}
+.tdlgs{display:flex;flex-direction:column;gap:4px}
+.tdlg{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:12px;line-height:1.5}
+.tdlg-spk{font-weight:700;color:var(--gold);display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.tdlg-txt{color:var(--text2);white-space:pre-wrap}
+.tdlgs details{background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:4px;font-size:12px}
+.tdlgs details summary{padding:5px 8px;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.05em}
+.tdlgs details .dlg-text{padding:4px 8px 6px;font-size:12px;border-top:1px solid var(--border)}
+.bdlg-wrap details{margin-bottom:5px}
+.treward-inline{background:#f0e8d0;border:1px solid #c8b870;border-radius:4px;padding:7px 10px;margin-top:4px;display:flex;flex-direction:column;gap:4px}
+.treward-inline-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7a5a18;display:block}
+.treward-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#4a3810}
+.treward-item img{width:16px;height:16px;object-fit:contain;image-rendering:pixelated}
+.tunlocks-inline{font-size:11px;color:#2e6b2e;background:#e8f0e8;border:1px solid #9ab89a;border-radius:3px;padding:3px 8px;margin-top:3px;display:block;line-height:1.5}
+.tunlocks-inline a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.tchoices{margin-left:12px;padding-left:12px;border-left:none;margin-top:6px;display:flex;flex-direction:column;gap:0;position:relative;box-sizing:border-box}
+.tchoices.has-best{border-left:none}
+.tchoice{position:relative;padding-top:7px;display:flex;flex-direction:column;box-sizing:border-box}
+.tc-vert{position:absolute;left:0;width:4px;pointer-events:none;border-radius:1px}
+.tc-horiz{position:absolute;left:-12px;top:19px;width:12px;height:2px;pointer-events:none}
+.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:inline-flex;align-items:center;gap:5px;max-width:90%;white-space:normal;word-break:break-word;vertical-align:top}
+.tchoice-label.tchoice-best{background:#fff0ee;border-color:#e03020}
+.tvisited{font-size:11px;color:var(--text3);font-style:italic;padding:4px 0 4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;display:block}
+.tvisited:hover{color:var(--gold)}
+.tmissing{font-size:11px;color:#b03020;padding:4px;font-style:italic}
+.tchoice-inline{margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;box-sizing:border-box}
+.tchoice-inline>.tchoice-label{display:inline-flex;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;max-width:90%}
+.tchoice-inline>.tchoice-label.tchoice-best{color:var(--text);background:#fff0ee;border-color:#e03020}
+.tchoice-inline>.tnode{margin-top:10px;display:block}
+.tcard-best{border-left:3px solid #e03020!important}
+.tnbody-best{border-left:3px solid #e03020!important}
+.tcontinue-arrow{font-size:13px;color:var(--text3);padding:2px 0 2px 2px}
+@media(max-width:680px){
+#app{height:100dvh}
+#branch-panel{width:100%;max-width:none;border-right:none}
+#branch-body{padding-bottom:100px}
+#sim-fab{bottom:20px;right:16px;width:58px;height:58px}
+#sim-fab .fab-icon{font-size:18px}
+#sim-fab .fab-label{font-size:6.5px}
+#sim-box{max-height:92dvh}
+#play-body{padding:16px 16px 32px}
+}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.obj-icon{width:18px;height:18px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin:0 2px;display:inline-block}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="branch-panel">
+    <div id="branch-header">
+      <button id="back-btn" onclick="goBack()">&#8592; Back</button>
+      <span class="panel-label">🌿 Branches</span>
+      <button id="collapse-btn" onclick="toggleTreeCollapse()">▼ Collapse</button>
+      <button id="best-route-btn" onclick="toggleBestRoute()">⭐ Best Route</button>
+      <div id="mode-toggle">
+        <button id="btn-tree" class="active" onclick="setBranchMode('tree')">Tree</button>
+        <button id="btn-cards" onclick="setBranchMode('cards')">Cards</button>
+      </div>
+    </div>
+    <div id="branch-body"></div>
+  </div>
+</div>
+
+<!-- Simulate FAB -->
+<button id="sim-fab" onclick="openPlay()" title="Simulate Quest">
+  <span class="fab-icon">▶</span>
+  <span class="fab-label">Simulate</span>
+</button>
+
+<!-- Simulate Modal -->
+<div id="sim-modal" onclick="if(event.target===this||event.target.id==='sim-overlay')closePlay()">
+  <div id="sim-overlay"></div>
+  <div id="sim-box">
+    <div id="play-header">
+      <div id="play-title">Skills and Prayers</div>
+      <div id="sim-header-actions">
+        <button id="restart-btn" onclick="go('start')">&#8635; Restart</button>
+        <button id="sim-close" onclick="closePlay()">&#x2715;</button>
+      </div>
+    </div>
+    <div id="play-body">
+      <div id="scene-title"></div>
+      <div id="scene-req" class="req-box" style="display:none"></div>
+      <div id="scene-loc" class="loc-box" style="display:none"></div>
+      <div id="scene-text"></div>
+      <div id="dialogues"></div>
+      <div id="choices"></div>
+      <div id="reward-box"><span class="reward-label">&#127873; Reward</span><span class="reward-text" id="reward-text"></span></div>
+      <div id="unlocks-box"><span class="unlocks-label">&#128275; Unlocks</span><span class="unlocks-text" id="unlocks-text"></span></div>
+    </div>
+  </div>
+</div>
+<script>
+const scenes={"start":{"id":"start","type":"start","title":"Skills and Prayers","text":"''Near one of the farmhouses at the edge of Springvale, you notice a woman in white robes crouching before a Swordsman. Her hands are folded over his, her lips moving in quiet prayer. The Swordsman's eyes are closed. A faint warmth seems to radiate from the two of them, though it may just be the afternoon sun.''\n\n''You slow your pace. Something about the moment feels deliberate. Significant''.","dialogues":[],"choices":[{"label":"Approach and watch","next":"apprch"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"apprch":{"id":"apprch","type":"scene","title":"","text":"''The Nun finishes her prayer and rises gracefully. She notices you with a calm smile''.\n\nNun: You are welcome to observe. The blessing is almost complete. ''She turns back and places one hand over the Swordsman's sword hilt, murmuring a final verse''.\n\n''The Swordsman opens his eyes. He looks different somehow. More settled. He bows his head to the Nun, then rises and walks away without a word''.","dialogues":[],"choices":[{"label":"What did you do to him?","next":"whtudo"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"whtudo":{"id":"whtudo","type":"scene","title":"","text":"Nun: ''tilts her head thoughtfully'' Nothing that was not already inside him. A skill blessing anchors what the body has learned and gives it form. That man has fought for years. He simply did not know how to call on what he already knew. ''she folds her hands'' Now he does.","dialogues":[],"choices":[{"label":"Skills can be blessed into someone?","next":"Skills_can_be_blessed_into_someone"},{"label":"That sounds like magic","next":"magik"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"magik":{"id":"magik","type":"scene","title":"","text":"Nun: *smiles* It is faith, traveller. Faith in the body, in the wind, in something larger than a single sword arm. The Church does not conjure skills from nothing. It teaches the spirit to listen. *pauses* That is a subtle distinction, I know. Magic is faster to say.","dialogues":[],"choices":[{"label":"Can anyone receive a skill blessing?","next":"Skills_can_be_blessed_into_someone"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"Skills_can_be_blessed_into_someone":{"id":"Skills_can_be_blessed_into_someone","type":"scene","title":"","text":"Nun: Anyone who is willing, yes. The Cathedral in Mondstadt City offers skill instruction to all who come. The Church asks only that those who wish to learn first make a small offering. Twenty silver pieces, donated to the church fund. It covers the candles, the texts, the time. ''A gentle smile''. The Archon does not charge for blessings. The building, however, does have a roof to maintain.","dialogues":[],"choices":[{"label":"Twenty silver for access to skills?","next":"20silv"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"20silv":{"id":"20silv","type":"scene","title":"","text":"Nun: That is all. Once the donation is recorded, the Cathedral's doors are open to you whenever you are in Mondstadt. The instructors there can teach you things that no dungeon or battlefield can. ''She studies you with kind eyes''. You look like someone who would benefit from it. Will you go?","dialogues":[],"choices":[{"label":"I will. Twenty silver to the church","next":"silv20ch","best":true},{"label":"I will think about it","next":"willthnk"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"willthnk":{"id":"willthnk","type":"scene","title":"","text":"Nun: There is no rush, traveller. The Cathedral has stood for three hundred years. It will be there when you are ready. ''She begins gathering her things''. Take your time. I will be in the fields awhile longer if you wish to speak again.\n\n''She walks a short way down the path, white robes trailing through the grass''.","dialogues":[{"speaker":"Objective","text":"Return to the Nun in Springvale in 3 hours. The donation may change","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"rtrnnun3hr","label":"Wait 3 hours in real life, then travel to Springvale and talk to the nun"}]},"silv20ch":{"id":"silv20ch","type":"scene","title":"","text":"Nun: ''nods warmly'' Good. The Cathedral will be expecting you. Just twenty silver at the entrance, and all of its teachings are yours. ''She glances back toward the fields''. Another blessing waits. Safe travels, traveller.\n\n''She walks away into the tall grass, her white robes catching the wind''.","dialogues":[{"speaker":"Objective","text":"Donate 20 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_20_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":"Travel to Mondstadt City (Mondstadt)"}]},"rtrnnun3hr":{"id":"rtrnnun3hr","type":"scene","title":"","text":"''You find the Nun again near the same farmhouse. She looks up from a small prayer book tucked under one arm''.\n\nNun: Back already? ''She tilts her head''. While you were deciding, word reached me from Mondstadt. The church council reviewed its costs. Roof tiles, hymnals, winter fuel for the dormitory. The required offering is seventy silver now, not twenty.\n\nNun: ''A sympathetic smile''. I am sorry. The Cathedral and its instructors are unchanged. Only the donation has gone up. Will you still go?","dialogues":[],"choices":[{"label":"Seventy silver. I will go","next":"70slvgo"},{"label":"I need more time to think","next":"mrtimrtothn"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"70slvgo":{"id":"70slvgo","type":"scene","title":"","text":"Nun: ''nods warmly'' Good. The Cathedral will be expecting you. Seventy silver at the entrance, and all of its teachings are yours. She'' glances back toward the fields''. Another blessing waits. Safe travels, traveller.\n\n''She walks away into the tall grass, her white robes catching the wind''.","dialogues":[{"speaker":"Objective","text":"Donate 70 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":"Travel to Mondstadt City (Mondstadt)"}]},"mrtimrtothn":{"id":"mrtimrtothn","type":"scene","title":"","text":"Nun: ''nods without judgment'' Then take it. The Cathedral is not going anywhere, and neither am I for a little while yet. ''She glances toward the fields''. Come find me when you are ready.","dialogues":[{"speaker":"Objective","text":"Donate 70 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":"Travel to Mondstadt City (Mondstadt)"}]},"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt":{"id":"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt","type":"scene","title":"","text":"''The Cathedral of Favonius rises at the heart of Mondstadt City, pale stone and tall windows catching the afternoon light. At the entrance, Barbara stands beside a donations box with a handwritten notice pinned beside it''.\n\nBarbara: Welcome, traveller. Are you here to make the offering? Seventy silver, as the council set it.","dialogues":[],"choices":[{"label":"Seventy silver. Fine, for the skill blessing.","next":"donet70"},{"label":"I am just looking for now","next":"looknarnd70"},{"label":"I'll return when I have enough silver","next":"rtrnltr70"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"donet70":{"id":"donet70","type":"ending","title":"Donation Made, 70 Silver","text":"''You count out seventy silver pieces into the donations box. Barbara records each one in her ledger without comment, though her smile when she looks up is genuinely relieved''.\n\nBarbara: Recorded. ''She closes the ledger''. The Cathedral's instructors are available whenever you are in Mondstadt. You can visit any time and learn at your own pace. ''She gestures toward the inner doors''. Welcome, traveller. This place is yours.","dialogues":[{"speaker":"Gave","text":"70x [img:../Textures/silver.png] Silver","collapsed":false}],"choices":[],"rewards":[{"item":"AEXP","qty":50}],"unlocks":"[[Cathedral|../Functions/Skill.html]]","requirement":"","continues":[]},"looknarnd70":{"id":"looknarnd70","type":"scene","title":"","text":"Barbara: ''smiles patiently'' Of course. Take your time. The Cathedral is always open, and the donation box is right here when you are ready. Seventy silver is all we ask now.","dialogues":[],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":""}]},"rtrnltr70":{"id":"rtrnltr70","type":"scene","title":"","text":"Barbara: ''nods warmly'' Of course. The donation box will be right here when you return. Seventy silver is all we ask.\n\n''You step away from the entrance for now. The Cathedral will wait''.","dialogues":[{"speaker":"Objective","text":"Donate 70 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[{"label":" ","next":"","responseText":"Nothing happened"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"donet20":{"id":"donet20","type":"ending","title":"Donation Made, 20 Silver","text":"''You place twenty silver pieces into the donations box. Barbara counts them with a practiced eye and writes your name in a small ledger''.\n\nBarbara: Recorded. ''She looks up with a genuine smile''. The Cathedral's instructors are available whenever you are in Mondstadt. You can visit any time and learn at your own pace. ''She gestures toward the inner doors''. Welcome, traveller. This place is yours.","dialogues":[{"speaker":"Gave","text":"20x [img:../Textures/silver.png] Silver","collapsed":false}],"choices":[],"rewards":[],"unlocks":"[[Cathedral|../Functions/Skill.html]]","requirement":"","continues":[]},"rtrn20":{"id":"rtrn20","type":"scene","title":"","text":"Barbara: ''nods warmly'' Of course. The donation box will be right here when you return. Twenty silver is all we ask.\n\n''You step away from the entrance for now. The Cathedral will wait''.","dialogues":[{"speaker":"Objective","text":"Donate 20 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[{"label":" ","next":"","responseText":"Nothing happened"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"lknarn20":{"id":"lknarn20","type":"scene","title":"","text":"Barbara: ''smiles patiently'' Of course. Take your time. The Cathedral is always open, and the donation box is right here when you are ready. Tweenty silver is all we ask.","dialogues":[],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_20_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":""}]},"Donate_20_Silver_to_the_Church_of_Favonius_in_Mondstadt":{"id":"Donate_20_Silver_to_the_Church_of_Favonius_in_Mondstadt","type":"scene","title":"","text":"''The Cathedral of Favonius rises at the heart of Mondstadt City, pale stone and tall windows catching the afternoon light. At the entrance, Barbara stands beside a small wooden donations box, hands folded''.\n\nBarbara: Welcome, traveller. Are you here to make an offering?","dialogues":[],"choices":[{"label":"Yes. Twenty silver, for the skill blessing","next":"donet20","best":true},{"label":"I am just looking for now","next":"lknarn20"},{"label":"I'll return when I have enough silver","next":"rtrn20"}],"rewards":[],"unlocks":"","requirement":"","continues":[]}};
+const questMeta={"requirement":"Minimum 1% exploration in Springvale","locations":["Springvale"],"questType":"special"};
+const ICONS_OBJ={};
+let currentPlayId="start";
+let branchMode="tree";
+let treeVisited={};
+function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  var lines=String(s||"").split("\n");  return lines.map(function(line){    var rest=line;    function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}    var headM=rest.match(/^==(.+?)==\s*$/);    if(headM)return "<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+e(headM[1])+"</span>";    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[img:([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+e(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+e(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+e(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+e(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+e(m[5])+"</s>";      else if(m[6]!==undefined){var u=m[7].replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+e(m[6])+'</a>';}      else if(m[8]!==undefined){var n=m[8].trim();var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/";var src=isPath?n:ICONS_OBJ[n];result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(n)+'" title="'+e(n)+'">':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[9]!==undefined){var clr=WCLR[m[9]]||m[9];result+='<span style="color:'+clr+'">'+e(m[10])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }).join("<br>");}
+var ICONS={Silver:"../Textures/silver.png",AEXP:"../Textures/aexp.png",Mora:"../Textures/mora.png"};
+function rewardItemsHtml(rewards,imgW){var h="";(rewards||[]).forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\""+imgW+"\" height=\""+imgW+"\" style=\"object-fit:contain;image-rendering:pixelated\">":"";h+="<span class=\"reward-it\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});return h;}
+function openPlay(){go(currentPlayId);document.getElementById("sim-modal").classList.add("open");}
+function closePlay(){document.getElementById("sim-modal").classList.remove("open");}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closePlay();});
+function setBranchMode(m){
+  branchMode=m;
+  document.getElementById("btn-cards").classList.toggle("active",m==="cards");
+  document.getElementById("btn-tree").classList.toggle("active",m==="tree");
+  var cb=document.getElementById("collapse-btn");
+  cb.classList.toggle("visible",m==="tree");
+  if(m==="cards"){renderCards();}else{treeCollapsed=false;cb.textContent="▼ Collapse";renderTree();}
+}
+var treeCollapsed=false;
+var bestRouteMode=0;
+function getBestRouteIds(){
+  var ids={};
+  function walk(id){
+    if(!id||!scenes[id]||ids[id])return;
+    ids[id]=true;
+    var s=scenes[id];
+    var bestChoices=(s.choices||[]).filter(function(c){return c.best;});
+    if(bestChoices.length>0){
+      bestChoices.forEach(function(c){if(c.next)walk(c.next);});
+    } else {
+      (s.choices||[]).forEach(function(c){if(c.next)walk(c.next);});
+    }
+    (s.continues||[]).forEach(function(c){if(c.next)walk(c.next);});
+  }
+  walk("start");
+  return ids;
+}
+function getImportantOnlyOrder(){
+  var bestIds=getBestRouteIds();
+  var fullOrder=["start"].concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="scene"&&k!=="start";})).concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="ending";}));
+  var triggerIds={};
+  fullOrder.forEach(function(id){if(scenes[id]&&(scenes[id].choices||[]).some(function(c){return c.best;}))triggerIds[id]=true;});
+  var postTriggerIds={};
+  function walkBest(id,afterTrigger,visited){
+    visited=visited||{};
+    if(!id||!scenes[id]||visited[id])return;
+    visited[id]=true;
+    if(afterTrigger)postTriggerIds[id]=true;
+    var s=scenes[id];
+    var bc=(s.choices||[]).filter(function(c){return c.best;});
+    var nowAfter=afterTrigger||!!triggerIds[id];
+    if(bc.length>0){bc.forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
+    else{(s.choices||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
+    (s.continues||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});
+  }
+  walkBest("start",false);
+  var importantSet={};
+  importantSet["start"]=true;
+  var filteredOrder=fullOrder.filter(function(id){return bestIds[id];});
+  filteredOrder.forEach(function(id,idx){
+    if(triggerIds[id]){importantSet[id]=true;if(idx>0)importantSet[filteredOrder[idx-1]]=true;}
+    if(postTriggerIds[id])importantSet[id]=true;
+  });
+  var result=[];var lastWasImportant=false;
+  fullOrder.forEach(function(id){
+    if(!bestIds[id])return;
+    if(importantSet[id]){
+      if(!lastWasImportant&&result.length>0&&result[result.length-1]!=="...")result.push("...");
+      result.push(id);lastWasImportant=true;
+    } else {lastWasImportant=false;}
+  });
+  return result;
+}
+function toggleBestRoute(){
+  bestRouteMode=(bestRouteMode+1)%3;
+  var btn=document.getElementById("best-route-btn");
+  btn.classList.remove("active-normal","active-important");
+  if(bestRouteMode===0){btn.textContent="⭐ Best Route";}
+  else if(bestRouteMode===1){btn.textContent="⭐ Best Route";btn.classList.add("active-normal");}
+  else{btn.textContent="⭐ Important Only";btn.classList.add("active-important");}
+  if(branchMode==="tree")renderTree();else renderCards();
+}
+function toggleTreeCollapse(){
+  treeCollapsed=!treeCollapsed;
+  var bv=document.getElementById("branch-body");
+  bv.classList.toggle("tree-collapsed",treeCollapsed);
+  var cb=document.getElementById("collapse-btn");
+  cb.textContent=treeCollapsed?"▶ Expand":"▼ Collapse";
+  requestAnimationFrame(drawTreeLines);
+}
+function go(id){
+  var s=scenes[id];if(!s)return;
+  currentPlayId=id;
+  document.getElementById("scene-title").textContent=s.title||"";
+  document.getElementById("scene-title").style.display=s.title?"":"none";
+  var reqEl=document.getElementById("scene-req");reqEl.style.display="none";
+  var locEl=document.getElementById("scene-loc");locEl.style.display="none";
+  if(questMeta.requirement){reqEl.innerHTML="<span class=\"req-lbl\">⚠ Requirement</span>"+wl(questMeta.requirement);reqEl.style.display="block";}
+  var _locs=(questMeta.locations||[]).filter(function(l){return l.trim();});
+  if(_locs.length){locEl.innerHTML="<span class=\"loc-lbl\">📍 Locations</span>"+_locs.map(function(l){return wl(l);}).join("<br>");locEl.style.display="block";}
+  document.getElementById("scene-text").innerHTML=wl(s.text||"");
+  var dEl=document.getElementById("dialogues");dEl.innerHTML="";
+  (s.dialogues||[]).forEach(function(d){
+    if(d.collapsed){
+      var det=document.createElement("details");
+      var sum=document.createElement("summary");sum.textContent=d.speaker||"Objective";
+      var txt=document.createElement("div");txt.className="dlg-text";txt.innerHTML=wl(d.text||"");
+      det.appendChild(sum);det.appendChild(txt);dEl.appendChild(det);
+    } else {
+      var vis=document.createElement("div");vis.className="dlg-visible";
+      vis.innerHTML="<span class=\"dlg-vis-spk\">"+(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div>";
+      dEl.appendChild(vis);
+    }
+  });
+  var cEl=document.getElementById("choices");cEl.innerHTML="";
+  var rwb=document.getElementById("reward-box");rwb.style.display="none";
+  var uwb=document.getElementById("unlocks-box");uwb.style.display="none";
+  if(s.choices&&s.choices.length){
+    s.choices.forEach(function(c,ci){
+      var btn=document.createElement("button");btn.className="choice-btn"+(c.best?" best":"");
+      btn.innerHTML="<span class=\"choice-btn-label\">"+(c.label||"...")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">\u2B50 Best Route</span>":"");
+      if(c.next&&scenes[c.next]){btn.onclick=function(){go(c.next);};}
+      else if(c.responseText){
+        (function(b,rt){b.onclick=function(){
+          if(b.disabled)return;
+          var rd=document.createElement("div");
+          rd.style.cssText="padding:4px 2px 8px;font-size:15px;line-height:1.7;color:var(--text);font-family:Georgia,serif";
+          rd.innerHTML=wl(rt);
+          b.parentNode.insertBefore(rd,b.nextSibling);
+          b.disabled=true;b.style.opacity=".65";
+        };}(btn,c.responseText));
+      }
+      else{btn.disabled=true;btn.style.opacity=".4";}
+      cEl.appendChild(btn);
+      if(c.objectives&&c.objectives.length){
+        c.objectives.forEach(function(obj){
+          if(obj.collapsed){
+            var det=document.createElement("details");
+            det.style.cssText="background:#f5f5f5;border:1px solid #ccc;border-radius:6px;margin-top:4px;overflow:hidden";
+            var sum=document.createElement("summary");sum.style.cssText="cursor:pointer;padding:9px 12px;font-family:var(--font-ui,sans-serif);font-size:12px;font-weight:600;color:var(--gold,#7a5c10);list-style:none;display:flex;align-items:center;gap:6px";sum.textContent=obj.speaker||"Objective";
+            var txt=document.createElement("div");txt.className="dlg-text";txt.innerHTML=wl(obj.text||"");
+            det.appendChild(sum);det.appendChild(txt);cEl.appendChild(det);
+          } else {
+            var vis=document.createElement("div");vis.className="dlg-visible";vis.style.cssText="margin-top:4px";
+            vis.innerHTML="<span class=\"dlg-vis-spk\">"+(obj.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(obj.text||"")+"</div>";
+            cEl.appendChild(vis);
+          }
+        });
+      }
+    });
+    (s.continues||[]).forEach(function(c){
+      if(!c.next||!scenes[c.next])return;
+      var cntBtn=document.createElement("button");cntBtn.className="choice-btn";cntBtn.style.cssText="background:#f0f0f0;border-style:dashed";
+      cntBtn.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>";
+      cntBtn.onclick=function(){go(c.next);};
+      cEl.appendChild(cntBtn);
+    });
+  } else if((s.continues||[]).some(function(c){return c.next&&scenes[c.next];})){
+    s.continues.forEach(function(c){
+      if(!c.next||!scenes[c.next])return;
+      var cntBtn2=document.createElement("button");cntBtn2.className="choice-btn";
+      cntBtn2.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>";
+      cntBtn2.onclick=function(){go(c.next);};
+      cEl.appendChild(cntBtn2);
+    });
+  } else {
+    if(s.rewards&&s.rewards.length){
+      var rEl=document.getElementById("reward-box");
+      var ri="<div class=\"reward-items\">";
+      s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"20\" height=\"20\" style=\"object-fit:contain;image-rendering:pixelated\">":"";ri+="<div class=\"reward-item\">"+ic+"<span class=\"reward-item-name\">"+eh(r.item)+"</span><span class=\"reward-item-qty\">×"+r.qty+"</span></div>";});
+      ri+="</div>";
+      rEl.innerHTML="<span class=\"reward-label\">🎁 Rewards</span>"+ri;
+      rEl.style.display="flex";
+    }
+    if(s.unlocks){document.getElementById("unlocks-text").innerHTML=wl(s.unlocks);uwb.style.display="flex";}
+  }
+  document.getElementById("play-body").scrollTo({top:0,behavior:"smooth"});
+  document.querySelectorAll(".bscene").forEach(function(el){el.classList.toggle("playing",el.id==="bscene-"+id);});
+  document.querySelectorAll(".tcard").forEach(function(el){el.classList.toggle("playing",el.id==="tcard-"+id);});
+}
+function renderCards(){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var _metaHtml="";
+  if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)){
+    var _mb=document.createElement("div");_mb.className="meta-banner";
+    var _ls=(questMeta.locations||[]).filter(function(l){return l.trim();});
+    if(_ls.length)_metaHtml+="<div class=\"bloc\"><span class=\"bloc-lbl\">📍 Locations</span>"+_ls.map(function(l){return wl(l);}).join("<br>")+"</div>";
+    if(questMeta.requirement)_metaHtml+="<div class=\"breq\"><span class=\"breq-lbl\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";
+    _mb.innerHTML=_metaHtml;bv.appendChild(_mb);
+  }
+  var order=["start"].concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="scene"&&k!=="start"})).concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="ending"}));
+  var _bestIds=(bestRouteMode===1)?getBestRouteIds():null;
+  var _importantOrder=bestRouteMode===2?getImportantOnlyOrder():null;
+  var _renderOrder=_importantOrder||order;
+  _renderOrder.forEach(function(id){
+    if(id==="..."){var sep=document.createElement("div");sep.className="ellipsis-card";sep.textContent="•••";bv.appendChild(sep);return;}
+    var s=scenes[id];if(!s)return;
+    if(_bestIds&&!_bestIds[id])return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    var el=document.createElement("div");
+    var hasBest=(s.choices||[]).some(function(c){return c.best;});
+    el.className="bscene"+(id===currentPlayId?" playing":"")+(hasBest?" has-best":"");
+    el.id="bscene-"+id;
+    var inner="<div class=\"bhead\"><span class=\"bbadge "+bclass+"\">"+blabel+"</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"<button class=\"bplay-btn\" onclick=\"go('"+id+"')\">&#9654;</button></div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.dialogues&&s.dialogues.length){
+      inner+="<div class=\"bdlg-wrap\">";
+      s.dialogues.forEach(function(d){if(d.collapsed){inner+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{inner+="<div class=\"dlg-visible\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";}});
+      inner+="</div>";
+    }
+    if(s.choices&&s.choices.length){
+      var _bcs=s.choices.filter(function(c){return c.best;});
+      var _vcs=bestRouteMode>0&&_bcs.length>0?_bcs:s.choices;
+      inner+="<div class=\"bchoices\">";
+      _vcs.forEach(function(c){
+        var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
+        if(dest){inner+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"jumpToCard('"+c.next+"')\">"+"<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+"</div>";}
+        else if(c.responseText){inner+="<div class=\"bchoice\" style=\"opacity:.7;cursor:default;flex-direction:column;align-items:flex-start\"><div style=\"display:flex;align-items:center;gap:6px\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span></div><div style=\"font-size:11px;color:var(--text2);line-height:1.5;padding-left:16px\">"+wl(c.responseText)+"</div></div>";}
+        else{inner+="<div class=\"bchoice\" style=\"opacity:.5;cursor:default\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span></div>";}
+        if(c.objectives&&c.objectives.length){c.objectives.forEach(function(obj){if(obj.collapsed){inner+="<details style=\"background:var(--bg2);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>";}else{inner+="<div class=\"dlg-visible\" style=\"margin-top:4px\"><span class=\"dlg-vis-spk\">"+eh(obj.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(obj.text||"")+"</div></div>";}});}
+      });
+      inner+="</div>";
+    }
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";ri+="<span class=\"breward-item\">"+ic+"<span class=\"breward-item-txt\">"+eh(r.item)+" ×"+r.qty+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;bv.appendChild(el);
+  });
+}
+function jumpToCard(id){var el=document.getElementById("bscene-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function renderTree(){
+  treeVisited={};
+  var bv=document.getElementById("branch-body");
+  var _th="";
+  if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)){
+    var _tls=(questMeta.locations||[]).filter(function(l){return l.trim();});
+    if(_tls.length)_th+="<div class=\"tloc\" style=\"margin-bottom:6px\"><span class=\"tloc-lbl\">📍 Locations</span>"+_tls.map(function(l){return wl(l);}).join("<br>")+"</div>";
+    if(questMeta.requirement)_th+="<div class=\"treq\" style=\"margin-bottom:6px\"><span class=\"treq-lbl\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";
+  }
+  if(bestRouteMode===2){
+    var _impOrder=getImportantOnlyOrder();
+    var _impHtml="";
+    _impOrder.forEach(function(id){
+      if(id==="..."){_impHtml+="<div class=\"ellipsis-card\">•••</div>";return;}
+      var s=scenes[id];if(!s)return;
+      var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+      var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+      _impHtml+="<div class=\"tnode\">";
+      _impHtml+="<div class=\"tcard"+(id===currentPlayId?" playing":"")+" \" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+      _impHtml+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span>";
+      _impHtml+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
+      _impHtml+="</div>";
+      var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+      if(hasBody){
+        _impHtml+="<div class=\"tnode-body\">";
+        if(s.text)_impHtml+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";
+        if(s.dialogues&&s.dialogues.length){_impHtml+="<div class=\"tdlgs\">";s.dialogues.forEach(function(d){if(d.collapsed){_impHtml+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{_impHtml+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}});_impHtml+="</div>";}
+        if(s.type==="ending"&&s.rewards&&s.rewards.length){_impHtml+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";_impHtml+="<span class=\"treward-item\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});_impHtml+="</div>";}
+        if(s.type==="ending"&&s.unlocks){_impHtml+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+        _impHtml+="</div>";
+      }
+      if(s.choices&&s.choices.length){
+        var _bcs=s.choices.filter(function(c){return c.best;});
+        var _vcs=_bcs.length>0?_bcs:s.choices;
+        _impHtml+="<div class=\"bchoices\">";
+        _vcs.forEach(function(c){
+          var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
+          _impHtml+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"go('"+c.next+"')\">";
+          _impHtml+="<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"");
+          _impHtml+="</div>";
+        });
+        _impHtml+="</div>";
+      }
+      _impHtml+="</div>";
+    });
+    bv.innerHTML="<div class=\"troot\">"+_th+_impHtml+"</div>";
+  } else {
+    bv.innerHTML="<div class=\"troot\">"+_th+buildTreeNode("start",true)+"</div>";
+  }
+  requestAnimationFrame(drawTreeLines);
+}
+function buildTreeNode(id,isLast,isBestDest){
+  var s=scenes[id];
+  if(!s)return "<div class=\"tmissing\">(missing: "+eh(id)+")</div>";
+  var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+  var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+  var alreadyVisited=treeVisited[id];
+  treeVisited[id]=true;
+  var html="<div class=\"tnode\">";
+  html+="<div class=\"tcard"+(isBestDest?" tcard-best":"")+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+  html+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span>";
+  html+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
+  html+="</div>";
+  if(alreadyVisited){
+    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+eh(s.title||id)+"</div>";
+    html+="</div>";return html;
+  }
+  var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+  if(hasBody){
+    html+="<div class=\"tnode-body"+(isBestDest?" tnbody-best":"")+"\">";
+    if(s.text){html+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";}
+    if(s.dialogues&&s.dialogues.length){
+      html+="<div class=\"tdlgs\">";
+      s.dialogues.forEach(function(d){
+        if(d.collapsed){html+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}
+        else{html+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}
+      });
+      html+="</div>";
+    }
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";html+="<span class=\"treward-item\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});html+="</div>";}
+    if(s.type==="ending"&&s.unlocks){html+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+    html+="</div>";
+  }
+  if(s.choices&&s.choices.length){
+    var bestChoices=s.choices.filter(function(c){return c.best;});
+    var visibleChoices=bestRouteMode>0&&bestChoices.length>0?bestChoices:s.choices;
+    if(visibleChoices.length===1){
+      var c1=visibleChoices[0];
+      var c1Objs=(c1.objectives&&c1.objectives.length)?c1.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
+      html+="<div class=\"tchoice-inline\">";
+      html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\">"+(c1.label||"...")+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+      if(c1Objs)html+="<div style=\"margin:2px 0 4px\">"+c1Objs+"</div>";
+      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best);}
+      else if(c1.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c1.responseText)+"</div>";}
+      else{html+="<div class=\"tmissing\">(no destination)</div>";}
+      html+="</div>";
+    } else {
+      var anyBest=visibleChoices.some(function(c){return c.best;});
+      html+="<div class=\"tchoices"+(anyBest?" has-best":"")+"\">";
+      visibleChoices.forEach(function(c,i){
+        var last=i===visibleChoices.length-1;
+        var cObjs=(c.objectives&&c.objectives.length)?c.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
+        html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">"; 
+        html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\">"+(c.label||"...")+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+        if(cObjs)html+="<div style=\"margin:2px 0 4px\">"+cObjs+"</div>";
+        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best);}
+        else if(c.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c.responseText)+"</div>";}
+        else{html+="<div class=\"tmissing\">(no destination)</div>";}
+        html+="</div>";
+      });
+      html+="</div>";
+    }
+  }
+  var _bestC=s.choices?(s.choices.filter(function(c){return c.best;})):[]; 
+  var _visLen=(s.choices&&s.choices.length)?(bestRouteMode>0&&_bestC.length>0?_bestC.length:s.choices.length):0;
+  (s.continues||[]).forEach(function(c){
+    if(!c.next||!scenes[c.next])return;
+    if(_visLen===0){
+      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+"</div>"+buildTreeNode(c.next,true,isBestDest)+"</div>";
+    } else {
+      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓ also continues to")+"</div>"+buildTreeNode(c.next,true,isBestDest)+"</div>";
+    }
+  });
+  html+="</div>";return html;
+}
+function jumpToTreeCard(id){var el=document.getElementById("tcard-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function drawTreeLines(){
+  var RED="#e03020",GREY="#cccccc";
+  document.querySelectorAll(".tchoices").forEach(function(group){
+    group.querySelectorAll(":scope>.tc-vert,:scope>.tc-horiz").forEach(function(el){el.remove();});
+    group.querySelectorAll(":scope>.tchoice").forEach(function(ch){
+      var h=ch.querySelector(".tc-horiz");if(h)h.remove();
+    });
+    var choices=Array.from(group.querySelectorAll(":scope>.tchoice"));
+    if(!choices.length)return;
+    var bestIdx=-1;
+    choices.forEach(function(ch,i){if(ch.classList.contains("best-branch"))bestIdx=i;});
+    var groupRect=group.getBoundingClientRect();
+    var prevStubY=-5;
+    choices.forEach(function(ch,i){
+      var chRect=ch.getBoundingClientRect();
+      var stubY=chRect.top-groupRect.top+19;
+      var vertColor=(bestIdx>=0&&i<=bestIdx)?RED:GREY;
+      var horizColor=(i===bestIdx)?RED:GREY;
+      var horizH=(i===bestIdx)?4:2;
+      var vert=document.createElement("div");
+      vert.className="tc-vert";
+      vert.style.cssText="top:"+prevStubY+"px;height:"+(stubY-prevStubY)+"px;background:"+vertColor;
+      group.appendChild(vert);
+      var horiz=document.createElement("div");
+      horiz.className="tc-horiz";
+      horiz.style.cssText="top:"+(19-(horizH===4?1:0))+"px;height:"+horizH+"px;background:"+horizColor;
+      ch.appendChild(horiz);
+      prevStubY=stubY;
+    });
+  });
+}
+(function(){
+  var ref=document.referrer;
+  var btn=document.getElementById("back-btn");
+  if(ref&&ref!==location.href){btn.classList.add("visible");}
+})();
+function goBack(){history.back();}
+go("start");
+renderTree();
+document.getElementById("collapse-btn").classList.add("visible");
+</script>
+</body>
+</html>
