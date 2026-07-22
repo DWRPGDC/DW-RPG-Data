@@ -1,0 +1,1741 @@
+{
+  "_note": "Activating a sub-skill branch (a skill with a non-null 'parent') replaces the main skill for as long as it's active. You can switch back to the main skill at any time. You must fully max out a skill before you can learn the branch(es) beneath it.",
+  "skills": {
+    "backstep": {
+      "name": "Backstep",
+      "emoji": "💨",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Dodge enemy attacks 4% of the time.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "windwheel_aster",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Dodge enemy attacks 8% of the time.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "windwheel_aster",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Dodge enemy attacks 12% of the time.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "windwheel_aster",
+              "qty": 100
+            },
+            {
+              "item": "silver",
+              "qty": 400
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "Dodge enemy attacks 16% of the time.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "windwheel_aster",
+              "qty": 175
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 5,
+          "effect": "Dodge enemy attacks 20% of the time.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "windwheel_aster",
+              "qty": 275
+            },
+            {
+              "item": "silver",
+              "qty": 1600
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "parry": {
+      "name": "Parry",
+      "emoji": "💨",
+      "parent": "backstep",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Dodge enemy attacks 18% of the time. On dodge, reflect 15% of the avoided damage to the attacker.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "silver_raven_insignia",
+              "qty": 20
+            },
+            {
+              "item": "windwheel_aster",
+              "qty": 120
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "evasion": {
+      "name": "Evasion",
+      "emoji": "💨",
+      "parent": "backstep",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Dodge enemy attacks 18% of the time. On dodge, restore 2% of your max HP.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "ominous_mask",
+              "qty": 20
+            },
+            {
+              "item": "windwheel_aster",
+              "qty": 120
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "chihayaburu": {
+      "name": "Chihayaburu",
+      "emoji": "🌀",
+      "parent": null,
+      "unlock": "Unlocked through the Anemo Statue of the Seven.",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 40% of your ATK to all enemies when cast. Only activatable with a catalyst equipped.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "vayuda_turquoise_chunk",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 250
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "critical_focus": {
+      "name": "Critical Focus",
+      "emoji": "🎯",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Adds 2% Crit Rate permanently.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_condensate",
+              "qty": 5
+            },
+            {
+              "item": "damaged_mask",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 50
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Adds 4% Crit Rate permanently.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_condensate",
+              "qty": 10
+            },
+            {
+              "item": "damaged_mask",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Adds 6% Crit Rate permanently.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_condensate",
+              "qty": 20
+            },
+            {
+              "item": "damaged_mask",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "Adds 8% Crit Rate permanently.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_condensate",
+              "qty": 40
+            },
+            {
+              "item": "damaged_mask",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 400
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 5,
+          "effect": "Adds 10% Crit Rate permanently.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_condensate",
+              "qty": 80
+            },
+            {
+              "item": "damaged_mask",
+              "qty": 80
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "hyperfocus": {
+      "name": "Hyperfocus",
+      "emoji": "🎯",
+      "parent": "critical_focus",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Adds 10% Crit Rate permanently.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "slime_concentrate",
+              "qty": 40
+            },
+            {
+              "item": "stained_mask",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "critical_mastery": {
+      "name": "Critical Mastery",
+      "emoji": "🎯",
+      "parent": "critical_focus",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Adds 4% Crit Rate and 10% Crit Value permanently.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "chaos_device",
+              "qty": 25
+            },
+            {
+              "item": "sealed_scroll",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "curse": {
+      "name": "Curse",
+      "emoji": "🟣",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Unlocks the Curse action in battle. Instead of attacking, mark an enemy - the next attack on that enemy deals 1.5x damage if it hits. Misses and dodges still consume the curse.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "stained_mask",
+              "qty": 20
+            },
+            {
+              "item": "ominous_mask",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "discipline": {
+      "name": "Discipline",
+      "emoji": "🏛",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Extends your maximum weekly domains from 10 to 11.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "ominous_mask",
+              "qty": 2
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Extends your maximum weekly domains from 11 to 12.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "ominous_mask",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Extends your maximum weekly domains from 12 to 13.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "ominous_mask",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "Extends your maximum weekly domains from 13 to 14.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "ominous_mask",
+              "qty": 100
+            },
+            {
+              "item": "silver",
+              "qty": 3500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "effortless_victory": {
+      "name": "Effortless Victory",
+      "emoji": "🧘",
+      "parent": null,
+      "unlock": "Unlocked through Meditation (Quest).",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Upon victory in combat, restore 5% of your max HP.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Upon victory in combat, restore 8% of your max HP.",
+          "ar": 3,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 300
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Upon victory in combat, restore 10% of your max HP.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 1000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "fast_travels": {
+      "name": "Fast Travels",
+      "emoji": "🗺️",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Reduces travel time by 10%.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "damaged_mask",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Reduces travel time by 20%.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "damaged_mask",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Reduces travel time by 40%.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "damaged_mask",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 400
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "Reduces travel time by 60%.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "damaged_mask",
+              "qty": 80
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 5,
+          "effect": "Reduces travel time by 80%.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "damaged_mask",
+              "qty": 160
+            },
+            {
+              "item": "silver",
+              "qty": 1600
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "fireball": {
+      "name": "Fireball",
+      "emoji": "🔥",
+      "parent": null,
+      "unlock": "Unlocked through Saltflame Rite (Quest).",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 10% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "stained_mask",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Deal 20% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "stained_mask",
+              "qty": 70
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Deal 30% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "stained_mask",
+              "qty": 100
+            },
+            {
+              "item": "silver",
+              "qty": 400
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "Deal 40% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "stained_mask",
+              "qty": 130
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "inferno": {
+      "name": "Inferno",
+      "emoji": "🔥",
+      "parent": "fireball",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 60% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "sealed_scroll",
+              "qty": 20
+            },
+            {
+              "item": "stained_mask",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "hellflare": {
+      "name": "Hellflare",
+      "emoji": "🔥",
+      "parent": "inferno",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Sacrifice 20% of your max HP to deal 120% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "ominous_mask",
+              "qty": 150
+            },
+            {
+              "item": "forbidden_curse_scroll",
+              "qty": 30
+            },
+            {
+              "item": "silver",
+              "qty": 8000
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "meteor": {
+      "name": "Meteor",
+      "emoji": "🔥",
+      "parent": "fireball",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 22% of your max HP to all enemies when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "chaos_device",
+              "qty": 25
+            },
+            {
+              "item": "sealed_scroll",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "fortress": {
+      "name": "Fortress",
+      "emoji": "🏰",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "The first time you would fall in battle, survive at 1 HP instead.",
+          "ar": 17,
+          "materials": [
+            {
+              "item": "sealed_scroll",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "leech": {
+      "name": "Leech",
+      "emoji": "🩸",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "50% chance during your turn to steal 5% of the highest enemy's HP, up to 50 HP.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "50% chance during your turn to steal 10% of the highest enemy's HP, up to 50 HP.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 30
+            },
+            {
+              "item": "silver",
+              "qty": 300
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "50% chance during your turn to steal 15% of the highest enemy's HP, up to 50 HP.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 80
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "drain": {
+      "name": "Drain",
+      "emoji": "🩸",
+      "parent": "leech",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "50% chance during your turn to steal 12% of the highest enemy's HP, up to 75 HP.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "chaos_device",
+              "qty": 25
+            },
+            {
+              "item": "slime_concentrate",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "parasite": {
+      "name": "Parasite",
+      "emoji": "🩸",
+      "parent": "leech",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "50% chance during your turn to steal 12% of the highest enemy's HP, up to 50 HP, and weaken their next attack by 35%.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "chaos_device",
+              "qty": 25
+            },
+            {
+              "item": "sealed_scroll",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "50% chance during your turn to steal 10% of the highest enemy's HP, up to 55 HP, and weaken their next attack by 40%.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "chaos_circuit",
+              "qty": 20
+            },
+            {
+              "item": "sealed_scroll",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "50% chance during your turn to steal 8% of the highest enemy's HP, up to 60 HP, and weaken their next attack by 45%.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "heavy_horn",
+              "qty": 25
+            },
+            {
+              "item": "dismal_prism",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 3500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "50% chance during your turn to steal 6% of the highest enemy's HP, up to 65 HP, and weaken their next attack by 50%.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "heavy_horn",
+              "qty": 50
+            },
+            {
+              "item": "black_bronze_horn",
+              "qty": 15
+            },
+            {
+              "item": "silver",
+              "qty": 4500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "sting": {
+      "name": "Sting",
+      "emoji": "🩸",
+      "parent": "parasite",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "50% chance during your turn to steal 12% of the highest enemy's HP, up to 50 HP, and stun them, skipping their next turn.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "chaos_device",
+              "qty": 25
+            },
+            {
+              "item": "slime_concentrate",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "lesser_heal": {
+      "name": "Lesser Heal",
+      "emoji": "💚",
+      "parent": null,
+      "unlock": "Unlocked through Valley Remedy (Quest).",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Restore 10% of your max HP when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Restore 12% of your max HP when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 70
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Restore 14% of your max HP when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 100
+            },
+            {
+              "item": "silver",
+              "qty": 400
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "Restore 17% of your max HP when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 130
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 5,
+          "effect": "Restore 20% of your max HP when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 160
+            },
+            {
+              "item": "silver",
+              "qty": 1600
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "prayer": {
+      "name": "Prayer",
+      "emoji": "💚",
+      "parent": "lesser_heal",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Restore 8% of max HP to all living party members when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "slime_concentrate",
+              "qty": 40
+            },
+            {
+              "item": "small_lamp_grass",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "resurrect": {
+      "name": "Resurrect",
+      "emoji": "💚",
+      "parent": "prayer",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Resurrect a dead party member to 50% of their max HP when cast. Only activatable with a catalyst equipped.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "polarizing_prism",
+              "qty": 50
+            },
+            {
+              "item": "small_lamp_grass",
+              "qty": 100
+            },
+            {
+              "item": "silver",
+              "qty": 6000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "major_heal": {
+      "name": "Major Heal",
+      "emoji": "💚",
+      "parent": "lesser_heal",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Restore 35% of your max HP when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "sealed_scroll",
+              "qty": 25
+            },
+            {
+              "item": "small_lamp_grass",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 3,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 4,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
+        }
+      ]
+    },
+    "sage": {
+      "name": "Sage",
+      "emoji": "📜",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 2% more damage to all elemental enemies.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "divining_scroll",
+              "qty": 10
+            },
+            {
+              "item": "crystal_chunk",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Deal 4% more damage to all elemental enemies.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "divining_scroll",
+              "qty": 20
+            },
+            {
+              "item": "crystal_chunk",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "stormeye": {
+      "name": "Stormeye",
+      "emoji": "👁️",
+      "parent": null,
+      "unlock": "Unlocked through the Anemo Statue of the Seven.",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Cast to deal 50% of each enemy's current HP, ending your turn. Usable once every 5 turns, after a 1-turn startup. Only activatable with a catalyst equipped.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "vayuda_turquoise_chunk",
+              "qty": 30
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "taunt": {
+      "name": "Taunt",
+      "emoji": "📣",
+      "parent": null,
+      "unlock": "Unlocked through Brawny Lesson (Quest).",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Unlocks the Taunt action in battle. Enemies focus their attacks on you until you fall.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "silver_raven_insignia",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 300
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "vigilance": {
+      "name": "Vigilance",
+      "emoji": "⚔️",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike deals 20% damage.",
+          "ar": 3,
+          "materials": [
+            {
+              "item": "slime_condensate",
+              "qty": 10
+            },
+            {
+              "item": "slime_secretions",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike deals 40% damage.",
+          "ar": 8,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 15
+            },
+            {
+              "item": "slime_concentrate",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 400
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike deals 60% damage.",
+          "ar": 13,
+          "materials": [
+            {
+              "item": "slime_secretions",
+              "qty": 25
+            },
+            {
+              "item": "slime_concentrate",
+              "qty": 15
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "first_strike": {
+      "name": "First Strike",
+      "emoji": "⚔️",
+      "parent": "vigilance",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "You go first 60% of the time.",
+          "ar": 3,
+          "materials": [
+            {
+              "item": "damaged_mask",
+              "qty": 10
+            },
+            {
+              "item": "stained_mask",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "You go first 70% of the time.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "damaged_mask",
+              "qty": 20
+            },
+            {
+              "item": "stained_mask",
+              "qty": 15
+            },
+            {
+              "item": "silver",
+              "qty": 250
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "You go first 80% of the time.",
+          "ar": 8,
+          "materials": [
+            {
+              "item": "stained_mask",
+              "qty": 25
+            },
+            {
+              "item": "ominous_mask",
+              "qty": 5
+            },
+            {
+              "item": "silver",
+              "qty": 500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "bash": {
+      "name": "Bash",
+      "emoji": "⚔️",
+      "parent": "vigilance",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for 10% damage.",
+          "ar": 3,
+          "materials": [
+            {
+              "item": "iron_chunk",
+              "qty": 10
+            },
+            {
+              "item": "crystal_chunk",
+              "qty": 3
+            },
+            {
+              "item": "silver",
+              "qty": 100
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for 20% damage.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "iron_chunk",
+              "qty": 20
+            },
+            {
+              "item": "crystal_chunk",
+              "qty": 6
+            },
+            {
+              "item": "silver",
+              "qty": 250
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for 30% damage.",
+          "ar": 8,
+          "materials": [
+            {
+              "item": "iron_chunk",
+              "qty": 35
+            },
+            {
+              "item": "crystal_chunk",
+              "qty": 12
+            },
+            {
+              "item": "silver",
+              "qty": 500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    }
+  }
+    }
