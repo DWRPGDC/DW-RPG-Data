@@ -159,8 +159,8 @@
   }
   .summary-recalc-btn svg{ width:15px; height:15px; }
   .summary-recalc-btn.is-visible{ display:flex; }
-  .summary-recalc-btn:hover{ transform:rotate(90deg); }
-  .summary-recalc-btn:active{ transform:rotate(90deg) scale(0.92); }
+  .summary-recalc-btn:hover{ transform:scale(1.12); }
+  .summary-recalc-btn:active{ transform:scale(0.92); }
   @media (max-width:600px){
     .summary-bar{ position:static; }
   }
@@ -710,7 +710,10 @@
     <div class="summary-bar" id="summaryBar">
       <div class="summary-stats" id="summaryStats"></div>
       <button type="button" class="summary-recalc-btn" id="summaryRecalcBtn" title="Recalculate - your inventory or skills changed" aria-label="Recalculate">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>
+          <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
+        </svg>
       </button>
     </div>
 
