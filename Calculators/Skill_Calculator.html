@@ -198,7 +198,47 @@
   }
   .panel-sub{
     font-size:13px; color:var(--ink-dim); margin:-6px 0 16px;
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap;
   }
+  .inline-link-btn{
+    flex:0 0 auto;
+    background:none; border:none; padding:0; cursor:pointer;
+    font-family:inherit; font-size:12px; color:var(--teal-dim);
+    text-decoration:underline; text-underline-offset:2px;
+  }
+  .inline-link-btn:hover{ color:var(--ink); }
+
+  /* ---------- Bulk paste ---------- */
+  .bulk-paste-box{
+    margin-bottom:16px;
+    border:1px solid var(--line); border-radius:8px;
+    background:var(--panel-2); overflow:hidden;
+  }
+  .bulk-paste-toggle{
+    width:100%; display:flex; align-items:center; gap:9px;
+    background:transparent; border:none; cursor:pointer;
+    padding:11px 14px; text-align:left; font-family:inherit; font-size:13px; color:var(--ink);
+  }
+  .bulk-paste-toggle:hover{ background:rgba(128,128,128,0.08); }
+  .bulk-paste-toggle .chevron{ flex:0 0 auto; width:12px; height:12px; color:var(--ink-dim); transition:transform 0.15s ease; }
+  .bulk-paste-box.is-open .bulk-paste-toggle .chevron{ transform:rotate(90deg); }
+  .bulk-paste-body{ display:none; padding:0 14px 14px; }
+  .bulk-paste-box.is-open .bulk-paste-body{ display:block; }
+  .bulk-paste-hint{ font-size:11.5px; color:var(--ink-dim); margin-bottom:8px; line-height:1.5; }
+  .bulk-paste-hint code{
+    background:var(--bg-alt); border:1px solid var(--line); border-radius:4px;
+    padding:1px 5px; font-family:'JetBrains Mono', monospace; font-size:11px;
+  }
+  #bulkPasteInput{
+    width:100%; resize:vertical;
+    background:var(--bg-alt); border:1px solid var(--line); border-radius:6px;
+    color:var(--ink); font-family:'JetBrains Mono', monospace; font-size:12.5px;
+    padding:10px; margin-bottom:10px;
+  }
+  #bulkPasteInput:focus{ outline:1.5px solid var(--teal); border-color:var(--teal); }
+  .bulk-paste-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .bulk-paste-result{ font-size:12px; color:var(--ink-dim); line-height:1.5; }
+  .bulk-paste-result.has-issues{ color:var(--danger); }
 
   /* ---------- Inventory panel ---------- */
   .search-box{ position:relative; margin-bottom:14px; }
@@ -281,6 +321,7 @@
   }
   .skill-group.is-branch{ margin-left:22px; margin-top:6px; border-left:2px solid var(--teal-dim); }
   .skill-group.is-locked{ opacity:0.45; }
+  body.hide-locked-branches .skill-group.is-locked{ display:none; }
   .skill-head{ display:flex; align-items:center; gap:10px; padding:11px 14px; flex-wrap:wrap; }
   .skill-emoji{ font-size:17px; }
   .skill-name{ font-weight:600; font-size:14.5px; color:var(--ink); margin-right:auto; }
@@ -412,12 +453,22 @@
   .almost-body{ display:none; padding:0 18px 20px; }
   .almost-section.is-open .almost-body{ display:block; }
   .almost-sub{ font-size:12.5px; color:var(--ink-dim); margin:0 0 14px; }
-  .almost-body .result-grid{
+  .almost-body .almost-scroll{
     max-height:520px; overflow-y:auto; padding-right:4px;
   }
-  .almost-body .result-grid::-webkit-scrollbar{ width:8px; }
-  .almost-body .result-grid::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
-  .almost-body .result-grid::-webkit-scrollbar-track{ background:transparent; }
+  .almost-body .almost-scroll::-webkit-scrollbar{ width:8px; }
+  .almost-body .almost-scroll::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+  .almost-body .almost-scroll::-webkit-scrollbar-track{ background:transparent; }
+
+  /* ---------- Branch groups (results grouped by root skill) ---------- */
+  .result-branch-group{ margin-bottom:22px; }
+  .result-branch-group:last-child{ margin-bottom:0; }
+  .result-branch-group.is-hidden{ display:none; }
+  .result-branch-heading{
+    font-family:'Cinzel', serif; font-size:13px; letter-spacing:0.05em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:10px;
+    padding-bottom:6px; border-bottom:1px solid var(--line);
+  }
   .result-card.is-almost{
     border-style:dashed; opacity:0.88;
   }
@@ -618,13 +669,20 @@
           <span class="slider"></span>
         </label>
       </div>
+      <div class="settings-row">
+        <span>Hide locked branches</span>
+        <label class="switch">
+          <input type="checkbox" id="hideLockedToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
       <button class="settings-clear" id="clearDataBtn">Clear saved inventory &amp; skills</button>
       <div class="settings-row" style="margin-top:10px; gap:8px;">
         <button class="settings-clear" id="exportDataBtn" style="flex:1;">Export</button>
         <button class="settings-clear" id="importDataBtn" style="flex:1;">Import</button>
         <input type="file" id="importDataInput" accept="application/json" style="display:none;">
       </div>
-      <div class="settings-saved-note">Your inventory, learned skills, and theme are saved automatically in this browser. Export a backup to move progress between devices.</div>
+      <div class="settings-saved-note">Your inventory, learned skills, and preferences are saved automatically in this browser. Export a backup to move progress between devices.</div>
     </div>
   </header>
 
@@ -654,7 +712,24 @@
           <h2>Inventory</h2>
           <span class="count" id="itemCount"></span>
         </div>
-        <div class="panel-sub">Enter how much of each material you're currently holding.</div>
+        <div class="panel-sub">
+          Enter how much of each material you're currently holding.
+          <button type="button" class="inline-link-btn" id="clearQtyBtn">Clear all quantities</button>
+        </div>
+        <div class="bulk-paste-box" id="bulkPasteBox">
+          <button type="button" class="bulk-paste-toggle" id="bulkPasteToggle" aria-expanded="false">
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg>
+            <span>Paste inventory from text</span>
+          </button>
+          <div class="bulk-paste-body">
+            <div class="bulk-paste-hint">One item per line, e.g. <code>Windwheel Aster: 12</code> or <code>Slime Condensate x5</code>.</div>
+            <textarea id="bulkPasteInput" rows="5" placeholder="Windwheel Aster: 12&#10;Slime Condensate x5&#10;Mora 40000"></textarea>
+            <div class="bulk-paste-actions">
+              <button type="button" class="btn btn-ghost" id="bulkPasteApplyBtn">Apply</button>
+              <span class="bulk-paste-result" id="bulkPasteResult"></span>
+            </div>
+          </div>
+        </div>
         <div class="currency-box" id="currencyBox" style="display:none;">
           <div class="currency-title">Currency</div>
           <div class="currency-list" id="currencyList"></div>
@@ -744,6 +819,7 @@
   var LS_INVENTORY = "skillLedger_inventory";
   var LS_LEARNED   = "skillLedger_learned";
   var LS_THEME     = "skillLedger_theme";
+  var LS_HIDE_LOCKED = "skillLedger_hideLocked";
 
   function lsGet(key){
     try{
@@ -770,9 +846,14 @@
     document.body.classList.toggle("theme-dark", !!isDark);
     document.getElementById("darkModeToggle").checked = !!isDark;
   }
+  function applyHideLocked(hide){
+    document.body.classList.toggle("hide-locked-branches", !!hide);
+    document.getElementById("hideLockedToggle").checked = !!hide;
+  }
   (function initSettings(){
     var savedTheme = lsGet(LS_THEME);
     applyTheme(savedTheme === "dark");
+    applyHideLocked(lsGet(LS_HIDE_LOCKED) === true);
 
     var btn = document.getElementById("settingsBtn");
     var panel = document.getElementById("settingsPanel");
@@ -787,6 +868,11 @@
     document.getElementById("darkModeToggle").addEventListener("change", function(e){
       applyTheme(e.target.checked);
       lsSet(LS_THEME, e.target.checked ? "dark" : "light");
+    });
+
+    document.getElementById("hideLockedToggle").addEventListener("change", function(e){
+      applyHideLocked(e.target.checked);
+      lsSet(LS_HIDE_LOCKED, e.target.checked);
     });
 
     document.getElementById("clearDataBtn").addEventListener("click", function(){
@@ -867,7 +953,11 @@
   // Rather than guess one pattern, try every space/underscore combination across
   // all space positions and let the <img> fall through them via onerror.
   // For a handful of spaces (the typical case) this is a small, cheap list.
+  var iconCandidateCache = {}; // filename -> ordered array of candidate filenames
+
   function iconCandidates(filename){
+    if(iconCandidateCache[filename]) return iconCandidateCache[filename];
+
     var positions = [];
     for(var i = 0; i < filename.length; i++){
       if(filename[i] === " ") positions.push(i);
@@ -889,11 +979,14 @@
     for(var m = 1; m < total - 1; m++) ordered.push(all[m]);
 
     var seen = {};
-    return ordered.filter(function(c){
+    var result = ordered.filter(function(c){
       if(seen[c]) return false;
       seen[c] = true;
       return true;
     });
+
+    iconCandidateCache[filename] = result;
+    return result;
   }
 
   function iconPath(filename){
@@ -904,14 +997,28 @@
     return (name || "?").trim().charAt(0).toUpperCase();
   }
 
+  // Remembers which candidate URL actually loaded for a given icon filename,
+  // so every re-render of that item (across inventory rows, result cards,
+  // material rows, etc.) can skip straight to the working URL instead of
+  // re-walking the onerror fallback chain from scratch each time.
+  var resolvedIconUrl = {}; // filename -> working URL
+
   function iconMarkup(itemId){
     var item = itemsData[itemId];
     if(!item) return '<div class="fallback">?</div>';
     var letter = fallbackLetter(item.name);
+
+    if(resolvedIconUrl[item.icon]){
+      return '<img src="' + resolvedIconUrl[item.icon] + '" alt="">' +
+             '<div class="fallback" style="display:none;">' + letter + '</div>';
+    }
+
     var candidates = iconCandidates(item.icon).map(iconPath);
     // data-i tracks which candidate index is currently loaded; tryNextIcon(img) advances it.
-    return '<img src="' + candidates[0] + '" alt="" data-i="0" data-candidates=\'' + JSON.stringify(candidates).replace(/'/g, "&#39;") + '\' ' +
-           'onerror="window.__tryNextIcon(this)">' +
+    // data-icon carries the original filename so a success can be cached for next time.
+    return '<img src="' + candidates[0] + '" alt="" data-i="0" data-icon="' + encodeURIComponent(item.icon) + '" ' +
+           'data-candidates=\'' + JSON.stringify(candidates).replace(/'/g, "&#39;") + '\' ' +
+           'onerror="window.__tryNextIcon(this)" onload="window.__cacheIconSuccess(this)">' +
            '<div class="fallback" style="display:none;">' + letter + '</div>';
   }
 
@@ -927,6 +1034,13 @@
       img.style.display = "none";
       if(img.nextElementSibling) img.nextElementSibling.style.display = "flex";
     }
+  };
+
+  // Caches the successfully-loaded URL for this icon filename so future
+  // renders of the same item skip the guessing chain entirely.
+  window.__cacheIconSuccess = function(img){
+    var key = img.dataset.icon ? decodeURIComponent(img.dataset.icon) : "";
+    if(key) resolvedIconUrl[key] = img.src;
   };
 
   // ---------- Load data ----------
@@ -1042,6 +1156,90 @@
     goToStage(3);
   });
 
+  // ---------- Clear all quantities ----------
+  // Resets only the inventory counts (keeps learned skills), separate from
+  // the full "Clear saved data" wipe in Settings.
+  document.getElementById("clearQtyBtn").addEventListener("click", function(){
+    if(!confirm("Clear all entered quantities? Learned skills won't be affected.")) return;
+    inventory = {};
+    renderItemList();
+    saveProgress();
+    updateSummaryBar();
+    markResultsStale();
+  });
+
+  // ---------- Bulk paste inventory ----------
+  (function initBulkPaste(){
+    var box = document.getElementById("bulkPasteBox");
+    var toggle = document.getElementById("bulkPasteToggle");
+    var applyBtn = document.getElementById("bulkPasteApplyBtn");
+    var textarea = document.getElementById("bulkPasteInput");
+    var resultEl = document.getElementById("bulkPasteResult");
+
+    toggle.addEventListener("click", function(){
+      var isOpen = box.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    // Parses lines like "Item Name: 12", "Item Name x5", or "Item Name 12"
+    // and matches them against known item names (exact, then unique substring).
+    function parseBulkPaste(text){
+      var nameIndex = {};
+      Object.keys(itemsData).forEach(function(id){
+        nameIndex[itemsData[id].name.toLowerCase()] = id;
+      });
+
+      var matched = [], unmatched = [];
+      text.split(/\r?\n/).forEach(function(rawLine){
+        var line = rawLine.trim();
+        if(!line) return;
+        var m = line.match(/^(.*?)[\s:xX×\-]+(\d+)\s*$/);
+        if(!m){ unmatched.push(line); return; }
+        var namePart = m[1].replace(/[:\-]+$/, "").trim();
+        var qty = parseInt(m[2], 10);
+        if(!namePart || isNaN(qty)){ unmatched.push(line); return; }
+
+        var id = nameIndex[namePart.toLowerCase()];
+        if(!id){
+          var candidates = Object.keys(nameIndex).filter(function(n){
+            return n.indexOf(namePart.toLowerCase()) !== -1;
+          });
+          if(candidates.length === 1) id = nameIndex[candidates[0]];
+        }
+        if(id) matched.push({ id: id, qty: qty });
+        else unmatched.push(line);
+      });
+      return { matched: matched, unmatched: unmatched };
+    }
+
+    applyBtn.addEventListener("click", function(){
+      var text = textarea.value;
+      if(!text.trim()){
+        resultEl.textContent = "Paste some lines first.";
+        resultEl.classList.add("has-issues");
+        return;
+      }
+      var parsed = parseBulkPaste(text);
+      parsed.matched.forEach(function(m){ inventory[m.id] = m.qty; });
+
+      if(parsed.matched.length){
+        renderItemList();
+        saveProgress();
+        updateSummaryBar();
+        markResultsStale();
+      }
+
+      var msg = "Matched " + parsed.matched.length + " item" + (parsed.matched.length === 1 ? "" : "s") + ".";
+      if(parsed.unmatched.length){
+        msg += " Couldn't match: " + parsed.unmatched.join(" | ");
+        resultEl.classList.add("has-issues");
+      } else {
+        resultEl.classList.remove("has-issues");
+      }
+      resultEl.textContent = msg;
+    });
+  })();
+
   // ---------- Inventory panel ----------
   function isCurrencyItem(item){
     return !!(item && item.category && String(item.category).toLowerCase() === "currency");
@@ -1058,7 +1256,8 @@
     );
   }
 
-  function bindQtyInputs(container){
+  function bindQtyInputs(container, opts){
+    opts = opts || {};
     container.addEventListener("input", function(e){
       if(!e.target.classList.contains("item-qty")) return;
       var id = e.target.dataset.item;
@@ -1069,6 +1268,25 @@
       saveProgress();
       updateSummaryBar();
       markResultsStale();
+    });
+
+    // Pressing Enter moves focus to the next visible quantity field, so you
+    // can tab through data entry without reaching for the mouse. On the very
+    // last field it either hands off to the next section or hits Next.
+    container.addEventListener("keydown", function(e){
+      if(e.key !== "Enter" || !e.target.classList.contains("item-qty")) return;
+      e.preventDefault();
+      var inputs = Array.prototype.slice.call(container.querySelectorAll(".item-qty")).filter(function(inp){
+        var row = inp.closest(".item-row");
+        return !row || !row.classList.contains("is-hidden");
+      });
+      var idx = inputs.indexOf(e.target);
+      if(idx > -1 && idx < inputs.length - 1){
+        inputs[idx + 1].focus();
+        inputs[idx + 1].select();
+      } else if(opts.onLast){
+        opts.onLast();
+      }
     });
   }
 
@@ -1102,8 +1320,16 @@
     }).join("");
     list.innerHTML = html;
 
-    bindQtyInputs(list);
-    bindQtyInputs(currencyList);
+    bindQtyInputs(list, {
+      onLast: function(){ document.getElementById("toStep2Btn").click(); }
+    });
+    bindQtyInputs(currencyList, {
+      onLast: function(){
+        var firstItemInput = list.querySelector(".item-row:not(.is-hidden) .item-qty");
+        if(firstItemInput){ firstItemInput.focus(); firstItemInput.select(); }
+        else{ document.getElementById("toStep2Btn").click(); }
+      }
+    });
 
     var searchInput = document.getElementById("itemSearch");
     var searchClear = document.getElementById("itemSearchClear");
@@ -1296,6 +1522,19 @@
 
   // Builds one result card's HTML. Shared by both the "Ready to Learn" and
   // "Almost There" lists so tweaks to card layout only need to happen once.
+  // Walks up the parent chain to find the top-level ancestor's name, used to
+  // group branch skills together with their root in the results view.
+  function getRootSkillName(skillId){
+    var s = skillsData[skillId];
+    if(!s) return "";
+    while(s.parent && skillsData[s.parent]){ s = skillsData[s.parent]; }
+    return s.name;
+  }
+
+  function escapeAttr(str){
+    return String(str).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+  }
+
   function resultCardHtml(entry, idx, opts){
     var s = entry.skill, lv = entry.level;
     var isAlmost = !!opts.isAlmost;
@@ -1329,10 +1568,24 @@
     if(isAlmost) cardClasses.push("is-almost");
     if(entry.isBranch) cardClasses.push("is-branch");
 
+    // Materials are embedded directly on the Learn button so the confirm
+    // dialog doesn't need any separate lookup/state when clicked.
+    var learnBtn = "";
+    if(!isAlmost){
+      var matsForConfirm = (lv.materials || []).map(function(m){
+        var item = itemsData[m.item];
+        return { name: item ? item.name : m.item, qty: m.qty };
+      });
+      learnBtn =
+        '<button class="btn-learn" data-skill="' + entry.id + '" ' +
+        'data-name="' + escapeAttr(s.name) + '" data-level="' + lv.level + '" ' +
+        'data-materials=\'' + escapeAttr(JSON.stringify(matsForConfirm)) + '\'>Learn</button>';
+    }
+
     return (
       '<div class="' + cardClasses.join(" ") + '" data-search="' + s.name.toLowerCase() + '" style="animation-delay:' + delay + 'ms">' +
         '<div class="result-head">' +
-          (isAlmost ? "" : '<button class="btn-learn" data-skill="' + entry.id + '">Learn</button>') +
+          learnBtn +
           '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
           '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
         '</div>' +
@@ -1342,6 +1595,33 @@
         matsHtml +
       '</div>'
     );
+  }
+
+  // Groups entries by their top-level skill so a parent and its unlocked
+  // branch children render together instead of scattered alphabetically.
+  function buildGroupedResultsHtml(entries, opts){
+    var groups = {};
+    var order = [];
+    entries.forEach(function(entry){
+      var rootName = getRootSkillName(entry.id) || entry.skill.name;
+      if(!groups[rootName]){ groups[rootName] = []; order.push(rootName); }
+      groups[rootName].push(entry);
+    });
+    order.sort(function(a,b){ return a.localeCompare(b); });
+
+    return order.map(function(rootName){
+      var groupEntries = groups[rootName].slice().sort(function(a,b){
+        if(!!a.isBranch !== !!b.isBranch) return a.isBranch ? 1 : -1;
+        return a.skill.name.localeCompare(b.skill.name);
+      });
+      var cardsHtml = groupEntries.map(function(entry, idx){ return resultCardHtml(entry, idx, opts); }).join("");
+      return (
+        '<div class="result-branch-group">' +
+          '<div class="result-branch-heading">' + rootName + '</div>' +
+          '<div class="result-grid">' + cardsHtml + '</div>' +
+        '</div>'
+      );
+    }).join("");
   }
 
   function renderResults(affordable, almostThere, pendingData){
@@ -1355,15 +1635,20 @@
       html += '<div class="results-empty">No skill upgrades are both unlocked and fully stocked right now. Gather more materials or unlock a new branch.</div>';
     } else {
       affordable.sort(function(a,b){ return a.skill.name.localeCompare(b.skill.name); });
-      var cardsHtml = affordable.map(function(entry, idx){ return resultCardHtml(entry, idx, { isAlmost: false }); }).join("");
-      html += '<div class="result-grid">' + cardsHtml + '</div>';
+      html += buildGroupedResultsHtml(affordable, { isAlmost: false });
     }
 
     if(almostThere.length > 0){
       almostThere.sort(function(a,b){ return b.completion - a.completion; });
       // Show every near-miss skill (no hard cap) - the list itself scrolls,
       // so nothing is silently hidden behind a "+N more" message anymore.
-      var almostHtml = almostThere.map(function(entry, idx){ return resultCardHtml(entry, idx, { isAlmost: true }); }).join("");
+      var almostHtml = buildGroupedResultsHtml(almostThere, { isAlmost: true });
+
+      // Total how many materials are short, summed across every near-miss
+      // skill, so there's a quick sense of how much farming is left overall.
+      var totalShort = almostThere.reduce(function(sum, entry){
+        return sum + entry.missing.reduce(function(s2, m){ return s2 + m.short; }, 0);
+      }, 0);
 
       html +=
         '<div class="almost-section" id="almostSection">' +
@@ -1372,8 +1657,8 @@
             '<span class="almost-heading">Almost There <span class="count">' + almostThere.length + '</span></span>' +
           '</button>' +
           '<div class="almost-body">' +
-            '<div class="almost-sub">Unlocked, but you\'re short a few materials. Closest matches shown first.</div>' +
-            '<div class="result-grid">' + almostHtml + '</div>' +
+            '<div class="almost-sub">Unlocked, but you\'re short a few materials. Closest matches shown first. Short ' + totalShort + ' item' + (totalShort === 1 ? "" : "s") + ' total across all of these.</div>' +
+            '<div class="almost-scroll">' + almostHtml + '</div>' +
           '</div>' +
         '</div>';
     }
@@ -1393,6 +1678,16 @@
       btn.addEventListener("click", function(){
         if(btn.disabled) return;
         var skillId = btn.dataset.skill;
+        var name = btn.dataset.name;
+        var level = btn.dataset.level;
+        var mats;
+        try{ mats = JSON.parse(btn.dataset.materials); }catch(e){ mats = []; }
+
+        var matLines = mats.map(function(m){ return "\u2022 " + m.name + " \u00d7 " + m.qty; }).join("\n");
+        var confirmMsg = "Learn " + name + " Lv " + level + "?" +
+          (matLines ? "\n\nThis will consume:\n" + matLines : "");
+        if(!confirm(confirmMsg)) return;
+
         btn.disabled = true;
         btn.classList.add("is-done");
         btn.textContent = "\u2713 Learned";
@@ -1413,6 +1708,10 @@
     document.querySelectorAll("#results .result-card").forEach(function(card){
       var match = !q || (card.dataset.search || "").indexOf(q) !== -1;
       card.classList.toggle("is-hidden", !match);
+    });
+    document.querySelectorAll("#results .result-branch-group").forEach(function(group){
+      var anyVisible = !!group.querySelector(".result-card:not(.is-hidden)");
+      group.classList.toggle("is-hidden", !anyVisible);
     });
     clearBtn.classList.toggle("is-visible", input.value.length > 0);
   }
