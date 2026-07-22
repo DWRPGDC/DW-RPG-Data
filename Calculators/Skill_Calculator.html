@@ -722,8 +722,8 @@
             <span>Paste inventory from text</span>
           </button>
           <div class="bulk-paste-body">
-            <div class="bulk-paste-hint">One item per line, e.g. <code>Windwheel Aster: 12</code> or <code>Slime Condensate x5</code>.</div>
-            <textarea id="bulkPasteInput" rows="5" placeholder="Windwheel Aster: 12&#10;Slime Condensate x5&#10;Mora 40000"></textarea>
+            <div class="bulk-paste-hint">One item per line, e.g. <code>Windwheel Aster: 12</code> or <code>Slime Condensate x5</code>. Pasted wiki formatting like <code>**Iron Chunk** &times; 1 [1.5kg]</code> is fine too - bold markers and bracketed weight notes are ignored.</div>
+            <textarea id="bulkPasteInput" rows="5" placeholder="Windwheel Aster: 12&#10;Slime Condensate x5&#10;&lt;:Item_Matsutake:1528954641474261044&gt; **Matsutake** × 3 [0.15kg]"></textarea>
             <div class="bulk-paste-actions">
               <button type="button" class="btn btn-ghost" id="bulkPasteApplyBtn">Apply</button>
               <span class="bulk-paste-result" id="bulkPasteResult"></span>
@@ -1181,8 +1181,11 @@
       toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
 
-    // Parses lines like "Item Name: 12", "Item Name x5", or "Item Name 12"
+    // Parses lines like "Item Name: 12", "Item Name x5", or "**Item Name** × 1 [1.5kg]"
     // and matches them against known item names (exact, then unique substring).
+    // Discord custom emoji tags (<:Item_Name:1234567890>), markdown bold (**...**),
+    // and bracketed weight notes ([1.5kg], [x.x kg]) are stripped first since
+    // they're just copy-paste formatting, not part of the item name or quantity.
     function parseBulkPaste(text){
       var nameIndex = {};
       Object.keys(itemsData).forEach(function(id){
@@ -1193,7 +1196,16 @@
       text.split(/\r?\n/).forEach(function(rawLine){
         var line = rawLine.trim();
         if(!line) return;
-        var m = line.match(/^(.*?)[\s:xX×\-]+(\d+)\s*$/);
+
+        var cleanLine = line
+          .replace(/<a?:\w+:\d+>/g, "") // drop Discord custom emoji tags like <:Item_Matsutake:123>
+          .replace(/\[[^\]]*\]/g, "")   // drop bracketed notes like [1.5kg] or [x.x kg]
+          .replace(/\*\*/g, "")         // drop markdown bold markers
+          .replace(/\s+/g, " ")
+          .trim();
+        if(!cleanLine){ unmatched.push(line); return; }
+
+        var m = cleanLine.match(/^(.*?)[\s:xX×\-]+(\d+)\s*$/);
         if(!m){ unmatched.push(line); return; }
         var namePart = m[1].replace(/[:\-]+$/, "").trim();
         var qty = parseInt(m[2], 10);
