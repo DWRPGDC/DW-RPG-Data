@@ -1434,17 +1434,9 @@
       }
 
       var msg = "Matched " + parsed.matched.length + " item" + (parsed.matched.length === 1 ? "" : "s") + (addMode ? " (added to existing counts)." : ".");
-      var issues = [];
-      if(parsed.ambiguous.length){
-        parsed.ambiguous.forEach(function(a){
-          issues.push(a.line + " - could be: " + a.options.join(", "));
-        });
-      }
-      if(parsed.unmatched.length){
-        issues.push.apply(issues, parsed.unmatched);
-      }
-      if(issues.length){
-        msg += " Couldn't match: " + issues.join(" | ");
+      var skippedCount = parsed.unmatched.length + parsed.ambiguous.length;
+      if(skippedCount){
+        msg += " Skipped " + skippedCount + " line" + (skippedCount === 1 ? "" : "s") + " that didn't match a known item.";
         resultEl.classList.add("has-issues");
       } else {
         resultEl.classList.remove("has-issues");
