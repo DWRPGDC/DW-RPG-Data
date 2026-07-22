@@ -280,5 +280,15 @@
     "name": "Chilled Meat",
     "icon": "Chilled Meat icon.webp",
     "category": "misc"
+  },
+  "fish": {
+    "name": "Fish",
+    "icon": "Item Fish.webp",
+    "category": "misc"
+  },
+  "crab": {
+    "name": "Crab",
+    "icon": "Item Crab.webp",
+    "category": "misc"
   }
 }
