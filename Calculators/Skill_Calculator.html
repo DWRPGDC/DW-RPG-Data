@@ -394,8 +394,43 @@
   var childrenOf = {};   // parentId -> [childId, ...]
   var topLevelIds = [];
 
+  // Miraheze filenames mix spaces and underscores unpredictably at each word
+  // boundary (depends how the uploader typed it) - "Windwheel_Aster icon.png",
+  // "Windwheel Aster_icon.png", "Windwheel_Aster_icon.png", etc. are all fair game.
+  // Rather than guess one pattern, try every space/underscore combination across
+  // all space positions and let the <img> fall through them via onerror.
+  // For a handful of spaces (the typical case) this is a small, cheap list.
+  function iconCandidates(filename){
+    var positions = [];
+    for(var i = 0; i < filename.length; i++){
+      if(filename[i] === " ") positions.push(i);
+    }
+    var n = positions.length;
+    var total = Math.pow(2, n);
+    var all = [];
+    for(var mask = 0; mask < total; mask++){
+      var chars = filename.split("");
+      for(var b = 0; b < n; b++){
+        if(mask & (1 << b)) chars[positions[b]] = "_";
+      }
+      all.push(chars.join(""));
+    }
+    // try the exact wiki-text spelling first, then all-underscores (the two most
+    // common real-world cases), then every other mixed combination.
+    var ordered = [all[0]];
+    if(total > 1) ordered.push(all[total - 1]);
+    for(var m = 1; m < total - 1; m++) ordered.push(all[m]);
+
+    var seen = {};
+    return ordered.filter(function(c){
+      if(seen[c]) return false;
+      seen[c] = true;
+      return true;
+    });
+  }
+
   function iconPath(filename){
-    return ICON_BASE + filename.split(" ").join("%20");
+    return ICON_BASE + encodeURIComponent(filename);
   }
 
   function fallbackLetter(name){
@@ -406,10 +441,26 @@
     var item = itemsData[itemId];
     if(!item) return '<div class="fallback">?</div>';
     var letter = fallbackLetter(item.name);
-    return '<img src="' + iconPath(item.icon) + '" alt="" ' +
-           'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
+    var candidates = iconCandidates(item.icon).map(iconPath);
+    // data-i tracks which candidate index is currently loaded; tryNextIcon(img) advances it.
+    return '<img src="' + candidates[0] + '" alt="" data-i="0" data-candidates=\'' + JSON.stringify(candidates).replace(/'/g, "&#39;") + '\' ' +
+           'onerror="window.__tryNextIcon(this)">' +
            '<div class="fallback" style="display:none;">' + letter + '</div>';
   }
+
+  // Advances an <img> to the next candidate URL on load failure; shows the
+  // letter fallback only once every candidate has been exhausted.
+  window.__tryNextIcon = function(img){
+    var candidates = JSON.parse(img.dataset.candidates);
+    var i = parseInt(img.dataset.i, 10) + 1;
+    if(i < candidates.length){
+      img.dataset.i = i;
+      img.src = candidates[i];
+    } else {
+      img.style.display = "none";
+      if(img.nextElementSibling) img.nextElementSibling.style.display = "flex";
+    }
+  };
 
   // ---------- Load data ----------
   Promise.all([
