@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adventurer's Skill Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:            #121822;
+    --bg-alt:        #0d121a;
+    --panel:         #1a2432;
+    --panel-2:       #212e3f;
+    --card:          #253347;
+    --line:          #33445c;
+    --gold:          #d5ac6a;
+    --gold-dim:      #8c7647;
+    --teal:          #5fc9b8;
+    --teal-dim:      #2e5f58;
+    --ink:           #e9e4d6;
+    --ink-dim:       #9aa8b6;
+    --danger:        #e2685c;
+    --success:       #7fbf8a;
+    --radius:        10px;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(ellipse at top left, #182234 0%, transparent 55%),
+      radial-gradient(ellipse at bottom right, #101823 0%, transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+  }
+
+  ::selection{ background:var(--teal-dim); color:var(--ink); }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:36px 20px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  header.hero{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-bottom:34px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-emblem{
+    flex:0 0 auto;
+    width:56px; height:56px;
+    border-radius:50%;
+    background:linear-gradient(155deg, var(--panel-2), var(--bg-alt));
+    border:1px solid var(--gold-dim);
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px;
+    box-shadow: inset 0 0 0 1px rgba(213,172,106,0.15), 0 6px 18px rgba(0,0,0,0.35);
+  }
+  h1{
+    font-family:'Cinzel', serif;
+    font-weight:600;
+    font-size:clamp(24px, 3.4vw, 34px);
+    letter-spacing:0.02em;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  header.hero p{
+    margin:0;
+    color:var(--ink-dim);
+    font-size:14.5px;
+    max-width:56ch;
+  }
+
+  /* ---------- Layout ---------- */
+  .columns{
+    display:grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1.35fr);
+    gap:22px;
+    align-items:start;
+  }
+  @media (max-width: 880px){
+    .columns{ grid-template-columns: 1fr; }
+  }
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+  }
+  .panel-title{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .panel-title h2{
+    font-family:'Cinzel', serif;
+    font-size:16.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    margin:0;
+    color:var(--gold);
+  }
+  .panel-title span.count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--ink-dim);
+  }
+
+  /* ---------- Inventory panel ---------- */
+  .search-box{
+    position:relative;
+    margin-bottom:14px;
+  }
+  .search-box input{
+    width:100%;
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    padding:10px 14px 10px 34px;
+  }
+  .search-box input:focus{
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+    border-color:var(--teal);
+  }
+  .search-box svg{
+    position:absolute; left:11px; top:50%; transform:translateY(-50%);
+    width:15px; height:15px; opacity:0.5;
+  }
+  .search-hint{
+    font-size:12px; color:var(--ink-dim); margin: -8px 0 14px 2px;
+  }
+
+  .item-list{
+    max-height:560px;
+    overflow-y:auto;
+    padding-right:4px;
+  }
+  .item-list::-webkit-scrollbar{ width:8px; }
+  .item-list::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+  .item-list::-webkit-scrollbar-track{ background:transparent; }
+
+  .item-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:8px 6px;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+  }
+  .item-row.is-hidden{ display:none; }
+  .item-icon{
+    width:34px; height:34px;
+    border-radius:7px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    flex:0 0 auto;
+  }
+  .item-icon img{ width:100%; height:100%; object-fit:contain; }
+  .item-icon .fallback{
+    font-family:'Cinzel', serif;
+    font-size:14px;
+    color:var(--gold-dim);
+  }
+  .item-name{
+    flex:1 1 auto;
+    font-size:13.5px;
+    color:var(--ink);
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .item-name small{
+    display:block;
+    color:var(--ink-dim);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .item-qty{
+    width:72px;
+    flex:0 0 auto;
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:var(--ink);
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    text-align:right;
+    padding:6px 8px;
+  }
+  .item-qty:focus{
+    outline:1.5px solid var(--teal);
+    border-color:var(--teal);
+  }
+  .item-qty.has-value{ color:var(--teal); border-color:var(--teal-dim); }
+
+  /* ---------- Skills panel ---------- */
+  .skill-group{
+    margin-bottom:10px;
+    border-radius:8px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+  .skill-group.is-branch{
+    margin-left:22px;
+    margin-top:6px;
+    border-left:2px solid var(--teal-dim);
+  }
+  .skill-group.is-locked{
+    opacity:0.45;
+  }
+  .skill-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 14px;
+    flex-wrap:wrap;
+  }
+  .skill-emoji{ font-size:17px; }
+  .skill-name{
+    font-weight:600;
+    font-size:14.5px;
+    color:var(--ink);
+    margin-right:auto;
+  }
+  .skill-ar{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--gold);
+    background:rgba(213,172,106,0.1);
+    border:1px solid var(--gold-dim);
+    border-radius:5px;
+    padding:2px 7px;
+    white-space:nowrap;
+  }
+  .skill-unlock{
+    font-size:11.5px;
+    color:var(--ink-dim);
+    font-style:italic;
+    padding:0 14px 8px;
+    margin-top:-4px;
+  }
+  .skill-lock-note{
+    font-size:11.5px;
+    color:var(--danger);
+    padding:0 14px 10px;
+  }
+  .pip-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:0 14px 12px;
+  }
+  .pip{
+    width:26px; height:26px;
+    border-radius:6px;
+    border:1.5px solid var(--line);
+    background:var(--bg-alt);
+    color:var(--ink-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition: all 0.12s ease;
+    user-select:none;
+  }
+  .pip:hover:not(.is-disabled){ border-color:var(--teal); color:var(--ink); }
+  .pip.is-filled{
+    background:linear-gradient(155deg, var(--gold), var(--gold-dim));
+    border-color:var(--gold);
+    color:#1a1204;
+    font-weight:700;
+  }
+  .pip.is-disabled{
+    cursor:not-allowed;
+    opacity:0.4;
+  }
+  .pip-connector{
+    width:8px; height:1.5px; background:var(--line);
+  }
+  .pip-tbd{
+    font-size:10px; color:var(--ink-dim); margin-left:4px;
+  }
+
+  /* ---------- Calculate button ---------- */
+  .calc-bar{
+    display:flex;
+    justify-content:center;
+    margin:34px 0 8px;
+  }
+  #calcBtn{
+    font-family:'Cinzel', serif;
+    font-size:15px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:#1a1204;
+    background:linear-gradient(155deg, var(--gold) 0%, #b98f4d 100%);
+    border:none;
+    border-radius:8px;
+    padding:14px 46px;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(213,172,106,0.18);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  #calcBtn:hover{ transform:translateY(-1px); box-shadow:0 10px 28px rgba(213,172,106,0.28); }
+  #calcBtn:active{ transform:translateY(0); }
+
+  /* ---------- Results ---------- */
+  #results{ margin-top:26px; }
+  .results-empty{
+    text-align:center;
+    color:var(--ink-dim);
+    font-size:14px;
+    padding:30px 0;
+  }
+  .result-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+    gap:16px;
+  }
+  .result-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px;
+  }
+  .result-card.is-branch{ border-left:3px solid var(--teal); }
+  .result-head{
+    display:flex; align-items:center; gap:8px; margin-bottom:6px;
+  }
+  .result-head .lvl-badge{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--bg);
+    background:var(--teal);
+    border-radius:5px;
+    padding:2px 7px;
+    font-weight:700;
+  }
+  .result-head .name{ font-weight:600; font-size:15px; }
+  .result-parent{
+    font-size:11px; color:var(--ink-dim); margin-bottom:8px;
+  }
+  .result-effect{
+    font-size:13px; color:var(--ink-dim); margin-bottom:12px; line-height:1.45;
+  }
+  .result-ar{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; color:var(--gold);
+    margin-bottom:10px;
+  }
+  .mat-row{
+    display:flex; align-items:center; gap:8px;
+    font-size:13px;
+    padding:4px 0;
+  }
+  .mat-icon{
+    width:24px; height:24px; border-radius:5px;
+    background:var(--panel-2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden; flex:0 0 auto;
+  }
+  .mat-icon img{ width:100%; height:100%; object-fit:contain; }
+  .mat-name{ flex:1 1 auto; color:var(--ink); }
+  .mat-qty{ font-family:'JetBrains Mono', monospace; font-size:12.5px; }
+  .mat-qty.ok{ color:var(--success); }
+  .mat-qty.short{ color:var(--danger); }
+  .result-card.affordable{ box-shadow: 0 0 0 1px rgba(127,191,138,0.25) inset; }
+  .result-card.unaffordable{ box-shadow: 0 0 0 1px rgba(226,104,92,0.2) inset; }
+
+  .pending-note{
+    margin-top:24px;
+    font-size:12.5px;
+    color:var(--ink-dim);
+  }
+  .pending-note ul{ margin:8px 0 0; padding-left:18px; }
+
+  .load-error{
+    color:var(--danger);
+    background:rgba(226,104,92,0.08);
+    border:1px solid rgba(226,104,92,0.35);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:13.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-emblem">🗡️</div>
+    <div>
+      <h1>Adventurer's Skill Ledger</h1>
+      <p>Log what's in your pack, mark the levels you've already learned, then see which skills are ready to advance.</p>
+    </div>
+  </header>
+
+  <div id="loadError"></div>
+
+  <div class="columns" id="mainColumns" style="display:none;">
+    <section class="panel" aria-label="Inventory">
+      <div class="panel-title">
+        <h2>Inventory</h2>
+        <span class="count" id="itemCount"></span>
+      </div>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="itemSearch" placeholder="Search materials, e.g. &quot;slim&quot;">
+      </div>
+      <div class="search-hint">Type to filter. Quantities you enter are kept even when hidden by search.</div>
+      <div class="item-list" id="itemList"></div>
+    </section>
+
+    <section class="panel" aria-label="Skills learned">
+      <div class="panel-title">
+        <h2>Skills Learned</h2>
+        <span class="count">tap a level to mark it learned</span>
+      </div>
+      <div id="skillTree"></div>
+    </section>
+  </div>
+
+  <div class="calc-bar" id="calcBar" style="display:none;">
+    <button id="calcBtn">Calculate</button>
+  </div>
+
+  <div id="results"></div>
+
+</div>
+
+<script>
+(function(){
+
+  var ITEMS_URL  = "../JSON/Items.json";
+  var SKILLS_URL = "../JSON/Skills.json";
+  var ICON_BASE  = "../Textures/Items/";
+
+  var itemsData  = {};
+  var skillsData = {};
+  var inventory  = {};   // itemId -> qty (number)
+  var learned    = {};   // skillId -> highest learned level (0 = none)
+  var childrenOf = {};   // parentId -> [childId, ...]
+  var topLevelIds = [];
+
+  function iconPath(filename){
+    return ICON_BASE + filename.split(" ").join("%20");
+  }
+
+  function fallbackLetter(name){
+    return (name || "?").trim().charAt(0).toUpperCase();
+  }
+
+  function iconMarkup(itemId, size){
+    var item = itemsData[itemId];
+    if(!item) return '<div class="fallback">?</div>';
+    var letter = fallbackLetter(item.name);
+    return '<img src="' + iconPath(item.icon) + '" alt="" ' +
+           'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
+           '<div class="fallback" style="display:none;">' + letter + '</div>';
+  }
+
+  // ---------- Load data ----------
+  Promise.all([
+    fetch(ITEMS_URL).then(function(r){ if(!r.ok) throw new Error("Items.json: " + r.status); return r.json(); }),
+    fetch(SKILLS_URL).then(function(r){ if(!r.ok) throw new Error("Skills.json: " + r.status); return r.json(); })
+  ]).then(function(results){
+    itemsData = results[0];
+    skillsData = results[1].skills;
+    buildTree();
+    renderItemList();
+    renderSkillTree();
+    document.getElementById("mainColumns").style.display = "grid";
+    document.getElementById("calcBar").style.display = "flex";
+  }).catch(function(err){
+    document.getElementById("loadError").innerHTML =
+      '<div class="load-error"><strong>Couldn\'t load data.</strong> ' +
+      'Make sure this file lives in a <code>Calculators/</code> folder next to a sibling <code>JSON/</code> folder ' +
+      'containing <code>Items.json</code> and <code>Skills.json</code>, and that the page is served over http(s) ' +
+      '(e.g. GitHub Pages) rather than opened directly from disk.<br><br>' +
+      '<em>' + err.message + '</em></div>';
+  });
+
+  function buildTree(){
+    Object.keys(skillsData).forEach(function(id){
+      var s = skillsData[id];
+      if(s.parent){
+        if(!childrenOf[s.parent]) childrenOf[s.parent] = [];
+        childrenOf[s.parent].push(id);
+      } else {
+        topLevelIds.push(id);
+      }
+      learned[id] = 0;
+    });
+  }
+
+  // ---------- Inventory panel ----------
+  function renderItemList(){
+    var list = document.getElementById("itemList");
+    var ids = Object.keys(itemsData).sort(function(a,b){
+      return itemsData[a].name.localeCompare(itemsData[b].name);
+    });
+    document.getElementById("itemCount").textContent = ids.length + " items";
+
+    var html = ids.map(function(id){
+      var item = itemsData[id];
+      return (
+        '<div class="item-row" data-id="' + id + '" data-search="' + item.name.toLowerCase() + '">' +
+          '<div class="item-icon">' + iconMarkup(id) + '</div>' +
+          '<div class="item-name">' + item.name + '</div>' +
+          '<input type="number" min="0" step="1" class="item-qty" data-item="' + id + '" placeholder="0" value="">' +
+        '</div>'
+      );
+    }).join("");
+    list.innerHTML = html;
+
+    list.addEventListener("input", function(e){
+      if(!e.target.classList.contains("item-qty")) return;
+      var id = e.target.dataset.item;
+      var val = parseInt(e.target.value, 10);
+      if(isNaN(val) || val < 0){ val = 0; }
+      inventory[id] = val;
+      e.target.classList.toggle("has-value", val > 0);
+    });
+
+    document.getElementById("itemSearch").addEventListener("input", function(e){
+      var q = e.target.value.trim().toLowerCase();
+      var rows = list.querySelectorAll(".item-row");
+      rows.forEach(function(row){
+        var match = !q || row.dataset.search.indexOf(q) !== -1;
+        row.classList.toggle("is-hidden", !match);
+      });
+    });
+  }
+
+  // ---------- Skills panel ----------
+  function isMaxed(skillId){
+    var s = skillsData[skillId];
+    return learned[skillId] >= s.levels.length;
+  }
+
+  function isUnlocked(skillId){
+    var s = skillsData[skillId];
+    if(!s.parent) return true;
+    return isMaxed(s.parent);
+  }
+
+  function setLearnedLevel(skillId, newLevel){
+    var s = skillsData[skillId];
+    if(newLevel < 0) newLevel = 0;
+    if(newLevel > s.levels.length) newLevel = s.levels.length;
+    learned[skillId] = newLevel;
+    renderSkillTree(); // re-render to refresh lock states of children + pips
+  }
+
+  function renderSkillTree(){
+    var container = document.getElementById("skillTree");
+    var html = topLevelIds
+      .slice()
+      .sort(function(a,b){ return skillsData[a].name.localeCompare(skillsData[b].name); })
+      .map(function(id){ return renderSkillGroup(id, false); })
+      .join("");
+    container.innerHTML = html;
+
+    container.querySelectorAll(".pip").forEach(function(pip){
+      pip.addEventListener("click", function(){
+        if(pip.classList.contains("is-disabled")) return;
+        var skillId = pip.dataset.skill;
+        var lvl = parseInt(pip.dataset.level, 10);
+        var current = learned[skillId] || 0;
+        // clicking the currently-highest filled pip un-learns it; otherwise sets to that level
+        var next = (current === lvl) ? lvl - 1 : lvl;
+        setLearnedLevel(skillId, next);
+      });
+    });
+  }
+
+  function renderSkillGroup(id, isBranch){
+    var s = skillsData[id];
+    var unlocked = isUnlocked(id);
+    var lvl = learned[id] || 0;
+
+    var pips = s.levels.map(function(levelData){
+      var n = levelData.level;
+      var filled = n <= lvl;
+      var classes = ["pip"];
+      if(filled) classes.push("is-filled");
+      if(!unlocked) classes.push("is-disabled");
+      return (
+        '<div class="' + classes.join(" ") + '" data-skill="' + id + '" data-level="' + n + '" ' +
+        'title="Level ' + n + (levelData.tbd ? " (materials not yet documented)" : "") + '">' + n + '</div>'
+      );
+    });
+    var pipRow = pips.reduce(function(acc, pipHtml, i){
+      return acc + (i > 0 ? '<div class="pip-connector"></div>' : "") + pipHtml;
+    }, "");
+
+    var lockNote = "";
+    if(!unlocked){
+      lockNote = '<div class="skill-lock-note">Max out ' + skillsData[s.parent].name + ' to unlock this branch.</div>';
+    }
+
+    var unlockNote = s.unlock ? '<div class="skill-unlock">' + s.unlock + '</div>' : "";
+
+    var arBadge = s.levels[0] && s.levels[0].ar != null ? '<span class="skill-ar">AR ' + s.levels[0].ar + '+</span>' : "";
+
+    var groupClasses = ["skill-group"];
+    if(isBranch) groupClasses.push("is-branch");
+    if(!unlocked) groupClasses.push("is-locked");
+
+    var html =
+      '<div class="' + groupClasses.join(" ") + '">' +
+        '<div class="skill-head">' +
+          '<span class="skill-emoji">' + s.emoji + '</span>' +
+          '<span class="skill-name">' + s.name + '</span>' +
+          arBadge +
+        '</div>' +
+        unlockNote +
+        lockNote +
+        '<div class="pip-row">' + pipRow + '</div>' +
+      '</div>';
+
+    var kids = childrenOf[id] || [];
+    kids.slice().sort(function(a,b){ return skillsData[a].name.localeCompare(skillsData[b].name); })
+      .forEach(function(childId){
+        html += renderSkillGroup(childId, true);
+      });
+
+    return html;
+  }
+
+  // ---------- Calculate ----------
+  document.addEventListener("click", function(e){
+    if(e.target && e.target.id === "calcBtn"){
+      runCalculate();
+    }
+  });
+
+  function runCalculate(){
+    var eligible = [];   // skills whose next level is ready to view (materials known)
+    var pending  = [];   // skills whose next level exists but materials are TBD
+
+    Object.keys(skillsData).forEach(function(id){
+      var s = skillsData[id];
+      if(!isUnlocked(id)) return;
+      var lvl = learned[id] || 0;
+      var nextLevelIndex = lvl; // levels array is 0-indexed, level N is index N-1, so next level (lvl+1) is index lvl
+      if(nextLevelIndex >= s.levels.length) return; // already maxed
+      var nextData = s.levels[nextLevelIndex];
+      if(nextData.tbd){
+        pending.push({ id: id, name: s.name, level: nextData.level, isBranch: !!s.parent, parentName: s.parent ? skillsData[s.parent].name : null });
+      } else {
+        eligible.push({ id: id, skill: s, level: nextData, isBranch: !!s.parent, parentName: s.parent ? skillsData[s.parent].name : null });
+      }
+    });
+
+    renderResults(eligible, pending);
+  }
+
+  function renderResults(eligible, pending){
+    var out = document.getElementById("results");
+
+    if(eligible.length === 0 && pending.length === 0){
+      out.innerHTML = '<div class="results-empty">Every skill is either fully maxed or still locked behind a branch requirement. Nothing new to learn right now.</div>';
+      return;
+    }
+
+    eligible.sort(function(a,b){ return a.skill.name.localeCompare(b.skill.name); });
+
+    var cardsHtml = eligible.map(function(entry){
+      var s = entry.skill, lv = entry.level;
+      var matsHtml = (lv.materials || []).map(function(m){
+        var item = itemsData[m.item];
+        var have = inventory[m.item] || 0;
+        var enough = have >= m.qty;
+        return (
+          '<div class="mat-row">' +
+            '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
+            '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
+            '<div class="mat-qty ' + (enough ? "ok" : "short") + '">' + have + ' / ' + m.qty + '</div>' +
+          '</div>'
+        );
+      }).join("");
+
+      var allEnough = (lv.materials || []).every(function(m){ return (inventory[m.item] || 0) >= m.qty; });
+
+      return (
+        '<div class="result-card ' + (entry.isBranch ? "is-branch " : "") + (allEnough ? "affordable" : "unaffordable") + '">' +
+          '<div class="result-head">' +
+            '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
+            '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
+          '</div>' +
+          (entry.parentName ? '<div class="result-parent">Branch of ' + entry.parentName + '</div>' : "") +
+          '<div class="result-effect">' + lv.effect + '</div>' +
+          (lv.ar != null ? '<div class="result-ar">Adventure Rank ' + lv.ar + '+</div>' : "") +
+          matsHtml +
+        '</div>'
+      );
+    }).join("");
+
+    var pendingHtml = "";
+    if(pending.length){
+      pendingHtml =
+        '<div class="pending-note">' +
+          '<strong>Next level ready, but materials not yet documented on the wiki:</strong>' +
+          '<ul>' + pending.map(function(p){
+            return '<li>' + p.name + (p.parentName ? ' (branch of ' + p.parentName + ')' : '') + ' &ndash; Level ' + p.level + '</li>';
+          }).join("") + '</ul>' +
+        '</div>';
+    }
+
+    out.innerHTML =
+      (eligible.length ? '<div class="result-grid">' + cardsHtml + '</div>' : '<div class="results-empty">No skills with documented materials are ready yet.</div>') +
+      pendingHtml;
+  }
+
+})();
+</script>
+
+</body>
+</html>
