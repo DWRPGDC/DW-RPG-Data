@@ -136,7 +136,9 @@
     margin:0 4px;
   }
   @media (max-width:600px){
-    .step span.label{ display:none; }
+    .step{ gap:6px; font-size:11px; }
+    .step .num{ width:22px; height:22px; font-size:11px; }
+    .step-connector{ flex:0 0 12px; margin:0 2px; }
   }
 
   /* ---------- Summary bar ---------- */
@@ -294,7 +296,7 @@
   .sort-toggles-label{ font-size:12.5px; color:var(--ink-dim); margin-right:2px; }
   .sort-toggle-btn{ font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; border:1px solid var(--line); background:transparent; color:var(--ink-dim); cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
   .sort-toggle-btn:hover{ color:var(--ink); border-color:var(--gold); }
-  .sort-toggle-btn.is-active{ background:var(--gold); border-color:var(--gold); color:#1a1408; }
+  .sort-toggle-btn.is-active{ background:var(--gold); border-color:var(--gold); color:#ffffff; }
   .sort-arrow{ display:inline-block; font-size:11px; }
 
   .currency-box{
@@ -734,7 +736,7 @@
     <div class="stepper" id="stepper">
       <div class="step is-active" data-step="1" role="button" tabindex="0" aria-label="Go to Inventory"><div class="num">1</div><span class="label">Inventory</span></div>
       <div class="step-connector"></div>
-      <div class="step" data-step="2" role="button" tabindex="0" aria-label="Go to Skills Learned"><div class="num">2</div><span class="label">Skills Learned</span></div>
+      <div class="step" data-step="2" role="button" tabindex="0" aria-label="Go to Skills Learned"><div class="num">2</div><span class="label">Skills</span></div>
       <div class="step-connector"></div>
       <div class="step" data-step="3" role="button" tabindex="0" aria-label="Go to Results"><div class="num">3</div><span class="label">Results</span></div>
     </div>
@@ -815,6 +817,7 @@
         <div class="sort-toggles" id="sortToggles">
           <span class="sort-toggles-label">Sort by:</span>
           <button type="button" class="sort-toggle-btn is-active" id="sortAbcBtn" data-sort="abc">ABC <span class="sort-arrow" id="sortAbcArrow">&#8595;</span></button>
+          <button type="button" class="sort-toggle-btn" id="sortGroupBtn" data-sort="group">Group <span class="sort-arrow" id="sortGroupArrow"></span></button>
           <button type="button" class="sort-toggle-btn" id="sortTypeBtn" data-sort="type">Type <span class="sort-arrow" id="sortTypeArrow"></span></button>
           <button type="button" class="sort-toggle-btn" id="sortTierBtn" data-sort="tier">Tier <span class="sort-arrow" id="sortTierArrow"></span></button>
         </div>
@@ -1493,6 +1496,13 @@
   function bindQtyInputs(container, opts){
     opts = opts || {};
 
+    // renderItemList() replaces container.innerHTML on every re-render (search,
+    // sort, undo, paste-import...) but the container element itself persists,
+    // so without this guard we'd stack a fresh set of listeners on top of the
+    // old ones each time - one tap on +/- would then fire N times.
+    if(container.dataset.qtyBound) return;
+    container.dataset.qtyBound = "1";
+
     function applyQty(id, val, inputEl){
       if(isNaN(val) || val < 0){ val = 0; }
       inventory[id] = val;
@@ -1548,15 +1558,26 @@
 
   // ---------- Inventory list sorting ----------
   // ABC (name) is always applied as the base/tiebreaker sort, and its own
-  // direction (A-Z / Z-A) can be flipped independently. Type and Tier can
-  // each be switched on/off and given their own direction, and combine with
-  // each other - when both are on, Type is applied first, then Tier, then
+  // direction (A-Z / Z-A) can be flipped independently. Group, Type, and
+  // Tier can each be switched on/off and given their own direction, and
+  // combine with each other - when multiple are on, Type is applied first
+  // (outer bucket), then Group (clusters within a type), then Tier, then
   // name, regardless of the order in which they were clicked.
   var abcDir = "asc";       // "asc" (A-Z) or "desc" (Z-A) - always applied
+  var groupActive = false;
+  var groupDir = "asc";     // clusters items sharing the same item.group together
   var typeActive = false;
   var typeDir = "asc";      // "asc" = Drops -> Misc, "desc" = Misc -> Drops
   var tierActive = false;
   var tierDir = "asc";      // "asc" = 1 -> 3, "desc" = 3 -> 1
+
+  function itemGroupKey(item){
+    // "group" is an optional metadata field that ties related items together,
+    // e.g. Slime Condensate / Slime Secretions / Slime Concentrate would all
+    // share group: "slime" so they list together instead of scattering
+    // alphabetically. Items without a group sort together at one end.
+    return item && item.group ? String(item.group).toLowerCase() : "";
+  }
 
   function itemTypeRank(item){
     var cat = item && item.category ? String(item.category).toLowerCase() : "";
@@ -1577,6 +1598,10 @@
       var typeDiff = (itemTypeRank(ia) - itemTypeRank(ib)) * (typeDir === "desc" ? -1 : 1);
       if(typeDiff !== 0) return typeDiff;
     }
+    if(groupActive){
+      var groupDiff = itemGroupKey(ia).localeCompare(itemGroupKey(ib)) * (groupDir === "desc" ? -1 : 1);
+      if(groupDiff !== 0) return groupDiff;
+    }
     if(tierActive){
       var tierDiff = (itemTierRank(ia) - itemTierRank(ib)) * (tierDir === "desc" ? -1 : 1);
       if(tierDiff !== 0) return tierDiff;
@@ -1586,9 +1611,11 @@
 
   function setupSortToggles(){
     var abcBtn = document.getElementById("sortAbcBtn");
+    var groupBtn = document.getElementById("sortGroupBtn");
     var typeBtn = document.getElementById("sortTypeBtn");
     var tierBtn = document.getElementById("sortTierBtn");
     var abcArrow = document.getElementById("sortAbcArrow");
+    var groupArrow = document.getElementById("sortGroupArrow");
     var typeArrow = document.getElementById("sortTypeArrow");
     var tierArrow = document.getElementById("sortTierArrow");
     if(!abcBtn || abcBtn.dataset.bound) return; // only bind once
@@ -1598,6 +1625,8 @@
 
     function refresh(){
       abcArrow.textContent = abcDir === "desc" ? UP : DOWN;
+      groupBtn.classList.toggle("is-active", groupActive);
+      groupArrow.textContent = groupActive ? (groupDir === "desc" ? UP : DOWN) : "";
       typeBtn.classList.toggle("is-active", typeActive);
       typeArrow.textContent = typeActive ? (typeDir === "desc" ? UP : DOWN) : "";
       tierBtn.classList.toggle("is-active", tierActive);
@@ -1611,7 +1640,14 @@
       renderItemList();
     });
 
-    // Type/Tier cycle: off -> ascending -> descending -> off.
+    // Group/Type/Tier cycle: off -> ascending -> descending -> off.
+    groupBtn.addEventListener("click", function(){
+      if(!groupActive){ groupActive = true; groupDir = "asc"; }
+      else if(groupDir === "asc"){ groupDir = "desc"; }
+      else { groupActive = false; groupDir = "asc"; }
+      refresh();
+      renderItemList();
+    });
     typeBtn.addEventListener("click", function(){
       if(!typeActive){ typeActive = true; typeDir = "asc"; }
       else if(typeDir === "asc"){ typeDir = "desc"; }
