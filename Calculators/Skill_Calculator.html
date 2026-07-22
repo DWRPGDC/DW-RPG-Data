@@ -134,6 +134,33 @@
     .step span.label{ display:none; }
   }
 
+  /* ---------- Summary bar ---------- */
+  .summary-bar{
+    position:sticky; top:0; z-index:15;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    background:var(--panel); border:2px solid var(--line); border-radius:var(--radius);
+    padding:10px 16px; margin-bottom:20px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+  }
+  body.theme-dark .summary-bar{ box-shadow:0 4px 14px rgba(0,0,0,0.4); }
+  .summary-bar .summary-stats{
+    display:flex; gap:16px; flex-wrap:wrap; flex:1 1 auto;
+    font-size:12.5px; color:var(--ink-dim); font-family:'JetBrains Mono', monospace;
+  }
+  .summary-bar .summary-stats strong{ color:var(--ink); font-weight:700; }
+  .summary-recalc-btn{
+    flex:0 0 auto;
+    font-family:'Cinzel', serif; font-size:12px; letter-spacing:0.04em; text-transform:uppercase;
+    color:#ffffff; background:linear-gradient(155deg, var(--gold) 0%, var(--gold-dim) 100%);
+    border:none; border-radius:6px; padding:8px 16px; cursor:pointer;
+    transition: transform 0.12s ease;
+  }
+  .summary-recalc-btn:hover{ transform:translateY(-1px); }
+  .summary-recalc-btn:active{ transform:translateY(0); }
+  @media (max-width:600px){
+    .summary-bar{ position:static; }
+  }
+
   /* ---------- Panels ---------- */
   .stage{ display:none; }
   .stage.is-active{ display:block; }
@@ -319,6 +346,7 @@
     box-shadow:0 0 0 1px rgba(255,255,255,0.1) inset;
     animation: resultCardIn 0.28s ease both;
   }
+  .result-card.is-hidden{ display:none; }
   .result-card.is-branch{ border-left:3px solid var(--teal); }
   .result-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
   .result-head .lvl-badge{
@@ -380,6 +408,12 @@
   .almost-body{ display:none; padding:0 18px 20px; }
   .almost-section.is-open .almost-body{ display:block; }
   .almost-sub{ font-size:12.5px; color:var(--ink-dim); margin:0 0 14px; }
+  .almost-body .result-grid{
+    max-height:520px; overflow-y:auto; padding-right:4px;
+  }
+  .almost-body .result-grid::-webkit-scrollbar{ width:8px; }
+  .almost-body .result-grid::-webkit-scrollbar-thumb{ background:var(--line); border-radius:8px; }
+  .almost-body .result-grid::-webkit-scrollbar-track{ background:transparent; }
   .result-card.is-almost{
     border-style:dashed; opacity:0.88;
   }
@@ -581,7 +615,12 @@
         </label>
       </div>
       <button class="settings-clear" id="clearDataBtn">Clear saved inventory &amp; skills</button>
-      <div class="settings-saved-note">Your inventory, learned skills, and theme are saved automatically in this browser.</div>
+      <div class="settings-row" style="margin-top:10px; gap:8px;">
+        <button class="settings-clear" id="exportDataBtn" style="flex:1;">Export</button>
+        <button class="settings-clear" id="importDataBtn" style="flex:1;">Import</button>
+        <input type="file" id="importDataInput" accept="application/json" style="display:none;">
+      </div>
+      <div class="settings-saved-note">Your inventory, learned skills, and theme are saved automatically in this browser. Export a backup to move progress between devices.</div>
     </div>
   </header>
 
@@ -595,6 +634,11 @@
       <div class="step" data-step="2"><div class="num">2</div><span class="label">Skills Learned</span></div>
       <div class="step-connector"></div>
       <div class="step" data-step="3"><div class="num">3</div><span class="label">Results</span></div>
+    </div>
+
+    <div class="summary-bar" id="summaryBar">
+      <div class="summary-stats" id="summaryStats"></div>
+      <button type="button" class="summary-recalc-btn" id="summaryRecalcBtn">Recalculate</button>
     </div>
 
     <!-- STEP 1: INVENTORY -->
@@ -657,6 +701,13 @@
           <span class="count" id="resultCount"></span>
         </div>
         <div class="panel-sub">Only skills you can afford right now with your current inventory are shown.</div>
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="resultSearch" placeholder="Filter results, e.g. &quot;fire&quot;">
+          <button type="button" class="search-clear" id="resultSearchClear" title="Clear search" aria-label="Clear search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
         <div id="results"></div>
       </div>
       <div class="stage-nav">
@@ -742,7 +793,63 @@
       Object.keys(learned).forEach(function(id){ learned[id] = 0; });
       renderItemList();
       renderSkillTree();
+      updateSummaryBar();
       goToStage(1);
+    });
+
+    // Lets progress move between devices/browsers, since everything otherwise
+    // only lives in this browser's localStorage.
+    document.getElementById("exportDataBtn").addEventListener("click", function(){
+      var payload = {
+        exportedAt: new Date().toISOString(),
+        inventory: inventory,
+        learned: learned
+      };
+      var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "skill-ledger-progress.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    var importInput = document.getElementById("importDataInput");
+    document.getElementById("importDataBtn").addEventListener("click", function(){
+      importInput.value = "";
+      importInput.click();
+    });
+    importInput.addEventListener("change", function(e){
+      var file = e.target.files && e.target.files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(){
+        var data;
+        try{ data = JSON.parse(reader.result); }
+        catch(err){ alert("That file isn't valid JSON."); return; }
+        if(!data || typeof data !== "object" || (!data.inventory && !data.learned)){
+          alert("That file doesn't look like a Skill Ledger export.");
+          return;
+        }
+        if(!confirm("Import this file? It will overwrite your current inventory and learned skills.")) return;
+        inventory = data.inventory || {};
+        learned = data.learned || {};
+        // Clamp/repair against the currently-loaded skill data, same as loadProgress().
+        Object.keys(skillsData).forEach(function(id){ if(!(id in learned)) learned[id] = 0; });
+        Object.keys(learned).forEach(function(id){
+          if(!skillsData[id]){ delete learned[id]; return; }
+          var max = skillsData[id].levels.length;
+          if(learned[id] > max) learned[id] = max;
+        });
+        saveProgress();
+        renderItemList();
+        renderSkillTree();
+        updateSummaryBar();
+        goToStage(1);
+      };
+      reader.readAsText(file);
     });
   })();
 
@@ -824,6 +931,7 @@
     buildTree();
     renderItemList();
     renderSkillTree();
+    updateSummaryBar();
     document.getElementById("app").style.display = "block";
   }).catch(function(err){
     document.getElementById("loadError").innerHTML =
@@ -854,6 +962,22 @@
     });
   }
 
+  // ---------- Summary bar ----------
+  // Lets the user see progress and jump straight to fresh results from any
+  // stage, instead of having to walk the full wizard again to recheck things.
+  function updateSummaryBar(){
+    var itemsLogged = Object.keys(inventory).filter(function(id){ return (inventory[id] || 0) > 0; }).length;
+    var skillsLearned = Object.keys(learned).filter(function(id){ return (learned[id] || 0) > 0; }).length;
+    document.getElementById("summaryStats").innerHTML =
+      '<span><strong>' + itemsLogged + '</strong> items logged</span>' +
+      '<span><strong>' + skillsLearned + '</strong> skills learned</span>';
+  }
+
+  document.getElementById("summaryRecalcBtn").addEventListener("click", function(){
+    runCalculate();
+    goToStage(3);
+  });
+
   // ---------- Stepper navigation ----------
   var currentStage = 1;
 
@@ -871,6 +995,8 @@
 
     document.getElementById("floatingNav").classList.toggle("is-visible", n === 2);
     updateFloatingNavScrollState();
+    updateSummaryBar();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   // Hides the floating nav once the real Back/Calculate buttons at the bottom
@@ -893,7 +1019,6 @@
   document.getElementById("calcBtn").addEventListener("click", function(){
     runCalculate();
     goToStage(3);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
   // ---------- Inventory panel ----------
@@ -921,6 +1046,7 @@
       inventory[id] = val;
       e.target.classList.toggle("has-value", val > 0);
       saveProgress();
+      updateSummaryBar();
     });
   }
 
@@ -997,6 +1123,7 @@
     learned[skillId] = newLevel;
     renderSkillTree();
     saveProgress();
+    updateSummaryBar();
   }
 
   function renderSkillTree(){
@@ -1143,6 +1270,56 @@
     renderResults(affordable, almostThere, pendingData);
   }
 
+  // Builds one result card's HTML. Shared by both the "Ready to Learn" and
+  // "Almost There" lists so tweaks to card layout only need to happen once.
+  function resultCardHtml(entry, idx, opts){
+    var s = entry.skill, lv = entry.level;
+    var isAlmost = !!opts.isAlmost;
+    var mats = isAlmost ? entry.missing : (lv.materials || []);
+
+    var matsHtml = mats.map(function(m){
+      var item = itemsData[m.item];
+      if(isAlmost){
+        return (
+          '<div class="mat-row' + (m.short > 0 ? ' is-missing' : '') + '">' +
+            '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
+            '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
+            '<div class="mat-qty">' + m.have + ' / ' + m.need +
+              (m.short > 0 ? ' <span class="mat-short">need ' + m.short + ' more</span>' : '') +
+            '</div>' +
+          '</div>'
+        );
+      }
+      var have = inventory[m.item] || 0;
+      return (
+        '<div class="mat-row">' +
+          '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
+          '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
+          '<div class="mat-qty">' + have + ' / ' + m.qty + '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    var delay = Math.min(idx, 8) * 35;
+    var cardClasses = ["result-card"];
+    if(isAlmost) cardClasses.push("is-almost");
+    if(entry.isBranch) cardClasses.push("is-branch");
+
+    return (
+      '<div class="' + cardClasses.join(" ") + '" data-search="' + s.name.toLowerCase() + '" style="animation-delay:' + delay + 'ms">' +
+        '<div class="result-head">' +
+          (isAlmost ? "" : '<button class="btn-learn" data-skill="' + entry.id + '">Learn</button>') +
+          '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
+          '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
+        '</div>' +
+        (entry.parentName ? '<div class="result-parent">Branch of ' + entry.parentName + '</div>' : "") +
+        '<div class="result-effect">' + lv.effect + '</div>' +
+        (lv.ar != null ? '<div class="result-ar">Adventure Rank ' + lv.ar + '+</div>' : "") +
+        matsHtml +
+      '</div>'
+    );
+  }
+
   function renderResults(affordable, almostThere, pendingData){
     var out = document.getElementById("results");
     var countEl = document.getElementById("resultCount");
@@ -1154,75 +1331,15 @@
       html += '<div class="results-empty">No skill upgrades are both unlocked and fully stocked right now. Gather more materials or unlock a new branch.</div>';
     } else {
       affordable.sort(function(a,b){ return a.skill.name.localeCompare(b.skill.name); });
-
-      var cardsHtml = affordable.map(function(entry, idx){
-        var s = entry.skill, lv = entry.level;
-        var matsHtml = (lv.materials || []).map(function(m){
-          var item = itemsData[m.item];
-          var have = inventory[m.item] || 0;
-          return (
-            '<div class="mat-row">' +
-              '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
-              '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
-              '<div class="mat-qty">' + have + ' / ' + m.qty + '</div>' +
-            '</div>'
-          );
-        }).join("");
-
-        var delay = Math.min(idx, 8) * 35;
-        return (
-          '<div class="result-card ' + (entry.isBranch ? "is-branch" : "") + '" style="animation-delay:' + delay + 'ms">' +
-            '<div class="result-head">' +
-              '<button class="btn-learn" data-skill="' + entry.id + '">Learn</button>' +
-              '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
-              '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
-            '</div>' +
-            (entry.parentName ? '<div class="result-parent">Branch of ' + entry.parentName + '</div>' : "") +
-            '<div class="result-effect">' + lv.effect + '</div>' +
-            (lv.ar != null ? '<div class="result-ar">Adventure Rank ' + lv.ar + '+</div>' : "") +
-            matsHtml +
-          '</div>'
-        );
-      }).join("");
-
+      var cardsHtml = affordable.map(function(entry, idx){ return resultCardHtml(entry, idx, { isAlmost: false }); }).join("");
       html += '<div class="result-grid">' + cardsHtml + '</div>';
     }
 
     if(almostThere.length > 0){
       almostThere.sort(function(a,b){ return b.completion - a.completion; });
-      var ALMOST_LIMIT = 6;
-      var shown = almostThere.slice(0, ALMOST_LIMIT);
-      var extra = almostThere.length - shown.length;
-
-      var almostHtml = shown.map(function(entry, idx){
-        var s = entry.skill, lv = entry.level;
-        var matsHtml = entry.missing.map(function(m){
-          var item = itemsData[m.item];
-          return (
-            '<div class="mat-row' + (m.short > 0 ? ' is-missing' : '') + '">' +
-              '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
-              '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
-              '<div class="mat-qty">' + m.have + ' / ' + m.need +
-                (m.short > 0 ? ' <span class="mat-short">need ' + m.short + ' more</span>' : '') +
-              '</div>' +
-            '</div>'
-          );
-        }).join("");
-
-        var delay = Math.min(idx, 8) * 35;
-        return (
-          '<div class="result-card is-almost ' + (entry.isBranch ? "is-branch" : "") + '" style="animation-delay:' + delay + 'ms">' +
-            '<div class="result-head">' +
-              '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
-              '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
-            '</div>' +
-            (entry.parentName ? '<div class="result-parent">Branch of ' + entry.parentName + '</div>' : "") +
-            '<div class="result-effect">' + lv.effect + '</div>' +
-            (lv.ar != null ? '<div class="result-ar">Adventure Rank ' + lv.ar + '+</div>' : "") +
-            matsHtml +
-          '</div>'
-        );
-      }).join("");
+      // Show every near-miss skill (no hard cap) - the list itself scrolls,
+      // so nothing is silently hidden behind a "+N more" message anymore.
+      var almostHtml = almostThere.map(function(entry, idx){ return resultCardHtml(entry, idx, { isAlmost: true }); }).join("");
 
       html +=
         '<div class="almost-section" id="almostSection">' +
@@ -1233,7 +1350,6 @@
           '<div class="almost-body">' +
             '<div class="almost-sub">Unlocked, but you\'re short a few materials. Closest matches shown first.</div>' +
             '<div class="result-grid">' + almostHtml + '</div>' +
-            (extra > 0 ? '<div class="almost-more">+' + extra + ' more skill' + (extra === 1 ? "" : "s") + ' close, but not shown here</div>' : "") +
           '</div>' +
         '</div>';
     }
@@ -1259,7 +1375,34 @@
         setTimeout(function(){ learnSkill(skillId); }, 180);
       });
     });
+
+    applyResultFilter();
   }
+
+  // ---------- Results search ----------
+  // Filters both the "Ready to Learn" and "Almost There" cards by skill name.
+  function applyResultFilter(){
+    var input = document.getElementById("resultSearch");
+    var clearBtn = document.getElementById("resultSearchClear");
+    if(!input) return;
+    var q = input.value.trim().toLowerCase();
+    document.querySelectorAll("#results .result-card").forEach(function(card){
+      var match = !q || (card.dataset.search || "").indexOf(q) !== -1;
+      card.classList.toggle("is-hidden", !match);
+    });
+    clearBtn.classList.toggle("is-visible", input.value.length > 0);
+  }
+
+  (function initResultSearch(){
+    var input = document.getElementById("resultSearch");
+    var clearBtn = document.getElementById("resultSearchClear");
+    input.addEventListener("input", applyResultFilter);
+    clearBtn.addEventListener("click", function(){
+      input.value = "";
+      applyResultFilter();
+      input.focus();
+    });
+  })();
 
   // Deducts the next level's materials from inventory, marks the level learned,
   // and refreshes everything (inventory inputs, skill tree, results) so a maxed
@@ -1287,6 +1430,7 @@
     renderSkillTree();
     runCalculate();
     saveProgress();
+    updateSummaryBar();
 
     showLearnToast(skillId, lvl, nextData, mats);
   }
@@ -1329,6 +1473,7 @@
     renderSkillTree();
     runCalculate();
     saveProgress();
+    updateSummaryBar();
 
     hideLearnToast();
   }
