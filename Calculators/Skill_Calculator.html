@@ -1332,7 +1332,6 @@
       lsSet(LS_BULK_PASTE_DRAFT, "");
       resultEl.textContent = "";
       resultEl.classList.remove("has-issues");
-      textarea.focus();
     });
 
     toggle.addEventListener("click", function(){
@@ -1451,14 +1450,6 @@
         resultEl.classList.remove("has-issues");
       }
       resultEl.textContent = msg;
-
-      if(parsed.matched.length){
-        // A successful apply is a natural "done with this paste" point, so
-        // clear the textarea and its saved draft - the inventory itself now
-        // reflects it, and Undo (above) can still revert the numbers.
-        textarea.value = "";
-        lsSet(LS_BULK_PASTE_DRAFT, "");
-      }
     });
 
     undoBtn.addEventListener("click", function(){
