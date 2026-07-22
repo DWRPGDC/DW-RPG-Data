@@ -207,6 +207,8 @@
     text-decoration:underline; text-underline-offset:2px;
   }
   .inline-link-btn:hover{ color:var(--ink); }
+  .copy-feedback{ font-size:12px; color:var(--success); opacity:0; transition:opacity .2s; }
+  .copy-feedback.is-visible{ opacity:1; }
 
   /* ---------- Bulk paste ---------- */
   .bulk-paste-box{
@@ -236,6 +238,10 @@
     padding:10px; margin-bottom:10px;
   }
   #bulkPasteInput:focus{ outline:1.5px solid var(--teal); border-color:var(--teal); }
+  .bulk-paste-mode{ display:flex; gap:16px; flex-wrap:wrap; margin-bottom:10px; }
+  .bulk-paste-mode-opt{ display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-dim); cursor:pointer; }
+  .bulk-paste-mode-opt input{ accent-color:var(--gold); cursor:pointer; }
+  .bulk-paste-mode-opt input:checked + span{ color:var(--ink); font-weight:600; }
   .bulk-paste-actions{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
   .bulk-paste-result{ font-size:12px; color:var(--ink-dim); line-height:1.5; }
   .bulk-paste-result.has-issues{ color:var(--danger); }
@@ -265,6 +271,9 @@
   .search-clear:hover{ color:var(--ink); background:var(--panel-2); }
   .search-clear svg{ width:13px; height:13px; }
   .search-hint{ font-size:12px; color:var(--ink-dim); margin: -8px 0 14px 2px; }
+  .haveonly-toggle{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--ink-dim); cursor:pointer; margin: -6px 0 12px 2px; }
+  .haveonly-toggle input{ accent-color:var(--gold); cursor:pointer; }
+  .haveonly-toggle input:checked ~ span{ color:var(--ink); font-weight:600; }
 
   .currency-box{
     margin-bottom:16px;
@@ -722,8 +731,18 @@
             <span>Paste inventory from text</span>
           </button>
           <div class="bulk-paste-body">
-            <div class="bulk-paste-hint">One item per line, e.g. <code>Windwheel Aster: 12</code> or <code>Slime Condensate x5</code>. Pasted wiki formatting like <code>**Iron Chunk** &times; 1 [1.5kg]</code> is fine too - bold markers and bracketed weight notes are ignored.</div>
+            <div class="bulk-paste-hint">One item per line, e.g. <code>Windwheel Aster: 12</code> or <code>Slime Condensate x5</code>. Pasted wiki formatting like <code>**Iron Chunk** &times; 1 [1.5kg]</code> is fine too - bold markers and bracketed weight notes are ignored. Quantity can come before or after the name (<code>x3 Iron Chunk</code> works too).</div>
             <textarea id="bulkPasteInput" rows="5" placeholder="Windwheel Aster: 12&#10;Slime Condensate x5&#10;&lt;:Item_Matsutake:1528954641474261044&gt; **Matsutake** × 3 [0.15kg]"></textarea>
+            <div class="bulk-paste-mode">
+              <label class="bulk-paste-mode-opt">
+                <input type="radio" name="bulkPasteMode" id="bulkPasteModeReplace" value="replace" checked>
+                <span>Replace counts</span>
+              </label>
+              <label class="bulk-paste-mode-opt">
+                <input type="radio" name="bulkPasteMode" id="bulkPasteModeAdd" value="add">
+                <span>Add to current counts</span>
+              </label>
+            </div>
             <div class="bulk-paste-actions">
               <button type="button" class="btn btn-ghost" id="bulkPasteApplyBtn">Apply</button>
               <span class="bulk-paste-result" id="bulkPasteResult"></span>
@@ -742,6 +761,10 @@
           </button>
         </div>
         <div class="search-hint">Type to filter. Quantities you enter are kept even when hidden by search.</div>
+        <label class="haveonly-toggle" id="haveOnlyToggleWrap">
+          <input type="checkbox" id="haveOnlyToggle">
+          <span>Only show items I have</span>
+        </label>
         <div class="item-list" id="itemList"></div>
       </div>
       <div class="stage-nav">
@@ -781,7 +804,11 @@
           <h2>Ready to Learn</h2>
           <span class="count" id="resultCount"></span>
         </div>
-        <div class="panel-sub">Only skills you can afford right now with your current inventory are shown.</div>
+        <div class="panel-sub">
+          Only skills you can afford right now with your current inventory are shown.
+          <button type="button" class="inline-link-btn" id="copyResultsBtn">Copy as text</button>
+          <span class="copy-feedback" id="copyResultsFeedback"></span>
+        </div>
         <div class="search-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="resultSearch" placeholder="Filter results, e.g. &quot;fire&quot;">
@@ -811,6 +838,8 @@
   var itemsData  = {};
   var skillsData = {};
   var inventory  = {};   // itemId -> qty (number)
+  var lastAffordableResults = [];  // most recent Ready to Learn entries, for Copy as text
+  var lastAlmostThereResults = []; // most recent Almost There entries, for Copy as text
   var learned    = {};   // skillId -> highest learned level (0 = none)
   var childrenOf = {};   // parentId -> [childId, ...]
   var topLevelIds = [];
@@ -1181,18 +1210,19 @@
       toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
 
-    // Parses lines like "Item Name: 12", "Item Name x5", or "**Item Name** × 1 [1.5kg]"
-    // and matches them against known item names (exact, then unique substring).
-    // Discord custom emoji tags (<:Item_Name:1234567890>), markdown bold (**...**),
-    // and bracketed weight notes ([1.5kg], [x.x kg]) are stripped first since
-    // they're just copy-paste formatting, not part of the item name or quantity.
+    // Parses lines like "Item Name: 12", "Item Name x5", "x3 Item Name", or
+    // "**Item Name** × 1 [1.5kg]" and matches them against known item names
+    // (exact, then unique substring). Discord custom emoji tags
+    // (<:Item_Name:1234567890>), markdown bold (**...**), and bracketed weight
+    // notes ([1.5kg], [x.x kg]) are stripped first since they're just
+    // copy-paste formatting, not part of the item name or quantity.
     function parseBulkPaste(text){
       var nameIndex = {};
       Object.keys(itemsData).forEach(function(id){
         nameIndex[itemsData[id].name.toLowerCase()] = id;
       });
 
-      var matched = [], unmatched = [];
+      var matched = [], unmatched = [], ambiguous = [];
       text.split(/\r?\n/).forEach(function(rawLine){
         var line = rawLine.trim();
         if(!line) return;
@@ -1205,10 +1235,19 @@
           .trim();
         if(!cleanLine){ unmatched.push(line); return; }
 
-        var m = cleanLine.match(/^(.*?)[\s:xX×\-]+(\d+)\s*$/);
-        if(!m){ unmatched.push(line); return; }
-        var namePart = m[1].replace(/[:\-]+$/, "").trim();
-        var qty = parseInt(m[2], 10);
+        var namePart, qty;
+        var mEnd = cleanLine.match(/^(.*?)[\s:xX×\-]+(\d+)\s*$/);
+        if(mEnd){
+          namePart = mEnd[1].replace(/[:\-]+$/, "").trim();
+          qty = parseInt(mEnd[2], 10);
+        } else {
+          // Try quantity-first formats like "x3 Item Name", "3x Item Name", "3 × Item Name".
+          var mStart = cleanLine.match(/^[xX×]?\s*(\d+)\s*[xX×]?\s*[:\-]?\s*(.+)$/);
+          if(mStart){
+            qty = parseInt(mStart[1], 10);
+            namePart = mStart[2].trim();
+          }
+        }
         if(!namePart || isNaN(qty)){ unmatched.push(line); return; }
 
         var id = nameIndex[namePart.toLowerCase()];
@@ -1216,12 +1255,28 @@
           var candidates = Object.keys(nameIndex).filter(function(n){
             return n.indexOf(namePart.toLowerCase()) !== -1;
           });
-          if(candidates.length === 1) id = nameIndex[candidates[0]];
+          if(candidates.length === 1){
+            id = nameIndex[candidates[0]];
+          } else if(candidates.length > 1){
+            ambiguous.push({ line: line, options: candidates.map(function(n){ return itemsData[nameIndex[n]].name; }) });
+            return;
+          }
         }
         if(id) matched.push({ id: id, qty: qty });
         else unmatched.push(line);
       });
-      return { matched: matched, unmatched: unmatched };
+
+      // Combine duplicate lines for the same item (e.g. "Apple x1" repeated
+      // three times) by summing their quantities instead of overwriting.
+      var combined = {};
+      var order = [];
+      matched.forEach(function(m){
+        if(!(m.id in combined)){ combined[m.id] = 0; order.push(m.id); }
+        combined[m.id] += m.qty;
+      });
+      matched = order.map(function(id){ return { id: id, qty: combined[id] }; });
+
+      return { matched: matched, unmatched: unmatched, ambiguous: ambiguous };
     }
 
     applyBtn.addEventListener("click", function(){
@@ -1232,7 +1287,10 @@
         return;
       }
       var parsed = parseBulkPaste(text);
-      parsed.matched.forEach(function(m){ inventory[m.id] = m.qty; });
+      var addMode = document.getElementById("bulkPasteModeAdd").checked;
+      parsed.matched.forEach(function(m){
+        inventory[m.id] = addMode ? (inventory[m.id] || 0) + m.qty : m.qty;
+      });
 
       if(parsed.matched.length){
         renderItemList();
@@ -1241,9 +1299,18 @@
         markResultsStale();
       }
 
-      var msg = "Matched " + parsed.matched.length + " item" + (parsed.matched.length === 1 ? "" : "s") + ".";
+      var msg = "Matched " + parsed.matched.length + " item" + (parsed.matched.length === 1 ? "" : "s") + (addMode ? " (added to existing counts)." : ".");
+      var issues = [];
+      if(parsed.ambiguous.length){
+        parsed.ambiguous.forEach(function(a){
+          issues.push(a.line + " - could be: " + a.options.join(", "));
+        });
+      }
       if(parsed.unmatched.length){
-        msg += " Couldn't match: " + parsed.unmatched.join(" | ");
+        issues.push.apply(issues, parsed.unmatched);
+      }
+      if(issues.length){
+        msg += " Couldn't match: " + issues.join(" | ");
         resultEl.classList.add("has-issues");
       } else {
         resultEl.classList.remove("has-issues");
@@ -1280,6 +1347,7 @@
       saveProgress();
       updateSummaryBar();
       markResultsStale();
+      if(opts.onChange) opts.onChange();
     });
 
     // Pressing Enter moves focus to the next visible quantity field, so you
@@ -1333,7 +1401,8 @@
     list.innerHTML = html;
 
     bindQtyInputs(list, {
-      onLast: function(){ document.getElementById("toStep2Btn").click(); }
+      onLast: function(){ document.getElementById("toStep2Btn").click(); },
+      onChange: function(){ filterRows(); }
     });
     bindQtyInputs(currencyList, {
       onLast: function(){
@@ -1345,12 +1414,19 @@
 
     var searchInput = document.getElementById("itemSearch");
     var searchClear = document.getElementById("itemSearchClear");
+    var haveOnlyToggle = document.getElementById("haveOnlyToggle");
 
     function filterRows(){
       var q = searchInput.value.trim().toLowerCase();
+      var haveOnly = haveOnlyToggle.checked;
       var rows = list.querySelectorAll(".item-row");
       rows.forEach(function(row){
         var match = !q || row.dataset.search.indexOf(q) !== -1;
+        if(match && haveOnly){
+          var qtyInput = row.querySelector(".item-qty");
+          var val = qtyInput ? parseInt(qtyInput.value, 10) : 0;
+          if(isNaN(val) || val <= 0) match = false;
+        }
         row.classList.toggle("is-hidden", !match);
       });
       searchClear.classList.toggle("is-visible", searchInput.value.length > 0);
@@ -1362,6 +1438,8 @@
       filterRows();
       searchInput.focus();
     });
+    haveOnlyToggle.addEventListener("change", filterRows);
+    filterRows();
   }
 
   // ---------- Skills panel ----------
@@ -1637,6 +1715,8 @@
   }
 
   function renderResults(affordable, almostThere, pendingData){
+    lastAffordableResults = affordable;
+    lastAlmostThereResults = almostThere;
     var out = document.getElementById("results");
     var countEl = document.getElementById("resultCount");
     countEl.textContent = affordable.length + " learnable now";
@@ -1709,6 +1789,67 @@
 
     applyResultFilter();
   }
+
+  // Builds a Discord-friendly plain-text summary of the current results,
+  // so it can be pasted straight back into an RPG channel.
+  function buildResultsShareText(){
+    var lines = [];
+    lines.push("✅ Ready to Learn (" + lastAffordableResults.length + ")");
+    if(lastAffordableResults.length === 0){
+      lines.push("• (none right now)");
+    } else {
+      lastAffordableResults.slice().sort(function(a,b){ return a.skill.name.localeCompare(b.skill.name); })
+        .forEach(function(entry){
+          lines.push("• " + entry.skill.name + " Lv " + entry.level.level);
+        });
+    }
+
+    if(lastAlmostThereResults.length){
+      lines.push("");
+      lines.push("⏳ Almost There (" + lastAlmostThereResults.length + ")");
+      lastAlmostThereResults.slice().sort(function(a,b){ return b.completion - a.completion; })
+        .forEach(function(entry){
+          var shortMats = entry.missing.filter(function(m){ return m.short > 0; })
+            .map(function(m){
+              var item = itemsData[m.item];
+              return (item ? item.name : m.item) + " x" + m.short;
+            }).join(", ");
+          lines.push("• " + entry.skill.name + " Lv " + entry.level.level + (shortMats ? " — need " + shortMats : ""));
+        });
+    }
+
+    return lines.join("\n");
+  }
+
+  (function initCopyResults(){
+    var btn = document.getElementById("copyResultsBtn");
+    var feedback = document.getElementById("copyResultsFeedback");
+    if(!btn) return;
+    btn.addEventListener("click", function(){
+      var text = buildResultsShareText();
+
+      function showCopied(ok){
+        feedback.textContent = ok ? "Copied!" : "Couldn't copy - select and copy manually.";
+        feedback.classList.add("is-visible");
+        setTimeout(function(){ feedback.classList.remove("is-visible"); }, 2000);
+      }
+
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ showCopied(true); }, function(){ showCopied(false); });
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+        document.body.removeChild(ta);
+        showCopied(ok);
+      }
+    });
+  })();
 
   // ---------- Results search ----------
   // Filters both the "Ready to Learn" and "Almost There" cards by skill name.
