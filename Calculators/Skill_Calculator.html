@@ -175,10 +175,20 @@
     color:var(--ink);
     font-family:'Inter', sans-serif;
     font-size:14px;
-    padding:10px 14px 10px 34px;
+    padding:10px 34px 10px 34px;
   }
   .search-box input:focus{ outline:2px solid var(--teal); outline-offset:1px; border-color:var(--teal); }
   .search-box svg{ position:absolute; left:11px; top:50%; transform:translateY(-50%); width:15px; height:15px; opacity:0.5; }
+  .search-clear{
+    display:none;
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    width:22px; height:22px; border-radius:50%;
+    background:transparent; border:none; color:var(--ink-dim);
+    align-items:center; justify-content:center; cursor:pointer;
+  }
+  .search-clear.is-visible{ display:flex; }
+  .search-clear:hover{ color:var(--ink); background:var(--panel-2); }
+  .search-clear svg{ width:13px; height:13px; }
   .search-hint{ font-size:12px; color:var(--ink-dim); margin: -8px 0 14px 2px; }
 
   .item-list{ max-height:440px; overflow-y:auto; padding-right:4px; }
@@ -192,6 +202,7 @@
     border-bottom:1px solid rgba(255,255,255,0.04);
   }
   .item-row.is-hidden{ display:none; }
+  .skill-group.is-hidden{ display:none; }
   .item-icon{
     width:34px; height:34px; border-radius:7px;
     background:var(--panel-2); border:1px solid var(--line);
@@ -281,7 +292,15 @@
   /* ---------- Results ---------- */
   .results-empty{ text-align:center; color:var(--ink-dim); font-size:14px; padding:30px 0; }
   .result-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
-  .result-card{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; box-shadow:0 0 0 1px rgba(255,255,255,0.1) inset; }
+  @keyframes resultCardIn{
+    from{ opacity:0; transform:translateY(8px) scale(0.98); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .result-card{
+    background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.1) inset;
+    animation: resultCardIn 0.28s ease both;
+  }
   .result-card.is-branch{ border-left:3px solid var(--teal); }
   .result-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
   .result-head .lvl-badge{
@@ -307,6 +326,29 @@
   .pending-note ul{ margin:8px 0 0; padding-left:18px; }
   .locked-note{ margin-top:10px; font-size:12.5px; color:var(--ink-dim); }
   .locked-note ul{ margin:8px 0 0; padding-left:18px; }
+
+  /* ---------- Almost There ---------- */
+  .almost-section{ margin-top:32px; padding-top:22px; border-top:1px dashed var(--line); }
+  .almost-heading{
+    font-family:'Cinzel', serif; font-size:14px; letter-spacing:0.05em;
+    text-transform:uppercase; color:var(--ink-dim); margin-bottom:4px;
+  }
+  .almost-heading .count{
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    border:1px solid var(--line); border-radius:10px; padding:1px 8px; margin-left:8px;
+    text-transform:none; letter-spacing:0;
+  }
+  .almost-sub{ font-size:12.5px; color:var(--ink-dim); margin:0 0 14px; }
+  .result-card.is-almost{
+    border-style:dashed; opacity:0.88;
+  }
+  .mat-row.is-missing .mat-name{ color:var(--ink-dim); }
+  .mat-short{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px;
+    border:1px solid var(--line); border-radius:4px;
+    padding:1px 6px; margin-left:6px; color:var(--ink-dim); white-space:nowrap;
+  }
+  .almost-more{ margin-top:12px; font-size:12px; color:var(--ink-dim); text-align:center; }
 
   .load-error{
     color:var(--danger); background:rgba(255,255,255,0.06);
@@ -381,12 +423,33 @@
   }
   .btn-learn.is-done:hover{ transform:none; }
 
-  /* ---------- Scroll-to-bottom FAB ---------- */
-  .scroll-bottom-btn{
+  /* ---------- Floating stage-2 nav ---------- */
+  .floating-nav{
     display:none;
     position:fixed;
     right:22px; bottom:22px;
     z-index:30;
+    align-items:center; gap:10px;
+    transition: opacity 0.15s ease;
+  }
+  .floating-nav.is-visible{ display:flex; }
+  .floating-nav.is-hidden-scroll{ opacity:0; pointer-events:none; }
+  .floating-back-btn{
+    flex:0 0 auto;
+    width:42px; height:42px; border-radius:50%;
+    background:var(--panel); color:var(--ink);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
+    transition: transform 0.12s ease;
+  }
+  .floating-back-btn:hover{ transform:translateY(-2px); border-color:var(--teal); }
+  .floating-back-btn:active{ transform:translateY(0); }
+  .floating-back-btn svg{ width:16px; height:16px; }
+  .scroll-bottom-btn{
+    flex:0 0 auto;
+    display:flex;
     align-items:center; gap:8px;
     background:var(--gold); color:var(--bg);
     border:1px solid var(--gold); border-radius:24px;
@@ -395,20 +458,68 @@
     letter-spacing:0.04em; text-transform:uppercase;
     cursor:pointer;
     box-shadow:0 8px 20px rgba(0,0,0,0.25);
-    transition: transform 0.12s ease, opacity 0.12s ease;
+    transition: transform 0.12s ease;
   }
-  .scroll-bottom-btn.is-visible{ display:flex; }
   .scroll-bottom-btn:hover{ transform:translateY(-2px); }
   .scroll-bottom-btn:active{ transform:translateY(0); }
   .scroll-bottom-btn svg{ width:14px; height:14px; }
+
+  /* ---------- Undo toast ---------- */
+  .toast{
+    display:none;
+    position:fixed;
+    top:20px; left:50%; transform:translateX(-50%) translateY(-12px);
+    z-index:40;
+    align-items:center; gap:14px;
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:12px 14px 12px 16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    opacity:0; transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .toast.is-visible{ display:flex; opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast-msg{ font-size:13.5px; color:var(--ink); }
+  .toast-msg strong{ font-weight:700; }
+  .toast-undo{
+    flex:0 0 auto;
+    font-family:'Cinzel', serif; font-size:12px; letter-spacing:0.04em; text-transform:uppercase;
+    background:var(--gold); color:var(--bg);
+    border:1px solid var(--gold); border-radius:6px;
+    padding:7px 14px; cursor:pointer;
+  }
+  .toast-undo:hover{ opacity:0.85; }
+  .toast-close{
+    flex:0 0 auto;
+    background:transparent; border:none; color:var(--ink-dim);
+    width:22px; height:22px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .toast-close:hover{ color:var(--ink); background:var(--panel-2); }
+  .toast-close svg{ width:12px; height:12px; }
+  @media (max-width:600px){
+    .toast{ left:12px; right:12px; transform:translateY(-12px); width:auto; }
+    .toast.is-visible{ transform:translateY(0); }
+  }
 </style>
 </head>
 <body>
 
-<button class="scroll-bottom-btn" id="scrollBottomBtn" title="Jump to Calculate">
-  <span>Jump to Calculate</span>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-</button>
+<div class="toast" id="learnToast">
+  <div class="toast-msg" id="learnToastMsg"></div>
+  <button class="toast-undo" id="toastUndoBtn">Undo</button>
+  <button class="toast-close" id="toastCloseBtn" aria-label="Dismiss">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<div class="floating-nav" id="floatingNav">
+  <button class="floating-back-btn" id="floatingBackBtn" title="Back to Inventory" aria-label="Back to Inventory">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="scroll-bottom-btn" id="scrollBottomBtn" title="Jump to Calculate">
+    <span>Jump to Calculate</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </button>
+</div>
 
 <div class="wrap">
 
@@ -456,6 +567,9 @@
         <div class="search-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="itemSearch" placeholder="Search materials, e.g. &quot;slim&quot;">
+          <button type="button" class="search-clear" id="itemSearchClear" title="Clear search" aria-label="Clear search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
         <div class="search-hint">Type to filter. Quantities you enter are kept even when hidden by search.</div>
         <div class="item-list" id="itemList"></div>
@@ -474,6 +588,13 @@
           <span class="count">tap a level to mark it learned</span>
         </div>
         <div class="panel-sub">Mark every level you already have. Branches unlock once their parent skill is fully maxed.</div>
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="skillSearch" placeholder="Search skills, e.g. &quot;fire&quot;">
+          <button type="button" class="search-clear" id="skillSearchClear" title="Clear search" aria-label="Clear search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
         <div id="skillTree"></div>
       </div>
       <div class="stage-nav">
@@ -689,7 +810,10 @@
   }
 
   // ---------- Stepper navigation ----------
+  var currentStage = 1;
+
   function goToStage(n){
+    currentStage = n;
     document.querySelectorAll(".stage").forEach(function(el){ el.classList.remove("is-active"); });
     document.getElementById("stage" + n).classList.add("is-active");
 
@@ -700,12 +824,23 @@
       else if(s < n) el.classList.add("is-done");
     });
 
-    document.getElementById("scrollBottomBtn").classList.toggle("is-visible", n === 2);
+    document.getElementById("floatingNav").classList.toggle("is-visible", n === 2);
+    updateFloatingNavScrollState();
   }
+
+  // Hides the floating nav once the real Back/Calculate buttons at the bottom
+  // of the page are already in view, so it doesn't sit on top of them.
+  function updateFloatingNavScrollState(){
+    var nearBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 60);
+    document.getElementById("floatingNav").classList.toggle("is-hidden-scroll", nearBottom);
+  }
+  window.addEventListener("scroll", updateFloatingNavScrollState, { passive: true });
+  window.addEventListener("resize", updateFloatingNavScrollState);
 
   document.getElementById("scrollBottomBtn").addEventListener("click", function(){
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   });
+  document.getElementById("floatingBackBtn").addEventListener("click", function(){ goToStage(1); });
 
   document.getElementById("toStep2Btn").addEventListener("click", function(){ goToStage(2); });
   document.getElementById("backTo1Btn").addEventListener("click", function(){ goToStage(1); });
@@ -743,13 +878,24 @@
       saveProgress();
     });
 
-    document.getElementById("itemSearch").addEventListener("input", function(e){
-      var q = e.target.value.trim().toLowerCase();
+    var searchInput = document.getElementById("itemSearch");
+    var searchClear = document.getElementById("itemSearchClear");
+
+    function filterRows(){
+      var q = searchInput.value.trim().toLowerCase();
       var rows = list.querySelectorAll(".item-row");
       rows.forEach(function(row){
         var match = !q || row.dataset.search.indexOf(q) !== -1;
         row.classList.toggle("is-hidden", !match);
       });
+      searchClear.classList.toggle("is-visible", searchInput.value.length > 0);
+    }
+
+    searchInput.addEventListener("input", filterRows);
+    searchClear.addEventListener("click", function(){
+      searchInput.value = "";
+      filterRows();
+      searchInput.focus();
     });
   }
 
@@ -793,7 +939,33 @@
         setLearnedLevel(skillId, next);
       });
     });
+
+    applySkillFilter();
   }
+
+  // ---------- Skills search ----------
+  function applySkillFilter(){
+    var input = document.getElementById("skillSearch");
+    var clearBtn = document.getElementById("skillSearchClear");
+    if(!input) return;
+    var q = input.value.trim().toLowerCase();
+    document.querySelectorAll("#skillTree .skill-group").forEach(function(group){
+      var match = !q || (group.dataset.search || "").indexOf(q) !== -1;
+      group.classList.toggle("is-hidden", !match);
+    });
+    clearBtn.classList.toggle("is-visible", input.value.length > 0);
+  }
+
+  (function initSkillSearch(){
+    var input = document.getElementById("skillSearch");
+    var clearBtn = document.getElementById("skillSearchClear");
+    input.addEventListener("input", applySkillFilter);
+    clearBtn.addEventListener("click", function(){
+      input.value = "";
+      applySkillFilter();
+      input.focus();
+    });
+  })();
 
   function renderSkillGroup(id, isBranch){
     var s = skillsData[id];
@@ -828,7 +1000,7 @@
     if(!unlocked) groupClasses.push("is-locked");
 
     var html =
-      '<div class="' + groupClasses.join(" ") + '">' +
+      '<div class="' + groupClasses.join(" ") + '" data-search="' + s.name.toLowerCase() + '">' +
         '<div class="skill-head">' +
           '<span class="skill-emoji">' + s.emoji + '</span>' +
           '<span class="skill-name">' + s.name + '</span>' +
@@ -850,8 +1022,9 @@
 
   // ---------- Calculate ----------
   function runCalculate(){
-    var affordable = [];  // learnable AND fully stocked
-    var pendingData = []; // next level exists but materials not documented (tbd)
+    var affordable = [];   // learnable AND fully stocked
+    var almostThere = [];  // unlocked, next level defined, but missing some materials
+    var pendingData = [];  // next level exists but materials not documented (tbd)
 
     Object.keys(skillsData).forEach(function(id){
       var s = skillsData[id];
@@ -867,61 +1040,130 @@
       }
 
       var mats = nextData.materials || [];
-      var canAfford = mats.every(function(m){ return (inventory[m.item] || 0) >= m.qty; });
-      if(!canAfford) return; // not enough materials -> hide entirely
+      var missing = mats.map(function(m){
+        var have = inventory[m.item] || 0;
+        return {
+          item: m.item, have: have, need: m.qty,
+          short: Math.max(0, m.qty - have),
+          ratio: m.qty > 0 ? Math.min(1, have / m.qty) : 1
+        };
+      });
+      var canAfford = missing.every(function(m){ return m.short === 0; });
 
-      affordable.push({ id: id, skill: s, level: nextData, isBranch: !!s.parent, parentName: s.parent ? skillsData[s.parent].name : null });
+      var entry = { id: id, skill: s, level: nextData, isBranch: !!s.parent, parentName: s.parent ? skillsData[s.parent].name : null };
+
+      if(canAfford){
+        affordable.push(entry);
+      } else {
+        entry.missing = missing;
+        entry.completion = missing.reduce(function(sum, m){ return sum + m.ratio; }, 0) / (missing.length || 1);
+        almostThere.push(entry);
+      }
     });
 
-    renderResults(affordable, pendingData);
+    renderResults(affordable, almostThere, pendingData);
   }
 
-  function renderResults(affordable, pendingData){
+  function renderResults(affordable, almostThere, pendingData){
     var out = document.getElementById("results");
     var countEl = document.getElementById("resultCount");
     countEl.textContent = affordable.length + " learnable now";
 
+    var html = "";
+
     if(affordable.length === 0){
-      out.innerHTML = '<div class="results-empty">No skill upgrades are both unlocked and fully stocked right now. Gather more materials or unlock a new branch.</div>';
-      return;
-    }
+      html += '<div class="results-empty">No skill upgrades are both unlocked and fully stocked right now. Gather more materials or unlock a new branch.</div>';
+    } else {
+      affordable.sort(function(a,b){ return a.skill.name.localeCompare(b.skill.name); });
 
-    affordable.sort(function(a,b){ return a.skill.name.localeCompare(b.skill.name); });
+      var cardsHtml = affordable.map(function(entry, idx){
+        var s = entry.skill, lv = entry.level;
+        var matsHtml = (lv.materials || []).map(function(m){
+          var item = itemsData[m.item];
+          var have = inventory[m.item] || 0;
+          return (
+            '<div class="mat-row">' +
+              '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
+              '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
+              '<div class="mat-qty">' + have + ' / ' + m.qty + '</div>' +
+            '</div>'
+          );
+        }).join("");
 
-    var cardsHtml = affordable.map(function(entry){
-      var s = entry.skill, lv = entry.level;
-      var matsHtml = (lv.materials || []).map(function(m){
-        var item = itemsData[m.item];
-        var have = inventory[m.item] || 0;
+        var delay = Math.min(idx, 8) * 35;
         return (
-          '<div class="mat-row">' +
-            '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
-            '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
-            '<div class="mat-qty">' + have + ' / ' + m.qty + '</div>' +
+          '<div class="result-card ' + (entry.isBranch ? "is-branch" : "") + '" style="animation-delay:' + delay + 'ms">' +
+            '<div class="result-head">' +
+              '<button class="btn-learn" data-skill="' + entry.id + '">Learn</button>' +
+              '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
+              '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
+            '</div>' +
+            (entry.parentName ? '<div class="result-parent">Branch of ' + entry.parentName + '</div>' : "") +
+            '<div class="result-effect">' + lv.effect + '</div>' +
+            (lv.ar != null ? '<div class="result-ar">Adventure Rank ' + lv.ar + '+</div>' : "") +
+            matsHtml +
           '</div>'
         );
       }).join("");
 
-      return (
-        '<div class="result-card ' + (entry.isBranch ? "is-branch" : "") + '">' +
-          '<div class="result-head">' +
-            '<button class="btn-learn" data-skill="' + entry.id + '">Learn</button>' +
-            '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
-            '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
-          '</div>' +
-          (entry.parentName ? '<div class="result-parent">Branch of ' + entry.parentName + '</div>' : "") +
-          '<div class="result-effect">' + lv.effect + '</div>' +
-          (lv.ar != null ? '<div class="result-ar">Adventure Rank ' + lv.ar + '+</div>' : "") +
-          matsHtml +
-        '</div>'
-      );
-    }).join("");
+      html += '<div class="result-grid">' + cardsHtml + '</div>';
+    }
 
-    out.innerHTML = '<div class="result-grid">' + cardsHtml + '</div>';
+    if(almostThere.length > 0){
+      almostThere.sort(function(a,b){ return b.completion - a.completion; });
+      var ALMOST_LIMIT = 6;
+      var shown = almostThere.slice(0, ALMOST_LIMIT);
+      var extra = almostThere.length - shown.length;
+
+      var almostHtml = shown.map(function(entry, idx){
+        var s = entry.skill, lv = entry.level;
+        var matsHtml = entry.missing.map(function(m){
+          var item = itemsData[m.item];
+          return (
+            '<div class="mat-row' + (m.short > 0 ? ' is-missing' : '') + '">' +
+              '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
+              '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
+              '<div class="mat-qty">' + m.have + ' / ' + m.need +
+                (m.short > 0 ? ' <span class="mat-short">need ' + m.short + ' more</span>' : '') +
+              '</div>' +
+            '</div>'
+          );
+        }).join("");
+
+        var delay = Math.min(idx, 8) * 35;
+        return (
+          '<div class="result-card is-almost ' + (entry.isBranch ? "is-branch" : "") + '" style="animation-delay:' + delay + 'ms">' +
+            '<div class="result-head">' +
+              '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
+              '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
+            '</div>' +
+            (entry.parentName ? '<div class="result-parent">Branch of ' + entry.parentName + '</div>' : "") +
+            '<div class="result-effect">' + lv.effect + '</div>' +
+            (lv.ar != null ? '<div class="result-ar">Adventure Rank ' + lv.ar + '+</div>' : "") +
+            matsHtml +
+          '</div>'
+        );
+      }).join("");
+
+      html +=
+        '<div class="almost-section">' +
+          '<div class="almost-heading">Almost There <span class="count">' + almostThere.length + '</span></div>' +
+          '<div class="almost-sub">Unlocked, but you\'re short a few materials. Closest matches shown first.</div>' +
+          '<div class="result-grid">' + almostHtml + '</div>' +
+          (extra > 0 ? '<div class="almost-more">+' + extra + ' more skill' + (extra === 1 ? "" : "s") + ' close, but not shown here</div>' : "") +
+        '</div>';
+    }
+
+    out.innerHTML = html;
 
     out.querySelectorAll(".btn-learn").forEach(function(btn){
       btn.addEventListener("click", function(){
-        learnSkill(btn.dataset.skill);
+        if(btn.disabled) return;
+        var skillId = btn.dataset.skill;
+        btn.disabled = true;
+        btn.classList.add("is-done");
+        btn.textContent = "\u2713 Learned";
+        setTimeout(function(){ learnSkill(skillId); }, 180);
       });
     });
   }
@@ -952,7 +1194,54 @@
     renderSkillTree();
     runCalculate();
     saveProgress();
+
+    showLearnToast(skillId, lvl, nextData, mats);
   }
+
+  // ---------- Undo toast ----------
+  var toastTimer = null;
+  var lastLearn = null; // { skillId, prevLevel, mats: [{item, qty}] }
+
+  function showLearnToast(skillId, prevLevel, levelData, mats){
+    var s = skillsData[skillId];
+    lastLearn = { skillId: skillId, prevLevel: prevLevel, mats: mats };
+
+    var msgEl = document.getElementById("learnToastMsg");
+    msgEl.innerHTML = 'Learned <strong>' + s.emoji + ' ' + s.name + ' Lv ' + levelData.level + '</strong>';
+
+    var toast = document.getElementById("learnToast");
+    toast.classList.add("is-visible");
+
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideLearnToast, 6000);
+  }
+
+  function hideLearnToast(){
+    document.getElementById("learnToast").classList.remove("is-visible");
+    if(toastTimer){ clearTimeout(toastTimer); toastTimer = null; }
+    lastLearn = null;
+  }
+
+  function undoLearn(){
+    if(!lastLearn) return;
+    var skillId = lastLearn.skillId;
+    if(!skillsData[skillId]){ hideLearnToast(); return; }
+
+    lastLearn.mats.forEach(function(m){
+      inventory[m.item] = (inventory[m.item] || 0) + m.qty;
+    });
+    learned[skillId] = lastLearn.prevLevel;
+
+    syncInventoryInputs();
+    renderSkillTree();
+    runCalculate();
+    saveProgress();
+
+    hideLearnToast();
+  }
+
+  document.getElementById("toastUndoBtn").addEventListener("click", undoLearn);
+  document.getElementById("toastCloseBtn").addEventListener("click", hideLearnToast);
 
   // Updates the on-screen inventory quantity inputs (stage 1) to reflect the
   // current `inventory` values, without rebuilding the whole list.
