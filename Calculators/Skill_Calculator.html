@@ -9,37 +9,54 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:            #121822;
-    --bg-alt:        #0d121a;
-    --panel:         #1a2432;
-    --panel-2:       #212e3f;
-    --card:          #253347;
-    --line:          #33445c;
-    --gold:          #d5ac6a;
-    --gold-dim:      #8c7647;
-    --teal:          #5fc9b8;
-    --teal-dim:      #2e5f58;
-    --ink:           #e9e4d6;
-    --ink-dim:       #9aa8b6;
-    --danger:        #e2685c;
-    --success:       #7fbf8a;
+    --bg:            #ffffff;
+    --bg-alt:        #f5f5f5;
+    --panel:         #ffffff;
+    --panel-2:       #f0f0f0;
+    --card:          #fafafa;
+    --line:          #cccccc;
+    --gold:          #000000;
+    --gold-dim:      #666666;
+    --teal:          #000000;
+    --teal-dim:      #999999;
+    --ink:           #000000;
+    --ink-dim:       #555555;
+    --danger:        #000000;
+    --success:       #000000;
     --radius:        10px;
   }
+
+  body.theme-dark{
+    --bg:            #000000;
+    --bg-alt:        #0a0a0a;
+    --panel:         #0f0f0f;
+    --panel-2:       #1a1a1a;
+    --card:          #141414;
+    --line:          #3a3a3a;
+    --gold:          #ffffff;
+    --gold-dim:      #888888;
+    --teal:          #ffffff;
+    --teal-dim:      #444444;
+    --ink:           #f2f2f2;
+    --ink-dim:       #999999;
+    --danger:        #ffffff;
+    --success:       #ffffff;
+  }
+  body.theme-dark .step.is-active .num,
+  body.theme-dark .pip.is-filled,
+  body.theme-dark .btn-primary{ color:#000000; }
 
   *{ box-sizing:border-box; }
 
   html,body{
     margin:0; padding:0;
-    background:
-      radial-gradient(ellipse at top left, #182234 0%, transparent 55%),
-      radial-gradient(ellipse at bottom right, #101823 0%, transparent 55%),
-      var(--bg);
+    background:var(--bg);
     color:var(--ink);
     font-family:'Inter', sans-serif;
     min-height:100vh;
   }
 
-  ::selection{ background:var(--teal-dim); color:var(--ink); }
+  ::selection{ background:var(--ink); color:var(--bg); }
 
   .wrap{
     max-width:900px;
@@ -62,7 +79,7 @@
     border:1px solid var(--gold-dim);
     display:flex; align-items:center; justify-content:center;
     font-size:26px;
-    box-shadow: inset 0 0 0 1px rgba(213,172,106,0.15), 0 6px 18px rgba(0,0,0,0.35);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 0 6px 18px rgba(0,0,0,0.35);
   }
   h1{
     font-family:'Cinzel', serif;
@@ -104,7 +121,7 @@
     transition: all 0.15s ease;
   }
   .step.is-active{ color:var(--ink); }
-  .step.is-active .num{ border-color:var(--gold); background:var(--gold); color:#1a1204; font-weight:700; }
+  .step.is-active .num{ border-color:var(--gold); background:var(--gold); color:#ffffff; font-weight:700; }
   .step.is-done .num{ border-color:var(--teal); background:var(--teal-dim); color:var(--teal); }
   .step.is-done{ color:var(--ink-dim); }
   .step-connector{
@@ -209,7 +226,7 @@
   .skill-name{ font-weight:600; font-size:14.5px; color:var(--ink); margin-right:auto; }
   .skill-ar{
     font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--gold);
-    background:rgba(213,172,106,0.1); border:1px solid var(--gold-dim); border-radius:5px;
+    background:rgba(255,255,255,0.08); border:1px solid var(--gold-dim); border-radius:5px;
     padding:2px 7px; white-space:nowrap;
   }
   .skill-unlock{ font-size:11.5px; color:var(--ink-dim); font-style:italic; padding:0 14px 8px; margin-top:-4px; }
@@ -225,7 +242,7 @@
   .pip:hover:not(.is-disabled){ border-color:var(--teal); color:var(--ink); }
   .pip.is-filled{
     background:linear-gradient(155deg, var(--gold), var(--gold-dim));
-    border-color:var(--gold); color:#1a1204; font-weight:700;
+    border-color:var(--gold); color:#ffffff; font-weight:700;
   }
   .pip.is-disabled{ cursor:not-allowed; opacity:0.4; }
   .pip-connector{ width:8px; height:1.5px; background:var(--line); }
@@ -249,11 +266,11 @@
   .btn:active{ transform:translateY(0); }
   .btn-primary{
     text-transform:uppercase;
-    color:#1a1204;
-    background:linear-gradient(155deg, var(--gold) 0%, #b98f4d 100%);
-    box-shadow:0 8px 24px rgba(213,172,106,0.18);
+    color:#ffffff;
+    background:linear-gradient(155deg, var(--gold) 0%, var(--gold-dim) 100%);
+    box-shadow:0 8px 24px rgba(255,255,255,0.12);
   }
-  .btn-primary:hover{ transform:translateY(-1px); box-shadow:0 10px 28px rgba(213,172,106,0.28); }
+  .btn-primary:hover{ transform:translateY(-1px); box-shadow:0 10px 28px rgba(255,255,255,0.18); }
   .btn-ghost{
     background:transparent;
     color:var(--ink-dim);
@@ -264,7 +281,7 @@
   /* ---------- Results ---------- */
   .results-empty{ text-align:center; color:var(--ink-dim); font-size:14px; padding:30px 0; }
   .result-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
-  .result-card{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; box-shadow:0 0 0 1px rgba(127,191,138,0.2) inset; }
+  .result-card{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; box-shadow:0 0 0 1px rgba(255,255,255,0.1) inset; }
   .result-card.is-branch{ border-left:3px solid var(--teal); }
   .result-head{ display:flex; align-items:center; gap:8px; margin-bottom:6px; }
   .result-head .lvl-badge{
@@ -292,10 +309,77 @@
   .locked-note ul{ margin:8px 0 0; padding-left:18px; }
 
   .load-error{
-    color:var(--danger); background:rgba(226,104,92,0.08);
-    border:1px solid rgba(226,104,92,0.35); border-radius:8px;
+    color:var(--danger); background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.3); border-radius:8px;
     padding:14px 16px; font-size:13.5px;
   }
+
+  /* ---------- Settings ---------- */
+  header.hero{ position:relative; }
+  .settings-btn{
+    margin-left:auto; flex:0 0 auto;
+    width:38px; height:38px; border-radius:8px;
+    background:var(--panel-2); border:1px solid var(--line); color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:18px;
+  }
+  .settings-btn:hover{ border-color:var(--teal); }
+  .settings-panel{
+    display:none;
+    position:absolute; top:52px; right:0; z-index:20;
+    width:240px; background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .settings-panel.is-open{ display:block; }
+  .settings-panel h3{
+    margin:0 0 12px; font-family:'Cinzel', serif; font-size:13px;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--gold);
+  }
+  .settings-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:12px; font-size:13.5px; color:var(--ink);
+  }
+  .switch{ position:relative; display:inline-block; width:40px; height:22px; flex:0 0 auto; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .switch .slider{
+    position:absolute; cursor:pointer; inset:0;
+    background:var(--line); border-radius:22px; transition:0.15s;
+  }
+  .switch .slider::before{
+    content:""; position:absolute; width:16px; height:16px; left:3px; top:3px;
+    background:var(--panel); border-radius:50%; transition:0.15s;
+  }
+  .switch input:checked + .slider{ background:var(--gold); }
+  .switch input:checked + .slider::before{ transform:translateX(18px); background:var(--bg); }
+  .settings-clear{
+    width:100%; margin-top:2px;
+    background:transparent; border:1px solid var(--line); border-radius:6px;
+    color:var(--ink-dim); font-family:'Inter', sans-serif; font-size:12.5px;
+    padding:8px; cursor:pointer;
+  }
+  .settings-clear:hover{ color:var(--danger); border-color:var(--danger); }
+  .settings-saved-note{ font-size:11px; color:var(--ink-dim); margin-top:10px; line-height:1.4; }
+
+  /* ---------- Learn button ---------- */
+  .result-head{ gap:10px; }
+  .btn-learn{
+    order:-1;
+    flex:0 0 auto;
+    font-family:'Cinzel', serif;
+    font-size:11.5px; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--bg); background:var(--gold);
+    border:1px solid var(--gold); border-radius:6px;
+    padding:6px 12px; cursor:pointer;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+  }
+  .btn-learn:hover{ transform:translateY(-1px); }
+  .btn-learn:active{ transform:translateY(0); }
+  .btn-learn.is-done{
+    background:transparent; color:var(--success); border-color:var(--success);
+    cursor:default; opacity:0.6;
+  }
+  .btn-learn.is-done:hover{ transform:none; }
 </style>
 </head>
 <body>
@@ -307,6 +391,19 @@
     <div>
       <h1>Adventurer's Skill Ledger</h1>
       <p>Log what's in your pack, mark what you've already learned, then see exactly which skills you can afford to learn right now.</p>
+    </div>
+    <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙️</button>
+    <div class="settings-panel" id="settingsPanel">
+      <h3>Settings</h3>
+      <div class="settings-row">
+        <span>Dark mode</span>
+        <label class="switch">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <button class="settings-clear" id="clearDataBtn">Clear saved inventory &amp; skills</button>
+      <div class="settings-saved-note">Your inventory, learned skills, and theme are saved automatically in this browser.</div>
     </div>
   </header>
 
@@ -393,6 +490,69 @@
   var learned    = {};   // skillId -> highest learned level (0 = none)
   var childrenOf = {};   // parentId -> [childId, ...]
   var topLevelIds = [];
+
+  // ---------- Persistence (localStorage) ----------
+  var LS_INVENTORY = "skillLedger_inventory";
+  var LS_LEARNED   = "skillLedger_learned";
+  var LS_THEME     = "skillLedger_theme";
+
+  function lsGet(key){
+    try{
+      var raw = window.localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  function lsSet(key, value){
+    try{ window.localStorage.setItem(key, JSON.stringify(value)); }catch(e){ /* storage unavailable */ }
+  }
+  function saveProgress(){
+    lsSet(LS_INVENTORY, inventory);
+    lsSet(LS_LEARNED, learned);
+  }
+  function loadProgress(){
+    var savedInv = lsGet(LS_INVENTORY);
+    var savedLearned = lsGet(LS_LEARNED);
+    if(savedInv) inventory = savedInv;
+    if(savedLearned) learned = savedLearned;
+  }
+
+  // ---------- Settings panel ----------
+  function applyTheme(isDark){
+    document.body.classList.toggle("theme-dark", !!isDark);
+    document.getElementById("darkModeToggle").checked = !!isDark;
+  }
+  (function initSettings(){
+    var savedTheme = lsGet(LS_THEME);
+    applyTheme(savedTheme === "dark");
+
+    var btn = document.getElementById("settingsBtn");
+    var panel = document.getElementById("settingsPanel");
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      panel.classList.toggle("is-open");
+    });
+    document.addEventListener("click", function(e){
+      if(!panel.contains(e.target) && e.target !== btn){ panel.classList.remove("is-open"); }
+    });
+
+    document.getElementById("darkModeToggle").addEventListener("change", function(e){
+      applyTheme(e.target.checked);
+      lsSet(LS_THEME, e.target.checked ? "dark" : "light");
+    });
+
+    document.getElementById("clearDataBtn").addEventListener("click", function(){
+      if(!confirm("Clear your saved inventory and learned skills? This can't be undone.")) return;
+      try{
+        window.localStorage.removeItem(LS_INVENTORY);
+        window.localStorage.removeItem(LS_LEARNED);
+      }catch(e){}
+      inventory = {};
+      Object.keys(learned).forEach(function(id){ learned[id] = 0; });
+      renderItemList();
+      renderSkillTree();
+      goToStage(1);
+    });
+  })();
 
   // Miraheze filenames mix spaces and underscores unpredictably at each word
   // boundary (depends how the uploader typed it) - "Windwheel_Aster icon.png",
@@ -493,6 +653,13 @@
       }
       learned[id] = 0;
     });
+    loadProgress();
+    // Clamp any saved levels that no longer fit the (possibly updated) skill data.
+    Object.keys(learned).forEach(function(id){
+      if(!skillsData[id]){ delete learned[id]; return; }
+      var max = skillsData[id].levels.length;
+      if(learned[id] > max) learned[id] = max;
+    });
   }
 
   // ---------- Stepper navigation ----------
@@ -523,11 +690,12 @@
 
     var html = ids.map(function(id){
       var item = itemsData[id];
+      var savedVal = inventory[id] || 0;
       return (
         '<div class="item-row" data-id="' + id + '" data-search="' + item.name.toLowerCase() + '">' +
           '<div class="item-icon">' + iconMarkup(id) + '</div>' +
           '<div class="item-name">' + item.name + '</div>' +
-          '<input type="number" min="0" step="1" class="item-qty" data-item="' + id + '" placeholder="0" value="">' +
+          '<input type="number" min="0" step="1" class="item-qty' + (savedVal > 0 ? ' has-value' : '') + '" data-item="' + id + '" placeholder="0" value="' + (savedVal > 0 ? savedVal : "") + '">' +
         '</div>'
       );
     }).join("");
@@ -540,6 +708,7 @@
       if(isNaN(val) || val < 0){ val = 0; }
       inventory[id] = val;
       e.target.classList.toggle("has-value", val > 0);
+      saveProgress();
     });
 
     document.getElementById("itemSearch").addEventListener("input", function(e){
@@ -570,6 +739,7 @@
     if(newLevel > s.levels.length) newLevel = s.levels.length;
     learned[skillId] = newLevel;
     renderSkillTree();
+    saveProgress();
   }
 
   function renderSkillTree(){
@@ -703,6 +873,7 @@
       return (
         '<div class="result-card ' + (entry.isBranch ? "is-branch" : "") + '">' +
           '<div class="result-head">' +
+            '<button class="btn-learn" data-skill="' + entry.id + '">Learn</button>' +
             '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
             '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
           '</div>' +
@@ -715,6 +886,51 @@
     }).join("");
 
     out.innerHTML = '<div class="result-grid">' + cardsHtml + '</div>';
+
+    out.querySelectorAll(".btn-learn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        learnSkill(btn.dataset.skill);
+      });
+    });
+  }
+
+  // Deducts the next level's materials from inventory, marks the level learned,
+  // and refreshes everything (inventory inputs, skill tree, results) so a maxed
+  // skill immediately reveals its next level or its unlocked child branch.
+  function learnSkill(skillId){
+    var s = skillsData[skillId];
+    if(!s) return;
+    var lvl = learned[skillId] || 0;
+    if(lvl >= s.levels.length) return; // already maxed, nothing to learn
+    var nextData = s.levels[lvl];
+    if(nextData.tbd) return; // materials not documented, can't auto-deduct
+
+    var mats = nextData.materials || [];
+    var canAfford = mats.every(function(m){ return (inventory[m.item] || 0) >= m.qty; });
+    if(!canAfford) return; // shouldn't happen since button only shows when affordable
+
+    mats.forEach(function(m){
+      inventory[m.item] = (inventory[m.item] || 0) - m.qty;
+      if(inventory[m.item] < 0) inventory[m.item] = 0;
+    });
+
+    learned[skillId] = lvl + 1;
+
+    syncInventoryInputs();
+    renderSkillTree();
+    runCalculate();
+    saveProgress();
+  }
+
+  // Updates the on-screen inventory quantity inputs (stage 1) to reflect the
+  // current `inventory` values, without rebuilding the whole list.
+  function syncInventoryInputs(){
+    document.querySelectorAll(".item-qty").forEach(function(input){
+      var id = input.dataset.item;
+      var val = inventory[id] || 0;
+      input.value = val > 0 ? val : "";
+      input.classList.toggle("has-value", val > 0);
+    });
   }
 
 })();
