@@ -14,7 +14,7 @@
     --panel:         #ffffff;
     --panel-2:       #f0f0f0;
     --card:          #fafafa;
-    --line:          #cccccc;
+    --line:          #999999;
     --gold:          #000000;
     --gold-dim:      #666666;
     --teal:          #000000;
@@ -140,9 +140,13 @@
 
   .panel{
     background:var(--panel);
-    border:1px solid var(--line);
+    border:2px solid var(--line);
     border-radius:var(--radius);
     padding:20px;
+    box-shadow:0 0 0 1px rgba(0,0,0,0.05), 0 4px 14px rgba(0,0,0,0.06);
+  }
+  body.theme-dark .panel{
+    box-shadow:0 0 0 1px rgba(255,255,255,0.04), 0 4px 14px rgba(0,0,0,0.4);
   }
   .panel-title{
     display:flex; align-items:baseline; justify-content:space-between;
@@ -190,6 +194,20 @@
   .search-clear:hover{ color:var(--ink); background:var(--panel-2); }
   .search-clear svg{ width:13px; height:13px; }
   .search-hint{ font-size:12px; color:var(--ink-dim); margin: -8px 0 14px 2px; }
+
+  .currency-box{
+    margin-bottom:16px;
+    border:2px solid var(--gold-dim);
+    border-radius:8px;
+    padding:12px 14px;
+    background:var(--panel-2);
+  }
+  .currency-title{
+    font-family:'Cinzel', serif; font-size:12px; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:8px;
+  }
+  .currency-list .item-row{ border-bottom:none; padding:6px 0; }
+  .currency-list .item-row:not(:last-child){ border-bottom:1px solid var(--line); }
 
   .item-list{ max-height:440px; overflow-y:auto; padding-right:4px; }
   .item-list::-webkit-scrollbar{ width:8px; }
@@ -328,16 +346,39 @@
   .locked-note ul{ margin:8px 0 0; padding-left:18px; }
 
   /* ---------- Almost There ---------- */
-  .almost-section{ margin-top:32px; padding-top:22px; border-top:1px dashed var(--line); }
+  .almost-section{
+    margin-top:28px;
+    border:2px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--panel-2);
+    overflow:hidden;
+  }
+  .almost-toggle{
+    width:100%;
+    display:flex; align-items:center; gap:10px;
+    background:transparent; border:none; cursor:pointer;
+    padding:16px 18px; text-align:left;
+    font-family:inherit; color:var(--ink);
+  }
+  .almost-toggle:hover{ background:rgba(128,128,128,0.08); }
+  .almost-toggle .chevron{
+    flex:0 0 auto; width:14px; height:14px;
+    transition: transform 0.15s ease;
+    color:var(--ink-dim);
+  }
+  .almost-section.is-open .almost-toggle .chevron{ transform:rotate(90deg); }
   .almost-heading{
     font-family:'Cinzel', serif; font-size:14px; letter-spacing:0.05em;
-    text-transform:uppercase; color:var(--ink-dim); margin-bottom:4px;
+    text-transform:uppercase; color:var(--ink-dim); margin:0;
+    display:flex; align-items:baseline; flex:1 1 auto;
   }
   .almost-heading .count{
     font-family:'JetBrains Mono', monospace; font-size:11px;
     border:1px solid var(--line); border-radius:10px; padding:1px 8px; margin-left:8px;
     text-transform:none; letter-spacing:0;
   }
+  .almost-body{ display:none; padding:0 18px 20px; }
+  .almost-section.is-open .almost-body{ display:block; }
   .almost-sub{ font-size:12.5px; color:var(--ink-dim); margin:0 0 14px; }
   .result-card.is-almost{
     border-style:dashed; opacity:0.88;
@@ -564,6 +605,10 @@
           <span class="count" id="itemCount"></span>
         </div>
         <div class="panel-sub">Enter how much of each material you're currently holding.</div>
+        <div class="currency-box" id="currencyBox" style="display:none;">
+          <div class="currency-title">Currency</div>
+          <div class="currency-list" id="currencyList"></div>
+        </div>
         <div class="search-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="itemSearch" placeholder="Search materials, e.g. &quot;slim&quot;">
@@ -845,30 +890,30 @@
   document.getElementById("toStep2Btn").addEventListener("click", function(){ goToStage(2); });
   document.getElementById("backTo1Btn").addEventListener("click", function(){ goToStage(1); });
   document.getElementById("backTo2Btn").addEventListener("click", function(){ goToStage(2); });
-  document.getElementById("calcBtn").addEventListener("click", function(){ runCalculate(); goToStage(3); });
+  document.getElementById("calcBtn").addEventListener("click", function(){
+    runCalculate();
+    goToStage(3);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
   // ---------- Inventory panel ----------
-  function renderItemList(){
-    var list = document.getElementById("itemList");
-    var ids = Object.keys(itemsData).sort(function(a,b){
-      return itemsData[a].name.localeCompare(itemsData[b].name);
-    });
-    document.getElementById("itemCount").textContent = ids.length + " items";
+  function isCurrencyItem(item){
+    return !!(item && item.category && String(item.category).toLowerCase() === "currency");
+  }
 
-    var html = ids.map(function(id){
-      var item = itemsData[id];
-      var savedVal = inventory[id] || 0;
-      return (
-        '<div class="item-row" data-id="' + id + '" data-search="' + item.name.toLowerCase() + '">' +
-          '<div class="item-icon">' + iconMarkup(id) + '</div>' +
-          '<div class="item-name">' + item.name + '</div>' +
-          '<input type="number" min="0" step="1" class="item-qty' + (savedVal > 0 ? ' has-value' : '') + '" data-item="' + id + '" placeholder="0" value="' + (savedVal > 0 ? savedVal : "") + '">' +
-        '</div>'
-      );
-    }).join("");
-    list.innerHTML = html;
+  function itemRowHtml(id, item){
+    var savedVal = inventory[id] || 0;
+    return (
+      '<div class="item-row" data-id="' + id + '" data-search="' + item.name.toLowerCase() + '">' +
+        '<div class="item-icon">' + iconMarkup(id) + '</div>' +
+        '<div class="item-name">' + item.name + '</div>' +
+        '<input type="number" min="0" step="1" class="item-qty' + (savedVal > 0 ? ' has-value' : '') + '" data-item="' + id + '" placeholder="0" value="' + (savedVal > 0 ? savedVal : "") + '">' +
+      '</div>'
+    );
+  }
 
-    list.addEventListener("input", function(e){
+  function bindQtyInputs(container){
+    container.addEventListener("input", function(e){
       if(!e.target.classList.contains("item-qty")) return;
       var id = e.target.dataset.item;
       var val = parseInt(e.target.value, 10);
@@ -877,6 +922,40 @@
       e.target.classList.toggle("has-value", val > 0);
       saveProgress();
     });
+  }
+
+  function renderItemList(){
+    var list = document.getElementById("itemList");
+    var currencyBox = document.getElementById("currencyBox");
+    var currencyList = document.getElementById("currencyList");
+
+    var allIds = Object.keys(itemsData).sort(function(a,b){
+      return itemsData[a].name.localeCompare(itemsData[b].name);
+    });
+    var currencyIds = allIds.filter(function(id){ return isCurrencyItem(itemsData[id]); });
+    var ids = allIds.filter(function(id){ return !isCurrencyItem(itemsData[id]); });
+
+    document.getElementById("itemCount").textContent = ids.length + " items";
+
+    // Currency items get their own dedicated box in the inventory panel itself,
+    // so they don't have to be hunted down in the scrollable material list.
+    if(currencyIds.length){
+      currencyBox.style.display = "block";
+      currencyList.innerHTML = currencyIds.map(function(id){
+        return itemRowHtml(id, itemsData[id]);
+      }).join("");
+    } else {
+      currencyBox.style.display = "none";
+      currencyList.innerHTML = "";
+    }
+
+    var html = ids.map(function(id){
+      return itemRowHtml(id, itemsData[id]);
+    }).join("");
+    list.innerHTML = html;
+
+    bindQtyInputs(list);
+    bindQtyInputs(currencyList);
 
     var searchInput = document.getElementById("itemSearch");
     var searchClear = document.getElementById("itemSearchClear");
@@ -1146,15 +1225,29 @@
       }).join("");
 
       html +=
-        '<div class="almost-section">' +
-          '<div class="almost-heading">Almost There <span class="count">' + almostThere.length + '</span></div>' +
-          '<div class="almost-sub">Unlocked, but you\'re short a few materials. Closest matches shown first.</div>' +
-          '<div class="result-grid">' + almostHtml + '</div>' +
-          (extra > 0 ? '<div class="almost-more">+' + extra + ' more skill' + (extra === 1 ? "" : "s") + ' close, but not shown here</div>' : "") +
+        '<div class="almost-section" id="almostSection">' +
+          '<button type="button" class="almost-toggle" id="almostToggle" aria-expanded="false">' +
+            '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg>' +
+            '<span class="almost-heading">Almost There <span class="count">' + almostThere.length + '</span></span>' +
+          '</button>' +
+          '<div class="almost-body">' +
+            '<div class="almost-sub">Unlocked, but you\'re short a few materials. Closest matches shown first.</div>' +
+            '<div class="result-grid">' + almostHtml + '</div>' +
+            (extra > 0 ? '<div class="almost-more">+' + extra + ' more skill' + (extra === 1 ? "" : "s") + ' close, but not shown here</div>' : "") +
+          '</div>' +
         '</div>';
     }
 
     out.innerHTML = html;
+
+    var almostToggle = document.getElementById("almostToggle");
+    if(almostToggle){
+      almostToggle.addEventListener("click", function(){
+        var section = document.getElementById("almostSection");
+        var isOpen = section.classList.toggle("is-open");
+        almostToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      });
+    }
 
     out.querySelectorAll(".btn-learn").forEach(function(btn){
       btn.addEventListener("click", function(){
