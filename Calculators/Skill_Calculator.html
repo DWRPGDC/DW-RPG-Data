@@ -150,13 +150,17 @@
   .summary-bar .summary-stats strong{ color:var(--ink); font-weight:700; }
   .summary-recalc-btn{
     flex:0 0 auto;
-    font-family:'Cinzel', serif; font-size:12px; letter-spacing:0.04em; text-transform:uppercase;
+    display:none;
+    align-items:center; justify-content:center;
+    width:30px; height:30px; border-radius:50%;
     color:#ffffff; background:linear-gradient(155deg, var(--gold) 0%, var(--gold-dim) 100%);
-    border:none; border-radius:6px; padding:8px 16px; cursor:pointer;
+    border:none; cursor:pointer;
     transition: transform 0.12s ease;
   }
-  .summary-recalc-btn:hover{ transform:translateY(-1px); }
-  .summary-recalc-btn:active{ transform:translateY(0); }
+  .summary-recalc-btn svg{ width:15px; height:15px; }
+  .summary-recalc-btn.is-visible{ display:flex; }
+  .summary-recalc-btn:hover{ transform:rotate(90deg); }
+  .summary-recalc-btn:active{ transform:rotate(90deg) scale(0.92); }
   @media (max-width:600px){
     .summary-bar{ position:static; }
   }
@@ -638,7 +642,9 @@
 
     <div class="summary-bar" id="summaryBar">
       <div class="summary-stats" id="summaryStats"></div>
-      <button type="button" class="summary-recalc-btn" id="summaryRecalcBtn">Recalculate</button>
+      <button type="button" class="summary-recalc-btn" id="summaryRecalcBtn" title="Recalculate - your inventory or skills changed" aria-label="Recalculate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+      </button>
     </div>
 
     <!-- STEP 1: INVENTORY -->
@@ -794,6 +800,7 @@
       renderItemList();
       renderSkillTree();
       updateSummaryBar();
+      markResultsStale();
       goToStage(1);
     });
 
@@ -847,6 +854,7 @@
         renderItemList();
         renderSkillTree();
         updateSummaryBar();
+        markResultsStale();
         goToStage(1);
       };
       reader.readAsText(file);
@@ -963,8 +971,21 @@
   }
 
   // ---------- Summary bar ----------
-  // Lets the user see progress and jump straight to fresh results from any
-  // stage, instead of having to walk the full wizard again to recheck things.
+  // Lets the user see progress and, once something's actually changed since
+  // the last calculation, jump straight to fresh results without re-walking
+  // the wizard. The recalc icon is hidden whenever results are already current.
+  var resultsAreStale = false;
+
+  function markResultsStale(){
+    resultsAreStale = true;
+    document.getElementById("summaryRecalcBtn").classList.add("is-visible");
+  }
+
+  function markResultsFresh(){
+    resultsAreStale = false;
+    document.getElementById("summaryRecalcBtn").classList.remove("is-visible");
+  }
+
   function updateSummaryBar(){
     var itemsLogged = Object.keys(inventory).filter(function(id){ return (inventory[id] || 0) > 0; }).length;
     var skillsLearned = Object.keys(learned).filter(function(id){ return (learned[id] || 0) > 0; }).length;
@@ -1047,6 +1068,7 @@
       e.target.classList.toggle("has-value", val > 0);
       saveProgress();
       updateSummaryBar();
+      markResultsStale();
     });
   }
 
@@ -1124,6 +1146,7 @@
     renderSkillTree();
     saveProgress();
     updateSummaryBar();
+    markResultsStale();
   }
 
   function renderSkillTree(){
@@ -1268,6 +1291,7 @@
     });
 
     renderResults(affordable, almostThere, pendingData);
+    markResultsFresh();
   }
 
   // Builds one result card's HTML. Shared by both the "Ready to Learn" and
