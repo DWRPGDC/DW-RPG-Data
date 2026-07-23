@@ -530,9 +530,12 @@
   }
 
   /* ---------- Settings ---------- */
+  .top-bar{ position:relative; display:flex; align-items:center; justify-content:space-between; margin:14px 0 14px; }
+  .top-bar .recipe-toolbar-tab{ margin:0; }
+  .top-bar-actions{ position:relative; display:flex; align-items:center; gap:8px; flex:0 0 auto; }
   header.hero{ position:relative; }
   .settings-btn{
-    margin-left:auto; flex:0 0 auto;
+    flex:0 0 auto;
     width:38px; height:38px; border-radius:8px;
     background:var(--panel-2); border:1px solid var(--line); color:var(--ink);
     display:flex; align-items:center; justify-content:center;
@@ -541,7 +544,7 @@
   .settings-btn:hover{ border-color:var(--teal); }
   .settings-panel{
     display:none;
-    position:absolute; top:52px; right:0; z-index:20;
+    position:absolute; top:46px; right:0; z-index:20;
     width:240px; background:var(--panel); border:1px solid var(--line);
     border-radius:var(--radius); padding:16px;
     box-shadow:0 10px 30px rgba(0,0,0,0.25);
@@ -576,6 +579,33 @@
   .settings-clear:hover{ color:var(--danger); border-color:var(--danger); }
   .settings-saved-note{ font-size:11px; color:var(--ink-dim); margin-top:10px; line-height:1.4; }
 
+  /* ---------- How to use ---------- */
+  .help-btn{
+    flex:0 0 auto;
+    width:38px; height:38px; border-radius:8px;
+    background:var(--panel-2); border:1px solid var(--line); color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:18px;
+  }
+  .help-btn:hover{ border-color:var(--teal); }
+  .help-panel{
+    display:none;
+    position:absolute; top:46px; right:52px; z-index:20;
+    width:300px; max-height:70vh; overflow-y:auto;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .help-panel.is-open{ display:block; }
+  .help-panel h3{
+    margin:0 0 12px; font-family:'Cinzel', serif; font-size:13px;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--gold);
+  }
+  .help-panel ol{ margin:0 0 12px; padding-left:18px; }
+  .help-panel li{ margin-bottom:8px; font-size:12.5px; color:var(--ink); line-height:1.45; }
+  .help-panel li b{ color:var(--gold); }
+  .help-panel p{ font-size:11px; color:var(--ink-dim); line-height:1.4; margin:0; }
+
   /* ---------- Learn button ---------- */
   .result-head{ gap:10px; }
   .btn-learn{
@@ -595,6 +625,141 @@
     cursor:default; opacity:0.6;
   }
   .btn-learn.is-done:hover{ transform:none; }
+
+  /* ---------- Recipe toolbar (side panel) ---------- */
+  .recipe-toolbar-tab{
+    display:flex; align-items:center; gap:6px;
+    margin:14px 0 14px;
+    width:fit-content;
+    background:var(--panel-2); color:var(--ink-dim);
+    border:1px solid var(--line); border-radius:8px;
+    padding:7px 12px;
+    font-family:inherit; font-size:12.5px; font-weight:600;
+    cursor:pointer;
+  }
+  .recipe-toolbar-tab:hover{ color:var(--ink); border-color:var(--gold-dim); }
+  .recipe-toolbar-tab span{ font-size:14px; line-height:1; }
+  .recipe-toolbar-backdrop{
+    display:none;
+    position:fixed; inset:0; z-index:46;
+    background:rgba(0,0,0,0.45);
+  }
+  .recipe-toolbar-backdrop.is-open{ display:block; }
+  .recipe-toolbar{
+    position:fixed; top:0; left:0; bottom:0; z-index:47;
+    width:340px; max-width:88vw;
+    background:var(--panel);
+    border-right:1px solid var(--line);
+    box-shadow:0 0 30px rgba(0,0,0,0.35);
+    display:flex; flex-direction:column;
+    transform:translateX(-100%);
+    transition:transform 0.22s ease;
+  }
+  .recipe-toolbar.is-open{ transform:translateX(0); }
+  .recipe-toolbar-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 16px 12px; flex:0 0 auto;
+    border-bottom:2px solid var(--gold-dim);
+  }
+  .recipe-toolbar-head h3{
+    margin:0; font-family:'Cinzel', serif; font-size:14px;
+    letter-spacing:0.05em; text-transform:uppercase; color:var(--gold);
+  }
+  .recipe-toolbar-close{
+    background:transparent; border:none; color:var(--ink-dim); cursor:pointer;
+    width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+    border-radius:6px; flex:0 0 auto;
+  }
+  .recipe-toolbar-close:hover{ color:var(--ink); background:var(--panel-2); }
+  .recipe-toolbar-close svg{ width:15px; height:15px; }
+  .recipe-toolbar-search{ padding:12px 16px; flex:0 0 auto; }
+  .recipe-toolbar-search input{
+    width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--line);
+    background:var(--panel-2); color:var(--ink); font-family:inherit; font-size:13px;
+  }
+  .recipe-toolbar-search input:focus{ outline:1.5px solid var(--teal); border-color:var(--teal); }
+  .recipe-toolbar-list{ flex:1 1 auto; overflow-y:auto; padding:4px 16px 20px; }
+  .recipe-toolbar-empty{ font-size:12.5px; color:var(--ink-dim); padding:20px 2px; text-align:center; }
+  .recipe-skill-card{
+    border-bottom:2px solid var(--gold-dim); padding:14px 0;
+  }
+  .recipe-branch-inner{
+    margin-left:18px; padding-left:12px; border-left:2px solid var(--teal-dim);
+  }
+  .recipe-skill-card:last-child{ border-bottom:none; }
+  .recipe-skill-name{
+    font-family:'Cinzel', serif; font-size:13.5px; color:var(--ink); margin:0 0 2px;
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  }
+  .recipe-skill-branch-note{ font-size:11px; color:var(--ink-dim); font-weight:400; font-family:inherit; }
+  .recipe-level-block{ margin-top:10px; }
+  .recipe-level-block + .recipe-level-block{
+    margin-top:14px; padding-top:14px;
+    background-image:linear-gradient(to right, transparent 0%, var(--line) 15%, var(--line) 85%, transparent 100%);
+    background-repeat:no-repeat; background-size:100% 1px; background-position:top;
+  }
+  .recipe-level-label-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .recipe-level-label-row .recipe-level-label{ margin-bottom:0; }
+  .recipe-fav-btn{
+    background:transparent; border:none; cursor:pointer;
+    font-size:16px; line-height:1; color:var(--ink-dim); padding:2px 4px;
+    transition:transform 0.12s ease, color 0.12s ease;
+  }
+  .recipe-fav-btn:hover{ transform:scale(1.15); color:var(--gold); }
+  .recipe-fav-btn.is-fav{ color:var(--gold); }
+  .recipe-level-label{
+    font-size:11px; font-weight:700; color:var(--gold-dim); text-transform:uppercase;
+    letter-spacing:0.04em; margin-bottom:6px;
+  }
+  .recipe-level-tbd{ font-size:12px; color:var(--ink-dim); font-style:italic; }
+  .recipe-toolbar .mat-row{ padding:4px 0; }
+  .recipe-toolbar .mat-icon{ width:22px; height:22px; }
+
+  .recipe-grind-section{
+    margin:0 16px 6px; flex:0 0 auto;
+    border:2px solid var(--gold-dim); border-radius:var(--radius);
+    background:var(--panel-2); overflow:hidden;
+  }
+  .recipe-grind-toggle{
+    width:100%; display:flex; align-items:center; gap:8px;
+    background:transparent; border:none; cursor:pointer;
+    padding:11px 14px; text-align:left; font-family:inherit; color:var(--ink);
+  }
+  .recipe-grind-toggle:hover{ background:rgba(128,128,128,0.08); }
+  .recipe-grind-toggle .chevron{ flex:0 0 auto; width:12px; height:12px; transition:transform 0.15s ease; color:var(--ink-dim); }
+  .recipe-grind-section.is-open .recipe-grind-toggle .chevron{ transform:rotate(90deg); }
+  .recipe-grind-heading{
+    font-family:'Cinzel', serif; font-size:12.5px; letter-spacing:0.04em;
+    text-transform:uppercase; color:var(--gold); flex:1 1 auto;
+    display:flex; align-items:baseline;
+  }
+  .recipe-grind-heading .count{
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    border:1px solid var(--line); border-radius:10px; padding:1px 8px; margin-left:8px;
+    text-transform:none; letter-spacing:0; color:var(--ink-dim);
+  }
+  .recipe-grind-body{ display:none; padding:0 14px 14px; }
+  .recipe-grind-section.is-open .recipe-grind-body{ display:block; }
+  .recipe-grind-empty{ font-size:12px; color:var(--ink-dim); padding:2px 0 6px; }
+  .recipe-grind-item{ margin-top:12px; }
+  .recipe-grind-item:first-child{ margin-top:2px; }
+  .recipe-grind-item-title{
+    font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:4px;
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  }
+  .recipe-grind-item-title .recipe-skill-branch-note{ font-weight:400; }
+  .recipe-grind-remove{
+    background:transparent; border:none; cursor:pointer; color:var(--ink-dim);
+    font-size:14px; margin-left:auto; padding:0 2px;
+  }
+  .recipe-grind-remove:hover{ color:var(--gold); }
+  .recipe-grind-totals{
+    margin-top:14px; padding-top:12px; border-top:2px solid var(--gold-dim);
+  }
+  .recipe-grind-totals-label{
+    font-size:11px; font-weight:700; color:var(--gold-dim); text-transform:uppercase;
+    letter-spacing:0.04em; margin-bottom:6px;
+  }
 
   /* ---------- Floating stage-2 nav ---------- */
   .floating-nav{
@@ -694,19 +859,53 @@
   </button>
 </div>
 
+<div class="recipe-toolbar-backdrop" id="recipeToolbarBackdrop"></div>
+
+<aside class="recipe-toolbar" id="recipeToolbar" aria-hidden="true">
+  <div class="recipe-toolbar-head">
+    <h3>All Skills &amp; Recipes</h3>
+    <button class="recipe-toolbar-close" id="recipeToolbarClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="recipe-toolbar-search">
+    <input type="text" id="recipeToolbarSearch" placeholder="Search skills or materials...">
+  </div>
+  <div class="recipe-grind-section" id="recipeGrindSection">
+    <button type="button" class="recipe-grind-toggle" id="recipeGrindToggle" aria-expanded="false">
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg>
+      <span class="recipe-grind-heading">&#9733; Grind List <span class="count" id="recipeGrindCount">0</span></span>
+    </button>
+    <div class="recipe-grind-body" id="recipeGrindBody"></div>
+  </div>
+  <div class="recipe-toolbar-list" id="recipeToolbarList"></div>
+</aside>
+
 <div class="wrap">
 
-  <header class="hero">
-    <div class="hero-emblem">🗡️</div>
-    <div>
-      <h1>Adventurer's Skill Ledger</h1>
-      <p>Log what's in your pack, mark what you've already learned, then see exactly which skills you can afford to learn right now.</p>
-    </div>
-    <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙️</button>
-    <div class="settings-panel" id="settingsPanel">
-      <h3>Settings</h3>
-      <div class="settings-row">
-        <span>Dark mode</span>
+  <div class="top-bar">
+    <button class="recipe-toolbar-tab" id="recipeToolbarTab" title="All skills &amp; recipes" aria-label="Show all skills and recipes">
+      <span>📖</span> Recipes
+    </button>
+
+    <div class="top-bar-actions">
+      <button class="help-btn" id="helpBtn" title="How to use" aria-label="How to use">❓</button>
+      <div class="help-panel" id="helpPanel">
+        <h3>How to use</h3>
+        <ol>
+          <li><b>Stage 1 – Inventory:</b> Enter how many of each material you're carrying. You can also expand <b>Paste inventory from text</b> and drop in your Discord inventory embed directly — it strips out the custom emoji tags, bold markers, and bracketed weights, and just reads the item names and quantities.</li>
+          <li><b>Stage 2 – Skills:</b> Mark which skills you've already learned so they're excluded from results.</li>
+          <li><b>Stage 3 – Results:</b> See exactly which skills you can afford to learn right now with what you have on hand.</li>
+          <li>Use the <b>Recipes</b> tab on the left to browse all skills and materials, and star items to add them to your <b>Grind List</b>.</li>
+          <li>Toggle <b>Hide locked branches</b> in Settings to only see skills within reach.</li>
+        </ol>
+        <p>Your inventory, learned skills, and preferences are saved automatically in this browser. Use Settings to export/import a backup.</p>
+      </div>
+      <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙️</button>
+      <div class="settings-panel" id="settingsPanel">
+        <h3>Settings</h3>
+        <div class="settings-row">
+          <span>Dark mode</span>
         <label class="switch">
           <input type="checkbox" id="darkModeToggle">
           <span class="slider"></span>
@@ -726,6 +925,15 @@
         <input type="file" id="importDataInput" accept="application/json" style="display:none;">
       </div>
       <div class="settings-saved-note">Your inventory, learned skills, and preferences are saved automatically in this browser. Export a backup to move progress between devices.</div>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-emblem">🗡️</div>
+    <div>
+      <h1>Adventurer's Skill Ledger</h1>
+      <p>Log what's in your pack, mark what you've already learned, then see exactly which skills you can afford to learn right now.</p>
     </div>
   </header>
 
@@ -908,6 +1116,7 @@
   var LS_BULK_PASTE_DRAFT = "skillLedger_bulkPasteDraft";
   var LS_LAST_EXPORT = "skillLedger_lastExportAt";
   var LS_EXPORT_REMINDER_DISMISSED = "skillLedger_exportReminderDismissedAt";
+  var LS_FAVORITES = "skillLedger_favorites";
 
   function lsGet(key){
     try{
@@ -929,6 +1138,17 @@
     if(savedLearned) learned = savedLearned;
   }
 
+  // Recipe panel favorites - keys look like "skillId::levelNumber", so a
+  // player can star specific upcoming levels (not whole skills) and get a
+  // combined grind list of what's still missing for exactly those.
+  var favorites = lsGet(LS_FAVORITES) || {};
+  function saveFavorites(){ lsSet(LS_FAVORITES, favorites); }
+  function toggleFavorite(key){
+    if(favorites[key]) delete favorites[key];
+    else favorites[key] = true;
+    saveFavorites();
+  }
+
   // ---------- Settings panel ----------
   function applyTheme(isDark){
     document.body.classList.toggle("theme-dark", !!isDark);
@@ -938,6 +1158,18 @@
     document.body.classList.toggle("hide-locked-branches", !!hide);
     document.getElementById("hideLockedToggle").checked = !!hide;
   }
+  (function initHelp(){
+    var helpBtn = document.getElementById("helpBtn");
+    var helpPanel = document.getElementById("helpPanel");
+    helpBtn.addEventListener("click", function(e){
+      e.stopPropagation();
+      helpPanel.classList.toggle("is-open");
+    });
+    document.addEventListener("click", function(e){
+      if(!helpPanel.contains(e.target) && e.target !== helpBtn){ helpPanel.classList.remove("is-open"); }
+    });
+  })();
+
   (function initSettings(){
     var savedTheme = lsGet(LS_THEME);
     applyTheme(savedTheme === "dark");
@@ -1144,6 +1376,7 @@
     buildTree();
     renderItemList();
     renderSkillTree();
+    renderRecipeToolbar();
     updateSummaryBar();
     checkExportReminder();
     document.getElementById("app").style.display = "block";
@@ -1155,6 +1388,272 @@
       '(e.g. GitHub Pages) rather than opened directly from disk.<br><br>' +
       '<em>' + err.message + '</em></div>';
   });
+
+  // ---------- Recipe toolbar (side reference panel) ----------
+  // Read-only reference listing every skill and the full material list for
+  // each of its levels, independent of what's currently in the inventory or
+  // learned - handy for planning ahead without switching stages.
+  function recipeMatsHtml(mats){
+    if(!mats || !mats.length) return '<div class="recipe-level-tbd">No materials documented yet.</div>';
+    return mats.map(function(m){
+      var item = itemsData[m.item];
+      var name = item ? item.name : m.item;
+      return (
+        '<div class="mat-row" data-search="' + name.toLowerCase() + '">' +
+          '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
+          '<div class="mat-name">' + name + '</div>' +
+          '<div class="mat-qty">&times; ' + m.qty + '</div>' +
+        '</div>'
+      );
+    }).join("");
+  }
+
+  function recipeSkillCardHtml(id, isBranch){
+    var s = skillsData[id];
+    var branchNote = isBranch
+      ? '<span class="recipe-skill-branch-note">(branch of ' + skillsData[s.parent].name + ')</span>'
+      : "";
+
+    var matNames = [];
+    var levelsHtml = s.levels.map(function(lv, i){
+      var levelNum = i + 1;
+      var favKey = id + "::" + levelNum;
+      var isFav = !!favorites[favKey];
+      (lv.materials || []).forEach(function(m){
+        var item = itemsData[m.item];
+        matNames.push((item ? item.name : m.item).toLowerCase());
+      });
+      var favBtn =
+        '<button type="button" class="recipe-fav-btn' + (isFav ? ' is-fav' : '') + '" ' +
+        'data-fav-key="' + favKey + '" title="' + (isFav ? "Remove from grind list" : "Add to grind list") + '" ' +
+        'aria-label="Toggle favorite for level ' + levelNum + '">' + (isFav ? "\u2605" : "\u2606") + '</button>';
+      return (
+        '<div class="recipe-level-block">' +
+          '<div class="recipe-level-label-row">' +
+            '<div class="recipe-level-label">Level ' + levelNum + '</div>' +
+            favBtn +
+          '</div>' +
+          (lv.tbd ? '<div class="recipe-level-tbd">Materials not yet documented.</div>' : recipeMatsHtml(lv.materials)) +
+        '</div>'
+      );
+    }).join("");
+
+    var search = (s.name + " " + matNames.join(" ")).toLowerCase();
+    var classes = ["recipe-skill-card"];
+    if(isBranch) classes.push("is-branch");
+
+    var inner = '<h4 class="recipe-skill-name">' + (s.emoji ? '<span class="skill-emoji">' + s.emoji + '</span> ' : '') + s.name + branchNote + '</h4>' + levelsHtml;
+    if(isBranch) inner = '<div class="recipe-branch-inner">' + inner + '</div>';
+
+    var html = (
+      '<div class="' + classes.join(" ") + '" data-search="' + search + '">' +
+        inner +
+      '</div>'
+    );
+
+    var kids = childrenOf[id] || [];
+    kids.slice()
+      .sort(function(a, b){ return skillsData[a].name.localeCompare(skillsData[b].name); })
+      .forEach(function(childId){
+        html += recipeSkillCardHtml(childId, true);
+      });
+
+    return html;
+  }
+
+  function renderRecipeToolbar(){
+    var list = document.getElementById("recipeToolbarList");
+    if(!list) return;
+
+    if(!topLevelIds.length){
+      list.innerHTML = '<div class="recipe-toolbar-empty">No skills loaded yet.</div>';
+      return;
+    }
+
+    // Mirrors stage 2's ordering: top-level skills A-Z, each immediately
+    // followed by its own branches (also A-Z), instead of one flat
+    // alphabetical list that scatters branches away from their parent.
+    list.innerHTML = topLevelIds
+      .slice()
+      .sort(function(a, b){ return skillsData[a].name.localeCompare(skillsData[b].name); })
+      .map(function(id){ return recipeSkillCardHtml(id, false); })
+      .join("");
+
+    renderGrindList();
+  }
+
+  // Builds the "Grind List" - a live have/need breakdown for exactly the
+  // levels the player has starred, plus a combined shopping list across all
+  // of them, so they know exactly what's still missing without hunting
+  // through every branch by hand.
+  function grindMatRowHtml(itemId, qty, have){
+    var item = itemsData[itemId];
+    var name = item ? item.name : itemId;
+    var short = Math.max(0, qty - have);
+    return (
+      '<div class="mat-row' + (short > 0 ? ' is-missing' : '') + '">' +
+        '<div class="mat-icon">' + iconMarkup(itemId) + '</div>' +
+        '<div class="mat-name">' + name + '</div>' +
+        '<div class="mat-qty">' + have + ' / ' + qty +
+          (short > 0 ? ' <span class="mat-short">need ' + short + ' more</span>' : '') +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderGrindList(){
+    var body = document.getElementById("recipeGrindBody");
+    var countEl = document.getElementById("recipeGrindCount");
+    if(!body) return;
+
+    var keys = Object.keys(favorites).filter(function(k){ return favorites[k]; });
+
+    // Drop stale favorites left over from skills/levels that no longer
+    // exist (e.g. Skills.json was edited since the star was set).
+    var validKeys = keys.filter(function(key){
+      var parts = key.split("::");
+      var s = skillsData[parts[0]];
+      return !!(s && s.levels[parseInt(parts[1], 10) - 1]);
+    });
+
+    countEl.textContent = validKeys.length;
+
+    if(!validKeys.length){
+      body.innerHTML = '<div class="recipe-grind-empty">Star a level below to add it here and see exactly what you still need to grind.</div>';
+      return;
+    }
+
+    var totals = {}; // itemId -> { need, have }
+
+    var itemsHtml = validKeys.map(function(key){
+      var parts = key.split("::");
+      var skillId = parts[0], levelNum = parseInt(parts[1], 10);
+      var s = skillsData[skillId];
+      var lv = s.levels[levelNum - 1];
+      var mats = lv.materials || [];
+
+      var matsHtml = mats.length
+        ? mats.map(function(m){
+            var have = inventory[m.item] || 0;
+            totals[m.item] = totals[m.item] || { need: 0, have: have };
+            totals[m.item].need += m.qty;
+            return grindMatRowHtml(m.item, m.qty, have);
+          }).join("")
+        : '<div class="recipe-level-tbd">Materials not yet documented.</div>';
+
+      var branchNote = s.parent && skillsData[s.parent]
+        ? '<span class="recipe-skill-branch-note">(' + skillsData[s.parent].name + ')</span>'
+        : "";
+
+      return (
+        '<div class="recipe-grind-item">' +
+          '<div class="recipe-grind-item-title">' +
+            (s.emoji ? '<span class="skill-emoji">' + s.emoji + '</span>' : '') +
+            '<span>' + s.name + ' &middot; Lv ' + levelNum + '</span>' +
+            branchNote +
+            '<button type="button" class="recipe-grind-remove" data-fav-key="' + key + '" aria-label="Remove from grind list">&times;</button>' +
+          '</div>' +
+          matsHtml +
+        '</div>'
+      );
+    }).join("");
+
+    var totalIds = Object.keys(totals);
+    var totalsHtml = "";
+    if(totalIds.length > 1){
+      totalsHtml =
+        '<div class="recipe-grind-totals">' +
+          '<div class="recipe-grind-totals-label">Combined Total Needed</div>' +
+          totalIds.map(function(itemId){
+            var t = totals[itemId];
+            return grindMatRowHtml(itemId, t.need, t.have);
+          }).join("") +
+        '</div>';
+    }
+
+    body.innerHTML = itemsHtml + totalsHtml;
+  }
+
+  (function initRecipeToolbar(){
+    var tab = document.getElementById("recipeToolbarTab");
+    var panel = document.getElementById("recipeToolbar");
+    var backdrop = document.getElementById("recipeToolbarBackdrop");
+    var closeBtn = document.getElementById("recipeToolbarClose");
+    var search = document.getElementById("recipeToolbarSearch");
+    var grindSection = document.getElementById("recipeGrindSection");
+    var grindToggle = document.getElementById("recipeGrindToggle");
+    if(!tab || !panel) return;
+
+    function open(){
+      panel.classList.add("is-open");
+      backdrop.classList.add("is-open");
+      panel.setAttribute("aria-hidden", "false");
+      search.value = "";
+      filterRecipeCards("");
+      renderGrindList(); // refresh have/need against current inventory
+    }
+    function close(){
+      panel.classList.remove("is-open");
+      backdrop.classList.remove("is-open");
+      panel.setAttribute("aria-hidden", "true");
+    }
+
+    tab.addEventListener("click", open);
+    tab.addEventListener("keydown", function(e){
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); open(); }
+    });
+    closeBtn.addEventListener("click", close);
+    backdrop.addEventListener("click", close);
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && panel.classList.contains("is-open")) close();
+    });
+
+    function filterRecipeCards(q){
+      var cards = panel.querySelectorAll(".recipe-skill-card");
+      cards.forEach(function(card){
+        card.style.display = !q || card.dataset.search.indexOf(q) !== -1 ? "" : "none";
+      });
+    }
+
+    search.addEventListener("input", function(e){
+      filterRecipeCards(e.target.value.trim().toLowerCase());
+    });
+
+    grindToggle.addEventListener("click", function(){
+      var isOpen = grindSection.classList.toggle("is-open");
+      grindToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    // Star toggles live inside the skill list; the grind list also gets its
+    // own small remove (x) button per item for quick unstarring without
+    // scrolling back to find the level again.
+    panel.addEventListener("click", function(e){
+      var favBtn = e.target.closest ? e.target.closest(".recipe-fav-btn") : null;
+      var removeBtn = e.target.closest ? e.target.closest(".recipe-grind-remove") : null;
+      var key = favBtn ? favBtn.dataset.favKey : (removeBtn ? removeBtn.dataset.favKey : null);
+      if(!key) return;
+
+      toggleFavorite(key);
+
+      // Keep every star button for this key in sync (only one exists per
+      // key today, but this stays correct if that ever changes).
+      panel.querySelectorAll('.recipe-fav-btn[data-fav-key="' + key + '"]').forEach(function(btn){
+        var isFav = !!favorites[key];
+        btn.classList.toggle("is-fav", isFav);
+        btn.textContent = isFav ? "\u2605" : "\u2606";
+        btn.title = isFav ? "Remove from grind list" : "Add to grind list";
+      });
+
+      // Auto-expand the grind list the first time something gets starred,
+      // so the payoff of the click is immediately visible.
+      if(favBtn && favorites[key] && !grindSection.classList.contains("is-open")){
+        grindSection.classList.add("is-open");
+        grindToggle.setAttribute("aria-expanded", "true");
+      }
+
+      renderGrindList();
+    });
+  })();
 
   function buildTree(){
     Object.keys(skillsData).forEach(function(id){
