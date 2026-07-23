@@ -352,5 +352,10 @@
     "name": "Crab",
     "icon": "Item Crab.webp",
     "category": "misc"
+  },
+  "radish": {
+    "name": "Radish",
+    "icon": "Item Radish.webp",
+    "category": "misc"
   }
 }
