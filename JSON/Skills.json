@@ -1146,9 +1146,22 @@
         },
         {
           "level": 5,
-          "effect": null,
-          "ar": null,
-          "materials": null,
+          "effect": "50% chance during your turn to steal 4% of the highest enemy's HP, up to 70 HP, and weaken their next attack by 55%.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "black_bronze_horn",
+              "qty": 30
+            },
+            {
+              "item": "crystal_prism",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 6000
+            }
+          ],
           "tbd": true
         }
       ]
