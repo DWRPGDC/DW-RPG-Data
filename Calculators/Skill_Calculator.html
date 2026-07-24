@@ -337,6 +337,8 @@
     flex:1 1 auto; font-size:13.5px; color:var(--ink);
     min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
+  .item-name-link{ cursor:pointer; }
+  .item-name-link:hover{ color:var(--teal); text-decoration:underline; }
   .item-qty-group{ display:flex; align-items:center; gap:4px; flex:0 0 auto; }
   .qty-step{
     width:24px; height:28px; flex:0 0 auto; padding:0;
@@ -453,8 +455,11 @@
     overflow:hidden; flex:0 0 auto;
   }
   .mat-icon img{ width:100%; height:100%; object-fit:contain; }
-  .mat-name{ flex:1 1 auto; color:var(--ink); }
-  .mat-qty{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--success); }
+  .mat-name{ flex:1 1 auto; min-width:0; color:var(--ink); }
+  .mat-qty{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--success);
+    flex:0 0 auto; display:flex; align-items:center; gap:6px; white-space:nowrap;
+  }
 
   .pending-note{ margin-top:24px; font-size:12.5px; color:var(--ink-dim); }
   .pending-note ul{ margin:8px 0 0; padding-left:18px; }
@@ -519,7 +524,7 @@
   .mat-short{
     font-family:'JetBrains Mono', monospace; font-size:10.5px;
     border:1px solid var(--line); border-radius:4px;
-    padding:1px 6px; margin-left:6px; color:var(--ink-dim); white-space:nowrap;
+    padding:1px 6px; color:var(--ink-dim); white-space:nowrap;
   }
   .almost-more{ margin-top:12px; font-size:12px; color:var(--ink-dim); text-align:center; }
 
@@ -672,12 +677,20 @@
   }
   .recipe-toolbar-close:hover{ color:var(--ink); background:var(--panel-2); }
   .recipe-toolbar-close svg{ width:15px; height:15px; }
-  .recipe-toolbar-search{ padding:12px 16px; flex:0 0 auto; }
+  .recipe-toolbar-search{ padding:12px 16px; flex:0 0 auto; position:relative; }
   .recipe-toolbar-search input{
-    width:100%; padding:9px 12px; border-radius:8px; border:1px solid var(--line);
+    width:100%; padding:9px 30px 9px 12px; border-radius:8px; border:1px solid var(--line);
     background:var(--panel-2); color:var(--ink); font-family:inherit; font-size:13px;
   }
   .recipe-toolbar-search input:focus{ outline:1.5px solid var(--teal); border-color:var(--teal); }
+  .recipe-toolbar-search-clear{
+    position:absolute; right:24px; top:50%; transform:translateY(-50%);
+    width:20px; height:20px; border:none; background:none; cursor:pointer;
+    color:var(--ink-dim); font-size:16px; line-height:1; display:none;
+    align-items:center; justify-content:center; border-radius:50%;
+  }
+  .recipe-toolbar-search-clear:hover{ color:var(--ink); background:var(--panel-2); }
+  .recipe-toolbar-search.has-value .recipe-toolbar-search-clear{ display:flex; }
   .recipe-toolbar-list{ flex:1 1 auto; overflow-y:auto; padding:4px 16px 20px; }
   .recipe-toolbar-empty{ font-size:12.5px; color:var(--ink-dim); padding:20px 2px; text-align:center; }
   .recipe-skill-card{
@@ -712,18 +725,25 @@
     letter-spacing:0.04em; margin-bottom:6px;
   }
   .recipe-level-tbd{ font-size:12px; color:var(--ink-dim); font-style:italic; }
+  .recipe-level-block.is-mat-match{
+    background:var(--panel-2); border-radius:8px; padding:8px 10px; margin-left:-10px; margin-right:-10px;
+    box-shadow:0 0 0 1.5px var(--gold);
+  }
+  .recipe-level-block.is-mat-match .recipe-level-label{ color:var(--gold); }
+  .recipe-level-block.is-mat-match .mat-row.is-mat-hit{ color:var(--gold); font-weight:600; }
+  .recipe-level-block.is-mat-match .mat-row.is-mat-hit .mat-name{ color:var(--gold); }
   .recipe-toolbar .mat-row{ padding:4px 0; }
   .recipe-toolbar .mat-icon{ width:22px; height:22px; }
 
   .recipe-grind-section{
-    margin:0 16px 6px; flex:0 0 auto;
+    margin:0 16px 6px; flex:0 0 auto; position:relative;
     border:2px solid var(--gold-dim); border-radius:var(--radius);
     background:var(--panel-2); overflow:hidden;
   }
   .recipe-grind-toggle{
     width:100%; display:flex; align-items:center; gap:8px;
     background:transparent; border:none; cursor:pointer;
-    padding:11px 14px; text-align:left; font-family:inherit; color:var(--ink);
+    padding:11px 60px 11px 14px; text-align:left; font-family:inherit; color:var(--ink);
   }
   .recipe-grind-toggle:hover{ background:rgba(128,128,128,0.08); }
   .recipe-grind-toggle .chevron{ flex:0 0 auto; width:12px; height:12px; transition:transform 0.15s ease; color:var(--ink-dim); }
@@ -738,6 +758,14 @@
     border:1px solid var(--line); border-radius:10px; padding:1px 8px; margin-left:8px;
     text-transform:none; letter-spacing:0; color:var(--ink-dim);
   }
+  .recipe-grind-copy{
+    position:absolute; right:12px; top:9px; z-index:1;
+    font-family:inherit; font-size:11px; color:var(--ink-dim);
+    background:transparent; border:1px solid var(--line); border-radius:6px;
+    padding:4px 10px; cursor:pointer; display:none;
+  }
+  .recipe-grind-copy:hover{ color:var(--ink); border-color:var(--gold-dim); }
+  .recipe-grind-copy.is-visible{ display:block; }
   .recipe-grind-body{ display:none; padding:0 14px 14px; }
   .recipe-grind-section.is-open .recipe-grind-body{ display:block; }
   .recipe-grind-empty{ font-size:12px; color:var(--ink-dim); padding:2px 0 6px; }
@@ -748,6 +776,23 @@
     display:flex; align-items:center; gap:6px; flex-wrap:wrap;
   }
   .recipe-grind-item-title .recipe-skill-branch-note{ font-weight:400; }
+  .recipe-grind-ready{
+    font-size:10.5px; font-weight:700; color:var(--success);
+    border:1px solid var(--success); border-radius:10px; padding:1px 7px;
+    text-transform:uppercase; letter-spacing:0.03em;
+  }
+  .recipe-undo-toast{
+    position:absolute; left:16px; right:16px; bottom:16px; z-index:5;
+    display:none; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--panel-2); border:1px solid var(--gold-dim); border-radius:var(--radius);
+    padding:10px 14px; font-size:12.5px; color:var(--ink); box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  }
+  .recipe-undo-toast.is-visible{ display:flex; }
+  .recipe-undo-toast button{
+    font-family:inherit; font-size:12px; font-weight:600; color:var(--gold);
+    background:transparent; border:none; cursor:pointer; padding:2px 4px; flex:0 0 auto;
+  }
+  .recipe-undo-toast button:hover{ text-decoration:underline; }
   .recipe-grind-remove{
     background:transparent; border:none; cursor:pointer; color:var(--ink-dim);
     font-size:14px; margin-left:auto; padding:0 2px;
@@ -869,16 +914,22 @@
     </button>
   </div>
   <div class="recipe-toolbar-search">
-    <input type="text" id="recipeToolbarSearch" placeholder="Search skills or materials...">
+    <input type="text" id="recipeToolbarSearch" placeholder="Search skills or materials (comma = multiple)...">
+    <button type="button" class="recipe-toolbar-search-clear" id="recipeToolbarSearchClear" aria-label="Clear search">&times;</button>
   </div>
   <div class="recipe-grind-section" id="recipeGrindSection">
     <button type="button" class="recipe-grind-toggle" id="recipeGrindToggle" aria-expanded="false">
       <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 6 15 12 9 18"/></svg>
       <span class="recipe-grind-heading">&#9733; Grind List <span class="count" id="recipeGrindCount">0</span></span>
     </button>
+    <button type="button" class="recipe-grind-copy" id="recipeGrindCopy" title="Copy grind list as text" aria-label="Copy grind list as text">Copy</button>
     <div class="recipe-grind-body" id="recipeGrindBody"></div>
   </div>
   <div class="recipe-toolbar-list" id="recipeToolbarList"></div>
+  <div class="recipe-undo-toast" id="recipeUndoToast" role="status" aria-live="polite">
+    <span id="recipeUndoToastText">Removed from grind list.</span>
+    <button type="button" id="recipeUndoBtn">Undo</button>
+  </div>
 </aside>
 
 <div class="wrap">
@@ -896,6 +947,7 @@
           <li><b>Stage 1 – Inventory:</b> Enter how many of each material you're carrying. You can also expand <b>Paste inventory from text</b> and drop in your Discord inventory embed directly — it strips out the custom emoji tags, bold markers, and bracketed weights, and just reads the item names and quantities.</li>
           <li><b>Stage 2 – Skills:</b> Mark which skills you've already learned so they're excluded from results.</li>
           <li><b>Stage 3 – Results:</b> See exactly which skills you can afford to learn right now with what you have on hand.</li>
+          <li>Click any material's name in your Inventory to jump straight to the Recipes panel filtered to just the skill levels that use it.</li>
           <li>Use the <b>Recipes</b> tab on the left to browse all skills and materials, and star items to add them to your <b>Grind List</b>.</li>
           <li>Toggle <b>Hide locked branches</b> in Settings to only see skills within reach.</li>
         </ol>
@@ -1117,6 +1169,7 @@
   var LS_LAST_EXPORT = "skillLedger_lastExportAt";
   var LS_EXPORT_REMINDER_DISMISSED = "skillLedger_exportReminderDismissedAt";
   var LS_FAVORITES = "skillLedger_favorites";
+  var LS_RECIPE_SEARCH = "skillLedger_recipeSearch";
 
   function lsGet(key){
     try{
@@ -1398,11 +1451,15 @@
     return mats.map(function(m){
       var item = itemsData[m.item];
       var name = item ? item.name : m.item;
+      var have = inventory[m.item] || 0;
+      var short = Math.max(0, m.qty - have);
       return (
-        '<div class="mat-row" data-search="' + name.toLowerCase() + '">' +
+        '<div class="mat-row' + (short > 0 ? ' is-missing' : '') + '" data-search="' + name.toLowerCase() + '">' +
           '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
           '<div class="mat-name">' + name + '</div>' +
-          '<div class="mat-qty">&times; ' + m.qty + '</div>' +
+          '<div class="mat-qty">' + have + ' / ' + m.qty +
+            (short > 0 ? ' <span class="mat-short">need ' + short + ' more</span>' : '') +
+          '</div>' +
         '</div>'
       );
     }).join("");
@@ -1504,6 +1561,7 @@
   function renderGrindList(){
     var body = document.getElementById("recipeGrindBody");
     var countEl = document.getElementById("recipeGrindCount");
+    var copyBtn = document.getElementById("recipeGrindCopy");
     if(!body) return;
 
     var keys = Object.keys(favorites).filter(function(k){ return favorites[k]; });
@@ -1517,11 +1575,29 @@
     });
 
     countEl.textContent = validKeys.length;
+    if(copyBtn) copyBtn.classList.toggle("is-visible", validKeys.length > 0);
 
     if(!validKeys.length){
       body.innerHTML = '<div class="recipe-grind-empty">Star a level below to add it here and see exactly what you still need to grind.</div>';
       return;
     }
+
+    // Sort so the level closest to being fully stocked (fewest missing
+    // materials) surfaces first - handy when grinding several skills at
+    // once and deciding what to knock out next.
+    var missingCountByKey = {};
+    validKeys.forEach(function(key){
+      var parts = key.split("::");
+      var s = skillsData[parts[0]];
+      var lv = s.levels[parseInt(parts[1], 10) - 1];
+      var mats = lv.materials || [];
+      var missing = mats.reduce(function(count, m){
+        var have = inventory[m.item] || 0;
+        return count + (have < m.qty ? 1 : 0);
+      }, 0);
+      missingCountByKey[key] = missing;
+    });
+    validKeys.sort(function(a, b){ return missingCountByKey[a] - missingCountByKey[b]; });
 
     var totals = {}; // itemId -> { need, have }
 
@@ -1531,6 +1607,7 @@
       var s = skillsData[skillId];
       var lv = s.levels[levelNum - 1];
       var mats = lv.materials || [];
+      var missing = missingCountByKey[key];
 
       var matsHtml = mats.length
         ? mats.map(function(m){
@@ -1545,12 +1622,17 @@
         ? '<span class="recipe-skill-branch-note">(' + skillsData[s.parent].name + ')</span>'
         : "";
 
+      var readyBadge = mats.length && missing === 0
+        ? '<span class="recipe-grind-ready">Ready!</span>'
+        : "";
+
       return (
         '<div class="recipe-grind-item">' +
           '<div class="recipe-grind-item-title">' +
             (s.emoji ? '<span class="skill-emoji">' + s.emoji + '</span>' : '') +
             '<span>' + s.name + ' &middot; Lv ' + levelNum + '</span>' +
             branchNote +
+            readyBadge +
             '<button type="button" class="recipe-grind-remove" data-fav-key="' + key + '" aria-label="Remove from grind list">&times;</button>' +
           '</div>' +
           matsHtml +
@@ -1584,21 +1666,40 @@
     var grindToggle = document.getElementById("recipeGrindToggle");
     if(!tab || !panel) return;
 
-    function open(){
+    var searchClear = document.getElementById("recipeToolbarSearchClear");
+    var searchWrap = search.closest(".recipe-toolbar-search");
+
+    function updateSearchClearVisibility(){
+      if(searchWrap) searchWrap.classList.toggle("has-value", !!search.value);
+    }
+
+    function open(materialFilter){
       panel.classList.add("is-open");
       backdrop.classList.add("is-open");
       panel.setAttribute("aria-hidden", "false");
-      search.value = "";
-      filterRecipeCards("");
-      renderGrindList(); // refresh have/need against current inventory
+      renderRecipeToolbar(); // refresh have/need + grind list against current inventory
+      if(materialFilter){
+        search.value = materialFilter;
+        filterRecipeCards(materialFilter.toLowerCase(), true);
+        var firstMatch = panel.querySelector(".is-mat-match");
+        if(firstMatch) firstMatch.scrollIntoView({ block: "center" });
+      } else {
+        // Restore whatever was last typed, so reopening the toolbar (or a
+        // fresh page load) doesn't lose your place.
+        var remembered = lsGet(LS_RECIPE_SEARCH) || "";
+        search.value = remembered;
+        filterRecipeCards(remembered.trim().toLowerCase(), false);
+      }
+      updateSearchClearVisibility();
     }
     function close(){
       panel.classList.remove("is-open");
       backdrop.classList.remove("is-open");
       panel.setAttribute("aria-hidden", "true");
+      hideUndoToast();
     }
 
-    tab.addEventListener("click", open);
+    tab.addEventListener("click", function(){ open(); });
     tab.addEventListener("keydown", function(e){
       if(e.key === "Enter" || e.key === " "){ e.preventDefault(); open(); }
     });
@@ -1608,16 +1709,82 @@
       if(e.key === "Escape" && panel.classList.contains("is-open")) close();
     });
 
-    function filterRecipeCards(q){
+    // Normal text search matches against the whole card (skill name + every
+    // material across every level). Clicking a material elsewhere in the
+    // app calls this with exact=true, which additionally narrows each card
+    // down to just the level(s) that actually use that material, so it's
+    // immediately obvious which level requires it.
+    function filterRecipeCards(q, exact){
       var cards = panel.querySelectorAll(".recipe-skill-card");
+      // Comma-separated terms match on ANY term (e.g. "slime, ash" highlights
+      // levels using either material), so planning for several skills at
+      // once doesn't require separate searches.
+      var terms = q ? q.split(",").map(function(t){ return t.trim(); }).filter(Boolean) : [];
       cards.forEach(function(card){
-        card.style.display = !q || card.dataset.search.indexOf(q) !== -1 ? "" : "none";
+        var levels = card.querySelectorAll(".recipe-level-block");
+        if(terms.length){
+          var cardMatches = false;
+          levels.forEach(function(lvl){
+            var rows = lvl.querySelectorAll(".mat-row");
+            var levelMatches = false;
+            rows.forEach(function(row){
+              var hit = terms.some(function(term){
+                return exact ? row.dataset.search === term : row.dataset.search.indexOf(term) !== -1;
+              });
+              row.classList.toggle("is-mat-hit", hit);
+              if(hit) levelMatches = true;
+            });
+            lvl.style.display = "";
+            lvl.classList.toggle("is-mat-match", levelMatches);
+            if(levelMatches) cardMatches = true;
+          });
+          // Also count a card as matching if the skill name itself matches,
+          // even if no material row matched (e.g. searching "cooking").
+          var nameMatches = terms.some(function(term){ return card.dataset.search.indexOf(term) !== -1; });
+          card.style.display = (cardMatches || nameMatches) ? "" : "none";
+        } else {
+          levels.forEach(function(lvl){
+            lvl.style.display = "";
+            lvl.classList.remove("is-mat-match");
+            lvl.querySelectorAll(".mat-row").forEach(function(row){ row.classList.remove("is-mat-hit"); });
+          });
+          card.style.display = "";
+        }
       });
     }
 
     search.addEventListener("input", function(e){
-      filterRecipeCards(e.target.value.trim().toLowerCase());
+      filterRecipeCards(e.target.value.trim().toLowerCase(), false);
+      updateSearchClearVisibility();
+      lsSet(LS_RECIPE_SEARCH, e.target.value);
     });
+
+    // Pressing Enter jumps the list to the first highlighted match, so you
+    // don't have to manually scroll to find where a typed material shows up.
+    search.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        e.preventDefault();
+        var firstMatch = panel.querySelector(".is-mat-match");
+        if(firstMatch) firstMatch.scrollIntoView({ block: "center" });
+      }
+    });
+
+    if(searchClear){
+      searchClear.addEventListener("click", function(){
+        search.value = "";
+        filterRecipeCards("", false);
+        updateSearchClearVisibility();
+        lsSet(LS_RECIPE_SEARCH, "");
+        search.focus();
+      });
+    }
+    updateSearchClearVisibility();
+
+    // Lets other parts of the app (e.g. tapping a material name in the
+    // Inventory stage) jump straight to "which skills/levels use this?"
+    window.filterRecipesByMaterial = function(materialName){
+      open(materialName);
+    };
 
     grindToggle.addEventListener("click", function(){
       var isOpen = grindSection.classList.toggle("is-open");
@@ -1627,12 +1794,49 @@
     // Star toggles live inside the skill list; the grind list also gets its
     // own small remove (x) button per item for quick unstarring without
     // scrolling back to find the level again.
+    var undoToast = document.getElementById("recipeUndoToast");
+    var undoToastText = document.getElementById("recipeUndoToastText");
+    var undoBtn = document.getElementById("recipeUndoBtn");
+    var undoTimer = null;
+    var lastRemovedKey = null;
+
+    function hideUndoToast(){
+      if(undoToast) undoToast.classList.remove("is-visible");
+      lastRemovedKey = null;
+    }
+
+    function showUndoToast(key){
+      lastRemovedKey = key;
+      if(undoTimer) clearTimeout(undoTimer);
+      var parts = key.split("::");
+      var s = skillsData[parts[0]];
+      if(undoToastText) undoToastText.textContent = "Removed " + (s ? s.name + " Lv " + parts[1] : "level") + " from grind list.";
+      if(undoToast) undoToast.classList.add("is-visible");
+      undoTimer = setTimeout(hideUndoToast, 6000);
+    }
+
+    if(undoBtn){
+      undoBtn.addEventListener("click", function(){
+        if(!lastRemovedKey) return;
+        favorites[lastRemovedKey] = true;
+        saveFavorites();
+        panel.querySelectorAll('.recipe-fav-btn[data-fav-key="' + lastRemovedKey + '"]').forEach(function(btn){
+          btn.classList.add("is-fav");
+          btn.textContent = "\u2605";
+          btn.title = "Remove from grind list";
+        });
+        renderGrindList();
+        hideUndoToast();
+      });
+    }
+
     panel.addEventListener("click", function(e){
       var favBtn = e.target.closest ? e.target.closest(".recipe-fav-btn") : null;
       var removeBtn = e.target.closest ? e.target.closest(".recipe-grind-remove") : null;
       var key = favBtn ? favBtn.dataset.favKey : (removeBtn ? removeBtn.dataset.favKey : null);
       if(!key) return;
 
+      var wasFav = !!favorites[key];
       toggleFavorite(key);
 
       // Keep every star button for this key in sync (only one exists per
@@ -1649,6 +1853,14 @@
       if(favBtn && favorites[key] && !grindSection.classList.contains("is-open")){
         grindSection.classList.add("is-open");
         grindToggle.setAttribute("aria-expanded", "true");
+      }
+
+      // Removal (via either the card star or the grind list's own x button)
+      // gets a brief undo option in case of a misclick.
+      if(wasFav && !favorites[key]){
+        showUndoToast(key);
+      } else {
+        hideUndoToast();
       }
 
       renderGrindList();
@@ -1982,7 +2194,7 @@
     return (
       '<div class="item-row" data-id="' + id + '" data-search="' + item.name.toLowerCase() + '">' +
         '<div class="item-icon">' + iconMarkup(id) + '</div>' +
-        '<div class="item-name">' + item.name + '</div>' +
+        '<div class="item-name item-name-link" data-mat-name="' + item.name.replace(/"/g, "&quot;") + '" title="Show skills that use this material">' + item.name + '</div>' +
         '<div class="item-qty-group">' +
           '<button type="button" class="qty-step qty-minus" data-item="' + id + '" tabindex="-1" aria-label="Decrease quantity">\u2212</button>' +
           '<input type="number" min="0" step="1" class="item-qty' + (savedVal > 0 ? ' has-value' : '') + '" data-item="' + id + '" placeholder="0" value="' + (savedVal > 0 ? savedVal : "") + '">' +
@@ -2025,6 +2237,12 @@
 
     // +/- stepper buttons flanking each qty input, handy for quick taps on mobile.
     container.addEventListener("click", function(e){
+      var nameLink = e.target.closest ? e.target.closest(".item-name-link") : null;
+      if(nameLink){
+        var matName = nameLink.dataset.matName;
+        if(matName && window.filterRecipesByMaterial) window.filterRecipesByMaterial(matName);
+        return;
+      }
       var btn = e.target.closest ? e.target.closest(".qty-step") : null;
       if(!btn) return;
       var id = btn.dataset.item;
@@ -2627,9 +2845,83 @@
     return lines.join("\n");
   }
 
-  // Copies `text` to the clipboard and flashes a brief confirmation in
-  // `feedbackEl`. Shared by the "Copy as text" buttons on both the
-  // Inventory panel and the Results panel.
+  // Builds a plain-text version of the current Grind List (per-level
+  // materials plus the combined total), for pasting into notes/chat.
+  function buildGrindListShareText(){
+    var keys = Object.keys(favorites).filter(function(k){ return favorites[k]; });
+    var validKeys = keys.filter(function(key){
+      var parts = key.split("::");
+      var s = skillsData[parts[0]];
+      return !!(s && s.levels[parseInt(parts[1], 10) - 1]);
+    });
+    if(!validKeys.length) return "(grind list is empty)";
+
+    var totals = {};
+    var lines = [];
+
+    validKeys.forEach(function(key){
+      var parts = key.split("::");
+      var skillId = parts[0], levelNum = parseInt(parts[1], 10);
+      var s = skillsData[skillId];
+      var lv = s.levels[levelNum - 1];
+      var mats = lv.materials || [];
+
+      lines.push(s.name + " - Level " + levelNum + ":");
+      if(!mats.length){
+        lines.push("  (materials not yet documented)");
+      } else {
+        mats.forEach(function(m){
+          var item = itemsData[m.item];
+          var name = item ? item.name : m.item;
+          var have = inventory[m.item] || 0;
+          totals[m.item] = totals[m.item] || { name: name, need: 0, have: have };
+          totals[m.item].need += m.qty;
+          lines.push("  " + name + " " + have + "/" + m.qty);
+        });
+      }
+    });
+
+    var totalIds = Object.keys(totals);
+    if(totalIds.length > 1){
+      lines.push("");
+      lines.push("Combined Total Needed:");
+      totalIds.forEach(function(itemId){
+        var t = totals[itemId];
+        lines.push("  " + t.name + " " + t.have + "/" + t.need);
+      });
+    }
+
+    return lines.join("\n");
+  }
+
+  (function initCopyGrindList(){
+    var btn = document.getElementById("recipeGrindCopy");
+    if(!btn) return;
+    var defaultLabel = btn.textContent;
+    btn.addEventListener("click", function(){
+      var text = buildGrindListShareText();
+      function flash(label){
+        btn.textContent = label;
+        setTimeout(function(){ btn.textContent = defaultLabel; }, 1500);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ flash("Copied!"); }, function(){ flash("Couldn't copy"); });
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+        document.body.removeChild(ta);
+        flash(ok ? "Copied!" : "Couldn't copy");
+      }
+    });
+  })();
+
+
   function copyTextWithFeedback(text, feedbackEl){
     function showCopied(ok){
       feedbackEl.textContent = ok ? "Copied!" : "Couldn't copy - select and copy manually.";
