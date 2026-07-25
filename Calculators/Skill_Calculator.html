@@ -526,6 +526,10 @@
     border:1px solid var(--line); border-radius:4px;
     padding:1px 6px; color:var(--ink-dim); white-space:nowrap;
   }
+  .mat-craft-note{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px;
+    color:var(--gold); white-space:nowrap; cursor:help;
+  }
   .almost-more{ margin-top:12px; font-size:12px; color:var(--ink-dim); text-align:center; }
 
   .load-error{
@@ -562,6 +566,9 @@
   .settings-row{
     display:flex; align-items:center; justify-content:space-between;
     margin-bottom:12px; font-size:13.5px; color:var(--ink);
+  }
+  .settings-sub-row{
+    margin-left:18px; margin-top:-4px; font-size:12px; color:var(--ink-dim);
   }
   .switch{ position:relative; display:inline-block; width:40px; height:22px; flex:0 0 auto; }
   .switch input{ opacity:0; width:0; height:0; }
@@ -644,6 +651,11 @@
   }
   .recipe-toolbar-tab:hover{ color:var(--ink); border-color:var(--gold-dim); }
   .recipe-toolbar-tab span{ font-size:14px; line-height:1; }
+  .recipe-tab-badge{
+    font-family:'JetBrains Mono', monospace; font-size:11px !important; font-weight:700;
+    color:var(--bg) !important; background:var(--gold);
+    border-radius:9px; padding:1px 7px; line-height:1.4;
+  }
   .recipe-toolbar-backdrop{
     display:none;
     position:fixed; inset:0; z-index:46;
@@ -768,6 +780,21 @@
   .recipe-grind-copy.is-visible{ display:block; }
   .recipe-grind-body{ display:none; padding:0 14px 14px; }
   .recipe-grind-section.is-open .recipe-grind-body{ display:block; }
+  .recipe-grind-section.is-open .recipe-grind-bulk{ display:block; }
+  .recipe-grind-bulk{ display:none; padding:0 14px 12px; }
+  .recipe-grind-bulk-toggle{
+    background:transparent; border:none; cursor:pointer; padding:2px 0;
+    font-family:inherit; font-size:11.5px; color:var(--ink-dim); text-decoration:underline;
+  }
+  .recipe-grind-bulk-toggle:hover{ color:var(--gold); }
+  .recipe-grind-bulk-body{ display:none; margin-top:8px; }
+  .recipe-grind-bulk.is-open .recipe-grind-bulk-body{ display:block; }
+  #recipeGrindBulkInput{
+    width:100%; resize:vertical; border-radius:8px; border:1px solid var(--line);
+    background:var(--panel); color:var(--ink); font-family:inherit; font-size:12px;
+    padding:8px 10px; margin-bottom:8px;
+  }
+  #recipeGrindBulkInput:focus{ outline:1.5px solid var(--teal); border-color:var(--teal); }
   .recipe-grind-empty{ font-size:12px; color:var(--ink-dim); padding:2px 0 6px; }
   .recipe-grind-item{ margin-top:12px; }
   .recipe-grind-item:first-child{ margin-top:2px; }
@@ -924,6 +951,17 @@
     </button>
     <button type="button" class="recipe-grind-copy" id="recipeGrindCopy" title="Copy grind list as text" aria-label="Copy grind list as text">Copy</button>
     <div class="recipe-grind-body" id="recipeGrindBody"></div>
+    <div class="recipe-grind-bulk" id="recipeGrindBulkBox">
+      <button type="button" class="recipe-grind-bulk-toggle" id="recipeGrindBulkToggle">+ Bulk add to grind list</button>
+      <div class="recipe-grind-bulk-body" id="recipeGrindBulkBody">
+        <div class="bulk-paste-hint">One per line: <code>Skill Name Lv 3</code> or <code>Skill Name: 3</code>.</div>
+        <textarea id="recipeGrindBulkInput" rows="3" placeholder="Fireball Lv 3&#10;Windwheel Aster: 2"></textarea>
+        <div class="bulk-paste-actions">
+          <button type="button" class="btn btn-ghost" id="recipeGrindBulkApplyBtn">Star all</button>
+          <span class="bulk-paste-result" id="recipeGrindBulkResult"></span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="recipe-toolbar-list" id="recipeToolbarList"></div>
   <div class="recipe-undo-toast" id="recipeUndoToast" role="status" aria-live="polite">
@@ -935,8 +973,8 @@
 <div class="wrap">
 
   <div class="top-bar">
-    <button class="recipe-toolbar-tab" id="recipeToolbarTab" title="All skills &amp; recipes" aria-label="Show all skills and recipes">
-      <span>📖</span> Recipes
+    <button class="recipe-toolbar-tab" id="recipeToolbarTab" title="All skills &amp; recipes (or press /)" aria-label="Show all skills and recipes">
+      <span>📖</span> Recipes<span class="recipe-tab-badge" id="recipeTabBadge" style="display:none;">0</span>
     </button>
 
     <div class="top-bar-actions">
@@ -970,12 +1008,27 @@
           <span class="slider"></span>
         </label>
       </div>
+      <div class="settings-row">
+        <span title="Treats 3x of a Tier N material as usable toward 1x of a Tier N+1 material of the same group, when deciding what's affordable and how many materials you still need.">Account for crafting (3 Tier N &rarr; 1 Tier N+1)</span>
+        <label class="switch">
+          <input type="checkbox" id="craftingToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="settings-row settings-sub-row" id="craftDetailedRow" style="display:none;">
+        <span title="Shows every tier that contributed materials (e.g. 18x T1, 18x T2) instead of just the tier directly below.">&#8627; Show full tier breakdown</span>
+        <label class="switch">
+          <input type="checkbox" id="craftDetailedToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
       <button class="settings-clear" id="clearDataBtn">Clear saved inventory &amp; skills</button>
       <div class="settings-row" style="margin-top:10px; gap:8px;">
         <button class="settings-clear" id="exportDataBtn" style="flex:1;">Export</button>
         <button class="settings-clear" id="importDataBtn" style="flex:1;">Import</button>
         <input type="file" id="importDataInput" accept="application/json" style="display:none;">
       </div>
+      <div class="settings-saved-note" id="lastExportNote" style="display:none;"></div>
       <div class="settings-saved-note">Your inventory, learned skills, and preferences are saved automatically in this browser. Export a backup to move progress between devices.</div>
       </div>
     </div>
@@ -1159,12 +1212,17 @@
   var learned    = {};   // skillId -> highest learned level (0 = none)
   var childrenOf = {};   // parentId -> [childId, ...]
   var topLevelIds = [];
+  var craftingEnabled = false; // when true, a Tier N surplus can count toward Tier N+1 needs (3:1), per group
+  var craftDetailedBreakdown = false; // sub-setting: show every contributing tier instead of just the one below
+  var craftGroups = {};        // group key -> { tierNumber: itemId }, built once data loads
 
   // ---------- Persistence (localStorage) ----------
   var LS_INVENTORY = "skillLedger_inventory";
   var LS_LEARNED   = "skillLedger_learned";
   var LS_THEME     = "skillLedger_theme";
   var LS_HIDE_LOCKED = "skillLedger_hideLocked";
+  var LS_CRAFTING_ENABLED = "skillLedger_craftingEnabled";
+  var LS_CRAFT_DETAILED = "skillLedger_craftDetailedBreakdown";
   var LS_BULK_PASTE_DRAFT = "skillLedger_bulkPasteDraft";
   var LS_LAST_EXPORT = "skillLedger_lastExportAt";
   var LS_EXPORT_REMINDER_DISMISSED = "skillLedger_exportReminderDismissedAt";
@@ -1211,6 +1269,15 @@
     document.body.classList.toggle("hide-locked-branches", !!hide);
     document.getElementById("hideLockedToggle").checked = !!hide;
   }
+  function applyCrafting(enabled){
+    craftingEnabled = !!enabled;
+    document.getElementById("craftingToggle").checked = craftingEnabled;
+    document.getElementById("craftDetailedRow").style.display = craftingEnabled ? "flex" : "none";
+  }
+  function applyCraftDetailed(enabled){
+    craftDetailedBreakdown = !!enabled;
+    document.getElementById("craftDetailedToggle").checked = craftDetailedBreakdown;
+  }
   (function initHelp(){
     var helpBtn = document.getElementById("helpBtn");
     var helpPanel = document.getElementById("helpPanel");
@@ -1227,6 +1294,8 @@
     var savedTheme = lsGet(LS_THEME);
     applyTheme(savedTheme === "dark");
     applyHideLocked(lsGet(LS_HIDE_LOCKED) === true);
+    applyCrafting(lsGet(LS_CRAFTING_ENABLED) === true); // off by default
+    applyCraftDetailed(lsGet(LS_CRAFT_DETAILED) === true); // off by default
 
     var btn = document.getElementById("settingsBtn");
     var panel = document.getElementById("settingsPanel");
@@ -1248,8 +1317,27 @@
       lsSet(LS_HIDE_LOCKED, e.target.checked);
     });
 
+    document.getElementById("craftingToggle").addEventListener("change", function(e){
+      applyCrafting(e.target.checked);
+      lsSet(LS_CRAFTING_ENABLED, e.target.checked);
+      // Have/need figures throughout the app depend on this, so refresh
+      // everywhere they're shown.
+      runCalculate();
+      renderRecipeToolbar();
+    });
+
+    document.getElementById("craftDetailedToggle").addEventListener("change", function(e){
+      applyCraftDetailed(e.target.checked);
+      lsSet(LS_CRAFT_DETAILED, e.target.checked);
+      runCalculate();
+      renderRecipeToolbar();
+    });
+
     document.getElementById("clearDataBtn").addEventListener("click", function(){
-      if(!confirm("Clear your saved inventory and learned skills? This can't be undone.")) return;
+      var hasGrindItems = Object.keys(favorites).some(function(k){ return favorites[k]; });
+      var msg = "Clear your saved inventory and learned skills? This can't be undone."
+        + (hasGrindItems ? " Your starred Grind List will NOT be cleared." : "");
+      if(!confirm(msg)) return;
       try{
         window.localStorage.removeItem(LS_INVENTORY);
         window.localStorage.removeItem(LS_LEARNED);
@@ -1260,11 +1348,23 @@
       renderSkillTree();
       updateSummaryBar();
       markResultsStale();
+      if(typeof renderGrindList === "function") renderGrindList();
       goToStage(1);
     });
 
     // Lets progress move between devices/browsers, since everything otherwise
     // only lives in this browser's localStorage.
+    function updateLastExportNote(){
+      var note = document.getElementById("lastExportNote");
+      if(!note) return;
+      var last = lsGet(LS_LAST_EXPORT);
+      if(!last){ note.style.display = "none"; return; }
+      var d = new Date(last);
+      note.textContent = "Last exported: " + d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      note.style.display = "block";
+    }
+    updateLastExportNote();
+
     document.getElementById("exportDataBtn").addEventListener("click", function(){
       var payload = {
         exportedAt: new Date().toISOString(),
@@ -1283,6 +1383,7 @@
 
       lsSet(LS_LAST_EXPORT, Date.now());
       document.getElementById("exportReminderBanner").style.display = "none";
+      updateLastExportNote();
     });
 
     var importInput = document.getElementById("importDataInput");
@@ -1426,6 +1527,7 @@
   ]).then(function(results){
     itemsData = results[0];
     skillsData = results[1].skills;
+    buildCraftGroups();
     buildTree();
     renderItemList();
     renderSkillTree();
@@ -1446,22 +1548,38 @@
   // Read-only reference listing every skill and the full material list for
   // each of its levels, independent of what's currently in the inventory or
   // learned - handy for planning ahead without switching stages.
+
+  // Single shared builder for a material row (icon + name + have/need +
+  // "need X more" badge when short). Used by the recipe list, the grind
+  // list, and the results cards, so a layout tweak only has to happen once
+  // instead of being kept in sync across three separate copies.
+  // opts.search: adds a data-search attribute for the recipe toolbar's filter.
+  function matRowHtml(itemId, qty, have, opts){
+    opts = opts || {};
+    var item = itemsData[itemId];
+    var name = opts.name || (item ? item.name : itemId);
+    var short = Math.max(0, qty - have);
+    var searchAttr = opts.search ? ' data-search="' + name.toLowerCase() + '"' : '';
+    var craftText = craftNotePlain(itemId);
+    var craftNote = craftText
+      ? ' <span class="mat-craft-note" title="Includes materials craftable from lower tiers">(' + craftText + ')</span>'
+      : '';
+    return (
+      '<div class="mat-row' + (short > 0 ? ' is-missing' : '') + '"' + searchAttr + '>' +
+        '<div class="mat-icon">' + iconMarkup(itemId) + '</div>' +
+        '<div class="mat-name">' + name + '</div>' +
+        '<div class="mat-qty">' + have + ' / ' + qty + craftNote +
+          (short > 0 ? ' <span class="mat-short">need ' + short + ' more</span>' : '') +
+        '</div>' +
+      '</div>'
+    );
+  }
+
   function recipeMatsHtml(mats){
     if(!mats || !mats.length) return '<div class="recipe-level-tbd">No materials documented yet.</div>';
     return mats.map(function(m){
-      var item = itemsData[m.item];
-      var name = item ? item.name : m.item;
-      var have = inventory[m.item] || 0;
-      var short = Math.max(0, m.qty - have);
-      return (
-        '<div class="mat-row' + (short > 0 ? ' is-missing' : '') + '" data-search="' + name.toLowerCase() + '">' +
-          '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
-          '<div class="mat-name">' + name + '</div>' +
-          '<div class="mat-qty">' + have + ' / ' + m.qty +
-            (short > 0 ? ' <span class="mat-short">need ' + short + ' more</span>' : '') +
-          '</div>' +
-        '</div>'
-      );
+      var have = effectiveHave(m.item);
+      return matRowHtml(m.item, m.qty, have, { search: true });
     }).join("");
   }
 
@@ -1521,6 +1639,7 @@
   function renderRecipeToolbar(){
     var list = document.getElementById("recipeToolbarList");
     if(!list) return;
+    clearEffectiveHaveCache(); // inventory may have changed since the last render pass
 
     if(!topLevelIds.length){
       list.innerHTML = '<div class="recipe-toolbar-empty">No skills loaded yet.</div>';
@@ -1544,18 +1663,23 @@
   // of them, so they know exactly what's still missing without hunting
   // through every branch by hand.
   function grindMatRowHtml(itemId, qty, have){
-    var item = itemsData[itemId];
-    var name = item ? item.name : itemId;
-    var short = Math.max(0, qty - have);
-    return (
-      '<div class="mat-row' + (short > 0 ? ' is-missing' : '') + '">' +
-        '<div class="mat-icon">' + iconMarkup(itemId) + '</div>' +
-        '<div class="mat-name">' + name + '</div>' +
-        '<div class="mat-qty">' + have + ' / ' + qty +
-          (short > 0 ? ' <span class="mat-short">need ' + short + ' more</span>' : '') +
-        '</div>' +
-      '</div>'
-    );
+    return matRowHtml(itemId, qty, have);
+  }
+
+  // Keeps the little count badge on the "Recipes" tab in sync with the
+  // grind list, so you can see at a glance whether anything's starred
+  // without having to open the panel.
+  function updateGrindTabBadge(){
+    var badge = document.getElementById("recipeTabBadge");
+    if(!badge) return;
+    var count = Object.keys(favorites).filter(function(k){
+      if(!favorites[k]) return false;
+      var parts = k.split("::");
+      var s = skillsData[parts[0]];
+      return !!(s && s.levels[parseInt(parts[1], 10) - 1]);
+    }).length;
+    badge.textContent = count;
+    badge.style.display = count > 0 ? "" : "none";
   }
 
   function renderGrindList(){
@@ -1563,6 +1687,7 @@
     var countEl = document.getElementById("recipeGrindCount");
     var copyBtn = document.getElementById("recipeGrindCopy");
     if(!body) return;
+    clearEffectiveHaveCache(); // inventory may have changed since the last render pass
 
     var keys = Object.keys(favorites).filter(function(k){ return favorites[k]; });
 
@@ -1576,6 +1701,7 @@
 
     countEl.textContent = validKeys.length;
     if(copyBtn) copyBtn.classList.toggle("is-visible", validKeys.length > 0);
+    updateGrindTabBadge();
 
     if(!validKeys.length){
       body.innerHTML = '<div class="recipe-grind-empty">Star a level below to add it here and see exactly what you still need to grind.</div>';
@@ -1592,7 +1718,7 @@
       var lv = s.levels[parseInt(parts[1], 10) - 1];
       var mats = lv.materials || [];
       var missing = mats.reduce(function(count, m){
-        var have = inventory[m.item] || 0;
+        var have = effectiveHave(m.item);
         return count + (have < m.qty ? 1 : 0);
       }, 0);
       missingCountByKey[key] = missing;
@@ -1611,7 +1737,7 @@
 
       var matsHtml = mats.length
         ? mats.map(function(m){
-            var have = inventory[m.item] || 0;
+            var have = effectiveHave(m.item);
             totals[m.item] = totals[m.item] || { need: 0, have: have };
             totals[m.item].need += m.qty;
             return grindMatRowHtml(m.item, m.qty, have);
@@ -1707,6 +1833,21 @@
     backdrop.addEventListener("click", close);
     document.addEventListener("keydown", function(e){
       if(e.key === "Escape" && panel.classList.contains("is-open")) close();
+    });
+
+    // Global "/" shortcut - jumps straight into the Recipe panel's search
+    // (which already covers every skill name and every material) from
+    // anywhere in the app, instead of having to click the Recipes tab first.
+    // Skipped while typing in any other field so it doesn't hijack normal
+    // slash characters in text inputs/textareas.
+    document.addEventListener("keydown", function(e){
+      if(e.key !== "/") return;
+      var tag = e.target && e.target.tagName;
+      var isTyping = tag === "INPUT" || tag === "TEXTAREA" || (e.target && e.target.isContentEditable);
+      if(isTyping) return;
+      e.preventDefault();
+      open();
+      search.focus();
     });
 
     // Normal text search matches against the whole card (skill name + every
@@ -1820,7 +1961,7 @@
         if(!lastRemovedKey) return;
         favorites[lastRemovedKey] = true;
         saveFavorites();
-        panel.querySelectorAll('.recipe-fav-btn[data-fav-key="' + lastRemovedKey + '"]').forEach(function(btn){
+        document.querySelectorAll('.recipe-fav-btn[data-fav-key="' + lastRemovedKey + '"]').forEach(function(btn){
           btn.classList.add("is-fav");
           btn.textContent = "\u2605";
           btn.title = "Remove from grind list";
@@ -1830,7 +1971,7 @@
       });
     }
 
-    panel.addEventListener("click", function(e){
+    document.addEventListener("click", function(e){
       var favBtn = e.target.closest ? e.target.closest(".recipe-fav-btn") : null;
       var removeBtn = e.target.closest ? e.target.closest(".recipe-grind-remove") : null;
       var key = favBtn ? favBtn.dataset.favKey : (removeBtn ? removeBtn.dataset.favKey : null);
@@ -1839,9 +1980,10 @@
       var wasFav = !!favorites[key];
       toggleFavorite(key);
 
-      // Keep every star button for this key in sync (only one exists per
-      // key today, but this stays correct if that ever changes).
-      panel.querySelectorAll('.recipe-fav-btn[data-fav-key="' + key + '"]').forEach(function(btn){
+      // Keep every star button for this key in sync, wherever it appears -
+      // the Recipe panel's card and the Results/Almost There cards can both
+      // show a star for the same skill+level.
+      document.querySelectorAll('.recipe-fav-btn[data-fav-key="' + key + '"]').forEach(function(btn){
         var isFav = !!favorites[key];
         btn.classList.toggle("is-fav", isFav);
         btn.textContent = isFav ? "\u2605" : "\u2606";
@@ -1864,7 +2006,85 @@
       }
 
       renderGrindList();
+      updateGrindTabBadge();
     });
+
+    // ---- Bulk add to grind list ----
+    // Lets someone paste several "Skill Name Lv N" lines at once (e.g. from
+    // notes made while planning a grind session) instead of hunting down
+    // and starring each level one at a time.
+    var bulkBox = document.getElementById("recipeGrindBulkBox");
+    var bulkToggle = document.getElementById("recipeGrindBulkToggle");
+    var bulkInput = document.getElementById("recipeGrindBulkInput");
+    var bulkApplyBtn = document.getElementById("recipeGrindBulkApplyBtn");
+    var bulkResult = document.getElementById("recipeGrindBulkResult");
+
+    if(bulkToggle && bulkBox){
+      bulkToggle.addEventListener("click", function(){
+        bulkBox.classList.toggle("is-open");
+      });
+    }
+
+    function parseGrindBulkLine(line){
+      // "Skill Name Lv 3" / "Skill Name Level 3" / "Skill Name Lvl 3"
+      var mLv = line.match(/^(.*?)\s*(?:lv|lvl|level)\.?\s*(\d+)\s*$/i);
+      if(mLv) return { name: mLv[1].trim(), level: parseInt(mLv[2], 10) };
+      // "Skill Name: 3" / "Skill Name x3" / "Skill Name - 3"
+      var mEnd = line.match(/^(.*?)[\s:xX×\-]+(\d+)\s*$/);
+      if(mEnd) return { name: mEnd[1].replace(/[:\-]+$/, "").trim(), level: parseInt(mEnd[2], 10) };
+      return null;
+    }
+
+    if(bulkApplyBtn){
+      bulkApplyBtn.addEventListener("click", function(){
+        var text = bulkInput.value;
+        if(!text.trim()){
+          bulkResult.textContent = "Paste some lines first.";
+          bulkResult.classList.add("has-issues");
+          return;
+        }
+
+        var nameIndex = {};
+        Object.keys(skillsData).forEach(function(id){
+          nameIndex[skillsData[id].name.toLowerCase()] = id;
+        });
+
+        var starred = [], unmatched = [];
+        text.split(/\r?\n/).forEach(function(rawLine){
+          var line = rawLine.trim();
+          if(!line) return;
+          var parsed = parseGrindBulkLine(line);
+          if(!parsed || isNaN(parsed.level)){ unmatched.push(line); return; }
+
+          var id = nameIndex[parsed.name.toLowerCase()];
+          if(!id){
+            var candidates = Object.keys(nameIndex).filter(function(n){
+              return n.indexOf(parsed.name.toLowerCase()) !== -1;
+            });
+            if(candidates.length === 1) id = nameIndex[candidates[0]];
+          }
+          var s = id ? skillsData[id] : null;
+          if(!s || !s.levels[parsed.level - 1]){ unmatched.push(line); return; }
+
+          var key = id + "::" + parsed.level;
+          favorites[key] = true;
+          starred.push(s.name + " Lv " + parsed.level);
+        });
+
+        if(starred.length) saveFavorites();
+        renderGrindList();
+
+        var summary = starred.length ? "Starred " + starred.length + ": " + starred.join(", ") : "";
+        var issue = unmatched.length ? (summary ? " \u2014 " : "") + "Couldn't match: " + unmatched.join("; ") : "";
+        bulkResult.textContent = (summary + issue) || "Nothing matched.";
+        bulkResult.classList.toggle("has-issues", !!unmatched.length);
+
+        if(starred.length && !grindSection.classList.contains("is-open")){
+          grindSection.classList.add("is-open");
+          grindToggle.setAttribute("aria-expanded", "true");
+        }
+      });
+    }
   })();
 
   function buildTree(){
@@ -2309,6 +2529,163 @@
     return isNaN(n) ? 99 : n; // items without a tier sort last
   }
 
+  // ---------- Crafting (optional, off by default) ----------
+  // When enabled, 3x of a Tier N material is treated as usable toward 1x of
+  // a Tier N+1 material in the same `group` (e.g. Slime Condensate ->
+  // Slime Secretions -> Slime Concentrate). This only assumes one item per
+  // tier per group; groups with more than one item sharing a tier aren't
+  // supported by this simple chain.
+  function buildCraftGroups(){
+    var groups = {};
+    Object.keys(itemsData).forEach(function(id){
+      var item = itemsData[id];
+      var g = itemGroupKey(item);
+      var t = itemTierRank(item);
+      if(!g || t === 99) return;
+      if(!groups[g]) groups[g] = {};
+      groups[g][t] = id;
+    });
+    craftGroups = groups;
+  }
+
+  // Cache for effectiveHave(), cleared at the start of each render pass
+  // (runCalculate, renderRecipeToolbar, renderGrindList) via
+  // clearEffectiveHaveCache(). Inventory only changes between render passes,
+  // never mid-pass, so it's always safe to reuse a cached value within one.
+  var effectiveHaveCache = {};
+  function clearEffectiveHaveCache(){ effectiveHaveCache = {}; }
+
+  // Highest quantity of `itemId` you could have on hand if every eligible
+  // lower-tier surplus in its group were crafted upward first. Read-only -
+  // does not touch `inventory`. Falls back to the raw count when crafting
+  // is off, the item has no group/tier, or there's no lower tier to draw from.
+  function effectiveHave(itemId){
+    if(!craftingEnabled) return inventory[itemId] || 0;
+    if(itemId in effectiveHaveCache) return effectiveHaveCache[itemId];
+    var item = itemsData[itemId];
+    var base = inventory[itemId] || 0;
+    var result = base;
+    if(item){
+      var g = itemGroupKey(item), t = itemTierRank(item);
+      if(g && t !== 99 && t > 1){
+        var group = craftGroups[g];
+        var lowerId = group ? group[t - 1] : null;
+        if(lowerId && lowerId !== itemId){
+          result = base + Math.floor(effectiveHave(lowerId) / 3);
+        }
+      }
+    }
+    effectiveHaveCache[itemId] = result;
+    return result;
+  }
+
+  // Describes how much of an item's effective count (shown by effectiveHave)
+  // comes from crafting rather than raw inventory - e.g. { tier: 1, count: 18 }
+  // means 18 units of the tier below were used up to craft extra of this
+  // item. Returns null when crafting is off or nothing was actually crafted,
+  // so the UI can skip the note entirely in the common case.
+  function craftedContribution(itemId){
+    if(!craftingEnabled) return null;
+    var item = itemsData[itemId];
+    if(!item) return null;
+    var g = itemGroupKey(item), t = itemTierRank(item);
+    if(!g || t === 99 || t <= 1) return null;
+    var group = craftGroups[g];
+    var lowerId = group ? group[t - 1] : null;
+    if(!lowerId || lowerId === itemId) return null;
+    var craftedUnits = Math.floor(effectiveHave(lowerId) / 3);
+    if(craftedUnits <= 0) return null;
+    return { tier: t - 1, count: craftedUnits * 3 };
+  }
+
+  // Recursively figures out how many *raw* units of each tier below itemId
+  // actually got drawn on to supply `amountNeeded` effective units of it -
+  // draws from raw stock first, then only cascades into the next tier down
+  // for whatever's still short. Returns [{tier, count}, ...] ordered by
+  // however the recursion unwinds (deepest tier last).
+  function craftConsumeBreakdown(itemId, amountNeeded){
+    if(amountNeeded <= 0) return [];
+    var item = itemsData[itemId];
+    if(!item) return [];
+    var t = itemTierRank(item);
+    var raw = inventory[itemId] || 0;
+    var fromRaw = Math.min(raw, amountNeeded);
+    var result = fromRaw > 0 ? [{ tier: t, count: fromRaw }] : [];
+    var remaining = amountNeeded - fromRaw;
+    if(remaining > 0){
+      var g = itemGroupKey(item);
+      var group = craftGroups[g];
+      var lowerId = group ? group[t - 1] : null;
+      if(lowerId && lowerId !== itemId){
+        result = result.concat(craftConsumeBreakdown(lowerId, remaining * 3));
+      }
+    }
+    return result;
+  }
+
+  // Full multi-tier version of craftedContribution: instead of just "how
+  // much of the tier directly below", walks all the way down and reports
+  // every tier that actually contributed raw materials, sorted lowest tier
+  // first (e.g. [{tier:1, count:18}, {tier:2, count:18}]).
+  function craftedContributionFull(itemId){
+    if(!craftingEnabled) return null;
+    var item = itemsData[itemId];
+    if(!item) return null;
+    var g = itemGroupKey(item), t = itemTierRank(item);
+    if(!g || t === 99 || t <= 1) return null;
+    var group = craftGroups[g];
+    var lowerId = group ? group[t - 1] : null;
+    if(!lowerId || lowerId === itemId) return null;
+    var craftedUnits = Math.floor(effectiveHave(lowerId) / 3);
+    if(craftedUnits <= 0) return null;
+    var breakdown = craftConsumeBreakdown(lowerId, craftedUnits * 3);
+    if(!breakdown.length) return null;
+    // Combine any duplicate tiers (can happen if the same tier is reached
+    // via more than one recursive branch) and sort lowest tier first.
+    var byTier = {};
+    breakdown.forEach(function(b){ byTier[b.tier] = (byTier[b.tier] || 0) + b.count; });
+    return Object.keys(byTier).map(function(t){ return { tier: parseInt(t, 10), count: byTier[t] }; })
+      .sort(function(a, b){ return a.tier - b.tier; });
+  }
+
+  // Formats whichever crafted-contribution view is active (single-level or
+  // full breakdown) into the small "(...)" note used in the UI/exports.
+  function craftNotePlain(itemId){
+    if(craftDetailedBreakdown){
+      var full = craftedContributionFull(itemId);
+      if(!full) return "";
+      return full.map(function(c){ return c.count + "x T" + c.tier; }).join(", ");
+    }
+    var c = craftedContribution(itemId);
+    return c ? c.count + "x T" + c.tier : "";
+  }
+
+  // Actually deducts `qty` of `itemId` from `inventory`, crafting down from
+  // lower tiers in the same group as needed (3 lower-tier per 1 needed).
+  // Returns false (and leaves inventory untouched for this branch) if there
+  // still isn't enough even after crafting - callers should only invoke this
+  // after confirming effectiveHave(itemId) >= qty for every material.
+  function tryConsume(itemId, qty){
+    var have = inventory[itemId] || 0;
+    if(have >= qty){
+      inventory[itemId] = have - qty;
+      return true;
+    }
+    if(!craftingEnabled) return false;
+    var item = itemsData[itemId];
+    var g = item ? itemGroupKey(item) : "";
+    var t = item ? itemTierRank(item) : 99;
+    if(!g || t === 99) return false;
+    var group = craftGroups[g];
+    var lowerId = group ? group[t - 1] : null;
+    if(!lowerId || lowerId === itemId) return false;
+
+    var shortfall = qty - have; // additional units of itemId we need to craft
+    if(!tryConsume(lowerId, shortfall * 3)) return false;
+    inventory[itemId] = 0; // used everything on hand plus what was just crafted
+    return true;
+  }
+
   function compareItemIds(a, b){
     var ia = itemsData[a], ib = itemsData[b];
     if(typeActive){
@@ -2579,6 +2956,7 @@
 
   // ---------- Calculate ----------
   function runCalculate(){
+    clearEffectiveHaveCache(); // inventory may have changed since the last render pass
     var affordable = [];   // learnable AND fully stocked
     var almostThere = [];  // unlocked, next level defined, but missing some materials
     var pendingData = [];  // next level exists but materials not documented (tbd)
@@ -2598,7 +2976,7 @@
 
       var mats = nextData.materials || [];
       var missing = mats.map(function(m){
-        var have = inventory[m.item] || 0;
+        var have = effectiveHave(m.item);
         return {
           item: m.item, have: have, need: m.qty,
           short: Math.max(0, m.qty - have),
@@ -2656,31 +3034,28 @@
 
     var matsHtml = mats.map(function(m){
       var item = itemsData[m.item];
+      var name = item ? item.name : m.item;
       if(isAlmost){
-        return (
-          '<div class="mat-row' + (m.short > 0 ? ' is-missing' : '') + '">' +
-            '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
-            '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
-            '<div class="mat-qty">' + m.have + ' / ' + m.need +
-              (m.short > 0 ? ' <span class="mat-short">need ' + m.short + ' more</span>' : '') +
-            '</div>' +
-          '</div>'
-        );
+        return matRowHtml(m.item, m.need, m.have, { name: name });
       }
-      var have = inventory[m.item] || 0;
-      return (
-        '<div class="mat-row">' +
-          '<div class="mat-icon">' + iconMarkup(m.item) + '</div>' +
-          '<div class="mat-name">' + (item ? item.name : m.item) + '</div>' +
-          '<div class="mat-qty">' + have + ' / ' + m.qty + '</div>' +
-        '</div>'
-      );
+      var have = effectiveHave(m.item);
+      return matRowHtml(m.item, m.qty, have, { name: name });
     }).join("");
 
     var delay = Math.min(idx, 8) * 35;
     var cardClasses = ["result-card"];
     if(isAlmost) cardClasses.push("is-almost");
     if(entry.isBranch) cardClasses.push("is-branch");
+
+    // Lets a level be starred straight from the results view (mirrors the
+    // Recipe panel's per-level star) so planning a grind doesn't require
+    // switching over there to find the same level again.
+    var favKey = entry.id + "::" + lv.level;
+    var isFav = !!favorites[favKey];
+    var favBtn =
+      '<button type="button" class="recipe-fav-btn' + (isFav ? ' is-fav' : '') + '" style="margin-left:auto;" ' +
+      'data-fav-key="' + favKey + '" title="' + (isFav ? "Remove from grind list" : "Add to grind list") + '" ' +
+      'aria-label="Toggle favorite for level ' + lv.level + '">' + (isFav ? "\u2605" : "\u2606") + '</button>';
 
     // Materials are embedded directly on the Learn button so the confirm
     // dialog doesn't need any separate lookup/state when clicked.
@@ -2702,6 +3077,7 @@
           learnBtn +
           '<span class="lvl-badge">Lv ' + lv.level + '</span>' +
           '<span class="name">' + s.emoji + ' ' + s.name + '</span>' +
+          favBtn +
         '</div>' +
         (entry.parentName ? '<div class="result-parent">Branch of ' + entry.parentName + '</div>' : "") +
         '<div class="result-effect">' + lv.effect + '</div>' +
@@ -2848,6 +3224,7 @@
   // Builds a plain-text version of the current Grind List (per-level
   // materials plus the combined total), for pasting into notes/chat.
   function buildGrindListShareText(){
+    clearEffectiveHaveCache(); // called on-demand by the Copy button, not part of a render pass
     var keys = Object.keys(favorites).filter(function(k){ return favorites[k]; });
     var validKeys = keys.filter(function(key){
       var parts = key.split("::");
@@ -2873,10 +3250,12 @@
         mats.forEach(function(m){
           var item = itemsData[m.item];
           var name = item ? item.name : m.item;
-          var have = inventory[m.item] || 0;
+          var have = effectiveHave(m.item);
           totals[m.item] = totals[m.item] || { name: name, need: 0, have: have };
           totals[m.item].need += m.qty;
-          lines.push("  " + name + " " + have + "/" + m.qty);
+          var craftText = craftNotePlain(m.item);
+          var craftSuffix = craftText ? " (" + craftText + ")" : "";
+          lines.push("  " + name + " " + have + "/" + m.qty + craftSuffix);
         });
       }
     });
@@ -2899,49 +3278,41 @@
     if(!btn) return;
     var defaultLabel = btn.textContent;
     btn.addEventListener("click", function(){
-      var text = buildGrindListShareText();
-      function flash(label){
-        btn.textContent = label;
+      copyToClipboard(buildGrindListShareText(), function(ok){
+        btn.textContent = ok ? "Copied!" : "Couldn't copy";
         setTimeout(function(){ btn.textContent = defaultLabel; }, 1500);
-      }
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).then(function(){ flash("Copied!"); }, function(){ flash("Couldn't copy"); });
-      } else {
-        var ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        var ok = false;
-        try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
-        document.body.removeChild(ta);
-        flash(ok ? "Copied!" : "Couldn't copy");
-      }
+      });
     });
   })();
 
+  // Writes `text` to the clipboard (with an execCommand fallback for
+  // browsers/contexts without navigator.clipboard), then reports success via
+  // onDone(ok). Shared by every "Copy as text" button in the app; each caller
+  // decides how to surface the result (flash the button label, or a nearby
+  // feedback element - see copyTextWithFeedback below).
+  function copyToClipboard(text, onDone){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ onDone(true); }, function(){ onDone(false); });
+      return;
+    }
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+    document.body.removeChild(ta);
+    onDone(ok);
+  }
 
   function copyTextWithFeedback(text, feedbackEl){
-    function showCopied(ok){
+    copyToClipboard(text, function(ok){
       feedbackEl.textContent = ok ? "Copied!" : "Couldn't copy - select and copy manually.";
       feedbackEl.classList.add("is-visible");
       setTimeout(function(){ feedbackEl.classList.remove("is-visible"); }, 2000);
-    }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(function(){ showCopied(true); }, function(){ showCopied(false); });
-    } else {
-      var ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      var ok = false;
-      try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
-      document.body.removeChild(ta);
-      showCopied(ok);
-    }
+    });
   }
 
   (function initCopyResults(){
@@ -3012,13 +3383,16 @@
     if(nextData.tbd) return; // materials not documented, can't auto-deduct
 
     var mats = nextData.materials || [];
-    var canAfford = mats.every(function(m){ return (inventory[m.item] || 0) >= m.qty; });
+    clearEffectiveHaveCache(); // guarantee this check reflects current inventory, not a stale render-pass cache
+    var canAfford = mats.every(function(m){ return effectiveHave(m.item) >= m.qty; });
     if(!canAfford) return; // shouldn't happen since button only shows when affordable
 
-    mats.forEach(function(m){
-      inventory[m.item] = (inventory[m.item] || 0) - m.qty;
-      if(inventory[m.item] < 0) inventory[m.item] = 0;
-    });
+    // Snapshot inventory before deducting, so Undo can restore it exactly -
+    // important when crafting is on, since tryConsume may pull from a lower
+    // tier item rather than the item actually listed in the recipe.
+    var invSnapshot = JSON.parse(JSON.stringify(inventory));
+
+    mats.forEach(function(m){ tryConsume(m.item, m.qty); });
 
     learned[skillId] = lvl + 1;
 
@@ -3028,16 +3402,16 @@
     saveProgress();
     updateSummaryBar();
 
-    showLearnToast(skillId, lvl, nextData, mats);
+    showLearnToast(skillId, lvl, nextData, mats, invSnapshot);
   }
 
   // ---------- Undo toast ----------
   var toastTimer = null;
-  var lastLearn = null; // { skillId, prevLevel, mats: [{item, qty}] }
+  var lastLearn = null; // { skillId, prevLevel, invSnapshot }
 
-  function showLearnToast(skillId, prevLevel, levelData, mats){
+  function showLearnToast(skillId, prevLevel, levelData, mats, invSnapshot){
     var s = skillsData[skillId];
-    lastLearn = { skillId: skillId, prevLevel: prevLevel, mats: mats };
+    lastLearn = { skillId: skillId, prevLevel: prevLevel, invSnapshot: invSnapshot };
 
     var msgEl = document.getElementById("learnToastMsg");
     msgEl.innerHTML = 'Learned <strong>' + s.emoji + ' ' + s.name + ' Lv ' + levelData.level + '</strong>';
@@ -3060,9 +3434,7 @@
     var skillId = lastLearn.skillId;
     if(!skillsData[skillId]){ hideLearnToast(); return; }
 
-    lastLearn.mats.forEach(function(m){
-      inventory[m.item] = (inventory[m.item] || 0) + m.qty;
-    });
+    inventory = JSON.parse(JSON.stringify(lastLearn.invSnapshot));
     learned[skillId] = lastLearn.prevLevel;
 
     syncInventoryInputs();
