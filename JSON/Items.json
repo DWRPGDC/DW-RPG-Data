@@ -357,5 +357,10 @@
     "name": "Radish",
     "icon": "Item Radish.webp",
     "category": "misc"
+  },
+  "crimson_agate": {
+    "name": "Crimson Agate",
+    "icon": "Item Crimson Agate.webp",
+    "category": "misc"
   }
 }
