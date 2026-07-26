@@ -1478,6 +1478,9 @@
   var LS_DIFF_SELECTED = "weaponFinder_diffSelected";
   var LS_ARTIFACT_COMPARE_LIST = "weaponFinder_artifactCompareList";
   var LS_ARTIFACT_DIFF_SELECTED = "weaponFinder_artifactDiffSelected";
+  var LS_LAST_CATEGORY = "weaponFinder_lastCategory";
+  var LS_LAST_VIEW_WEAPONS = "weaponFinder_lastViewWeapons";
+  var LS_LAST_VIEW_ARTIFACTS = "weaponFinder_lastViewArtifacts";
 
   function lsGet(key){
     try{
@@ -1516,6 +1519,9 @@
     if(!rememberSelectionsEnabled){
       lsRemove(LS_COMPARE_LIST);
       lsRemove(LS_DIFF_SELECTED);
+      lsRemove(LS_LAST_CATEGORY);
+      lsRemove(LS_LAST_VIEW_WEAPONS);
+      lsRemove(LS_LAST_VIEW_ARTIFACTS);
     }
   }
 
@@ -2646,7 +2652,6 @@
       '</div>';
   }
 
-  var scrollPositions = { finder: 0, compare: 0, diff: 0 };
   var currentView = "finder";
 
   var ALL_VIEWS = ["finder", "compare", "diff", "artifact-finder", "artifact-compare", "artifact-diff"];
@@ -2654,6 +2659,17 @@
     "finder": "navFinderBtn", "compare": "navCompareBtn", "diff": "navDiffBtn",
     "artifact-finder": "navArtifactFinderBtn", "artifact-compare": "navArtifactCompareBtn", "artifact-diff": "navArtifactDiffBtn"
   };
+  var VIEW_CATEGORY = {
+    "finder": "weapons", "compare": "weapons", "diff": "weapons",
+    "artifact-finder": "artifacts", "artifact-compare": "artifacts", "artifact-diff": "artifacts"
+  };
+
+  function saveLastView(view){
+    if(!rememberSelectionsEnabled) return;
+    var category = VIEW_CATEGORY[view];
+    lsSet(LS_LAST_CATEGORY, category);
+    lsSet(category === "artifacts" ? LS_LAST_VIEW_ARTIFACTS : LS_LAST_VIEW_WEAPONS, view);
+  }
 
   // ---------- Artifacts ----------
   var ARTIFACT_DATA_URL = "../JSON/Artifacts.json";
@@ -3317,7 +3333,6 @@
 
   function switchView(view){
     if(view === currentView) return;
-    scrollPositions[currentView] = window.scrollY;
 
     ALL_VIEWS.forEach(function(v){
       var section = document.getElementById("view-" + v);
@@ -3327,9 +3342,10 @@
     });
 
     currentView = view;
+    saveLastView(view);
 
     requestAnimationFrame(function(){
-      window.scrollTo(0, scrollPositions[view] || 0);
+      window.scrollTo(0, 0);
     });
   }
   document.getElementById("navFinderBtn").addEventListener("click", function(){ switchView("finder"); });
@@ -3353,11 +3369,37 @@
     document.getElementById("navGroupArtifacts").hidden = category !== "artifacts";
 
     var target = CATEGORY_DEFAULT_VIEW[category];
+    if(rememberSelectionsEnabled){
+      var savedView = lsGet(category === "artifacts" ? LS_LAST_VIEW_ARTIFACTS : LS_LAST_VIEW_WEAPONS);
+      if(ALL_VIEWS.indexOf(savedView) !== -1 && VIEW_CATEGORY[savedView] === category){
+        target = savedView;
+      }
+    }
     var prevSection = document.getElementById("view-" + currentView);
     if(prevSection) prevSection.hidden = true;
     currentView = null; // force switchView to run even if returning to the same view id later
     switchView(target);
   });
+
+  // ---------- Restore last active category/tab on load (if remember selections is on) ----------
+  (function restoreLastView(){
+    if(!rememberSelectionsEnabled) return;
+    var category = lsGet(LS_LAST_CATEGORY);
+    if(category !== "weapons" && category !== "artifacts") return;
+
+    var savedView = lsGet(category === "artifacts" ? LS_LAST_VIEW_ARTIFACTS : LS_LAST_VIEW_WEAPONS);
+    if(ALL_VIEWS.indexOf(savedView) === -1 || VIEW_CATEGORY[savedView] !== category) return;
+
+    document.getElementById("categoryWeaponsBtn").classList.toggle("is-active", category === "weapons");
+    document.getElementById("categoryArtifactsBtn").classList.toggle("is-active", category === "artifacts");
+    document.getElementById("navGroupWeapons").hidden = category !== "weapons";
+    document.getElementById("navGroupArtifacts").hidden = category !== "artifacts";
+
+    var prevSection = document.getElementById("view-" + currentView);
+    if(prevSection) prevSection.hidden = true;
+    currentView = null; // force switchView to run even for the same view id
+    switchView(savedView);
+  })();
 </script>
 </body>
 </html>
