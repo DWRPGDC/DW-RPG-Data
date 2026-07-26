@@ -1157,11 +1157,12 @@
         <div class="help-panel" id="helpPanel">
           <h3>How to use</h3>
           <ol>
-            <li><b>Finder:</b> Search by name, filter by type or world level, and sort the results.</li>
-            <li><b>Compare:</b> Add several weapons to see their full stats side by side. Swipe to see more. Drag a card by its grip handle to reorder, or use Sort to order by a stat.</li>
-            <li><b>Differentiator:</b> Pick exactly two weapons to see which one wins on each stat, and by how much. Tap the VS button to swap Weapon 1 and Weapon 2.</li>
+            <li><b>Finder:</b> Search by name and sort the results. Weapons can also be filtered by type, and both weapons and artifacts can be filtered by world level.</li>
+            <li><b>Compare:</b> Add several weapons or artifact sets to see their full stats side by side. Swipe to see more. Drag a card by its grip handle to reorder, or use Sort to order by a stat.</li>
+            <li><b>Differentiator:</b> Pick exactly two weapons or artifact sets to see which one wins on each stat, and by how much. Tap the VS button to swap sides.</li>
             <li>Toggle <b>Dark mode</b> in Settings any time.</li>
             <li>Turn on <b>Remember selections</b> in Settings to keep your Compare and Differentiator picks saved in this browser between visits (off by default).</li>
+            <li>Turn on <b>Remember last tab</b> in Settings to reopen the tab you last had open (off by default).</li>
           </ol>
         </div>
         <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙️</button>
@@ -1178,6 +1179,13 @@
             <span title="Keeps your Compare and Differentiator selections saved in this browser between visits.">Remember selections</span>
             <label class="switch">
               <input type="checkbox" id="rememberSelectionsToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <span title="Reopens the last tab you were on (Finder/Compare/Differentiator) in each mode.">Remember last tab</span>
+            <label class="switch">
+              <input type="checkbox" id="rememberLastTabToggle">
               <span class="slider"></span>
             </label>
           </div>
@@ -1290,6 +1298,9 @@
         <div class="search-box">
           <input type="text" id="artifactSearchInput" placeholder="Search artifact set name...">
         </div>
+        <select id="artifactWlFilter">
+          <option value="">All World Levels</option>
+        </select>
         <div class="sort-group">
           <label for="artifactSortSelect">Sort:</label>
           <select id="artifactSortSelect">
@@ -1474,6 +1485,7 @@
   /* ---------- Persistence ---------- */
   var LS_THEME = "weaponFinder_theme";
   var LS_REMEMBER_SELECTIONS = "weaponFinder_rememberSelections";
+  var LS_REMEMBER_LAST_TAB = "weaponFinder_rememberLastTab";
   var LS_COMPARE_LIST = "weaponFinder_compareList";
   var LS_DIFF_SELECTED = "weaponFinder_diffSelected";
   var LS_ARTIFACT_COMPARE_LIST = "weaponFinder_artifactCompareList";
@@ -1496,6 +1508,7 @@
   }
 
   var rememberSelectionsEnabled = false;
+  var rememberLastTabEnabled = false;
 
   function saveCompareSelection(){
     if(rememberSelectionsEnabled) lsSet(LS_COMPARE_LIST, compareList);
@@ -1519,6 +1532,13 @@
     if(!rememberSelectionsEnabled){
       lsRemove(LS_COMPARE_LIST);
       lsRemove(LS_DIFF_SELECTED);
+    }
+  }
+
+  function applyRememberLastTab(enabled){
+    rememberLastTabEnabled = !!enabled;
+    document.getElementById("rememberLastTabToggle").checked = rememberLastTabEnabled;
+    if(!rememberLastTabEnabled){
       lsRemove(LS_LAST_CATEGORY);
       lsRemove(LS_LAST_VIEW_WEAPONS);
       lsRemove(LS_LAST_VIEW_ARTIFACTS);
@@ -1541,6 +1561,7 @@
   (function initSettings(){
     applyTheme(lsGet(LS_THEME) === "dark");
     applyRememberSelections(lsGet(LS_REMEMBER_SELECTIONS) === true); // off by default
+    applyRememberLastTab(lsGet(LS_REMEMBER_LAST_TAB) === true); // off by default
 
     var btn = document.getElementById("settingsBtn");
     var panel = document.getElementById("settingsPanel");
@@ -1565,6 +1586,15 @@
         // Start persisting from the current in-page state right away.
         saveCompareSelection();
         saveDiffSelection();
+      }
+    });
+
+    document.getElementById("rememberLastTabToggle").addEventListener("change", function(e){
+      applyRememberLastTab(e.target.checked);
+      lsSet(LS_REMEMBER_LAST_TAB, e.target.checked);
+      if(e.target.checked){
+        // Start persisting from the current tab right away.
+        saveLastView(currentView);
       }
     });
   })();
@@ -2110,6 +2140,7 @@
 
   var typeFilterDropdown = enhanceSelect("typeFilter");
   var wlFilterDropdown = enhanceSelect("wlFilter");
+  var artifactWlFilterDropdown = enhanceSelect("artifactWlFilter");
   var sortSelectDropdown = enhanceSelect("sortSelect");
   var compareSortDropdown = enhanceSelect("compareSortSelect");
   var artifactSortSelectDropdown = enhanceSelect("artifactSortSelect");
@@ -2665,7 +2696,7 @@
   };
 
   function saveLastView(view){
-    if(!rememberSelectionsEnabled) return;
+    if(!rememberLastTabEnabled) return;
     var category = VIEW_CATEGORY[view];
     lsSet(LS_LAST_CATEGORY, category);
     lsSet(category === "artifacts" ? LS_LAST_VIEW_ARTIFACTS : LS_LAST_VIEW_WEAPONS, view);
@@ -2696,6 +2727,7 @@
     .then(function(data){
       artifactSets = Array.isArray(data) ? data : [];
       document.getElementById("artifactFinderEmpty").style.display = artifactSets.length ? "none" : "";
+      populateArtifactFilters();
       renderArtifactGrid();
 
       if(rememberSelectionsEnabled){
@@ -2730,6 +2762,18 @@
       artifactSets = [];
     });
 
+  function populateArtifactFilters(){
+    var wls = Array.from(new Set(artifactSets.map(function(s){ return s.worldLevel; })))
+      .filter(function(wl){ return wl !== undefined && wl !== null; })
+      .sort(function(a,b){ return a-b; });
+    var wlSelect = document.getElementById("artifactWlFilter");
+    wls.forEach(function(wl){
+      var opt = document.createElement("option");
+      opt.value = wl; opt.textContent = "WL " + wl;
+      wlSelect.appendChild(opt);
+    });
+  }
+
   function sortArtifactSets(list, sortKey){
     var sorted = list.slice();
     switch(sortKey){
@@ -2744,10 +2788,12 @@
 
   function renderArtifactGrid(){
     var query = (document.getElementById("artifactSearchInput").value || "").trim().toLowerCase();
+    var wl = document.getElementById("artifactWlFilter").value;
     var sortKey = document.getElementById("artifactSortSelect").value;
     var grid = document.getElementById("artifactGrid");
     var countEl = document.getElementById("artifactResultCount");
     var matches = artifactSets.filter(function(s){
+      if(wl && String(s.worldLevel) !== wl) return false;
       return !query || s.setName.toLowerCase().indexOf(query) !== -1;
     });
     matches = sortArtifactSets(matches, sortKey);
@@ -2814,6 +2860,7 @@
   }
 
   document.getElementById("artifactSearchInput").addEventListener("input", renderArtifactGrid);
+  document.getElementById("artifactWlFilter").addEventListener("change", renderArtifactGrid);
   document.getElementById("artifactSortSelect").addEventListener("change", renderArtifactGrid);
 
   function openArtifactModal(s){
@@ -3369,7 +3416,7 @@
     document.getElementById("navGroupArtifacts").hidden = category !== "artifacts";
 
     var target = CATEGORY_DEFAULT_VIEW[category];
-    if(rememberSelectionsEnabled){
+    if(rememberLastTabEnabled){
       var savedView = lsGet(category === "artifacts" ? LS_LAST_VIEW_ARTIFACTS : LS_LAST_VIEW_WEAPONS);
       if(ALL_VIEWS.indexOf(savedView) !== -1 && VIEW_CATEGORY[savedView] === category){
         target = savedView;
@@ -3383,7 +3430,7 @@
 
   // ---------- Restore last active category/tab on load (if remember selections is on) ----------
   (function restoreLastView(){
-    if(!rememberSelectionsEnabled) return;
+    if(!rememberLastTabEnabled) return;
     var category = lsGet(LS_LAST_CATEGORY);
     if(category !== "weapons" && category !== "artifacts") return;
 
