@@ -1,0 +1,3363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipment Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:            #ffffff;
+    --bg-alt:        #f5f5f5;
+    --panel:         #ffffff;
+    --panel-2:       #f0f0f0;
+    --card:          #fafafa;
+    --line:          #999999;
+    --divider:       #c9c9c9;
+    --gold:          #000000;
+    --gold-dim:      #666666;
+    --ink:           #000000;
+    --ink-dim:       #555555;
+    --radius:        10px;
+  }
+
+  body.theme-dark{
+    --bg:            #000000;
+    --bg-alt:        #0a0a0a;
+    --panel:         #0f0f0f;
+    --panel-2:       #1a1a1a;
+    --card:          #141414;
+    --line:          #3a3a3a;
+    --divider:       #333333;
+    --gold:          #ffffff;
+    --gold-dim:      #888888;
+    --ink:           #f2f2f2;
+    --ink-dim:       #999999;
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html,body{
+    margin:0; padding:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+  }
+
+  .wrap{
+    max-width:1000px;
+    margin:0 auto;
+    padding:36px 20px 100px;
+  }
+
+  header.hero{
+    margin-bottom:26px;
+  }
+  h1{
+    font-family:'Cinzel', serif;
+    font-weight:600;
+    font-size:clamp(22px, 3.2vw, 30px);
+    letter-spacing:0.02em;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  header.hero p{
+    margin:0;
+    color:var(--ink-dim);
+    font-size:14px;
+  }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:20px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+  }
+
+  .search-box{
+    flex:1 1 220px;
+    position:relative;
+  }
+  .search-box input{
+    width:100%;
+    padding:9px 12px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    background:var(--bg-alt);
+    color:var(--ink);
+  }
+  .search-box input:focus{ outline:none; border-color:var(--gold); }
+
+  select{
+    padding:9px 10px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    background:var(--bg-alt);
+    color:var(--ink);
+    cursor:pointer;
+  }
+
+  .sort-group{
+    display:flex; align-items:center; gap:6px;
+    font-size:12.5px; color:var(--ink-dim);
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  .result-count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--ink-dim);
+    margin-bottom:14px;
+  }
+
+  /* ---------- Grid ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:14px;
+  }
+
+  .card{
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    cursor:pointer;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .card:hover{ transform:translateY(-2px); border-color:var(--gold-dim); box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+
+  .card{ overflow:hidden; min-width:0; -webkit-tap-highlight-color:transparent; outline:none; }
+  .card:focus, .card:active{ outline:none; }
+
+  .card-top{
+    display:flex; align-items:flex-start; gap:10px;
+    min-width:0;
+  }
+  .card-icon{
+    width:44px; height:44px;
+    border-radius:8px;
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    flex:0 0 auto;
+  }
+  .card-icon img{ width:100%; height:100%; object-fit:contain; }
+
+  .card-top-text{
+    min-width:0;
+    flex:1 1 auto;
+  }
+
+  .card-name{
+    font-family:'Cinzel', serif;
+    font-size:14px;
+    font-weight:600;
+    line-height:1.3;
+    overflow-wrap:break-word;
+  }
+  .card-meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-dim);
+    margin-top:2px;
+  }
+
+  .card-stats{
+    display:flex;
+    flex-direction:column;
+    font-size:12px;
+    border-top:1.5px solid var(--line);
+    min-width:0;
+  }
+  .card-stats .stat{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:10px;
+    padding:7px 0;
+    border-top:1px solid var(--panel-2);
+    min-width:0;
+  }
+  .card-stats .stat:first-child{ border-top:none; }
+  .card-stats .stat span{
+    color:var(--ink-dim);
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    flex:0 0 auto;
+  }
+  .card-stats .stat strong{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    font-size:12.5px;
+    text-align:right;
+    overflow-wrap:break-word;
+    word-break:break-word;
+  }
+
+  .type-badge{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    padding:2px 8px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    color:var(--ink-dim);
+    background:var(--bg-alt);
+    width:fit-content;
+  }
+
+  .card-actions{
+    display:flex;
+    gap:8px;
+    margin-top:2px;
+  }
+  .card-compare-btn, .card-diff-btn{
+    flex:1 1 0;
+    align-self:flex-start;
+    background:none;
+    border:1px solid var(--line);
+    border-radius:7px;
+    color:var(--ink-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:5px 10px;
+    cursor:pointer;
+    text-align:center;
+  }
+  .card-compare-btn:hover, .card-diff-btn:hover{ color:var(--ink); border-color:var(--ink-dim); }
+  .card-compare-btn.is-added, .card-diff-btn.is-added{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+  .card-compare-btn.is-added:hover, .card-diff-btn.is-added:hover{ background:#c0392b; border-color:#c0392b; }
+
+  .empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--ink-dim);
+    font-size:14px;
+  }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.5);
+    z-index:50;
+    align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .modal-overlay.is-open{ display:flex; }
+
+  .modal{
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    max-width:480px;
+    width:100%;
+    max-height:88vh;
+    overflow-y:auto;
+    padding:22px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.18);
+  }
+
+  .modal-close{
+    float:right;
+    background:none; border:none;
+    font-size:20px; cursor:pointer;
+    color:var(--ink-dim);
+    line-height:1;
+  }
+  .modal-close:hover{ color:var(--ink); }
+
+  .modal-header{
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:16px;
+  }
+  .modal-icon{
+    width:60px; height:60px;
+    border-radius:10px;
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    flex:0 0 auto;
+  }
+  .modal-icon img{ width:100%; height:100%; object-fit:contain; }
+  .modal-title{
+    font-family:'Cinzel', serif;
+    font-size:19px;
+    font-weight:600;
+  }
+
+  .modal-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    margin-top:10px;
+  }
+  .modal-table tr{ border-bottom:1px solid var(--panel-2); }
+  .modal-table tr:last-child{ border-bottom:none; }
+  .modal-table td{ padding:7px 0; }
+  .modal-table td:first-child{ color:var(--ink-dim); }
+  .modal-table td:last-child{
+    text-align:right;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+  }
+
+  .modal-note{
+    font-size:11.5px;
+    color:var(--ink-dim);
+    margin-top:12px;
+    line-height:1.5;
+  }
+  .artifact-set-effects div{ margin-bottom:2px; }
+  .artifact-set-effects div:last-child{ margin-bottom:0; }
+  .artifact-set-effects b{ color:var(--ink); }
+
+  .artifact-piece-list{ margin-top:14px; }
+  .artifact-piece{
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin-bottom:8px;
+    overflow:hidden;
+  }
+  .artifact-piece:last-child{ margin-bottom:0; }
+  .artifact-piece-head{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--bg-alt);
+    border:none;
+    cursor:pointer;
+    padding:9px 12px;
+    text-align:left;
+  }
+  .artifact-piece-icon{
+    width:32px; height:32px;
+    flex:0 0 auto;
+    border-radius:6px;
+    object-fit:cover;
+    background:var(--panel);
+  }
+  .artifact-piece-titles{ display:flex; flex-direction:column; flex:1 1 auto; min-width:0; }
+  .artifact-piece-slot{
+    font-family:'Cinzel', serif;
+    font-size:11px;
+    color:var(--ink-dim);
+    letter-spacing:0.03em;
+  }
+  .artifact-piece-name{ font-size:13px; color:var(--ink); font-weight:600; }
+  .artifact-piece-chevron{ width:16px; height:16px; flex:0 0 auto; color:var(--ink-dim); transition:transform 0.15s ease; }
+  .artifact-piece.is-open .artifact-piece-chevron{ transform:rotate(180deg); }
+  .artifact-piece-body{ display:none; padding:10px 14px 12px; }
+  .artifact-piece.is-open .artifact-piece-body{ display:block; }
+  .artifact-stat-line{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    padding:4px 0;
+    border-bottom:1px solid var(--panel-2);
+  }
+  .artifact-stat-line:last-child{ border-bottom:none; }
+  .artifact-stat-line span:first-child{ color:var(--ink-dim); }
+  .artifact-stat-line span:last-child{ font-family:'JetBrains Mono', monospace; font-weight:600; }
+
+  .modal-ability{
+    margin-top:14px;
+    padding:12px 14px;
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    border-radius:10px;
+  }
+  .modal-ability-label{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--gold-dim);
+    margin-bottom:5px;
+  }
+  .modal-ability-text{
+    font-size:12.5px;
+    line-height:1.55;
+    color:var(--ink);
+  }
+  .compare-ability{
+    margin-top:10px;
+  }
+
+  @media (max-width:600px){
+    .wrap{ padding:24px 14px 100px; }
+    .grid{ grid-template-columns:1fr; }
+    .card-name{ font-size:15px; }
+    .nav-btn{ padding:6px 10px; font-size:10.5px; }
+    .nav-btn svg{ width:20px; height:20px; }
+  }
+
+  /* ---------- Compare ---------- */
+  .compare-hint-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex:1 1 100%;
+  }
+  .compare-hint{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--ink-dim);
+  }
+  .compare-search-box{ position:relative; }
+  .compare-suggestions{
+    display:none;
+    position:absolute;
+    top:calc(100% + 4px);
+    left:0; right:0;
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    max-height:240px;
+    overflow-y:auto;
+    z-index:20;
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  }
+  .compare-suggestions.is-open{ display:block; }
+  .compare-suggestion{
+    padding:9px 12px;
+    font-size:13px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .compare-suggestion:not(:last-child){ border-bottom:1px solid var(--panel-2); }
+  .compare-suggestion:hover, .compare-suggestion.is-active{ background:var(--bg-alt); }
+  .compare-suggestion .s-name{ font-weight:600; }
+  .compare-suggestion .s-meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-dim);
+    white-space:nowrap;
+  }
+  .compare-suggestion-empty{
+    padding:10px 12px;
+    font-size:12.5px;
+    color:var(--ink-dim);
+  }
+
+  /* ---------- Custom dropdown (styled like the search suggestion list) ---------- */
+  .custom-select{
+    position:relative;
+    display:inline-block;
+  }
+  .custom-select-native{
+    display:none;
+  }
+  .custom-select-trigger{
+    display:inline-flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 10px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    background:var(--bg-alt);
+    color:var(--ink);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .custom-select-trigger:hover{ border-color:var(--ink-dim); }
+  .custom-select-trigger.is-open{ border-color:var(--ink-dim); }
+  .custom-select-trigger svg{
+    flex:0 0 auto;
+    color:var(--ink-dim);
+    transition:transform .15s ease;
+  }
+  .custom-select-trigger.is-open svg{ transform:rotate(180deg); }
+
+  .custom-select-menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 4px);
+    left:0;
+    min-width:100%;
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    max-height:260px;
+    overflow-y:auto;
+    z-index:30;
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  }
+  .custom-select-menu.is-open{ display:block; }
+  .custom-select-option{
+    padding:9px 12px;
+    font-size:13px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .custom-select-option:not(:last-child){ border-bottom:1px solid var(--panel-2); }
+  .custom-select-option:hover, .custom-select-option.is-selected{ background:var(--bg-alt); }
+  .custom-select-option.is-selected{ font-weight:600; }
+
+  .compare-sort{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex:1 1 100%;
+  }
+  .compare-sort-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--ink-dim);
+    white-space:nowrap;
+  }
+  .compare-sort select{
+    font-family:'Inter', sans-serif;
+    font-size:12.5px;
+    padding:7px 8px;
+    border:1.5px solid var(--line);
+    border-radius:7px;
+    background:var(--card);
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .compare-sort-dir{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:30px; height:30px;
+    flex:0 0 auto;
+    border:1.5px solid var(--line);
+    border-radius:7px;
+    background:var(--card);
+    color:var(--ink-dim);
+    cursor:pointer;
+  }
+  .compare-sort-dir:hover{ color:var(--ink); border-color:var(--ink-dim); }
+  .compare-sort-dir svg{ transition:transform .15s ease; display:block; }
+  .compare-sort-dir.is-desc svg{ transform:rotate(180deg); }
+  .compare-sort-dir[disabled]{ opacity:0.4; cursor:default; pointer-events:none; }
+
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:76px;
+    transform:translate(-50%, 12px);
+    background:var(--ink);
+    color:#fff;
+    font-size:13px;
+    font-family:'Inter', sans-serif;
+    padding:10px 18px;
+    border-radius:8px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+    z-index:60;
+    white-space:nowrap;
+  }
+  .toast.is-visible{
+    opacity:1;
+    transform:translate(-50%, 0);
+  }
+
+  .compare-scroll-outer{
+    position:relative;
+  }
+  .compare-scroll{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    scroll-snap-type:x proximity;
+    padding:4px 4px 10px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .compare-card{
+    flex:0 0 auto;
+    scroll-snap-align:start;
+    width:250px;
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05);
+    transition:box-shadow .15s ease;
+  }
+  .compare-card.is-dragging{
+    opacity:0.85;
+    user-select:none;
+    -webkit-user-select:none;
+    box-shadow:0 8px 20px rgba(0,0,0,0.18);
+    cursor:grabbing;
+  }
+  .compare-card.is-drag-over{
+    box-shadow:0 0 0 2px var(--ink-dim) inset;
+  }
+  .compare-card-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .compare-drag-handle{
+    flex:0 0 auto;
+    width:32px; height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:-6px 0 -6px -8px;
+    color:var(--ink-dim);
+    border-radius:6px;
+    cursor:grab;
+    touch-action:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .compare-drag-handle:hover{ color:var(--ink); background:var(--bg-alt); }
+  .compare-drag-handle:active{ cursor:grabbing; }
+  .compare-card-icon{
+    width:40px; height:40px;
+    border-radius:8px;
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    flex:0 0 auto;
+  }
+  .compare-card-icon img{ width:100%; height:100%; object-fit:contain; }
+  .compare-card-name{
+    font-family:'Cinzel', serif;
+    font-weight:600;
+    font-size:13.5px;
+    line-height:1.25;
+    overflow-wrap:break-word;
+  }
+  .compare-remove{
+    display:block;
+    width:100%;
+    background:none;
+    border:1px solid #c0392b;
+    border-radius:7px;
+    color:#c0392b;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:5px 0;
+    cursor:pointer;
+    margin-bottom:10px;
+  }
+  .compare-remove:hover{ color:#ffffff; background:#c0392b; border-color:#c0392b; }
+
+  .compare-stat-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:10px;
+    padding:6px 0;
+    border-top:1px solid var(--panel-2);
+    font-size:12.5px;
+  }
+  .compare-stat-row:first-of-type{ border-top:1.5px solid var(--line); }
+  .compare-stat-row span{
+    color:var(--ink-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    flex:0 0 auto;
+  }
+  .compare-stat-row strong{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    text-align:right;
+    overflow-wrap:break-word;
+  }
+  .compare-stat-row.is-stacked{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+  }
+  .compare-stat-row.is-stacked span{
+    flex:0 0 auto;
+  }
+  .compare-stat-row.is-stacked strong{
+    text-align:left;
+    width:100%;
+  }
+
+  /* ---------- Artifact compare table (aligned rows across sets) ---------- */
+  .compare-table{
+    display:grid;
+    flex:0 0 auto;
+    width:max-content;
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:var(--panel);
+  }
+  .compare-table-cell{
+    display:flex;
+    align-items:center;
+    min-width:0;
+    padding:9px 12px;
+    font-size:12.5px;
+    border-bottom:1px solid var(--divider);
+    border-right:1px solid var(--divider);
+    overflow-wrap:break-word;
+    word-break:break-word;
+  }
+  .compare-table-label{
+    position:sticky;
+    left:0;
+    z-index:2;
+    background:var(--card);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    color:var(--ink-dim);
+  }
+  .compare-table-value{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+  }
+  .compare-table-piece-heading{
+    background:var(--bg-alt);
+    border-top:2px solid var(--line);
+  }
+  .compare-table-label.compare-table-piece-heading{
+    font-family:'Cinzel', serif;
+    font-size:12.5px;
+    font-weight:600;
+    text-transform:none;
+    letter-spacing:0;
+    color:var(--ink);
+  }
+  .compare-table-cell.compare-table-header{
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:6px;
+    background:var(--card);
+  }
+  .compare-table-header-icon{
+    width:40px; height:40px;
+    border-radius:8px;
+    background:var(--bg-alt);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    flex:0 0 auto;
+  }
+  .compare-table-header-icon img{ width:100%; height:100%; object-fit:contain; }
+  .compare-table-header-name{
+    font-family:'Cinzel', serif;
+    font-weight:600;
+    font-size:12.5px;
+    line-height:1.25;
+  }
+  .compare-table-cell.is-last-row{ border-bottom:none; }
+
+  /* ---------- Differentiator ---------- */
+  .diff-pickers{
+    display:flex;
+    align-items:flex-end;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .diff-picker{ flex:1; min-width:0; }
+  .diff-picker-label{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--ink-dim);
+    margin-bottom:6px;
+  }
+  .diff-search-box{ position:relative; }
+  .diff-chip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 10px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    background:var(--card);
+  }
+  .diff-chip[hidden]{ display:none; }
+  .diff-chip-icon{
+    width:26px; height:26px;
+    flex:0 0 auto;
+    background:var(--panel-2);
+    border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .diff-chip-icon img{ width:100%; height:100%; object-fit:contain; }
+  .diff-chip-name{
+    flex:1;
+    min-width:0;
+    font-size:13px;
+    font-weight:600;
+    overflow-wrap:break-word;
+  }
+  .diff-chip-clear{
+    flex:0 0 auto;
+    background:none;
+    border:none;
+    color:var(--ink-dim);
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+    padding:2px 4px;
+  }
+  .diff-chip-clear:hover{ color:#c0392b; }
+  .diff-vs{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    font-weight:700;
+    color:var(--ink-dim);
+    padding-bottom:11px;
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    background:none;
+    border:none;
+    cursor:pointer;
+  }
+  .diff-vs:hover{ color:var(--ink); }
+  .diff-vs svg{ transition:transform .18s ease; display:block; }
+  .diff-vs:hover svg{ transform:rotate(180deg); }
+
+  .diff-card{
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .diff-header{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+    padding-bottom:14px;
+    border-bottom:1.5px solid var(--line);
+  }
+  .diff-header-weapon{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+  }
+  .diff-header-weapon.side-b{ flex-direction:row-reverse; text-align:right; }
+  .diff-header-icon{
+    width:36px; height:36px;
+    flex:0 0 auto;
+    background:var(--panel-2);
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .diff-header-icon img{ width:100%; height:100%; object-fit:contain; }
+  .diff-header-name{
+    font-size:13.5px;
+    font-weight:600;
+    overflow-wrap:break-word;
+    min-width:0;
+  }
+  .diff-header-vs{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-dim);
+    text-align:center;
+  }
+
+  .diff-piece-heading{
+    font-family:'Cinzel', serif;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--ink);
+    margin:18px 0 6px;
+    padding-bottom:4px;
+    border-bottom:1.5px solid var(--line);
+  }
+  .diff-piece-heading:first-of-type{ margin-top:14px; }
+
+  .diff-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    padding:10px 0;
+    border-bottom:1px solid var(--divider);
+  }
+  .diff-row:last-child{ border-bottom:none; }
+  .diff-label{
+    grid-column:1 / -1;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--ink-dim);
+    margin-bottom:2px;
+  }
+  .diff-value{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    font-weight:600;
+  }
+  .diff-value.side-b{ text-align:right; }
+  .diff-value .diff-plus{
+    display:block;
+    font-size:11px;
+    font-weight:600;
+    margin-top:2px;
+  }
+  .diff-value.is-better .diff-plus{ color:#1e8e3e; }
+  .diff-value.is-worse{ opacity:0.6; }
+  .diff-note{
+    grid-column:1 / -1;
+    font-size:11px;
+    color:var(--ink-dim);
+    font-style:italic;
+  }
+
+
+  .bottom-nav{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    z-index:40;
+    display:flex;
+    justify-content:center;
+    gap:0;
+    background:var(--panel);
+    border-top:1.5px solid var(--line);
+    padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+  }
+  .nav-group{ display:flex; gap:4px; }
+  .nav-group[hidden]{ display:none; }
+
+  .category-switch{
+    display:flex;
+    gap:0;
+    margin-top:16px;
+    width:fit-content;
+    background:var(--bg-alt);
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:3px;
+  }
+  .category-btn{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:7px 20px;
+    border-radius:6px;
+    color:var(--ink-dim);
+    font-family:'Cinzel', serif;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .category-btn.is-active{ background:var(--gold); color:var(--bg); box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+  .category-btn:not(.is-active):hover{ color:var(--ink); }
+  .category-btn:not(.is-active):hover{ color:var(--ink); }
+  .nav-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    background:none;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    padding:6px 22px;
+    color:var(--ink-dim);
+    font-family:'Inter', sans-serif;
+    font-size:11.5px;
+    font-weight:500;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .nav-btn svg{ width:22px; height:22px; }
+  .nav-btn.is-active{ color:var(--bg); background:var(--gold); }
+  .nav-btn:not(.is-active):hover{ color:var(--ink); }
+  .nav-icon-wrap{ position:relative; display:inline-flex; }
+  .nav-badge{
+    position:absolute;
+    top:-6px; right:-9px;
+    background:#c0392b;
+    color:#fff;
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    font-weight:600;
+    line-height:1;
+    padding:2.5px 5px;
+    border-radius:20px;
+    min-width:14px;
+    text-align:center;
+  }
+
+  /* ---------- Top bar (help / settings) ---------- */
+  .top-bar-actions{
+    position:absolute; top:0; right:0;
+    display:flex; align-items:center; gap:8px;
+  }
+  header.hero{ position:relative; padding-right:96px; }
+  .help-btn, .settings-btn{
+    flex:0 0 auto;
+    width:38px; height:38px; border-radius:8px;
+    background:var(--panel-2); border:1px solid var(--line); color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:18px;
+  }
+  .help-btn:hover, .settings-btn:hover{ border-color:var(--gold-dim); }
+  .help-panel, .settings-panel{
+    display:none;
+    position:absolute; top:46px; right:0; z-index:30;
+    width:280px; max-height:70vh; overflow-y:auto;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius); padding:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .help-panel{ right:48px; width:300px; }
+  .help-panel.is-open, .settings-panel.is-open{ display:block; }
+  .help-panel h3, .settings-panel h3{
+    margin:0 0 12px; font-family:'Cinzel', serif; font-size:13px;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--gold);
+  }
+  .help-panel ol{ margin:0; padding-left:18px; }
+  .help-panel li{ margin-bottom:8px; font-size:12.5px; color:var(--ink); line-height:1.45; }
+  .help-panel li b{ color:var(--gold); }
+  .settings-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:4px; font-size:13.5px; color:var(--ink);
+  }
+  .switch{ position:relative; display:inline-block; width:40px; height:22px; flex:0 0 auto; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .switch .slider{
+    position:absolute; cursor:pointer; inset:0;
+    background:var(--line); border-radius:22px; transition:0.15s;
+  }
+  .switch .slider::before{
+    content:""; position:absolute; width:16px; height:16px; left:3px; top:3px;
+    background:var(--panel); border-radius:50%; transition:0.15s;
+  }
+  .switch input:checked + .slider{ background:var(--gold); }
+  .switch input:checked + .slider::before{ transform:translateX(18px); background:var(--bg); }
+
+  .clear-all-btn{
+    flex:0 0 auto;
+    background:transparent;
+    border:1px solid #c0392b;
+    border-radius:6px;
+    color:#c0392b;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.02em;
+    padding:7px 12px;
+    cursor:pointer;
+  }
+  .clear-all-btn:hover{ color:#ffffff; background:#c0392b; border-color:#c0392b; }
+
+  .undo-toast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%) translateY(0);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:var(--ink);
+    color:var(--bg);
+    border-radius:8px;
+    padding:10px 12px 10px 16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    z-index:200;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .undo-toast.is-visible{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateX(-50%) translateY(-4px);
+  }
+  .undo-toast-btn{
+    flex:0 0 auto;
+    background:transparent;
+    border:1px solid var(--bg);
+    border-radius:6px;
+    color:var(--bg);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    padding:5px 10px;
+    cursor:pointer;
+  }
+  .undo-toast-btn:hover{ background:var(--bg); color:var(--ink); }
+
+  .diff-actions{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:12px;
+  }
+  @media (max-width:520px){
+    header.hero{ padding-right:88px; }
+    .help-panel, .settings-panel{ width:min(88vw, 300px); }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <h1>Equipment Finder</h1>
+      <p>Search and compare every piece of gear in Dawn Winery.</p>
+      <div class="category-switch" id="categorySwitch">
+        <button type="button" class="category-btn is-active" id="categoryWeaponsBtn" data-category="weapons">Weapons</button>
+        <button type="button" class="category-btn" id="categoryArtifactsBtn" data-category="artifacts">Artifacts</button>
+      </div>
+      <div class="top-bar-actions">
+        <button class="help-btn" id="helpBtn" title="How to use" aria-label="How to use">❓</button>
+        <div class="help-panel" id="helpPanel">
+          <h3>How to use</h3>
+          <ol>
+            <li><b>Finder:</b> Search by name, filter by type or world level, and sort the results.</li>
+            <li><b>Compare:</b> Add several weapons to see their full stats side by side. Swipe to see more. Drag a card by its grip handle to reorder, or use Sort to order by a stat.</li>
+            <li><b>Differentiator:</b> Pick exactly two weapons to see which one wins on each stat, and by how much. Tap the VS button to swap Weapon 1 and Weapon 2.</li>
+            <li>Toggle <b>Dark mode</b> in Settings any time.</li>
+            <li>Turn on <b>Remember selections</b> in Settings to keep your Compare and Differentiator picks saved in this browser between visits (off by default).</li>
+          </ol>
+        </div>
+        <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙️</button>
+        <div class="settings-panel" id="settingsPanel">
+          <h3>Settings</h3>
+          <div class="settings-row">
+            <span>Dark mode</span>
+            <label class="switch">
+              <input type="checkbox" id="darkModeToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <span title="Keeps your Compare and Differentiator selections saved in this browser between visits.">Remember selections</span>
+            <label class="switch">
+              <input type="checkbox" id="rememberSelectionsToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="view-finder" data-category="weapons">
+      <div class="controls">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search weapon name...">
+        </div>
+        <select id="typeFilter">
+          <option value="">All Types</option>
+        </select>
+        <select id="wlFilter">
+          <option value="">All World Levels</option>
+        </select>
+        <div class="sort-group">
+          <label for="sortSelect">Sort:</label>
+          <select id="sortSelect">
+            <option value="wl-asc">World Level (low-high)</option>
+            <option value="wl-desc">World Level (high-low)</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="crucible-asc">Crucible (low-high)</option>
+            <option value="crucible-desc">Crucible (high-low)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="result-count" id="resultCount"></div>
+      <div class="grid" id="weaponGrid"></div>
+    </section>
+
+    <section id="view-compare" data-category="weapons" hidden>
+      <div class="controls">
+        <div class="search-box compare-search-box">
+          <input type="text" id="compareSearchInput" placeholder="Search a weapon to compare&hellip;" autocomplete="off">
+          <div class="compare-suggestions" id="compareSuggestions"></div>
+        </div>
+        <div class="compare-sort">
+          <label class="compare-sort-label" for="compareSortSelect">Sort</label>
+          <select id="compareSortSelect">
+            <option value="manual">Manual (drag)</option>
+            <option value="name">Name</option>
+            <option value="worldLevel">World Level</option>
+            <option value="weight">Weight</option>
+            <option value="hp">HP</option>
+            <option value="atk">ATK</option>
+            <option value="critRate">Crit Rate</option>
+            <option value="critValue">Crit Value</option>
+            <option value="defRate">DEF Rate</option>
+            <option value="defValue">DEF Value</option>
+          </select>
+          <button type="button" class="compare-sort-dir is-desc" id="compareSortDirBtn" title="Toggle ascending/descending" aria-label="Toggle sort direction" disabled>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          </button>
+        </div>
+        <div class="compare-hint-row">
+          <span class="compare-hint" id="compareHint"></span>
+          <button type="button" class="clear-all-btn" id="compareClearAllBtn">Clear all</button>
+        </div>
+      </div>
+
+      <div class="empty-state" id="compareEmpty">Add weapons above to compare their stats side by side.</div>
+      <div class="compare-scroll" id="compareScroll"></div>
+    </section>
+
+    <section id="view-diff" data-category="weapons" hidden>
+      <div class="diff-actions">
+        <button type="button" class="clear-all-btn" id="diffClearAllBtn">Clear all</button>
+      </div>
+      <div class="diff-pickers">
+        <div class="diff-picker">
+          <label class="diff-picker-label" for="diffSearchInputA">Weapon 1</label>
+          <div class="search-box compare-search-box diff-search-box" id="diffSearchBoxA">
+            <input type="text" id="diffSearchInputA" placeholder="Search a weapon&hellip;" autocomplete="off">
+            <div class="compare-suggestions" id="diffSuggestionsA"></div>
+          </div>
+          <div class="diff-chip" id="diffChipA" hidden>
+            <div class="diff-chip-icon"><img id="diffChipIconA" src="" alt="" onerror="this.style.display='none'"></div>
+            <span class="diff-chip-name" id="diffChipNameA"></span>
+            <button type="button" class="diff-chip-clear" id="diffChipClearA" aria-label="Clear selection">&times;</button>
+          </div>
+        </div>
+        <button type="button" class="diff-vs" id="diffSwapBtn" title="Swap Weapon 1 and Weapon 2" aria-label="Swap Weapon 1 and Weapon 2">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+          <span>VS</span>
+        </button>
+        <div class="diff-picker">
+          <label class="diff-picker-label" for="diffSearchInputB">Weapon 2</label>
+          <div class="search-box compare-search-box diff-search-box" id="diffSearchBoxB">
+            <input type="text" id="diffSearchInputB" placeholder="Search a weapon&hellip;" autocomplete="off">
+            <div class="compare-suggestions" id="diffSuggestionsB"></div>
+          </div>
+          <div class="diff-chip" id="diffChipB" hidden>
+            <div class="diff-chip-icon"><img id="diffChipIconB" src="" alt="" onerror="this.style.display='none'"></div>
+            <span class="diff-chip-name" id="diffChipNameB"></span>
+            <button type="button" class="diff-chip-clear" id="diffChipClearB" aria-label="Clear selection">&times;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" id="diffEmpty">Pick two weapons to see how their stats stack up.</div>
+      <div id="diffResult"></div>
+    </section>
+
+    <section id="view-artifact-finder" data-category="artifacts" hidden>
+      <div class="controls">
+        <div class="search-box">
+          <input type="text" id="artifactSearchInput" placeholder="Search artifact set name...">
+        </div>
+        <div class="sort-group">
+          <label for="artifactSortSelect">Sort:</label>
+          <select id="artifactSortSelect">
+            <option value="wl-asc">World Level (low-high)</option>
+            <option value="wl-desc">World Level (high-low)</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="crucible-asc">Crucible (low-high)</option>
+            <option value="crucible-desc">Crucible (high-low)</option>
+          </select>
+        </div>
+      </div>
+      <div class="result-count" id="artifactResultCount"></div>
+      <div class="empty-state" id="artifactFinderEmpty">Artifact data hasn't been loaded yet — send over Artifacts.json to populate this tab.</div>
+      <div class="grid" id="artifactGrid"></div>
+    </section>
+
+    <section id="view-artifact-compare" data-category="artifacts" hidden>
+      <div class="controls">
+        <div class="search-box compare-search-box">
+          <input type="text" id="artifactCompareSearchInput" placeholder="Search a set to compare&hellip;" autocomplete="off">
+          <div class="compare-suggestions" id="artifactCompareSuggestions"></div>
+        </div>
+        <div class="compare-sort">
+          <label class="compare-sort-label" for="artifactCompareSortSelect">Sort</label>
+          <select id="artifactCompareSortSelect">
+            <option value="manual">Manual (order added)</option>
+            <option value="name">Name</option>
+            <option value="worldLevel">World Level</option>
+            <option value="crucible">Crucible</option>
+          </select>
+        </div>
+        <div class="compare-hint-row">
+          <span class="compare-hint" id="artifactCompareHint"></span>
+          <button type="button" class="clear-all-btn" id="artifactCompareClearAllBtn">Clear all</button>
+        </div>
+      </div>
+
+      <div class="empty-state" id="artifactCompareEmpty">Add artifact sets above to compare their pieces side by side.</div>
+      <div class="compare-scroll" id="artifactCompareScroll"></div>
+    </section>
+
+    <section id="view-artifact-diff" data-category="artifacts" hidden>
+      <div class="diff-actions">
+        <button type="button" class="clear-all-btn" id="artifactDiffClearAllBtn">Clear all</button>
+      </div>
+      <div class="diff-pickers">
+        <div class="diff-picker">
+          <label class="diff-picker-label" for="artifactDiffSearchInputA">Set 1</label>
+          <div class="search-box compare-search-box diff-search-box" id="artifactDiffSearchBoxA">
+            <input type="text" id="artifactDiffSearchInputA" placeholder="Search an artifact set&hellip;" autocomplete="off">
+            <div class="compare-suggestions" id="artifactDiffSuggestionsA"></div>
+          </div>
+          <div class="diff-chip" id="artifactDiffChipA" hidden>
+            <div class="diff-chip-icon"><img id="artifactDiffChipIconA" src="" alt="" onerror="this.style.display='none'"></div>
+            <span class="diff-chip-name" id="artifactDiffChipNameA"></span>
+            <button type="button" class="diff-chip-clear" id="artifactDiffChipClearA" aria-label="Clear selection">&times;</button>
+          </div>
+        </div>
+        <button type="button" class="diff-vs" id="artifactDiffSwapBtn" title="Swap Set 1 and Set 2" aria-label="Swap Set 1 and Set 2">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+          <span>VS</span>
+        </button>
+        <div class="diff-picker">
+          <label class="diff-picker-label" for="artifactDiffSearchInputB">Set 2</label>
+          <div class="search-box compare-search-box diff-search-box" id="artifactDiffSearchBoxB">
+            <input type="text" id="artifactDiffSearchInputB" placeholder="Search an artifact set&hellip;" autocomplete="off">
+            <div class="compare-suggestions" id="artifactDiffSuggestionsB"></div>
+          </div>
+          <div class="diff-chip" id="artifactDiffChipB" hidden>
+            <div class="diff-chip-icon"><img id="artifactDiffChipIconB" src="" alt="" onerror="this.style.display='none'"></div>
+            <span class="diff-chip-name" id="artifactDiffChipNameB"></span>
+            <button type="button" class="diff-chip-clear" id="artifactDiffChipClearB" aria-label="Clear selection">&times;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" id="artifactDiffEmpty">Pick two artifact sets to see how their pieces stack up.</div>
+      <div id="artifactDiffResult"></div>
+    </section>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="nav-group" id="navGroupWeapons">
+      <button class="nav-btn is-active" id="navFinderBtn" data-view="finder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.2" y2="16.2"></line></svg>
+        <span>Finder</span>
+      </button>
+      <button class="nav-btn" id="navCompareBtn" data-view="compare">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="16" rx="1.5"></rect><rect x="14" y="4" width="7" height="16" rx="1.5"></rect></svg>
+          <span class="nav-badge" id="compareBadge" hidden>0</span>
+        </span>
+        <span>Compare</span>
+      </button>
+      <button class="nav-btn" id="navDiffBtn" data-view="diff">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v18"></path><path d="M16 3v18"></path><path d="M3 8h5"></path><path d="M16 8h5"></path><path d="M3 16h5"></path><path d="M16 16h5"></path></svg>
+        <span>Differentiator</span>
+      </button>
+    </div>
+    <div class="nav-group" id="navGroupArtifacts" hidden>
+      <button class="nav-btn is-active" id="navArtifactFinderBtn" data-view="artifact-finder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.2" y2="16.2"></line></svg>
+        <span>Finder</span>
+      </button>
+      <button class="nav-btn" id="navArtifactCompareBtn" data-view="artifact-compare">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="16" rx="1.5"></rect><rect x="14" y="4" width="7" height="16" rx="1.5"></rect></svg>
+          <span class="nav-badge" id="artifactCompareBadge" hidden>0</span>
+        </span>
+        <span>Compare</span>
+      </button>
+      <button class="nav-btn" id="navArtifactDiffBtn" data-view="artifact-diff">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v18"></path><path d="M16 3v18"></path><path d="M3 8h5"></path><path d="M16 8h5"></path><path d="M3 16h5"></path><path d="M16 16h5"></path></svg>
+        <span>Differentiator</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <div class="undo-toast" id="undoToast" hidden>
+    <span class="undo-toast-msg" id="undoToastMsg"></span>
+    <button type="button" class="undo-toast-btn" id="undoToastBtn">Undo</button>
+  </div>
+
+<script>
+  var ICON_BASE = "../Textures/Weapons/";
+  var DATA_URL  = "../JSON/Weapons.json";
+
+  var weapons = [];
+
+  function iconPath(filename){
+    return ICON_BASE + encodeURIComponent(filename).replace(/%2F/g, "/");
+  }
+
+  function escapeHtml(str){
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  /* ---------- Undo toast ---------- */
+  var undoToastTimer = null;
+  var undoToastHandler = null;
+
+  function showUndoToast(message, onUndo){
+    var toast = document.getElementById("undoToast");
+    var msgEl = document.getElementById("undoToastMsg");
+    var btn = document.getElementById("undoToastBtn");
+
+    clearTimeout(undoToastTimer);
+    if(undoToastHandler) btn.removeEventListener("click", undoToastHandler);
+
+    msgEl.textContent = message;
+    toast.hidden = false;
+    // Force reflow so the fade-in transition actually plays.
+    toast.getBoundingClientRect();
+    toast.classList.add("is-visible");
+
+    function hide(){
+      toast.classList.remove("is-visible");
+      setTimeout(function(){ toast.hidden = true; }, 200);
+    }
+
+    undoToastHandler = function(){
+      clearTimeout(undoToastTimer);
+      hide();
+      onUndo();
+    };
+    btn.addEventListener("click", undoToastHandler);
+
+    undoToastTimer = setTimeout(hide, 5000);
+  }
+
+  /* ---------- Persistence ---------- */
+  var LS_THEME = "weaponFinder_theme";
+  var LS_REMEMBER_SELECTIONS = "weaponFinder_rememberSelections";
+  var LS_COMPARE_LIST = "weaponFinder_compareList";
+  var LS_DIFF_SELECTED = "weaponFinder_diffSelected";
+  var LS_ARTIFACT_COMPARE_LIST = "weaponFinder_artifactCompareList";
+  var LS_ARTIFACT_DIFF_SELECTED = "weaponFinder_artifactDiffSelected";
+
+  function lsGet(key){
+    try{
+      var raw = window.localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  function lsSet(key, value){
+    try{ window.localStorage.setItem(key, JSON.stringify(value)); }catch(e){ /* storage unavailable */ }
+  }
+  function lsRemove(key){
+    try{ window.localStorage.removeItem(key); }catch(e){ /* storage unavailable */ }
+  }
+
+  var rememberSelectionsEnabled = false;
+
+  function saveCompareSelection(){
+    if(rememberSelectionsEnabled) lsSet(LS_COMPARE_LIST, compareList);
+  }
+  function saveDiffSelection(){
+    if(rememberSelectionsEnabled) lsSet(LS_DIFF_SELECTED, diffSelectedIdx);
+  }
+  function saveArtifactCompareSelection(){
+    if(rememberSelectionsEnabled) lsSet(LS_ARTIFACT_COMPARE_LIST, artifactCompareList);
+  }
+
+  /* ---------- Dark mode ---------- */
+  function applyTheme(isDark){
+    document.body.classList.toggle("theme-dark", !!isDark);
+    document.getElementById("darkModeToggle").checked = !!isDark;
+  }
+
+  function applyRememberSelections(enabled){
+    rememberSelectionsEnabled = !!enabled;
+    document.getElementById("rememberSelectionsToggle").checked = rememberSelectionsEnabled;
+    if(!rememberSelectionsEnabled){
+      lsRemove(LS_COMPARE_LIST);
+      lsRemove(LS_DIFF_SELECTED);
+    }
+  }
+
+  (function initHelp(){
+    var helpBtn = document.getElementById("helpBtn");
+    var helpPanel = document.getElementById("helpPanel");
+    helpBtn.addEventListener("click", function(e){
+      e.stopPropagation();
+      document.getElementById("settingsPanel").classList.remove("is-open");
+      helpPanel.classList.toggle("is-open");
+    });
+    document.addEventListener("click", function(e){
+      if(!helpPanel.contains(e.target) && e.target !== helpBtn){ helpPanel.classList.remove("is-open"); }
+    });
+  })();
+
+  (function initSettings(){
+    applyTheme(lsGet(LS_THEME) === "dark");
+    applyRememberSelections(lsGet(LS_REMEMBER_SELECTIONS) === true); // off by default
+
+    var btn = document.getElementById("settingsBtn");
+    var panel = document.getElementById("settingsPanel");
+    btn.addEventListener("click", function(e){
+      e.stopPropagation();
+      document.getElementById("helpPanel").classList.remove("is-open");
+      panel.classList.toggle("is-open");
+    });
+    document.addEventListener("click", function(e){
+      if(!panel.contains(e.target) && e.target !== btn){ panel.classList.remove("is-open"); }
+    });
+
+    document.getElementById("darkModeToggle").addEventListener("change", function(e){
+      applyTheme(e.target.checked);
+      lsSet(LS_THEME, e.target.checked ? "dark" : "light");
+    });
+
+    document.getElementById("rememberSelectionsToggle").addEventListener("change", function(e){
+      applyRememberSelections(e.target.checked);
+      lsSet(LS_REMEMBER_SELECTIONS, e.target.checked);
+      if(e.target.checked){
+        // Start persisting from the current in-page state right away.
+        saveCompareSelection();
+        saveDiffSelection();
+      }
+    });
+  })();
+
+  function restoreSelections(){
+    if(!rememberSelectionsEnabled) return;
+
+    var savedCompare = lsGet(LS_COMPARE_LIST);
+    if(Array.isArray(savedCompare)){
+      compareList = savedCompare.filter(function(i){
+        return Number.isInteger(i) && i >= 0 && i < weapons.length;
+      });
+    }
+
+    var savedDiff = lsGet(LS_DIFF_SELECTED);
+    if(savedDiff && typeof savedDiff === "object"){
+      ["A", "B"].forEach(function(side){
+        var idx = savedDiff[side];
+        diffSelectedIdx[side] = (Number.isInteger(idx) && idx >= 0 && idx < weapons.length) ? idx : null;
+      });
+      if(diffSelectedIdx.A !== null && diffSelectedIdx.A === diffSelectedIdx.B){
+        diffSelectedIdx.B = null; // guard against stale data pointing both sides at one weapon
+      }
+    }
+  }
+
+  fetch(DATA_URL)
+    .then(function(r){
+      if(!r.ok) throw new Error("Weapons.json: " + r.status);
+      return r.json();
+    })
+    .then(function(data){
+      weapons = data;
+      populateFilters();
+      restoreSelections();
+      updateCompareBadge();
+      renderCompare();
+      render();
+      diffPickerA.refresh();
+      diffPickerB.refresh();
+      renderDiff();
+    })
+    .catch(function(err){
+      document.getElementById("weaponGrid").innerHTML =
+        '<div class="empty-state">Couldn\'t load weapon data. Make sure Weapons.json exists at ' + DATA_URL + ' and this page is served over http(s).<br><br>' + err.message + '</div>';
+    });
+
+  function populateFilters(){
+    var types = Array.from(new Set(weapons.map(function(w){ return w.type; }))).sort();
+    var typeSelect = document.getElementById("typeFilter");
+    types.forEach(function(t){
+      var opt = document.createElement("option");
+      opt.value = t; opt.textContent = t;
+      typeSelect.appendChild(opt);
+    });
+
+    var wls = Array.from(new Set(weapons.map(function(w){ return w.worldLevel; }))).sort(function(a,b){ return a-b; });
+    var wlSelect = document.getElementById("wlFilter");
+    wls.forEach(function(wl){
+      var opt = document.createElement("option");
+      opt.value = wl; opt.textContent = "WL " + wl;
+      wlSelect.appendChild(opt);
+    });
+  }
+
+  function atkDisplay(w){
+    if(w.atkType === "flat"){
+      return w.atkRoll;
+    }
+    return w.atkRollMin + " / " + w.atkRollMax;
+  }
+
+  function atkLabel(w){
+    return w.atkType === "flat" ? "ATK (roll)" : "ATK (min / max roll)";
+  }
+
+  /* ---------- Compare ---------- */
+  var MAX_COMPARE = 4;
+  var compareList = [];
+  var toastTimer = null;
+
+  function pct(v){
+    return (v === "-" || v === undefined) ? v : v + "%";
+  }
+
+  function showToast(message){
+    var toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("is-visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){
+      toast.classList.remove("is-visible");
+    }, 1800);
+  }
+
+  function updateCompareBadge(){
+    var badge = document.getElementById("compareBadge");
+    if(compareList.length > 0){
+      badge.textContent = compareList.length;
+      badge.hidden = false;
+    } else {
+      badge.hidden = true;
+    }
+    var hint = document.getElementById("compareHint");
+    if(compareList.length >= MAX_COMPARE){
+      hint.textContent = "Max " + MAX_COMPARE + " weapons at a time";
+    } else if(compareList.length > 1){
+      hint.textContent = "Swipe to see all";
+    } else {
+      hint.textContent = "";
+    }
+    var input = document.getElementById("compareSearchInput");
+    input.disabled = compareList.length >= MAX_COMPARE;
+    input.placeholder = compareList.length >= MAX_COMPARE
+      ? "Remove a weapon to add another"
+      : "Search a weapon to compare\u2026";
+    saveCompareSelection();
+  }
+
+  function addToCompare(idx, opts){
+    var silent = opts && opts.silent;
+    if(compareList.indexOf(idx) !== -1){
+      if(!silent) showToast(weapons[idx].name + " is already in Compare");
+      return;
+    }
+    if(compareList.length >= MAX_COMPARE){
+      if(!silent) showToast("You can only compare up to " + MAX_COMPARE + " weapons");
+      return;
+    }
+    compareList.push(idx);
+    updateCompareBadge();
+    renderCompare();
+    renderCardCompareStates();
+    if(!silent) showToast(weapons[idx].name + " added to Compare");
+  }
+
+  function removeFromCompare(idx){
+    compareList = compareList.filter(function(i){ return i !== idx; });
+    updateCompareBadge();
+    renderCompare();
+    renderCardCompareStates();
+  }
+
+  function renderCardCompareStates(){
+    document.getElementById("weaponGrid").querySelectorAll(".card-compare-btn").forEach(function(btn){
+      var idx = parseInt(btn.dataset.idx, 10);
+      var inCompare = compareList.indexOf(idx) !== -1;
+      btn.classList.toggle("is-added", inCompare);
+      btn.textContent = inCompare ? "\u2713 In Compare" : "+ Compare";
+    });
+  }
+
+  function renderCardDiffStates(){
+    document.getElementById("weaponGrid").querySelectorAll(".card-diff-btn").forEach(function(btn){
+      var idx = parseInt(btn.dataset.idx, 10);
+      if(diffSelectedIdx.A === idx){
+        btn.classList.add("is-added");
+        btn.textContent = "\u2713 Diff 1";
+      } else if(diffSelectedIdx.B === idx){
+        btn.classList.add("is-added");
+        btn.textContent = "\u2713 Diff 2";
+      } else {
+        btn.classList.remove("is-added");
+        btn.textContent = "+ Diff";
+      }
+    });
+  }
+
+  function addToDiff(idx){
+    if(diffSelectedIdx.A === null){
+      diffPickerA.selectFromCard(idx);
+    } else if(diffSelectedIdx.B === null){
+      diffPickerB.selectFromCard(idx);
+    } else {
+      showToast("Differentiator already has two weapons \u2014 clear one first");
+      return;
+    }
+    renderCardDiffStates();
+    showToast(weapons[idx].name + " added to Differentiator");
+  }
+
+  function removeFromDiff(idx){
+    var changed = false;
+    if(diffSelectedIdx.A === idx){ diffPickerA.clearSelection({ silent:true }); changed = true; }
+    if(diffSelectedIdx.B === idx){ diffPickerB.clearSelection({ silent:true }); changed = true; }
+    if(changed){
+      renderDiff();
+      saveDiffSelection();
+      renderCardDiffStates();
+    }
+  }
+
+  function renderCompare(){
+    var empty = document.getElementById("compareEmpty");
+    var scrollWrap = document.getElementById("compareScroll");
+
+    if(!compareList.length){
+      empty.style.display = "";
+      scrollWrap.innerHTML = "";
+      return;
+    }
+    empty.style.display = "none";
+
+    function statRow(label, value){
+      return '<div class="compare-stat-row"><span>' + label + '</span><strong>' + value + '</strong></div>';
+    }
+
+    scrollWrap.innerHTML = compareList.map(function(idx){
+      var w = weapons[idx];
+      return (
+        '<div class="compare-card" data-idx="' + idx + '">' +
+          '<div class="compare-card-top">' +
+            '<div class="compare-drag-handle" title="Drag to reorder" aria-label="Drag to reorder">' +
+              '<svg viewBox="0 0 24 24" width="15" height="18" fill="currentColor"><circle cx="8" cy="5" r="1.7"/><circle cx="16" cy="5" r="1.7"/><circle cx="8" cy="12" r="1.7"/><circle cx="16" cy="12" r="1.7"/><circle cx="8" cy="19" r="1.7"/><circle cx="16" cy="19" r="1.7"/></svg>' +
+            '</div>' +
+            '<div class="compare-card-icon"><img src="' + iconPath(w.icon) + '" alt="" onerror="this.style.display=\'none\'"></div>' +
+            '<div class="compare-card-name">' + w.name + '</div>' +
+          '</div>' +
+          '<button class="compare-remove" data-idx="' + idx + '">Remove</button>' +
+          statRow("Type", w.type) +
+          statRow("World Level", w.worldLevel) +
+          statRow("Crucible", w.crucible) +
+          statRow("Weight", w.weight + " kg") +
+          statRow("HP", w.hp) +
+          statRow("ATK Type", w.atkType === "flat" ? "Flat roll" : "Min / Max roll") +
+          statRow("ATK", atkDisplay(w)) +
+          statRow("Crit Rate", pct(w.critRate)) +
+          statRow("Crit Value", pct(w.critValue)) +
+          statRow("DEF Rate", pct(w.defRate)) +
+          statRow("DEF Value", w.defValue) +
+          (w.ability
+            ? '<div class="modal-ability compare-ability"><div class="modal-ability-label">Ability</div><div class="modal-ability-text">' + escapeHtml(w.ability) + '</div></div>'
+            : '') +
+        '</div>'
+      );
+    }).join("");
+
+    wireCompareDrag(scrollWrap);
+  }
+
+  // Delegated click handler for Remove buttons: attached once to the
+  // scroll wrap instead of re-attached to every card on every render.
+  document.getElementById("compareScroll").addEventListener("click", function(e){
+    var btn = e.target.closest(".compare-remove");
+    if(!btn) return;
+    removeFromCompare(parseInt(btn.dataset.idx, 10));
+  });
+
+  /* ---------- Compare: drag-to-reorder (pointer events, works for mouse + touch) ---------- */
+  var compareDrag = null; // { card, pointerId, startX, target, autoScrollDir }
+  var compareAutoScrollRAF = null;
+
+  function wireCompareDrag(scrollWrap){
+    scrollWrap.querySelectorAll(".compare-drag-handle").forEach(function(handle){
+      handle.addEventListener("pointerdown", function(e){
+        if(e.button !== undefined && e.button !== 0) return;
+        var card = handle.closest(".compare-card");
+        if(!card) return;
+        e.preventDefault();
+
+        compareDrag = {
+          card: card,
+          pointerId: e.pointerId,
+          startX: e.clientX,
+          target: null
+        };
+        try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+
+        card.classList.add("is-dragging");
+        card.style.transition = "none";
+        card.style.zIndex = "5";
+        card.style.position = "relative";
+
+        document.addEventListener("pointermove", onCompareDragMove);
+        document.addEventListener("pointerup", onCompareDragEnd);
+        document.addEventListener("pointercancel", onCompareDragEnd);
+      });
+    });
+  }
+
+  function onCompareDragMove(e){
+    if(!compareDrag) return;
+    e.preventDefault();
+
+    var scrollWrap = document.getElementById("compareScroll");
+    var dx = e.clientX - compareDrag.startX;
+    compareDrag.card.style.transform = "translateX(" + dx + "px)";
+
+    var wrapRect = scrollWrap.getBoundingClientRect();
+    var edgeZone = 50;
+    if(e.clientX < wrapRect.left + edgeZone){
+      startCompareAutoScroll(scrollWrap, -1);
+    } else if(e.clientX > wrapRect.right - edgeZone){
+      startCompareAutoScroll(scrollWrap, 1);
+    } else {
+      stopCompareAutoScroll();
+    }
+
+    updateCompareDragTarget(e.clientX);
+  }
+
+  function updateCompareDragTarget(clientX){
+    var scrollWrap = document.getElementById("compareScroll");
+    var cards = Array.prototype.slice.call(scrollWrap.querySelectorAll(".compare-card"));
+    var best = null, bestDist = Infinity;
+    cards.forEach(function(c){
+      if(c === compareDrag.card) return;
+      var rect = c.getBoundingClientRect();
+      var center = rect.left + rect.width / 2;
+      var dist = Math.abs(clientX - center);
+      if(dist < bestDist){ bestDist = dist; best = c; }
+    });
+    cards.forEach(function(c){ c.classList.remove("is-drag-over"); });
+    if(best){ best.classList.add("is-drag-over"); }
+    compareDrag.target = best;
+  }
+
+  function startCompareAutoScroll(scrollWrap, dir){
+    if(compareAutoScrollRAF) return;
+    function step(){
+      if(!compareDrag){ compareAutoScrollRAF = null; return; }
+      scrollWrap.scrollLeft += dir * 12;
+      compareAutoScrollRAF = requestAnimationFrame(step);
+    }
+    compareAutoScrollRAF = requestAnimationFrame(step);
+  }
+
+  function stopCompareAutoScroll(){
+    if(compareAutoScrollRAF){
+      cancelAnimationFrame(compareAutoScrollRAF);
+      compareAutoScrollRAF = null;
+    }
+  }
+
+  function onCompareDragEnd(){
+    if(!compareDrag) return;
+    var card = compareDrag.card;
+    var target = compareDrag.target;
+
+    stopCompareAutoScroll();
+    document.removeEventListener("pointermove", onCompareDragMove);
+    document.removeEventListener("pointerup", onCompareDragEnd);
+    document.removeEventListener("pointercancel", onCompareDragEnd);
+
+    card.classList.remove("is-dragging");
+    card.style.transform = "";
+    card.style.transition = "";
+    card.style.zIndex = "";
+    card.style.position = "";
+    if(target) target.classList.remove("is-drag-over");
+
+    if(target && target !== card){
+      var dragIdxVal = parseInt(card.dataset.idx, 10);
+      var targetIdxVal = parseInt(target.dataset.idx, 10);
+      var oldPos = compareList.indexOf(dragIdxVal);
+      var newPos = compareList.indexOf(targetIdxVal);
+      if(oldPos !== -1 && newPos !== -1 && oldPos !== newPos){
+        var scrollWrapEl = document.getElementById("compareScroll");
+        var oldRects = {};
+        Array.prototype.forEach.call(scrollWrapEl.querySelectorAll(".compare-card"), function(c){
+          oldRects[c.dataset.idx] = c.getBoundingClientRect();
+        });
+
+        compareList.splice(oldPos, 1);
+        compareList.splice(newPos, 0, dragIdxVal);
+        compareSortKey = "manual";
+        var sortSelect = document.getElementById("compareSortSelect");
+        if(sortSelect) sortSelect.value = "manual";
+        if(compareSortDropdown) compareSortDropdown.sync();
+        var sortDirBtn = document.getElementById("compareSortDirBtn");
+        if(sortDirBtn) sortDirBtn.disabled = true;
+        renderCompare();
+        animateCompareReorder(oldRects);
+        saveCompareSelection();
+      }
+    }
+
+    compareDrag = null;
+  }
+
+  // FLIP-style animation: cards were captured at their old screen positions
+  // before the re-render; now that they've re-rendered in new DOM positions,
+  // slide each one from its old spot to its new spot instead of just popping.
+  function animateCompareReorder(oldRects){
+    var scrollWrap = document.getElementById("compareScroll");
+    var cards = scrollWrap.querySelectorAll(".compare-card");
+    cards.forEach(function(card){
+      var old = oldRects[card.dataset.idx];
+      if(!old) return;
+      var newRect = card.getBoundingClientRect();
+      var dx = old.left - newRect.left;
+      var dy = old.top - newRect.top;
+      if(Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+      // Scale duration by distance moved: tiny swaps used to be covered almost
+      // instantly by the front-loaded easing curve and read as a snap rather
+      // than a slide, so short moves get a shorter but still-visible duration.
+      var dist = Math.max(Math.abs(dx), Math.abs(dy));
+      var duration = Math.min(320, Math.max(160, dist * 1.1));
+
+      card.style.transition = "none";
+      card.style.transform = "translate(" + dx + "px, " + dy + "px)";
+      // Force reflow so the browser registers the starting position
+      // before we transition to the resting position.
+      card.getBoundingClientRect();
+
+      requestAnimationFrame(function(){
+        card.style.transition = "transform " + duration + "ms cubic-bezier(.33,.1,.2,1)";
+        card.style.transform = "";
+      });
+      card.addEventListener("transitionend", function handler(){
+        card.style.transition = "";
+        card.removeEventListener("transitionend", handler);
+      });
+    });
+  }
+
+  /* ---------- Compare: sort by stat ---------- */
+  var compareSortKey = "manual";
+  var compareSortDesc = true;
+
+  function compareSortValue(w, key){
+    var r;
+    switch(key){
+      case "name": return w.name.toLowerCase();
+      case "worldLevel": r = parseRange(w.worldLevel); return r ? avgRange(r) : -Infinity;
+      case "weight": r = parseRange(w.weight); return r ? avgRange(r) : -Infinity;
+      case "hp": r = parseRange(w.hp); return r ? avgRange(r) : -Infinity;
+      case "atk":
+        if(w.atkType === "flat"){
+          r = parseRange(w.atkRoll);
+          return r ? avgRange(r) : -Infinity;
+        } else {
+          var rMin = parseRange(w.atkRollMin), rMax = parseRange(w.atkRollMax);
+          if(!rMin && !rMax) return -Infinity;
+          return ((rMin ? avgRange(rMin) : 0) + (rMax ? avgRange(rMax) : 0)) / 2;
+        }
+      case "critRate": r = parseRange(w.critRate); return r ? avgRange(r) : -Infinity;
+      case "critValue": r = parseRange(w.critValue); return r ? avgRange(r) : -Infinity;
+      case "defRate": r = parseRange(w.defRate); return r ? avgRange(r) : -Infinity;
+      case "defValue": r = parseRange(w.defValue); return r ? avgRange(r) : -Infinity;
+      default: return 0;
+    }
+  }
+
+  function applyCompareSort(){
+    if(compareSortKey === "manual") return;
+    var key = compareSortKey;
+    compareList.sort(function(idxA, idxB){
+      var a = compareSortValue(weapons[idxA], key);
+      var b = compareSortValue(weapons[idxB], key);
+      var cmp = (typeof a === "string" || typeof b === "string")
+        ? String(a).localeCompare(String(b))
+        : (a - b);
+      return compareSortDesc ? -cmp : cmp;
+    });
+  }
+
+  var compareSortSelectEl = document.getElementById("compareSortSelect");
+  var compareSortDirBtnEl = document.getElementById("compareSortDirBtn");
+
+  /* ---------- Custom dropdown enhancer ----------
+     Wraps a native <select> with a button + styled option list (matching
+     the search suggestion dropdown look), while leaving the original
+     <select> in the DOM (hidden) so existing code that reads/sets its
+     .value and listens for "change" keeps working unchanged. */
+  function enhanceSelect(selectId){
+    var select = document.getElementById(selectId);
+    if(!select) return null;
+
+    var wrap = document.createElement("div");
+    wrap.className = "custom-select";
+    select.parentNode.insertBefore(wrap, select);
+    wrap.appendChild(select);
+    select.classList.add("custom-select-native");
+
+    var trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "custom-select-trigger";
+    trigger.innerHTML =
+      '<span class="custom-select-trigger-label"></span>' +
+      '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+    wrap.appendChild(trigger);
+
+    var menu = document.createElement("div");
+    menu.className = "custom-select-menu";
+    wrap.appendChild(menu);
+
+    var labelEl = trigger.querySelector(".custom-select-trigger-label");
+
+    function buildMenu(){
+      menu.innerHTML = "";
+      Array.prototype.forEach.call(select.options, function(opt){
+        var item = document.createElement("div");
+        item.className = "custom-select-option" + (opt.value === select.value ? " is-selected" : "");
+        item.textContent = opt.textContent;
+        item.dataset.value = opt.value;
+        item.addEventListener("click", function(){
+          if(select.value !== opt.value){
+            select.value = opt.value;
+            select.dispatchEvent(new Event("change", { bubbles:true }));
+          }
+          sync();
+          closeMenu();
+        });
+        menu.appendChild(item);
+      });
+    }
+
+    function sync(){
+      var opt = select.options[select.selectedIndex];
+      labelEl.textContent = opt ? opt.textContent : "";
+      menu.querySelectorAll(".custom-select-option").forEach(function(item){
+        item.classList.toggle("is-selected", item.dataset.value === select.value);
+      });
+    }
+
+    function openMenu(){
+      buildMenu();
+      menu.classList.add("is-open");
+      trigger.classList.add("is-open");
+    }
+    function closeMenu(){
+      menu.classList.remove("is-open");
+      trigger.classList.remove("is-open");
+    }
+
+    trigger.addEventListener("click", function(e){
+      e.stopPropagation();
+      if(select.disabled) return;
+      if(menu.classList.contains("is-open")) closeMenu(); else openMenu();
+    });
+    document.addEventListener("click", function(e){
+      if(!wrap.contains(e.target)) closeMenu();
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape") closeMenu();
+    });
+
+    sync();
+    return { sync: sync };
+  }
+
+  var typeFilterDropdown = enhanceSelect("typeFilter");
+  var wlFilterDropdown = enhanceSelect("wlFilter");
+  var sortSelectDropdown = enhanceSelect("sortSelect");
+  var compareSortDropdown = enhanceSelect("compareSortSelect");
+  var artifactSortSelectDropdown = enhanceSelect("artifactSortSelect");
+  var artifactCompareSortDropdown = enhanceSelect("artifactCompareSortSelect");
+
+  compareSortSelectEl.addEventListener("change", function(){
+    compareSortKey = compareSortSelectEl.value;
+    compareSortDirBtnEl.disabled = compareSortKey === "manual";
+    applyCompareSort();
+    renderCompare();
+    saveCompareSelection();
+  });
+
+  compareSortDirBtnEl.addEventListener("click", function(){
+    compareSortDesc = !compareSortDesc;
+    compareSortDirBtnEl.classList.toggle("is-desc", compareSortDesc);
+    if(compareSortKey !== "manual"){
+      applyCompareSort();
+      renderCompare();
+      saveCompareSelection();
+    }
+  });
+
+  /* ---------- Shared weapon-search typeahead ----------
+     Used by both the Compare tab (multi-select) and the Differentiator
+     tab (two single-select slots) so the dropdown/keyboard-nav logic
+     lives in exactly one place instead of two copies that can drift
+     out of sync. */
+  function createWeaponSearch(cfg){
+    var activeIdx = -1;
+
+    function getMatches(query){
+      query = query.trim().toLowerCase();
+      var excluded = cfg.getExcluded ? cfg.getExcluded() : [];
+      return weapons
+        .map(function(w, i){ return { w: w, i: i }; })
+        .filter(function(entry){ return excluded.indexOf(entry.i) === -1; })
+        .filter(function(entry){ return !query || entry.w.name.toLowerCase().indexOf(query) !== -1; });
+    }
+
+    function renderSuggestions(){
+      if(cfg.input.disabled) return;
+      var matches = getMatches(cfg.input.value);
+      activeIdx = -1;
+
+      if(!matches.length){
+        cfg.suggestionsEl.innerHTML = '<div class="compare-suggestion-empty">No matching weapons</div>';
+      } else {
+        cfg.suggestionsEl.innerHTML = matches.map(function(entry){
+          return (
+            '<div class="compare-suggestion" data-idx="' + entry.i + '">' +
+              '<span class="s-name">' + escapeHtml(entry.w.name) + '</span>' +
+              '<span class="s-meta">WL ' + entry.w.worldLevel + '</span>' +
+            '</div>'
+          );
+        }).join("");
+        cfg.suggestionsEl.querySelectorAll(".compare-suggestion").forEach(function(el){
+          el.addEventListener("click", function(){
+            cfg.onSelect(parseInt(el.dataset.idx, 10));
+            cfg.input.value = "";
+            cfg.suggestionsEl.classList.remove("is-open");
+          });
+        });
+      }
+      cfg.suggestionsEl.classList.add("is-open");
+    }
+
+    var suggestDebounceTimer = null;
+    cfg.input.addEventListener("input", function(){
+      clearTimeout(suggestDebounceTimer);
+      suggestDebounceTimer = setTimeout(renderSuggestions, 120);
+    });
+    cfg.input.addEventListener("focus", function(){
+      if(cfg.input.disabled) return;
+      renderSuggestions();
+    });
+    cfg.input.addEventListener("keydown", function(e){
+      var items = cfg.suggestionsEl.querySelectorAll(".compare-suggestion");
+      if(!items.length) return;
+      if(e.key === "ArrowDown"){
+        e.preventDefault();
+        activeIdx = Math.min(activeIdx + 1, items.length - 1);
+        items.forEach(function(el, i){ el.classList.toggle("is-active", i === activeIdx); });
+      } else if(e.key === "ArrowUp"){
+        e.preventDefault();
+        activeIdx = Math.max(activeIdx - 1, 0);
+        items.forEach(function(el, i){ el.classList.toggle("is-active", i === activeIdx); });
+      } else if(e.key === "Enter"){
+        e.preventDefault();
+        var target = activeIdx >= 0 ? items[activeIdx] : items[0];
+        if(target){
+          cfg.onSelect(parseInt(target.dataset.idx, 10));
+          cfg.input.value = "";
+          cfg.suggestionsEl.classList.remove("is-open");
+        }
+      } else if(e.key === "Escape"){
+        cfg.suggestionsEl.classList.remove("is-open");
+      }
+    });
+    document.addEventListener("click", function(e){
+      if(!e.target.closest(cfg.boxSelector)){
+        cfg.suggestionsEl.classList.remove("is-open");
+      }
+    });
+
+    return { renderSuggestions: renderSuggestions };
+  }
+
+  /* ---------- Compare search typeahead ---------- */
+  var compareSearchInput = document.getElementById("compareSearchInput");
+  var compareSuggestionsEl = document.getElementById("compareSuggestions");
+
+  createWeaponSearch({
+    input: compareSearchInput,
+    suggestionsEl: compareSuggestionsEl,
+    boxSelector: ".compare-search-box",
+    getExcluded: function(){ return compareList; },
+    onSelect: function(idx){ addToCompare(idx); }
+  });
+
+  function matchesFilters(w, query, type, wl){
+    if(type && w.type !== type) return false;
+    if(wl && String(w.worldLevel) !== wl) return false;
+    if(query && w.name.toLowerCase().indexOf(query) === -1) return false;
+    return true;
+  }
+
+  function sortWeapons(list, sortKey){
+    var sorted = list.slice();
+    switch(sortKey){
+      case "wl-asc": sorted.sort(function(a,b){ return a.worldLevel - b.worldLevel; }); break;
+      case "wl-desc": sorted.sort(function(a,b){ return b.worldLevel - a.worldLevel; }); break;
+      case "name-asc": sorted.sort(function(a,b){ return a.name.localeCompare(b.name); }); break;
+      case "crucible-asc": sorted.sort(function(a,b){ return a.crucible - b.crucible; }); break;
+      case "crucible-desc": sorted.sort(function(a,b){ return b.crucible - a.crucible; }); break;
+    }
+    return sorted;
+  }
+
+  function render(){
+    var query = document.getElementById("searchInput").value.trim().toLowerCase();
+    var type = document.getElementById("typeFilter").value;
+    var wl = document.getElementById("wlFilter").value;
+    var sortKey = document.getElementById("sortSelect").value;
+
+    var filtered = weapons.filter(function(w){ return matchesFilters(w, query, type, wl); });
+    filtered = sortWeapons(filtered, sortKey);
+
+    var countEl = document.getElementById("resultCount");
+    countEl.textContent = filtered.length + " weapon" + (filtered.length === 1 ? "" : "s") + " found";
+
+    var grid = document.getElementById("weaponGrid");
+    if(!filtered.length){
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">No weapons match your search.</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(function(w, idx){
+      return (
+        '<div class="card" data-idx="' + weapons.indexOf(w) + '">' +
+          '<div class="card-top">' +
+            '<div class="card-icon"><img src="' + iconPath(w.icon) + '" alt="" onerror="this.style.display=\'none\'"></div>' +
+            '<div class="card-top-text">' +
+              '<div class="card-name">' + w.name + '</div>' +
+              '<div class="card-meta">WL ' + w.worldLevel + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<span class="type-badge">' + w.type + '</span>' +
+          '<div class="card-stats">' +
+            '<div class="stat"><span>Crucible</span><strong>' + w.crucible + '</strong></div>' +
+            '<div class="stat"><span>Weight</span><strong>' + w.weight + ' kg</strong></div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<button class="card-compare-btn" data-idx="' + weapons.indexOf(w) + '">+ Compare</button>' +
+            '<button class="card-diff-btn" data-idx="' + weapons.indexOf(w) + '">+ Diff</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    grid.querySelectorAll(".card").forEach(function(card){
+      card.addEventListener("click", function(e){
+        if(e.target.closest(".card-compare-btn") || e.target.closest(".card-diff-btn")) return;
+        openModal(weapons[parseInt(card.dataset.idx, 10)]);
+      });
+    });
+
+    grid.querySelectorAll(".card-compare-btn").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        var idx = parseInt(btn.dataset.idx, 10);
+        if(compareList.indexOf(idx) !== -1){
+          removeFromCompare(idx);
+        } else {
+          addToCompare(idx);
+        }
+      });
+    });
+
+    grid.querySelectorAll(".card-diff-btn").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        var idx = parseInt(btn.dataset.idx, 10);
+        if(diffSelectedIdx.A === idx || diffSelectedIdx.B === idx){
+          removeFromDiff(idx);
+        } else {
+          addToDiff(idx);
+        }
+      });
+    });
+
+    renderCardCompareStates();
+    renderCardDiffStates();
+  }
+
+  function openModal(w){
+    var modal = document.getElementById("modalContent");
+    modal.innerHTML =
+      '<button class="modal-close" id="modalCloseBtn">&times;</button>' +
+      '<div class="modal-header">' +
+        '<div class="modal-icon"><img src="' + iconPath(w.icon) + '" alt="" onerror="this.style.display=\'none\'"></div>' +
+        '<div>' +
+          '<div class="modal-title">' + w.name + '</div>' +
+          '<span class="type-badge">' + w.type + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<table class="modal-table">' +
+        '<tr><td>World Level</td><td>' + w.worldLevel + '</td></tr>' +
+        '<tr><td>Crucible</td><td>' + w.crucible + '</td></tr>' +
+        '<tr><td>Weight</td><td>' + w.weight + ' kg</td></tr>' +
+        '<tr><td>HP</td><td>' + w.hp + '</td></tr>' +
+        (w.atkType === "flat"
+          ? '<tr><td>ATK (roll)</td><td>' + w.atkRoll + '</td></tr>'
+          : '<tr><td>ATK (min roll)</td><td>' + w.atkRollMin + '</td></tr>' +
+            '<tr><td>ATK (max roll)</td><td>' + w.atkRollMax + '</td></tr>') +
+        '<tr><td>Crit Rate</td><td>' + w.critRate + (w.critRate !== "-" ? "%" : "") + '</td></tr>' +
+        '<tr><td>Crit Value</td><td>' + w.critValue + (w.critValue !== "-" ? "%" : "") + '</td></tr>' +
+        '<tr><td>DEF Rate</td><td>' + w.defRate + (w.defRate !== "-" ? "%" : "") + '</td></tr>' +
+        '<tr><td>DEF Value</td><td>' + w.defValue + '</td></tr>' +
+      '</table>' +
+      (w.atkType === "minMax"
+        ? '<div class="modal-note">This weapon rolls two separate values: one added to your minimum ATK, another added to your maximum ATK.</div>'
+        : '<div class="modal-note">This weapon rolls one value, added equally to both your minimum and maximum ATK.</div>') +
+      (w.ability
+        ? '<div class="modal-ability"><div class="modal-ability-label">Ability</div><div class="modal-ability-text">' + escapeHtml(w.ability) + '</div></div>'
+        : '');
+
+    document.getElementById("modalOverlay").classList.add("is-open");
+    document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+  }
+
+  function closeModal(){
+    document.getElementById("modalOverlay").classList.remove("is-open");
+  }
+
+  document.getElementById("modalOverlay").addEventListener("click", function(e){
+    if(e.target === this) closeModal();
+  });
+
+  (function(){
+    var searchDebounceTimer = null;
+    document.getElementById("searchInput").addEventListener("input", function(){
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(render, 150);
+    });
+  })();
+  document.getElementById("typeFilter").addEventListener("change", render);
+  document.getElementById("wlFilter").addEventListener("change", render);
+  document.getElementById("sortSelect").addEventListener("change", render);
+
+  /* ---------- Differentiator ---------- */
+  function parseRange(val){
+    if(val === undefined || val === null) return null;
+    var str = String(val).trim();
+    if(str === "-" || str === "") return null;
+    var m = str.match(/^(-?\d+(?:\.\d+)?)\s*to\s*(-?\d+(?:\.\d+)?)$/i);
+    if(m) return { min: parseFloat(m[1]), max: parseFloat(m[2]) };
+    var n = parseFloat(str);
+    if(isNaN(n)) return null;
+    return { min: n, max: n };
+  }
+
+  function fmtNum(n){
+    var rounded = Math.round(n * 100) / 100;
+    return String(rounded);
+  }
+
+  function fmtRange(r, suffix){
+    suffix = suffix || "";
+    if(!r) return "-";
+    if(r.min === r.max) return fmtNum(r.min) + suffix;
+    return fmtNum(r.min) + suffix + " to " + fmtNum(r.max) + suffix;
+  }
+
+  // Difference at matching roll quality: at min roll a is a.min-b.min apart
+  // from b, at max roll a.max-b.max apart. (Not the independent-roll interval,
+  // which produces a much wider and less intuitive range.)
+  function diffInterval(a, b){
+    return { min: a.min - b.min, max: a.max - b.max };
+  }
+
+  function fmtDiff(d, suffix){
+    suffix = suffix || "";
+    var lo = Math.min(d.min, d.max), hi = Math.max(d.min, d.max);
+    function signed(n){ return (n >= 0 ? "+" : "") + fmtNum(n) + suffix; }
+    if(Math.abs(lo - hi) < 1e-9) return signed(lo);
+    return signed(lo) + " to " + signed(hi);
+  }
+
+  function avgRange(r){ return (r.min + r.max) / 2; }
+
+  function getAtkRowSpecs(a, b){
+    var specs = [];
+    if(a.atkType === "flat" && b.atkType === "flat"){
+      specs.push({ label:"ATK (roll)", a:a.atkRoll, b:b.atkRoll });
+    } else if(a.atkType !== "flat" && b.atkType !== "flat"){
+      specs.push({ label:"ATK (min roll)", a:a.atkRollMin, b:b.atkRollMin });
+      specs.push({ label:"ATK (max roll)", a:a.atkRollMax, b:b.atkRollMax });
+    } else {
+      var aIsFlat = a.atkType === "flat";
+      specs.push({
+        label: "ATK (roll vs min roll)",
+        a: aIsFlat ? a.atkRoll : a.atkRollMin,
+        b: aIsFlat ? b.atkRollMin : b.atkRoll
+      });
+      specs.push({
+        label: "ATK (roll vs max roll)",
+        a: aIsFlat ? a.atkRoll : a.atkRollMax,
+        b: aIsFlat ? b.atkRollMax : b.atkRoll
+      });
+    }
+    return specs;
+  }
+
+  function buildDiffRow(label, rawA, rawB, opts){
+    opts = opts || {};
+    var suffix = opts.suffix || "";
+    var higherIsBetter = opts.higherIsBetter !== false;
+    var neutral = !!opts.neutral;
+
+    var rA = parseRange(rawA);
+    var rB = parseRange(rawB);
+    if(!rA && !rB) return null;
+
+    // A missing stat ("-") counts as 0 for the comparison math below, but
+    // still displays as "-" rather than "0" on that side.
+    var cA = rA || { min: 0, max: 0 };
+    var cB = rB || { min: 0, max: 0 };
+
+    var html = '<div class="diff-row"><div class="diff-label">' + escapeHtml(label) + '</div>';
+
+    var avgA = avgRange(cA), avgB = avgRange(cB);
+    var tie = Math.abs(avgA - avgB) < 1e-9;
+    var aBetter = !neutral && !tie && (higherIsBetter ? avgA > avgB : avgA < avgB);
+    var bBetter = !neutral && !tie && (higherIsBetter ? avgB > avgA : avgB < avgA);
+
+    html += '<div class="diff-value' + (aBetter ? ' is-better' : (bBetter ? ' is-worse' : '')) + '">' + fmtRange(rA, suffix);
+    if(aBetter) html += '<span class="diff-plus">' + fmtDiff(diffInterval(cA, cB), suffix) + ' more</span>';
+    html += '</div>';
+
+    html += '<div class="diff-value side-b' + (bBetter ? ' is-better' : (aBetter ? ' is-worse' : '')) + '">' + fmtRange(rB, suffix);
+    if(bBetter) html += '<span class="diff-plus">' + fmtDiff(diffInterval(cB, cA), suffix) + ' more</span>';
+    html += '</div>';
+
+    if(tie && !neutral){
+      html += '<div class="diff-note">Tied</div>';
+    } else if(neutral){
+      html += '<div class="diff-note">Difference: ' + fmtDiff(diffInterval(cA, cB), suffix) + '</div>';
+    } else if(!rA || !rB){
+      html += '<div class="diff-note">' + (!rA ? 'Weapon 1' : 'Weapon 2') + ' doesn\u2019t have this stat (counted as 0)</div>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  var diffSelectedIdx = { A: null, B: null };
+
+  function createDiffPicker(side){
+    var input = document.getElementById("diffSearchInput" + side);
+    var suggestionsEl = document.getElementById("diffSuggestions" + side);
+    var searchBox = document.getElementById("diffSearchBox" + side);
+    var chipEl = document.getElementById("diffChip" + side);
+    var chipIcon = document.getElementById("diffChipIcon" + side);
+    var chipName = document.getElementById("diffChipName" + side);
+    var chipClear = document.getElementById("diffChipClear" + side);
+
+    function otherSide(){ return side === "A" ? "B" : "A"; }
+
+    function updateChip(){
+      var idx = diffSelectedIdx[side];
+      if(idx === null || idx === undefined){
+        chipEl.hidden = true;
+        searchBox.hidden = false;
+      } else {
+        var w = weapons[idx];
+        chipIcon.src = iconPath(w.icon);
+        chipIcon.style.display = "";
+        chipName.textContent = w.name;
+        chipEl.hidden = false;
+        searchBox.hidden = true;
+      }
+    }
+
+    function selectWeapon(idx){
+      diffSelectedIdx[side] = idx;
+      input.value = "";
+      suggestionsEl.classList.remove("is-open");
+      updateChip();
+      renderDiff();
+      saveDiffSelection();
+    }
+
+    function clearSelection(opts){
+      var silent = opts && opts.silent;
+      diffSelectedIdx[side] = null;
+      updateChip();
+      renderDiff();
+      saveDiffSelection();
+      if(!silent) input.focus();
+    }
+
+    createWeaponSearch({
+      input: input,
+      suggestionsEl: suggestionsEl,
+      boxSelector: "#diffSearchBox" + side,
+      getExcluded: function(){
+        var otherIdx = diffSelectedIdx[otherSide()];
+        return (otherIdx === null || otherIdx === undefined) ? [] : [otherIdx];
+      },
+      onSelect: selectWeapon
+    });
+
+    chipClear.addEventListener("click", function(){ clearSelection(); });
+
+    return { clearSelection: clearSelection, refresh: updateChip, selectFromCard: selectWeapon };
+  }
+
+  var diffPickerA = createDiffPicker("A");
+  var diffPickerB = createDiffPicker("B");
+
+  document.getElementById("diffSwapBtn").addEventListener("click", function(){
+    if(diffSelectedIdx.A === null && diffSelectedIdx.B === null) return;
+    var tmp = diffSelectedIdx.A;
+    diffSelectedIdx.A = diffSelectedIdx.B;
+    diffSelectedIdx.B = tmp;
+    diffPickerA.refresh();
+    diffPickerB.refresh();
+    renderDiff();
+    saveDiffSelection();
+  });
+
+  document.getElementById("compareClearAllBtn").addEventListener("click", function(){
+    if(!compareList.length) return;
+    var prevList = compareList.slice();
+    var prevSortKey = compareSortKey;
+    var prevSortDesc = compareSortDesc;
+
+    compareList = [];
+    updateCompareBadge();
+    renderCompare();
+    renderCardCompareStates();
+    saveCompareSelection();
+
+    showUndoToast("Compare list cleared", function(){
+      compareList = prevList;
+      compareSortKey = prevSortKey;
+      compareSortDesc = prevSortDesc;
+      var sortSelect = document.getElementById("compareSortSelect");
+      if(sortSelect) sortSelect.value = prevSortKey;
+      if(compareSortDropdown) compareSortDropdown.sync();
+      var sortDirBtn = document.getElementById("compareSortDirBtn");
+      if(sortDirBtn) sortDirBtn.disabled = (prevSortKey === "manual");
+      updateCompareBadge();
+      renderCompare();
+      renderCardCompareStates();
+      saveCompareSelection();
+    });
+  });
+
+  document.getElementById("diffClearAllBtn").addEventListener("click", function(){
+    if(diffSelectedIdx.A === null && diffSelectedIdx.B === null) return;
+    var prevA = diffSelectedIdx.A;
+    var prevB = diffSelectedIdx.B;
+
+    diffPickerA.clearSelection({ silent:true });
+    diffPickerB.clearSelection({ silent:true });
+
+    showUndoToast("Diff selection cleared", function(){
+      diffSelectedIdx.A = prevA;
+      diffSelectedIdx.B = prevB;
+      diffPickerA.refresh();
+      diffPickerB.refresh();
+      renderDiff();
+      saveDiffSelection();
+    });
+  });
+
+  function renderDiff(){
+    var emptyEl = document.getElementById("diffEmpty");
+    var resultEl = document.getElementById("diffResult");
+    var idxA = diffSelectedIdx.A;
+    var idxB = diffSelectedIdx.B;
+
+    if(idxA === null || idxB === null){
+      emptyEl.textContent = "Pick two weapons to see how their stats stack up.";
+      emptyEl.style.display = "";
+      resultEl.innerHTML = "";
+      return;
+    }
+    emptyEl.style.display = "none";
+
+    var a = weapons[idxA];
+    var b = weapons[idxB];
+
+    var rows = [
+      buildDiffRow("World Level", a.worldLevel, b.worldLevel, { neutral:true }),
+      buildDiffRow("Crucible", a.crucible, b.crucible, { neutral:true }),
+      buildDiffRow("Weight", a.weight, b.weight, { suffix:" kg", higherIsBetter:false }),
+      buildDiffRow("HP", a.hp, b.hp, {})
+    ];
+    getAtkRowSpecs(a, b).forEach(function(spec){
+      rows.push(buildDiffRow(spec.label, spec.a, spec.b, {}));
+    });
+    rows.push(buildDiffRow("Crit Rate", a.critRate, b.critRate, { suffix:"%" }));
+    rows.push(buildDiffRow("Crit Value", a.critValue, b.critValue, { suffix:"%" }));
+    rows.push(buildDiffRow("DEF Rate", a.defRate, b.defRate, { suffix:"%" }));
+    rows.push(buildDiffRow("DEF Value", a.defValue, b.defValue, {}));
+
+    rows = rows.filter(Boolean);
+
+    resultEl.innerHTML =
+      '<div class="diff-card">' +
+        '<div class="diff-header">' +
+          '<div class="diff-header-weapon"><div class="diff-header-icon"><img src="' + iconPath(a.icon) + '" alt="" onerror="this.style.display=\'none\'"></div><div class="diff-header-name">' + escapeHtml(a.name) + '</div></div>' +
+          '<div class="diff-header-vs">VS</div>' +
+          '<div class="diff-header-weapon side-b"><div class="diff-header-icon"><img src="' + iconPath(b.icon) + '" alt="" onerror="this.style.display=\'none\'"></div><div class="diff-header-name">' + escapeHtml(b.name) + '</div></div>' +
+        '</div>' +
+        rows.join("") +
+      '</div>';
+  }
+
+  var scrollPositions = { finder: 0, compare: 0, diff: 0 };
+  var currentView = "finder";
+
+  var ALL_VIEWS = ["finder", "compare", "diff", "artifact-finder", "artifact-compare", "artifact-diff"];
+  var VIEW_NAV_BTN = {
+    "finder": "navFinderBtn", "compare": "navCompareBtn", "diff": "navDiffBtn",
+    "artifact-finder": "navArtifactFinderBtn", "artifact-compare": "navArtifactCompareBtn", "artifact-diff": "navArtifactDiffBtn"
+  };
+
+  // ---------- Artifacts ----------
+  var ARTIFACT_DATA_URL = "../JSON/Artifacts.json";
+  var ARTIFACT_ICON_BASE = "../Textures/Artifacts/";
+  var artifactSets = [];
+  var PIECE_ORDER = ["flower", "plume", "sands", "goblet", "circlet"];
+  var PIECE_LABEL = { flower: "Flower", plume: "Plume", sands: "Sands", goblet: "Goblet", circlet: "Circlet" };
+  var STAT_LABEL = { HP: "HP", ATK: "ATK", CR: "Crit Rate", CV: "Crit Value", DR: "DEF Rate", DV: "DEF Value" };
+  var STAT_ORDER = ["HP", "ATK", "CR", "CV", "DR", "DV"];
+  var PCT_STATS = { CR: true, CV: true, DR: true };
+
+  function artifactIconPath(filename){
+    return ARTIFACT_ICON_BASE + encodeURIComponent(filename).replace(/%2F/g, "/");
+  }
+
+  function fmtStatRange(key, range){
+    var suffix = PCT_STATS[key] ? "%" : "";
+    if(range.min === range.max) return range.min + suffix;
+    return range.min + suffix + " to " + range.max + suffix;
+  }
+
+  fetch(ARTIFACT_DATA_URL)
+    .then(function(res){ if(!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+    .then(function(data){
+      artifactSets = Array.isArray(data) ? data : [];
+      document.getElementById("artifactFinderEmpty").style.display = artifactSets.length ? "none" : "";
+      renderArtifactGrid();
+
+      if(rememberSelectionsEnabled){
+        var savedCompare = lsGet(LS_ARTIFACT_COMPARE_LIST);
+        if(Array.isArray(savedCompare)){
+          artifactCompareList = savedCompare.filter(function(i){
+            return Number.isInteger(i) && i >= 0 && i < artifactSets.length;
+          });
+          updateArtifactCompareBadge();
+          renderArtifactCompare();
+          renderArtifactCardCompareStates();
+        }
+
+        var savedDiff = lsGet(LS_ARTIFACT_DIFF_SELECTED);
+        if(savedDiff && typeof savedDiff === "object"){
+          ["A", "B"].forEach(function(side){
+            var idx = savedDiff[side];
+            artifactDiffSelectedIdx[side] = (Number.isInteger(idx) && idx >= 0 && idx < artifactSets.length) ? idx : null;
+          });
+          if(artifactDiffSelectedIdx.A !== null && artifactDiffSelectedIdx.A === artifactDiffSelectedIdx.B){
+            artifactDiffSelectedIdx.B = null;
+          }
+          artifactDiffPickerA.refresh();
+          artifactDiffPickerB.refresh();
+          renderArtifactDiff();
+          renderArtifactCardDiffStates();
+        }
+      }
+    })
+    .catch(function(){
+      // No Artifacts.json yet — leave the "not loaded" empty-state showing.
+      artifactSets = [];
+    });
+
+  function sortArtifactSets(list, sortKey){
+    var sorted = list.slice();
+    switch(sortKey){
+      case "wl-asc": sorted.sort(function(a,b){ return (a.worldLevel||0) - (b.worldLevel||0); }); break;
+      case "wl-desc": sorted.sort(function(a,b){ return (b.worldLevel||0) - (a.worldLevel||0); }); break;
+      case "name-asc": sorted.sort(function(a,b){ return a.setName.localeCompare(b.setName); }); break;
+      case "crucible-asc": sorted.sort(function(a,b){ return (a.crucible||0) - (b.crucible||0); }); break;
+      case "crucible-desc": sorted.sort(function(a,b){ return (b.crucible||0) - (a.crucible||0); }); break;
+    }
+    return sorted;
+  }
+
+  function renderArtifactGrid(){
+    var query = (document.getElementById("artifactSearchInput").value || "").trim().toLowerCase();
+    var sortKey = document.getElementById("artifactSortSelect").value;
+    var grid = document.getElementById("artifactGrid");
+    var countEl = document.getElementById("artifactResultCount");
+    var matches = artifactSets.filter(function(s){
+      return !query || s.setName.toLowerCase().indexOf(query) !== -1;
+    });
+    matches = sortArtifactSets(matches, sortKey);
+
+    countEl.textContent = artifactSets.length ? (matches.length + " set" + (matches.length === 1 ? "" : "s")) : "";
+
+    grid.innerHTML = matches.map(function(s){
+      var cardIcon = s.pieces && s.pieces.flower ? s.pieces.flower.icon : "";
+      var idx = artifactSets.indexOf(s);
+      return (
+        '<div class="card artifact-card" data-set="' + escapeHtml(s.setName) + '">' +
+          '<div class="card-top">' +
+            '<div class="card-icon"><img src="' + artifactIconPath(cardIcon) + '" alt="" onerror="this.style.display=\'none\'"></div>' +
+            '<div class="card-top-text">' +
+              '<div class="card-name">' + escapeHtml(s.setName) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card-stats">' +
+            '<div class="stat"><span>World Level</span><strong>' + (s.worldLevel !== undefined ? s.worldLevel : "-") + '</strong></div>' +
+            '<div class="stat"><span>Crucible</span><strong>' + (s.crucible !== undefined ? s.crucible : "-") + '</strong></div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<button class="card-compare-btn" data-idx="' + idx + '">+ Compare</button>' +
+            '<button class="card-diff-btn" data-idx="' + idx + '">+ Diff</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    grid.querySelectorAll(".artifact-card").forEach(function(el){
+      el.addEventListener("click", function(e){
+        if(e.target.closest(".card-compare-btn") || e.target.closest(".card-diff-btn")) return;
+        var set = artifactSets.filter(function(s){ return s.setName === el.dataset.set; })[0];
+        if(set) openArtifactModal(set);
+      });
+    });
+
+    grid.querySelectorAll(".card-compare-btn").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        var idx = parseInt(btn.dataset.idx, 10);
+        if(artifactCompareList.indexOf(idx) !== -1){
+          removeFromArtifactCompare(idx);
+        } else {
+          addToArtifactCompare(idx);
+        }
+      });
+    });
+
+    grid.querySelectorAll(".card-diff-btn").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        var idx = parseInt(btn.dataset.idx, 10);
+        if(artifactDiffSelectedIdx.A === idx || artifactDiffSelectedIdx.B === idx){
+          removeFromArtifactDiff(idx);
+        } else {
+          addToArtifactDiff(idx);
+        }
+      });
+    });
+
+    renderArtifactCardCompareStates();
+    renderArtifactCardDiffStates();
+  }
+
+  document.getElementById("artifactSearchInput").addEventListener("input", renderArtifactGrid);
+  document.getElementById("artifactSortSelect").addEventListener("change", renderArtifactGrid);
+
+  function openArtifactModal(s){
+    var modal = document.getElementById("modalContent");
+
+    var meta = [];
+    if(s.worldLevel !== undefined) meta.push("WL " + s.worldLevel);
+    if(s.crucible !== undefined) meta.push("Crucible " + s.crucible);
+
+    var effects = [];
+    if(s.setBonus2pc) effects.push('<div><b>2pc:</b> ' + escapeHtml(s.setBonus2pc) + '</div>');
+    if(s.setBonus4pc) effects.push('<div><b>4pc:</b> ' + escapeHtml(s.setBonus4pc) + '</div>');
+
+    var pieceRows = PIECE_ORDER.map(function(key, i){
+      var p = s.pieces && s.pieces[key];
+      if(!p) return "";
+      var statLines = STAT_ORDER
+        .filter(function(stat){ return p.stats && p.stats[stat]; })
+        .map(function(stat){
+          return '<div class="artifact-stat-line"><span>' + STAT_LABEL[stat] + '</span><span>' + fmtStatRange(stat, p.stats[stat]) + '</span></div>';
+        }).join("") || '<div class="artifact-stat-line"><span>-</span></div>';
+
+      return (
+        '<div class="artifact-piece" data-piece="' + key + '">' +
+          '<button type="button" class="artifact-piece-head">' +
+            '<img class="artifact-piece-icon" src="' + artifactIconPath(p.icon) + '" alt="" onerror="this.style.display=\'none\'">' +
+            '<span class="artifact-piece-titles">' +
+              '<span class="artifact-piece-slot">' + PIECE_LABEL[key] + '</span>' +
+              '<span class="artifact-piece-name">' + escapeHtml(p.name || "-") + '</span>' +
+            '</span>' +
+            '<svg class="artifact-piece-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+          '</button>' +
+          '<div class="artifact-piece-body">' + statLines + '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    modal.innerHTML =
+      '<button class="modal-close" id="modalCloseBtn">&times;</button>' +
+      '<div class="modal-header">' +
+        '<div class="modal-icon"><img src="' + artifactIconPath(s.pieces.flower.icon) + '" alt="" onerror="this.style.display=\'none\'"></div>' +
+        '<div class="modal-title">' + escapeHtml(s.setName) + '</div>' +
+      '</div>' +
+      (meta.length ? '<div class="modal-note">' + meta.join(" &middot; ") + '</div>' : '') +
+      (effects.length ? '<div class="modal-note artifact-set-effects">' + effects.join("") + '</div>' : '') +
+      '<div class="artifact-piece-list">' + pieceRows + '</div>';
+
+    modal.querySelectorAll(".artifact-piece-head").forEach(function(head){
+      head.addEventListener("click", function(){
+        head.closest(".artifact-piece").classList.toggle("is-open");
+      });
+    });
+
+    document.getElementById("modalOverlay").classList.add("is-open");
+    document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+  }
+
+  // ---------- Artifact Compare ----------
+  var artifactCompareList = [];
+  var artifactCompareSortKey = "manual";
+
+  function createArtifactSearch(cfg){
+    var activeIdx = -1;
+
+    function getMatches(query){
+      query = query.trim().toLowerCase();
+      var excluded = cfg.getExcluded ? cfg.getExcluded() : [];
+      return artifactSets
+        .map(function(s, i){ return { s: s, i: i }; })
+        .filter(function(entry){ return excluded.indexOf(entry.i) === -1; })
+        .filter(function(entry){ return !query || entry.s.setName.toLowerCase().indexOf(query) !== -1; });
+    }
+
+    function renderSuggestions(){
+      if(cfg.input.disabled) return;
+      var matches = getMatches(cfg.input.value);
+      activeIdx = -1;
+
+      if(!matches.length){
+        cfg.suggestionsEl.innerHTML = '<div class="compare-suggestion-empty">No matching artifact sets</div>';
+      } else {
+        cfg.suggestionsEl.innerHTML = matches.map(function(entry){
+          return (
+            '<div class="compare-suggestion" data-idx="' + entry.i + '">' +
+              '<span class="s-name">' + escapeHtml(entry.s.setName) + '</span>' +
+              '<span class="s-meta">WL ' + (entry.s.worldLevel !== undefined ? entry.s.worldLevel : "-") + '</span>' +
+            '</div>'
+          );
+        }).join("");
+        cfg.suggestionsEl.querySelectorAll(".compare-suggestion").forEach(function(el){
+          el.addEventListener("click", function(){
+            cfg.onSelect(parseInt(el.dataset.idx, 10));
+            cfg.input.value = "";
+            cfg.suggestionsEl.classList.remove("is-open");
+          });
+        });
+      }
+      cfg.suggestionsEl.classList.add("is-open");
+    }
+
+    var suggestDebounceTimer = null;
+    cfg.input.addEventListener("input", function(){
+      clearTimeout(suggestDebounceTimer);
+      suggestDebounceTimer = setTimeout(renderSuggestions, 120);
+    });
+    cfg.input.addEventListener("focus", function(){
+      if(cfg.input.disabled) return;
+      renderSuggestions();
+    });
+    cfg.input.addEventListener("keydown", function(e){
+      var items = cfg.suggestionsEl.querySelectorAll(".compare-suggestion");
+      if(!items.length) return;
+      if(e.key === "ArrowDown"){
+        e.preventDefault();
+        activeIdx = Math.min(activeIdx + 1, items.length - 1);
+        items.forEach(function(el, i){ el.classList.toggle("is-active", i === activeIdx); });
+      } else if(e.key === "ArrowUp"){
+        e.preventDefault();
+        activeIdx = Math.max(activeIdx - 1, 0);
+        items.forEach(function(el, i){ el.classList.toggle("is-active", i === activeIdx); });
+      } else if(e.key === "Enter"){
+        e.preventDefault();
+        var target = activeIdx >= 0 ? items[activeIdx] : items[0];
+        if(target) target.click();
+      } else if(e.key === "Escape"){
+        cfg.suggestionsEl.classList.remove("is-open");
+      }
+    });
+    document.addEventListener("click", function(e){
+      if(!cfg.input.contains(e.target) && !cfg.suggestionsEl.contains(e.target)){
+        cfg.suggestionsEl.classList.remove("is-open");
+      }
+    });
+
+    return { refresh: renderSuggestions };
+  }
+
+  function updateArtifactCompareBadge(){
+    var badge = document.getElementById("artifactCompareBadge");
+    if(artifactCompareList.length){
+      badge.textContent = artifactCompareList.length;
+      badge.hidden = false;
+    } else {
+      badge.hidden = true;
+    }
+    document.getElementById("artifactCompareHint").textContent =
+      artifactCompareList.length ? artifactCompareList.length + " set" + (artifactCompareList.length === 1 ? "" : "s") + " added" : "";
+  }
+
+  function sortArtifactCompareList(){
+    if(artifactCompareSortKey === "manual") return;
+    var key = artifactCompareSortKey;
+    artifactCompareList.sort(function(idxA, idxB){
+      var a = artifactSets[idxA], b = artifactSets[idxB];
+      if(key === "name") return a.setName.localeCompare(b.setName);
+      if(key === "worldLevel") return (a.worldLevel||0) - (b.worldLevel||0);
+      if(key === "crucible") return (a.crucible||0) - (b.crucible||0);
+      return 0;
+    });
+  }
+
+  function renderArtifactCompare(){
+    var empty = document.getElementById("artifactCompareEmpty");
+    var scrollWrap = document.getElementById("artifactCompareScroll");
+
+    if(!artifactCompareList.length){
+      empty.style.display = "";
+      scrollWrap.innerHTML = "";
+      return;
+    }
+    empty.style.display = "none";
+
+    sortArtifactCompareList();
+
+    var items = artifactCompareList.map(function(idx){ return { idx: idx, s: artifactSets[idx] }; });
+    var cols = items.length;
+
+    function cell(html, cls){
+      return '<div class="compare-table-cell' + (cls ? ' ' + cls : '') + '">' + html + '</div>';
+    }
+    function labelCell(text, cls){
+      return cell('<span>' + text + '</span>', 'compare-table-label' + (cls ? ' ' + cls : ''));
+    }
+    function valueCell(text, cls){
+      return cell(text, 'compare-table-value' + (cls ? ' ' + cls : ''));
+    }
+
+    var rows = [];
+
+    rows.push(labelCell("Set"));
+    items.forEach(function(item){
+      rows.push(cell(
+        '<div class="compare-table-header-icon"><img src="' + artifactIconPath(item.s.pieces.flower.icon) + '" alt="" onerror="this.style.display=\'none\'"></div>' +
+        '<div class="compare-table-header-name">' + escapeHtml(item.s.setName) + '</div>' +
+        '<button class="compare-remove" data-idx="' + item.idx + '">Remove</button>',
+        'compare-table-header'
+      ));
+    });
+
+    rows.push(labelCell("World Level"));
+    items.forEach(function(item){ rows.push(valueCell(item.s.worldLevel !== undefined ? item.s.worldLevel : "-")); });
+
+    rows.push(labelCell("Crucible"));
+    items.forEach(function(item){ rows.push(valueCell(item.s.crucible !== undefined ? item.s.crucible : "-")); });
+
+    if(items.some(function(item){ return item.s.setBonus2pc; })){
+      rows.push(labelCell("2pc"));
+      items.forEach(function(item){ rows.push(valueCell(item.s.setBonus2pc ? escapeHtml(item.s.setBonus2pc) : "-")); });
+    }
+    if(items.some(function(item){ return item.s.setBonus4pc; })){
+      rows.push(labelCell("4pc"));
+      items.forEach(function(item){ rows.push(valueCell(item.s.setBonus4pc ? escapeHtml(item.s.setBonus4pc) : "-")); });
+    }
+
+    PIECE_ORDER.forEach(function(key){
+      var anyHasPiece = items.some(function(item){ return item.s.pieces && item.s.pieces[key]; });
+      if(!anyHasPiece) return;
+
+      rows.push(labelCell(PIECE_LABEL[key], "compare-table-piece-heading"));
+      items.forEach(function(item){
+        var p = item.s.pieces && item.s.pieces[key];
+        rows.push(cell(p ? escapeHtml(p.name) : "-", "compare-table-value compare-table-piece-heading"));
+      });
+
+      STAT_ORDER.forEach(function(stat){
+        var anyHasStat = items.some(function(item){
+          var p = item.s.pieces && item.s.pieces[key];
+          return p && p.stats && p.stats[stat];
+        });
+        if(!anyHasStat) return;
+
+        rows.push(labelCell(STAT_LABEL[stat]));
+        items.forEach(function(item){
+          var p = item.s.pieces && item.s.pieces[key];
+          var val = (p && p.stats && p.stats[stat]) ? fmtStatRange(stat, p.stats[stat]) : "-";
+          rows.push(valueCell(val));
+        });
+      });
+    });
+
+    // Remove the bottom border from the very last row so it sits flush with the table edge.
+    var lastRowStart = rows.length - (cols + 1);
+    for(var i = lastRowStart; i < rows.length; i++){
+      rows[i] = rows[i].replace('class="compare-table-cell', 'class="compare-table-cell is-last-row');
+    }
+
+    scrollWrap.innerHTML =
+      '<div class="compare-table" style="grid-template-columns:130px repeat(' + cols + ', 150px);">' +
+        rows.join("") +
+      '</div>';
+  }
+
+  document.getElementById("artifactCompareScroll").addEventListener("click", function(e){
+    var btn = e.target.closest(".compare-remove");
+    if(!btn) return;
+    var idx = parseInt(btn.dataset.idx, 10);
+    artifactCompareList = artifactCompareList.filter(function(i){ return i !== idx; });
+    updateArtifactCompareBadge();
+    renderArtifactCompare();
+    renderArtifactCardCompareStates();
+    saveArtifactCompareSelection();
+  });
+
+  var artifactCompareSearch = createArtifactSearch({
+    input: document.getElementById("artifactCompareSearchInput"),
+    suggestionsEl: document.getElementById("artifactCompareSuggestions"),
+    getExcluded: function(){ return artifactCompareList; },
+    onSelect: function(idx){
+      artifactCompareList.push(idx);
+      updateArtifactCompareBadge();
+      renderArtifactCompare();
+      renderArtifactCardCompareStates();
+      saveArtifactCompareSelection();
+    }
+  });
+
+  function addToArtifactCompare(idx){
+    if(artifactCompareList.indexOf(idx) !== -1){
+      showToast(artifactSets[idx].setName + " is already in Compare");
+      return;
+    }
+    artifactCompareList.push(idx);
+    updateArtifactCompareBadge();
+    renderArtifactCompare();
+    renderArtifactCardCompareStates();
+    saveArtifactCompareSelection();
+    showToast(artifactSets[idx].setName + " added to Compare");
+  }
+
+  function removeFromArtifactCompare(idx){
+    artifactCompareList = artifactCompareList.filter(function(i){ return i !== idx; });
+    updateArtifactCompareBadge();
+    renderArtifactCompare();
+    renderArtifactCardCompareStates();
+    saveArtifactCompareSelection();
+  }
+
+  function renderArtifactCardCompareStates(){
+    document.getElementById("artifactGrid").querySelectorAll(".card-compare-btn").forEach(function(btn){
+      var idx = parseInt(btn.dataset.idx, 10);
+      var inCompare = artifactCompareList.indexOf(idx) !== -1;
+      btn.classList.toggle("is-added", inCompare);
+      btn.textContent = inCompare ? "\u2713 In Compare" : "+ Compare";
+    });
+  }
+
+  document.getElementById("artifactCompareSortSelect").addEventListener("change", function(){
+    artifactCompareSortKey = this.value;
+    renderArtifactCompare();
+  });
+
+  document.getElementById("artifactCompareClearAllBtn").addEventListener("click", function(){
+    if(!artifactCompareList.length) return;
+    var prevList = artifactCompareList.slice();
+    artifactCompareList = [];
+    updateArtifactCompareBadge();
+    renderArtifactCompare();
+    renderArtifactCardCompareStates();
+    saveArtifactCompareSelection();
+
+    showUndoToast("Artifact compare list cleared", function(){
+      artifactCompareList = prevList;
+      updateArtifactCompareBadge();
+      renderArtifactCompare();
+      renderArtifactCardCompareStates();
+      saveArtifactCompareSelection();
+    });
+  });
+
+
+  // ---------- Artifact Differentiator ----------
+  var artifactDiffSelectedIdx = { A: null, B: null };
+
+  function createArtifactDiffPicker(side){
+    var input = document.getElementById("artifactDiffSearchInput" + side);
+    var suggestionsEl = document.getElementById("artifactDiffSuggestions" + side);
+    var searchBox = document.getElementById("artifactDiffSearchBox" + side);
+    var chipEl = document.getElementById("artifactDiffChip" + side);
+    var chipIcon = document.getElementById("artifactDiffChipIcon" + side);
+    var chipName = document.getElementById("artifactDiffChipName" + side);
+    var chipClear = document.getElementById("artifactDiffChipClear" + side);
+
+    function otherSide(){ return side === "A" ? "B" : "A"; }
+
+    function updateChip(){
+      var idx = artifactDiffSelectedIdx[side];
+      if(idx === null){
+        chipEl.hidden = true;
+        searchBox.hidden = false;
+      } else {
+        var s = artifactSets[idx];
+        chipIcon.src = artifactIconPath(s.pieces.flower.icon);
+        chipIcon.style.display = "";
+        chipName.textContent = s.setName;
+        chipEl.hidden = false;
+        searchBox.hidden = true;
+      }
+    }
+
+    function selectSet(idx){
+      artifactDiffSelectedIdx[side] = idx;
+      updateChip();
+      renderArtifactDiff();
+      renderArtifactCardDiffStates();
+      saveArtifactDiffSelection();
+    }
+
+    var search = createArtifactSearch({
+      input: input,
+      suggestionsEl: suggestionsEl,
+      getExcluded: function(){
+        var otherIdx = artifactDiffSelectedIdx[otherSide()];
+        return otherIdx === null ? [] : [otherIdx];
+      },
+      onSelect: selectSet
+    });
+
+    chipClear.addEventListener("click", function(){
+      artifactDiffSelectedIdx[side] = null;
+      updateChip();
+      renderArtifactDiff();
+      renderArtifactCardDiffStates();
+      saveArtifactDiffSelection();
+    });
+
+    updateChip();
+    return { refresh: updateChip, selectFromCard: selectSet, clearSelection: function(opts){
+      artifactDiffSelectedIdx[side] = null;
+      updateChip();
+      if(!opts || !opts.silent){ renderArtifactDiff(); saveArtifactDiffSelection(); }
+    }};
+  }
+
+  var artifactDiffPickerA = createArtifactDiffPicker("A");
+  var artifactDiffPickerB = createArtifactDiffPicker("B");
+
+  function saveArtifactDiffSelection(){
+    if(rememberSelectionsEnabled) lsSet(LS_ARTIFACT_DIFF_SELECTED, artifactDiffSelectedIdx);
+  }
+
+  function renderArtifactCardDiffStates(){
+    document.getElementById("artifactGrid").querySelectorAll(".card-diff-btn").forEach(function(btn){
+      var idx = parseInt(btn.dataset.idx, 10);
+      if(artifactDiffSelectedIdx.A === idx){
+        btn.classList.add("is-added");
+        btn.textContent = "\u2713 Diff 1";
+      } else if(artifactDiffSelectedIdx.B === idx){
+        btn.classList.add("is-added");
+        btn.textContent = "\u2713 Diff 2";
+      } else {
+        btn.classList.remove("is-added");
+        btn.textContent = "+ Diff";
+      }
+    });
+  }
+
+  function addToArtifactDiff(idx){
+    if(artifactDiffSelectedIdx.A === null){
+      artifactDiffPickerA.selectFromCard(idx);
+    } else if(artifactDiffSelectedIdx.B === null){
+      artifactDiffPickerB.selectFromCard(idx);
+    } else {
+      showToast("Differentiator already has two sets \u2014 clear one first");
+      return;
+    }
+    showToast(artifactSets[idx].setName + " added to Differentiator");
+  }
+
+  function removeFromArtifactDiff(idx){
+    var changed = false;
+    if(artifactDiffSelectedIdx.A === idx){ artifactDiffPickerA.clearSelection({ silent:true }); changed = true; }
+    if(artifactDiffSelectedIdx.B === idx){ artifactDiffPickerB.clearSelection({ silent:true }); changed = true; }
+    if(changed){
+      renderArtifactDiff();
+      saveArtifactDiffSelection();
+      renderArtifactCardDiffStates();
+    }
+  }
+
+  function renderArtifactDiff(){
+    var emptyEl = document.getElementById("artifactDiffEmpty");
+    var resultEl = document.getElementById("artifactDiffResult");
+    var idxA = artifactDiffSelectedIdx.A, idxB = artifactDiffSelectedIdx.B;
+
+    if(idxA === null || idxB === null){
+      emptyEl.style.display = "";
+      resultEl.innerHTML = "";
+      return;
+    }
+    emptyEl.style.display = "none";
+
+    var a = artifactSets[idxA], b = artifactSets[idxB];
+
+    var header =
+      '<div class="diff-header">' +
+        '<div class="diff-header-weapon"><div class="diff-header-icon"><img src="' + artifactIconPath(a.pieces.flower.icon) + '" alt="" onerror="this.style.display=\'none\'"></div><div class="diff-header-name">' + escapeHtml(a.setName) + '</div></div>' +
+        '<div class="diff-header-vs">VS</div>' +
+        '<div class="diff-header-weapon side-b"><div class="diff-header-icon"><img src="' + artifactIconPath(b.pieces.flower.icon) + '" alt="" onerror="this.style.display=\'none\'"></div><div class="diff-header-name">' + escapeHtml(b.setName) + '</div></div>' +
+      '</div>';
+
+    var rows = [];
+    rows.push(buildDiffRow("World Level", a.worldLevel !== undefined ? String(a.worldLevel) : "-", b.worldLevel !== undefined ? String(b.worldLevel) : "-", { neutral:true }));
+    rows.push(buildDiffRow("Crucible", a.crucible !== undefined ? String(a.crucible) : "-", b.crucible !== undefined ? String(b.crucible) : "-", { neutral:true }));
+
+    PIECE_ORDER.forEach(function(key){
+      var pa = a.pieces && a.pieces[key];
+      var pb = b.pieces && b.pieces[key];
+      if(!pa && !pb) return;
+      rows.push('<div class="diff-piece-heading">' + PIECE_LABEL[key] + '</div>');
+      STAT_ORDER.forEach(function(stat){
+        var rangeA = pa && pa.stats && pa.stats[stat];
+        var rangeB = pb && pb.stats && pb.stats[stat];
+        if(!rangeA && !rangeB) return;
+        var rawA = rangeA ? rangeA.min + (rangeA.min === rangeA.max ? "" : " to " + rangeA.max) : "-";
+        var rawB = rangeB ? rangeB.min + (rangeB.min === rangeB.max ? "" : " to " + rangeB.max) : "-";
+        var row = buildDiffRow(STAT_LABEL[stat], rawA, rawB, { suffix: PCT_STATS[stat] ? "%" : "" });
+        if(row) rows.push(row);
+      });
+    });
+
+    resultEl.innerHTML = header + rows.join("");
+  }
+
+  document.getElementById("artifactDiffSwapBtn").addEventListener("click", function(){
+    if(artifactDiffSelectedIdx.A === null && artifactDiffSelectedIdx.B === null) return;
+    var tmp = artifactDiffSelectedIdx.A;
+    artifactDiffSelectedIdx.A = artifactDiffSelectedIdx.B;
+    artifactDiffSelectedIdx.B = tmp;
+    artifactDiffPickerA.refresh();
+    artifactDiffPickerB.refresh();
+    renderArtifactDiff();
+    renderArtifactCardDiffStates();
+    saveArtifactDiffSelection();
+  });
+
+  document.getElementById("artifactDiffClearAllBtn").addEventListener("click", function(){
+    if(artifactDiffSelectedIdx.A === null && artifactDiffSelectedIdx.B === null) return;
+    var prevA = artifactDiffSelectedIdx.A;
+    var prevB = artifactDiffSelectedIdx.B;
+
+    artifactDiffPickerA.clearSelection({ silent:true });
+    artifactDiffPickerB.clearSelection({ silent:true });
+    renderArtifactDiff();
+    renderArtifactCardDiffStates();
+    saveArtifactDiffSelection();
+
+    showUndoToast("Artifact diff selection cleared", function(){
+      artifactDiffSelectedIdx.A = prevA;
+      artifactDiffSelectedIdx.B = prevB;
+      artifactDiffPickerA.refresh();
+      artifactDiffPickerB.refresh();
+      renderArtifactDiff();
+      renderArtifactCardDiffStates();
+      saveArtifactDiffSelection();
+    });
+  });
+
+  function switchView(view){
+    if(view === currentView) return;
+    scrollPositions[currentView] = window.scrollY;
+
+    ALL_VIEWS.forEach(function(v){
+      var section = document.getElementById("view-" + v);
+      if(section) section.hidden = (v !== view);
+      var btn = document.getElementById(VIEW_NAV_BTN[v]);
+      if(btn) btn.classList.toggle("is-active", v === view);
+    });
+
+    currentView = view;
+
+    requestAnimationFrame(function(){
+      window.scrollTo(0, scrollPositions[view] || 0);
+    });
+  }
+  document.getElementById("navFinderBtn").addEventListener("click", function(){ switchView("finder"); });
+  document.getElementById("navCompareBtn").addEventListener("click", function(){ switchView("compare"); });
+  document.getElementById("navDiffBtn").addEventListener("click", function(){ switchView("diff"); });
+  document.getElementById("navArtifactFinderBtn").addEventListener("click", function(){ switchView("artifact-finder"); });
+  document.getElementById("navArtifactCompareBtn").addEventListener("click", function(){ switchView("artifact-compare"); });
+  document.getElementById("navArtifactDiffBtn").addEventListener("click", function(){ switchView("artifact-diff"); });
+
+  // ---------- Category switch (Weapons / Artifacts) ----------
+  var CATEGORY_DEFAULT_VIEW = { weapons: "finder", artifacts: "artifact-finder" };
+  document.getElementById("categorySwitch").addEventListener("click", function(e){
+    var btn = e.target.closest(".category-btn");
+    if(!btn) return;
+    var category = btn.dataset.category;
+    if(btn.classList.contains("is-active")) return;
+
+    document.getElementById("categoryWeaponsBtn").classList.toggle("is-active", category === "weapons");
+    document.getElementById("categoryArtifactsBtn").classList.toggle("is-active", category === "artifacts");
+    document.getElementById("navGroupWeapons").hidden = category !== "weapons";
+    document.getElementById("navGroupArtifacts").hidden = category !== "artifacts";
+
+    var target = CATEGORY_DEFAULT_VIEW[category];
+    var prevSection = document.getElementById("view-" + currentView);
+    if(prevSection) prevSection.hidden = true;
+    currentView = null; // force switchView to run even if returning to the same view id later
+    switchView(target);
+  });
+</script>
+</body>
+</html>
