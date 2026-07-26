@@ -136,5 +136,109 @@
         }
       }
     }
+  },
+  {
+    "setName": "Berserker",
+    "worldLevel": 2,
+    "crucible": 50,
+    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "setBonus2pc": "-12 HP, +4 ATK, +5% CR",
+    "setBonus4pc": "-30 HP, +6 ATK, +10% CR, +10% CV",
+    "pieces": {
+      "flower": {
+        "name": "Berserker's Rose",
+        "icon": "Berserker_Flower.png",
+        "stats": {
+          "HP": { "min": -8, "max": -4 },
+          "ATK": { "min": 3, "max": 6 },
+          "CR": { "min": 2, "max": 5 }
+        }
+      },
+      "plume": {
+        "name": "Berserker's Indigo Feather",
+        "icon": "Berserker_Plume.webp",
+        "stats": {
+          "HP": { "min": -6, "max": -3 },
+          "ATK": { "min": 4, "max": 7 },
+          "CV": { "min": 3, "max": 6 }
+        }
+      },
+      "sands": {
+        "name": "Berserker's Timepiece",
+        "icon": "Berserker_Sands.webp",
+        "stats": {
+          "ATK": { "min": 3, "max": 5 },
+          "CR": { "min": 4, "max": 7 }
+        }
+      },
+      "goblet": {
+        "name": "Berserker's Bone Goblet",
+        "icon": "Berserker_Goblet.webp",
+        "stats": {
+          "HP": { "min": -10, "max": -5 },
+          "ATK": { "min": 4, "max": 8 },
+          "CV": { "min": 4, "max": 8 }
+        }
+      },
+      "circlet": {
+        "name": "Berserker's Battle Mask",
+        "icon": "Berserker_Circlet.webp",
+        "stats": {
+          "HP": { "min": -12, "max": -6 },
+          "ATK": { "min": 2, "max": 5 },
+          "CR": { "min": 5, "max": 8 }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Instructor",
+    "worldLevel": 2,
+    "crucible": 50,
+    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "setBonus2pc": "+8% DR, +8 DV",
+    "setBonus4pc": "+20 HP, +15% DR, +30 DV",
+    "pieces": {
+      "flower": {
+        "name": "Instructor's Brooch",
+        "icon": "Instructor_Flower.webp",
+        "stats": {
+          "HP": { "min": 2, "max": 6 },
+          "DR": { "min": 3, "max": 8 }
+        }
+      },
+      "plume": {
+        "name": "Instructor's Feather Accessory",
+        "icon": "Instructor_Plume.webp",
+        "stats": {
+          "DR": { "min": 3, "max": 6 },
+          "DV": { "min": 4, "max": 8 }
+        }
+      },
+      "sands": {
+        "name": "Instructor's Pocket Watch",
+        "icon": "Instructor_Sands.webp",
+        "stats": {
+          "DR": { "min": 2, "max": 5 },
+          "DV": { "min": 4, "max": 10 }
+        }
+      },
+      "goblet": {
+        "name": "Instructor's Tea Cup",
+        "icon": "Instructor_Goblet.webp",
+        "stats": {
+          "HP": { "min": 5, "max": 12 },
+          "DV": { "min": 4, "max": 8 }
+        }
+      },
+      "circlet": {
+        "name": "Instructor's Cap",
+        "icon": "Instructor_Circlet.webp",
+        "stats": {
+          "HP": { "min": 3, "max": 8 },
+          "DR": { "min": 3, "max": 8 }
+        }
+      }
+    }
   }
 ]
