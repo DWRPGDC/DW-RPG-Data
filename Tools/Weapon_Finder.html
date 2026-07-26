@@ -903,6 +903,47 @@
     cursor:pointer;
   }
   .clear-all-btn:hover{ color:#ffffff; background:#c0392b; border-color:#c0392b; }
+
+  .undo-toast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%) translateY(0);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:var(--ink);
+    color:var(--bg);
+    border-radius:8px;
+    padding:10px 12px 10px 16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    z-index:200;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .undo-toast.is-visible{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateX(-50%) translateY(-4px);
+  }
+  .undo-toast-btn{
+    flex:0 0 auto;
+    background:transparent;
+    border:1px solid var(--bg);
+    border-radius:6px;
+    color:var(--bg);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    padding:5px 10px;
+    cursor:pointer;
+  }
+  .undo-toast-btn:hover{ background:var(--bg); color:var(--ink); }
+
   .diff-actions{
     display:flex;
     justify-content:flex-end;
@@ -918,7 +959,7 @@
   <div class="wrap">
     <header class="hero">
       <h1>Weapon Finder</h1>
-      <p>Search and compare every weapon in Dawn Winery RPG.</p>
+      <p>Search and compare every weapon in Dawn Winery.</p>
       <div class="top-bar-actions">
         <button class="help-btn" id="helpBtn" title="How to use" aria-label="How to use">❓</button>
         <div class="help-panel" id="helpPanel">
@@ -1077,6 +1118,11 @@
     <div class="modal" id="modalContent"></div>
   </div>
 
+  <div class="undo-toast" id="undoToast" hidden>
+    <span class="undo-toast-msg" id="undoToastMsg"></span>
+    <button type="button" class="undo-toast-btn" id="undoToastBtn">Undo</button>
+  </div>
+
 <script>
   var ICON_BASE = "../Textures/Weapons/";
   var DATA_URL  = "../JSON/Weapons.json";
@@ -1094,6 +1140,39 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
+  }
+
+  /* ---------- Undo toast ---------- */
+  var undoToastTimer = null;
+  var undoToastHandler = null;
+
+  function showUndoToast(message, onUndo){
+    var toast = document.getElementById("undoToast");
+    var msgEl = document.getElementById("undoToastMsg");
+    var btn = document.getElementById("undoToastBtn");
+
+    clearTimeout(undoToastTimer);
+    if(undoToastHandler) btn.removeEventListener("click", undoToastHandler);
+
+    msgEl.textContent = message;
+    toast.hidden = false;
+    // Force reflow so the fade-in transition actually plays.
+    toast.getBoundingClientRect();
+    toast.classList.add("is-visible");
+
+    function hide(){
+      toast.classList.remove("is-visible");
+      setTimeout(function(){ toast.hidden = true; }, 200);
+    }
+
+    undoToastHandler = function(){
+      clearTimeout(undoToastTimer);
+      hide();
+      onUndo();
+    };
+    btn.addEventListener("click", undoToastHandler);
+
+    undoToastTimer = setTimeout(hide, 5000);
   }
 
   /* ---------- Persistence ---------- */
@@ -1530,16 +1609,23 @@
       if(!old) return;
       var newRect = card.getBoundingClientRect();
       var dx = old.left - newRect.left;
-      if(Math.abs(dx) < 1) return;
+      var dy = old.top - newRect.top;
+      if(Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+      // Scale duration by distance moved: tiny swaps used to be covered almost
+      // instantly by the front-loaded easing curve and read as a snap rather
+      // than a slide, so short moves get a shorter but still-visible duration.
+      var dist = Math.max(Math.abs(dx), Math.abs(dy));
+      var duration = Math.min(320, Math.max(160, dist * 1.1));
 
       card.style.transition = "none";
-      card.style.transform = "translateX(" + dx + "px)";
+      card.style.transform = "translate(" + dx + "px, " + dy + "px)";
       // Force reflow so the browser registers the starting position
       // before we transition to the resting position.
       card.getBoundingClientRect();
 
       requestAnimationFrame(function(){
-        card.style.transition = "transform .25s ease";
+        card.style.transition = "transform " + duration + "ms cubic-bezier(.33,.1,.2,1)";
         card.style.transform = "";
       });
       card.addEventListener("transitionend", function handler(){
@@ -1742,7 +1828,11 @@
       cfg.suggestionsEl.classList.add("is-open");
     }
 
-    cfg.input.addEventListener("input", renderSuggestions);
+    var suggestDebounceTimer = null;
+    cfg.input.addEventListener("input", function(){
+      clearTimeout(suggestDebounceTimer);
+      suggestDebounceTimer = setTimeout(renderSuggestions, 120);
+    });
     cfg.input.addEventListener("focus", function(){
       if(cfg.input.disabled) return;
       renderSuggestions();
@@ -2107,15 +2197,48 @@
 
   document.getElementById("compareClearAllBtn").addEventListener("click", function(){
     if(!compareList.length) return;
+    var prevList = compareList.slice();
+    var prevSortKey = compareSortKey;
+    var prevSortDesc = compareSortDesc;
+
     compareList = [];
     updateCompareBadge();
     renderCompare();
     renderCardCompareStates();
+    saveCompareSelection();
+
+    showUndoToast("Compare list cleared", function(){
+      compareList = prevList;
+      compareSortKey = prevSortKey;
+      compareSortDesc = prevSortDesc;
+      var sortSelect = document.getElementById("compareSortSelect");
+      if(sortSelect) sortSelect.value = prevSortKey;
+      if(compareSortDropdown) compareSortDropdown.sync();
+      var sortDirBtn = document.getElementById("compareSortDirBtn");
+      if(sortDirBtn) sortDirBtn.disabled = (prevSortKey === "manual");
+      updateCompareBadge();
+      renderCompare();
+      renderCardCompareStates();
+      saveCompareSelection();
+    });
   });
 
   document.getElementById("diffClearAllBtn").addEventListener("click", function(){
+    if(diffSelectedIdx.A === null && diffSelectedIdx.B === null) return;
+    var prevA = diffSelectedIdx.A;
+    var prevB = diffSelectedIdx.B;
+
     diffPickerA.clearSelection({ silent:true });
     diffPickerB.clearSelection({ silent:true });
+
+    showUndoToast("Diff selection cleared", function(){
+      diffSelectedIdx.A = prevA;
+      diffSelectedIdx.B = prevB;
+      diffPickerA.refresh();
+      diffPickerB.refresh();
+      renderDiff();
+      saveDiffSelection();
+    });
   });
 
   function renderDiff(){
