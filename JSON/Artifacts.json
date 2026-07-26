@@ -1,0 +1,140 @@
+[
+  {
+    "setName": "Adventurer",
+    "worldLevel": 1,
+    "crucible": 20,
+    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "setBonus2pc": "+10 HP",
+    "setBonus4pc": "+20 HP",
+    "pieces": {
+      "flower": {
+        "name": "Flower of Life",
+        "icon": "Adventurer_Flower.webp",
+        "stats": {
+          "HP": { "min": 1, "max": 2 },
+          "ATK": { "min": 1, "max": 5 }
+        }
+      },
+      "plume": {
+        "name": "Adventurer's Tail Feather",
+        "icon": "Adventurer_Plume.webp",
+        "stats": {
+          "ATK": { "min": 3, "max": 4 }
+        }
+      },
+      "sands": {
+        "name": "Adventurer's Pocket Watch",
+        "icon": "Adventurer_Sands.webp",
+        "stats": {
+          "ATK": { "min": 1, "max": 3 }
+        }
+      },
+      "goblet": {
+        "name": "Adventurer's Golden Goblet",
+        "icon": "Adventurer_Goblet.webp",
+        "stats": {
+          "CV": { "min": 3, "max": 5 }
+        }
+      },
+      "circlet": {
+        "name": "Adventurer's Bandana",
+        "icon": "Adventurer_Circlet.webp",
+        "stats": {
+          "CR": { "min": 1, "max": 5 }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Traveling Doctor",
+    "worldLevel": 1,
+    "crucible": 20,
+    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "setBonus2pc": "+5 ATK",
+    "setBonus4pc": "+10 ATK",
+    "pieces": {
+      "flower": {
+        "name": "Traveling Doctor's Silver Lotus",
+        "icon": "Travdoc_Flower.png",
+        "stats": {
+          "HP": { "min": 6, "max": 15 },
+          "ATK": { "min": 1, "max": 2 }
+        }
+      },
+      "plume": {
+        "name": "Traveling Doctor's Owl Feather",
+        "icon": "Travdoc_Plume.webp",
+        "stats": {
+          "HP": { "min": 3, "max": 12 }
+        }
+      },
+      "sands": {
+        "name": "Traveling Doctor's Pocket Watch",
+        "icon": "Travdoc_Sands.webp",
+        "stats": {
+          "HP": { "min": 6, "max": 15 }
+        }
+      },
+      "goblet": {
+        "name": "Traveling Doctor's Medicine Pot",
+        "icon": "Travdoc_Goblet.webp",
+        "stats": {
+          "HP": { "min": 9, "max": 12 }
+        }
+      },
+      "circlet": {
+        "name": "Traveling Doctor's Handkerchief",
+        "icon": "Travdoc_Circlet.webp",
+        "stats": {
+          "HP": { "min": 3, "max": 9 }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Lucky Dog",
+    "worldLevel": 1,
+    "crucible": 20,
+    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "setBonus2pc": "+3% CR",
+    "setBonus4pc": "+6% CR, +6% CV",
+    "pieces": {
+      "flower": {
+        "name": "Lucky Dog's Clover",
+        "icon": "LuckyDog_Flower.png",
+        "stats": {
+          "CR": { "min": 1, "max": 3 },
+          "CV": { "min": 2, "max": 4 }
+        }
+      },
+      "plume": {
+        "name": "Lucky Dog's Eagle Feather",
+        "icon": "LuckyDog_Plume.webp",
+        "stats": {
+          "CR": { "min": 3, "max": 5 }
+        }
+      },
+      "sands": {
+        "name": "Lucky Dog's Hourglass",
+        "icon": "LuckyDog_Sands.webp",
+        "stats": {
+          "CV": { "min": 1, "max": 5 }
+        }
+      },
+      "goblet": {
+        "name": "Lucky Dog's Goblet",
+        "icon": "LuckyDog_Goblet.webp",
+        "stats": {
+          "CV": { "min": 3, "max": 4 }
+        }
+      },
+      "circlet": {
+        "name": "Lucky Dog's Silver Circlet",
+        "icon": "LuckyDog_Circlet.webp",
+        "stats": {
+          "CR": { "min": 1, "max": 2 }
+        }
+      }
+    }
+  }
+]
