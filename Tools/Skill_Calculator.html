@@ -46,7 +46,7 @@
   body.theme-dark .pip.is-filled,
   body.theme-dark .btn-primary{ color:#000000; }
 
-  *{ box-sizing:border-box; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
   html,body{
     margin:0; padding:0;
@@ -909,6 +909,46 @@
     .toast{ left:12px; right:12px; transform:translateY(-12px); width:auto; }
     .toast.is-visible{ transform:translateY(0); }
   }
+
+  /* ---------- Confirm modal ---------- */
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.5);
+    z-index:100;
+    align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .modal-overlay.is-open{ display:flex; }
+  .modal{
+    background:var(--panel);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius);
+    max-width:420px;
+    width:100%;
+    max-height:88vh;
+    overflow-y:auto;
+    padding:22px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.18);
+  }
+  .modal-title{
+    font-family:'Cinzel', serif;
+    font-size:17px;
+    font-weight:600;
+    margin-bottom:12px;
+  }
+  .modal-body{
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--ink-dim);
+    white-space:pre-line;
+  }
+  .modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:20px;
+  }
 </style>
 </head>
 <body>
@@ -919,6 +959,17 @@
   <button class="toast-close" id="toastCloseBtn" aria-label="Dismiss">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
+</div>
+
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal">
+    <div class="modal-title" id="confirmTitle">Are you sure?</div>
+    <div class="modal-body" id="confirmBody"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="confirmCancelBtn">Cancel</button>
+      <button type="button" class="btn btn-primary" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
 </div>
 
 <div class="floating-nav" id="floatingNav">
@@ -1216,6 +1267,44 @@
   var craftDetailedBreakdown = false; // sub-setting: show every contributing tier instead of just the one below
   var craftGroups = {};        // group key -> { tierNumber: itemId }, built once data loads
 
+  // ---------- Confirm modal (replaces native confirm()) ----------
+  var confirmOverlay = document.getElementById("confirmOverlay");
+  var confirmTitleEl = document.getElementById("confirmTitle");
+  var confirmBodyEl  = document.getElementById("confirmBody");
+  var confirmOkBtn   = document.getElementById("confirmOkBtn");
+  var confirmCancelBtn = document.getElementById("confirmCancelBtn");
+  var confirmActiveHandler = null;
+
+  function showConfirmModal(message, onConfirm, opts){
+    opts = opts || {};
+    confirmTitleEl.textContent = opts.title || "Are you sure?";
+    confirmBodyEl.textContent = message;
+    confirmOkBtn.textContent = opts.confirmLabel || "Confirm";
+
+    if(confirmActiveHandler){
+      confirmOkBtn.removeEventListener("click", confirmActiveHandler);
+    }
+    confirmActiveHandler = function(){
+      hideConfirmModal();
+      onConfirm();
+    };
+    confirmOkBtn.addEventListener("click", confirmActiveHandler);
+
+    confirmOverlay.classList.add("is-open");
+  }
+
+  function hideConfirmModal(){
+    confirmOverlay.classList.remove("is-open");
+  }
+
+  confirmCancelBtn.addEventListener("click", hideConfirmModal);
+  confirmOverlay.addEventListener("click", function(e){
+    if(e.target === confirmOverlay) hideConfirmModal();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && confirmOverlay.classList.contains("is-open")) hideConfirmModal();
+  });
+
   // ---------- Persistence (localStorage) ----------
   var LS_INVENTORY = "skillLedger_inventory";
   var LS_LEARNED   = "skillLedger_learned";
@@ -1337,19 +1426,20 @@
       var hasGrindItems = Object.keys(favorites).some(function(k){ return favorites[k]; });
       var msg = "Clear your saved inventory and learned skills? This can't be undone."
         + (hasGrindItems ? " Your starred Grind List will NOT be cleared." : "");
-      if(!confirm(msg)) return;
-      try{
-        window.localStorage.removeItem(LS_INVENTORY);
-        window.localStorage.removeItem(LS_LEARNED);
-      }catch(e){}
-      inventory = {};
-      Object.keys(learned).forEach(function(id){ learned[id] = 0; });
-      renderItemList();
-      renderSkillTree();
-      updateSummaryBar();
-      markResultsStale();
-      if(typeof renderGrindList === "function") renderGrindList();
-      goToStage(1);
+      showConfirmModal(msg, function(){
+        try{
+          window.localStorage.removeItem(LS_INVENTORY);
+          window.localStorage.removeItem(LS_LEARNED);
+        }catch(e){}
+        inventory = {};
+        Object.keys(learned).forEach(function(id){ learned[id] = 0; });
+        renderItemList();
+        renderSkillTree();
+        updateSummaryBar();
+        markResultsStale();
+        if(typeof renderGrindList === "function") renderGrindList();
+        goToStage(1);
+      }, { title:"Clear saved data?", confirmLabel:"Clear data" });
     });
 
     // Lets progress move between devices/browsers, since everything otherwise
@@ -1403,22 +1493,23 @@
           alert("That file doesn't look like a Skill Ledger export.");
           return;
         }
-        if(!confirm("Import this file? It will overwrite your current inventory and learned skills.")) return;
-        inventory = data.inventory || {};
-        learned = data.learned || {};
-        // Clamp/repair against the currently-loaded skill data, same as loadProgress().
-        Object.keys(skillsData).forEach(function(id){ if(!(id in learned)) learned[id] = 0; });
-        Object.keys(learned).forEach(function(id){
-          if(!skillsData[id]){ delete learned[id]; return; }
-          var max = skillsData[id].levels.length;
-          if(learned[id] > max) learned[id] = max;
-        });
-        saveProgress();
-        renderItemList();
-        renderSkillTree();
-        updateSummaryBar();
-        markResultsStale();
-        goToStage(1);
+        showConfirmModal("Import this file? It will overwrite your current inventory and learned skills.", function(){
+          inventory = data.inventory || {};
+          learned = data.learned || {};
+          // Clamp/repair against the currently-loaded skill data, same as loadProgress().
+          Object.keys(skillsData).forEach(function(id){ if(!(id in learned)) learned[id] = 0; });
+          Object.keys(learned).forEach(function(id){
+            if(!skillsData[id]){ delete learned[id]; return; }
+            var max = skillsData[id].levels.length;
+            if(learned[id] > max) learned[id] = max;
+          });
+          saveProgress();
+          renderItemList();
+          renderSkillTree();
+          updateSummaryBar();
+          markResultsStale();
+          goToStage(1);
+        }, { title:"Import file?", confirmLabel:"Import" });
       };
       reader.readAsText(file);
     });
@@ -2242,12 +2333,13 @@
   // Resets only the inventory counts (keeps learned skills), separate from
   // the full "Clear saved data" wipe in Settings.
   document.getElementById("clearQtyBtn").addEventListener("click", function(){
-    if(!confirm("Clear all entered quantities? Learned skills won't be affected.")) return;
-    inventory = {};
-    renderItemList();
-    saveProgress();
-    updateSummaryBar();
-    markResultsStale();
+    showConfirmModal("Clear all entered quantities? Learned skills won't be affected.", function(){
+      inventory = {};
+      renderItemList();
+      saveProgress();
+      updateSummaryBar();
+      markResultsStale();
+    }, { title:"Clear quantities?", confirmLabel:"Clear" });
   });
 
   // ---------- Bulk paste inventory ----------
@@ -3176,14 +3268,14 @@
         try{ mats = JSON.parse(btn.dataset.materials); }catch(e){ mats = []; }
 
         var matLines = mats.map(function(m){ return "\u2022 " + m.name + " \u00d7 " + m.qty; }).join("\n");
-        var confirmMsg = "Learn " + name + " Lv " + level + "?" +
-          (matLines ? "\n\nThis will consume:\n" + matLines : "");
-        if(!confirm(confirmMsg)) return;
+        var confirmMsg = matLines ? "This will consume:\n" + matLines : "";
 
-        btn.disabled = true;
-        btn.classList.add("is-done");
-        btn.textContent = "\u2713 Learned";
-        setTimeout(function(){ learnSkill(skillId); }, 180);
+        showConfirmModal(confirmMsg, function(){
+          btn.disabled = true;
+          btn.classList.add("is-done");
+          btn.textContent = "\u2713 Learned";
+          setTimeout(function(){ learnSkill(skillId); }, 180);
+        }, { title:"Learn " + name + " Lv " + level + "?", confirmLabel:"Learn" });
       });
     });
 
