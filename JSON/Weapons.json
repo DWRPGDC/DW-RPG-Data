@@ -552,5 +552,21 @@
     "defValue": "-",
     "type": "Sword",
     "icon": "Weapon_The_Alley_Flash.webp"
+  },
+  {
+    "name": "Blackcliff Slasher",
+    "worldLevel": 4,
+    "crucible": 100,
+    "weight": 4,
+    "hp": "-",
+    "atkType": "minMax",
+    "atkRollMin": "40",
+    "atkRollMax": "80",
+    "critRate": "-",
+    "critValue": "-",
+    "defRate": "-",
+    "defValue": "-",
+    "type": "Claymore",
+    "icon": "Weapon_Blackcliff_Slasher.webp"
   }
 ]
