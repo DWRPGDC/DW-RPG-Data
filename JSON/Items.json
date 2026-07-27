@@ -363,17 +363,17 @@
     "icon": "Item Crimson Agate.webp",
     "category": "misc"
   },
-  "Butter": {
+  "butter": {
     "name": "Butter",
     "icon": "Item Butter.webp",
     "category": "misc"
   },
-  "Pepper": {
+  "pepper": {
     "name": "Pepper",
     "icon": "Item Pepper.webp",
     "category": "misc"
   },
-  "Sugar": {
+  "sugar": {
     "name": "Sugar",
     "icon": "Item Sugar.webp",
     "category": "misc"
