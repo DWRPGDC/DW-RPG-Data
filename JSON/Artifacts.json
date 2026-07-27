@@ -240,5 +240,163 @@
         }
       }
     }
+  },
+  {
+    "setName": "The Exile",
+    "worldLevel": 3,
+    "crucible": 75,
+    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "setBonus2pc": "+5 ATK, +5% CR, -8 DV",
+    "setBonus4pc": "+8 ATK, +7% CR, +10% CV, -5% DR, -18 DV",
+    "pieces": {
+      "flower": {
+        "name": "Exile's Flower",
+        "icon": "Exile_Flower.png",
+        "stats": {
+          "ATK": { "min": 4, "max": 7 },
+          "CR": { "min": 3, "max": 5 },
+          "DV": { "min": -6, "max": -3 }
+        }
+      },
+      "plume": {
+        "name": "Exile's Feather",
+        "icon": "Exile_Plume.webp",
+        "stats": {
+          "ATK": { "min": 4, "max": 8 },
+          "CV": { "min": 4, "max": 7 },
+          "DV": { "min": -5, "max": -2 }
+        }
+      },
+      "sands": {
+        "name": "Exile's Pocket Watch",
+        "icon": "Exile_Sands.webp",
+        "stats": {
+          "ATK": { "min": 3, "max": 6 },
+          "CR": { "min": 4, "max": 8 }
+        }
+      },
+      "goblet": {
+        "name": "Exile's Goblet",
+        "icon": "Exile_Goblet.webp",
+        "stats": {
+          "ATK": { "min": 4, "max": 9 },
+          "CV": { "min": 4, "max": 9 },
+          "DR": { "min": -5, "max": -2 }
+        }
+      },
+      "circlet": {
+        "name": "Exile's Circlet",
+        "icon": "Exile_Circlet.webp",
+        "stats": {
+          "ATK": { "min": 3, "max": 5 },
+          "CR": { "min": 5, "max": 9 },
+          "DV": { "min": -8, "max": -4 }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Martial Artist",
+    "worldLevel": 3,
+    "crucible": 75,
+    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "setBonus2pc": "-15 HP, +12% CR, +10% CV",
+    "setBonus4pc": "-40 HP, +6 ATK, +18% CR, +28% CV",
+    "pieces": {
+      "flower": {
+        "name": "Martial Artist's Red Flower",
+        "icon": "MartArt_Flower.png",
+        "stats": {
+          "HP": { "min": -12, "max": -6 },
+          "ATK": { "min": 2, "max": 4 },
+          "CR": { "min": 7, "max": 12 },
+          "CV": { "min": 5, "max": 10 }
+        }
+      },
+      "plume": {
+        "name": "Martial Artist's Feather",
+        "icon": "MartArt_Plume.webp",
+        "stats": {
+          "HP": { "min": -18, "max": -10 },
+          "CV": { "min": 12, "max": 18 }
+        }
+      },
+      "sands": {
+        "name": "Martial Artist's Water Hourglass",
+        "icon": "MartArt_Sands.webp",
+        "stats": {
+          "HP": { "min": -10, "max": -4 },
+          "CR": { "min": 6, "max": 10 },
+          "CV": { "min": 8, "max": 14 }
+        }
+      },
+      "goblet": {
+        "name": "Martial Artist's Wine Cup",
+        "icon": "MartArt_Goblet.webp",
+        "stats": {
+          "HP": { "min": -22, "max": -14 },
+          "ATK": { "min": 2, "max": 5 },
+          "CV": { "min": 14, "max": 20 }
+        }
+      },
+      "circlet": {
+        "name": "Martial Artist's Bandana",
+        "icon": "MartArt_Circlet.webp",
+        "stats": {
+          "HP": { "min": -16, "max": -8 },
+          "CR": { "min": 10, "max": 16 }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Wanderer's Troupe",
+    "worldLevel": 3,
+    "crucible": 100,
+    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "setBonus2pc": "+25 HP",
+    "setBonus4pc": "+50 HP, +10% CR, +12% CV",
+    "pieces": {
+      "flower": {
+        "name": "Troupe's Dawnlight",
+        "icon": "WT_Flower.webp",
+        "stats": {
+          "HP": { "min": 30, "max": 42 },
+          "CR": { "min": 3, "max": 6 }
+        }
+      },
+      "plume": {
+        "name": "Bard's Arrow Feather",
+        "icon": "WT_Plume.webp",
+        "stats": {
+          "HP": { "min": 26, "max": 38 },
+          "ATK": { "min": 3, "max": 6 }
+        }
+      },
+      "sands": {
+        "name": "Concert's Final Hour",
+        "icon": "WT_Sands.webp",
+        "stats": {
+          "HP": { "min": 28, "max": 40 },
+          "CV": { "min": 6, "max": 12 }
+        }
+      },
+      "goblet": {
+        "name": "Wanderer's String-Kettle",
+        "icon": "WT_Goblet.webp",
+        "stats": {
+          "HP": { "min": 30, "max": 44 },
+          "CV": { "min": 8, "max": 14 }
+        }
+      },
+      "circlet": {
+        "name": "Conductor's Top Hat",
+        "icon": "WT_Circlet.webp",
+        "stats": {
+          "HP": { "min": 24, "max": 36 },
+          "CR": { "min": 8, "max": 14 }
+        }
+      }
+    }
   }
 ]
