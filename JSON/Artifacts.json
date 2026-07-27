@@ -870,5 +870,677 @@
         }
       }
     }
+  },
+  {
+    "setName": "Gladiator's Finale",
+    "worldLevel": 3,
+    "crucible": 100,
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
+    "setBonus2pc": "+8 ATK",
+    "setBonus2pcStats": [
+      {
+        "stat": "ATK",
+        "value": 8
+      }
+    ],
+    "setBonus4pc": "+12 ATK, +10% CR, +12% CV",
+    "setBonus4pcStats": [
+      {
+        "stat": "ATK",
+        "value": 12
+      },
+      {
+        "stat": "CR",
+        "value": 10
+      },
+      {
+        "stat": "CV",
+        "value": 12
+      }
+    ],
+    "pieces": {
+      "flower": {
+        "name": "Gladiator's Nostalgia",
+        "icon": "Gladiator_Flower.webp",
+        "stats": {
+          "ATK": {
+            "min": 8,
+            "max": 14
+          },
+          "CR": {
+            "min": 3,
+            "max": 6
+          }
+        }
+      },
+      "plume": {
+        "name": "Gladiator's Destiny",
+        "icon": "Gladiator_Plume.webp",
+        "stats": {
+          "ATK": {
+            "min": 10,
+            "max": 16
+          },
+          "CV": {
+            "min": 6,
+            "max": 10
+          }
+        }
+      },
+      "sands": {
+        "name": "Gladiator's Longing",
+        "icon": "Gladiator_Sands.webp",
+        "stats": {
+          "ATK": {
+            "min": 6,
+            "max": 12
+          },
+          "CR": {
+            "min": 6,
+            "max": 10
+          }
+        }
+      },
+      "goblet": {
+        "name": "Gladiator's Intoxication",
+        "icon": "Gladiator_Goblet.webp",
+        "stats": {
+          "ATK": {
+            "min": 12,
+            "max": 18
+          },
+          "CV": {
+            "min": 8,
+            "max": 14
+          }
+        }
+      },
+      "circlet": {
+        "name": "Gladiator's Triumphus",
+        "icon": "Gladiator_Circlet.webp",
+        "stats": {
+          "ATK": {
+            "min": 6,
+            "max": 10
+          },
+          "CR": {
+            "min": 10,
+            "max": 16
+          }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Noblesse Oblige",
+    "worldLevel": 4,
+    "crucible": 100,
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
+    "setBonus2pc": "+6 ATK, +10 DV",
+    "setBonus2pcStats": [
+      {
+        "stat": "ATK",
+        "value": 6
+      },
+      {
+        "stat": "DV",
+        "value": 10
+      }
+    ],
+    "setBonus4pc": "+9 ATK, +4% DR, +18 DV",
+    "setBonus4pcStats": [
+      {
+        "stat": "ATK",
+        "value": 9
+      },
+      {
+        "stat": "DR",
+        "value": 4
+      },
+      {
+        "stat": "DV",
+        "value": 18
+      }
+    ],
+    "pieces": {
+      "flower": {
+        "name": "Royal Flora",
+        "icon": "Noblesse_Flower.webp",
+        "stats": {
+          "ATK": {
+            "min": 8,
+            "max": 14
+          },
+          "DV": {
+            "min": 8,
+            "max": 14
+          }
+        }
+      },
+      "plume": {
+        "name": "Royal Plume",
+        "icon": "Noblesse_Plume.webp",
+        "stats": {
+          "ATK": {
+            "min": 12,
+            "max": 18
+          },
+          "DV": {
+            "min": 5,
+            "max": 10
+          }
+        }
+      },
+      "sands": {
+        "name": "Royal Pocket Watch",
+        "icon": "Noblesse_Sands.webp",
+        "stats": {
+          "ATK": {
+            "min": 6,
+            "max": 12
+          },
+          "DR": {
+            "min": 3,
+            "max": 6
+          },
+          "DV": {
+            "min": 10,
+            "max": 15
+          }
+        }
+      },
+      "goblet": {
+        "name": "Royal Silver Urn",
+        "icon": "Noblesse_Goblet.webp",
+        "stats": {
+          "ATK": {
+            "min": 10,
+            "max": 16
+          },
+          "DV": {
+            "min": 12,
+            "max": 18
+          }
+        }
+      },
+      "circlet": {
+        "name": "Royal Masque",
+        "icon": "Noblesse_Circlet.webp",
+        "stats": {
+          "ATK": {
+            "min": 6,
+            "max": 12
+          },
+          "DR": {
+            "min": 4,
+            "max": 7
+          },
+          "DV": {
+            "min": 8,
+            "max": 14
+          }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Crimson Witch of Flames",
+    "worldLevel": 4,
+    "crucible": 100,
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
+    "setBonus2pc": "+14% CR, +14% CV",
+    "setBonus2pcStats": [
+      {
+        "stat": "CR",
+        "value": 14
+      },
+      {
+        "stat": "CV",
+        "value": 14
+      }
+    ],
+    "setBonus4pc": "+6 ATK, +22% CR, +32% CV",
+    "setBonus4pcStats": [
+      {
+        "stat": "ATK",
+        "value": 6
+      },
+      {
+        "stat": "CR",
+        "value": 22
+      },
+      {
+        "stat": "CV",
+        "value": 32
+      }
+    ],
+    "pieces": {
+      "flower": {
+        "name": "Witch's Flower of Blaze",
+        "icon": "Witch_Flower.webp",
+        "stats": {
+          "ATK": {
+            "min": 6,
+            "max": 12
+          },
+          "CR": {
+            "min": 6,
+            "max": 10
+          },
+          "CV": {
+            "min": 8,
+            "max": 14
+          }
+        }
+      },
+      "plume": {
+        "name": "Witch's Ever-Burning Plume",
+        "icon": "Witch_Plume.webp",
+        "stats": {
+          "CR": {
+            "min": 10,
+            "max": 16
+          },
+          "CV": {
+            "min": 16,
+            "max": 22
+          }
+        }
+      },
+      "sands": {
+        "name": "Witch's End Time",
+        "icon": "Witch_Sands.webp",
+        "stats": {
+          "ATK": {
+            "min": 4,
+            "max": 8
+          },
+          "CR": {
+            "min": 8,
+            "max": 14
+          },
+          "CV": {
+            "min": 12,
+            "max": 18
+          }
+        }
+      },
+      "goblet": {
+        "name": "Witch's Heart of Flames",
+        "icon": "Witch_Goblet.webp",
+        "stats": {
+          "ATK": {
+            "min": 10,
+            "max": 16
+          },
+          "CR": {
+            "min": 5,
+            "max": 9
+          },
+          "CV": {
+            "min": 12,
+            "max": 18
+          }
+        }
+      },
+      "circlet": {
+        "name": "Witch's Scorching Hat",
+        "icon": "Witch_Circlet.webp",
+        "stats": {
+          "CR": {
+            "min": 12,
+            "max": 18
+          },
+          "CV": {
+            "min": 14,
+            "max": 20
+          }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Bloodstained Chivalry",
+    "worldLevel": 5,
+    "crucible": 125,
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
+    "setBonus2pc": "+28% CV",
+    "setBonus2pcStats": [
+      {
+        "stat": "CV",
+        "value": 28
+      }
+    ],
+    "setBonus4pc": "+60% CV",
+    "setBonus4pcStats": [
+      {
+        "stat": "CV",
+        "value": 60
+      }
+    ],
+    "pieces": {
+      "flower": {
+        "name": "Bloodstained Flower of Iron",
+        "icon": "Bloodstained_Flower.webp",
+        "stats": {
+          "ATK": {
+            "min": 16,
+            "max": 24
+          },
+          "DV": {
+            "min": -14,
+            "max": -8
+          }
+        }
+      },
+      "plume": {
+        "name": "Bloodstained Black Plume",
+        "icon": "Bloodstained_Plume.webp",
+        "stats": {
+          "ATK": {
+            "min": 20,
+            "max": 28
+          },
+          "DR": {
+            "min": -10,
+            "max": -6
+          }
+        }
+      },
+      "sands": {
+        "name": "Bloodstained Final Hour",
+        "icon": "Bloodstained_Sands.webp",
+        "stats": {
+          "ATK": {
+            "min": 14,
+            "max": 22
+          },
+          "DV": {
+            "min": -16,
+            "max": -10
+          }
+        }
+      },
+      "goblet": {
+        "name": "Bloodstained Chevalier's Goblet",
+        "icon": "Bloodstained_Goblet.webp",
+        "stats": {
+          "ATK": {
+            "min": 22,
+            "max": 30
+          },
+          "DR": {
+            "min": -12,
+            "max": -6
+          },
+          "DV": {
+            "min": -12,
+            "max": -6
+          }
+        }
+      },
+      "circlet": {
+        "name": "Bloodstained Iron Mask",
+        "icon": "Bloodstained_Circlet.webp",
+        "stats": {
+          "ATK": {
+            "min": 16,
+            "max": 24
+          },
+          "DR": {
+            "min": -10,
+            "max": -6
+          }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Maiden Beloved",
+    "worldLevel": 5,
+    "crucible": 125,
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
+    "setBonus2pc": "-25 ATK",
+    "setBonus2pcStats": [
+      {
+        "stat": "ATK",
+        "value": -25
+      }
+    ],
+    "setBonus4pc": "-55 ATK",
+    "setBonus4pcStats": [
+      {
+        "stat": "ATK",
+        "value": -55
+      }
+    ],
+    "pieces": {
+      "flower": {
+        "name": "Maiden's Distant Love",
+        "icon": "Maiden_Flower.png",
+        "stats": {
+          "HP": {
+            "min": 185,
+            "max": 225
+          }
+        }
+      },
+      "plume": {
+        "name": "Maiden's Heart-stricken Infatuation",
+        "icon": "Maiden_Plume.webp",
+        "stats": {
+          "HP": {
+            "min": 175,
+            "max": 215
+          }
+        }
+      },
+      "sands": {
+        "name": "Maiden's Passing Youth",
+        "icon": "Maiden_Sands.webp",
+        "stats": {
+          "HP": {
+            "min": 180,
+            "max": 220
+          }
+        }
+      },
+      "goblet": {
+        "name": "Maiden's Fleeting Leisure",
+        "icon": "Maiden_Goblet.webp",
+        "stats": {
+          "HP": {
+            "min": 190,
+            "max": 230
+          }
+        }
+      },
+      "circlet": {
+        "name": "Maiden's Fading Beauty",
+        "icon": "Maiden_Circlet.webp",
+        "stats": {
+          "HP": {
+            "min": 170,
+            "max": 210
+          }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Blizzard Strayer",
+    "worldLevel": 5,
+    "crucible": 125,
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
+    "setBonus2pc": "+35 HP, +8% CR, +10% CV, +12 DV",
+    "setBonus2pcStats": [
+      {
+        "stat": "HP",
+        "value": 35
+      },
+      {
+        "stat": "CR",
+        "value": 8
+      },
+      {
+        "stat": "CV",
+        "value": 10
+      },
+      {
+        "stat": "DV",
+        "value": 12
+      }
+    ],
+    "setBonus4pc": "+70 HP, +14% CR, +18% CV, +12% DR, +38 DV",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": 70
+      },
+      {
+        "stat": "CR",
+        "value": 14
+      },
+      {
+        "stat": "CV",
+        "value": 18
+      },
+      {
+        "stat": "DR",
+        "value": 12
+      },
+      {
+        "stat": "DV",
+        "value": 38
+      }
+    ],
+    "pieces": {
+      "flower": {
+        "name": "Snowswept Memory",
+        "icon": "Blizzard_Flower.webp",
+        "stats": {
+          "HP": {
+            "min": 40,
+            "max": 54
+          },
+          "CR": {
+            "min": 4,
+            "max": 8
+          },
+          "DV": {
+            "min": 6,
+            "max": 12
+          }
+        }
+      },
+      "plume": {
+        "name": "Icebreaker's Resolve",
+        "icon": "Blizzard_Plume.webp",
+        "stats": {
+          "HP": {
+            "min": 34,
+            "max": 48
+          },
+          "DR": {
+            "min": 5,
+            "max": 10
+          },
+          "DV": {
+            "min": 9,
+            "max": 15
+          }
+        }
+      },
+      "sands": {
+        "name": "Frozen Homeland's Demise",
+        "icon": "Blizzard_Sands.webp",
+        "stats": {
+          "HP": {
+            "min": 26,
+            "max": 38
+          },
+          "DR": {
+            "min": 4,
+            "max": 8
+          },
+          "DV": {
+            "min": 15,
+            "max": 23
+          }
+        }
+      },
+      "goblet": {
+        "name": "Frost-Weaved Dignity",
+        "icon": "Blizzard_Goblet.webp",
+        "stats": {
+          "HP": {
+            "min": 38,
+            "max": 52
+          },
+          "CV": {
+            "min": 8,
+            "max": 14
+          },
+          "DV": {
+            "min": 12,
+            "max": 20
+          }
+        }
+      },
+      "circlet": {
+        "name": "Broken Rime's Echo",
+        "icon": "Blizzard_Circlet.webp",
+        "stats": {
+          "HP": {
+            "min": 30,
+            "max": 44
+          },
+          "CR": {
+            "min": 10,
+            "max": 16
+          },
+          "DR": {
+            "min": 5,
+            "max": 9
+          }
+        }
+      }
+    }
   }
 ]
