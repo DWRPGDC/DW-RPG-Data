@@ -907,14 +907,38 @@
 
   .diff-piece-heading{
     font-family:'Cinzel', serif;
-    font-size:12.5px;
-    font-weight:600;
+    font-size:13px;
+    font-weight:800;
     color:var(--ink);
     margin:18px 0 6px;
     padding-bottom:4px;
     border-bottom:1.5px solid var(--line);
   }
   .diff-piece-heading:first-of-type{ margin-top:14px; }
+
+  .diff-section{ margin:0; }
+  .diff-section + .diff-section{ margin-top:4px; }
+  .diff-section summary.diff-piece-heading{
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    user-select:none;
+  }
+  .diff-section summary.diff-piece-heading::-webkit-details-marker{ display:none; }
+  .diff-section summary.diff-piece-heading::after{
+    content:"";
+    width:8px; height:8px;
+    flex:0 0 auto;
+    border-right:1.5px solid var(--ink-dim);
+    border-bottom:1.5px solid var(--ink-dim);
+    transform:rotate(45deg);
+    transition:transform .15s ease;
+    margin-left:8px;
+  }
+  .diff-section[open] summary.diff-piece-heading::after{ transform:rotate(-135deg); }
+  .diff-section-body{ padding-top:2px; }
 
   .diff-row{
     display:grid;
@@ -2475,6 +2499,19 @@
     return specs;
   }
 
+  function bonusStatMap(list){
+    var map = {};
+    (list || []).forEach(function(entry){ map[entry.stat] = entry.value; });
+    return map;
+  }
+
+  function buildDiffTextRow(label, textA, textB){
+    return '<div class="diff-row"><div class="diff-label">' + escapeHtml(label) + '</div>' +
+      '<div class="diff-value">' + escapeHtml(textA || "-") + '</div>' +
+      '<div class="diff-value side-b">' + escapeHtml(textB || "-") + '</div>' +
+    '</div>';
+  }
+
   function buildDiffRow(label, rawA, rawB, opts){
     opts = opts || {};
     var suffix = opts.suffix || "";
@@ -3325,11 +3362,37 @@
     rows.push(buildDiffRow("World Level", a.worldLevel !== undefined ? String(a.worldLevel) : "-", b.worldLevel !== undefined ? String(b.worldLevel) : "-", { neutral:true }));
     rows.push(buildDiffRow("Crucible", a.crucible !== undefined ? String(a.crucible) : "-", b.crucible !== undefined ? String(b.crucible) : "-", { neutral:true }));
 
+    var sections = [];
+
+    [
+      { label: "2pc Bonus", key: "setBonus2pcStats", textKey: "setBonus2pc" },
+      { label: "4pc Bonus", key: "setBonus4pcStats", textKey: "setBonus4pc" }
+    ].forEach(function(group){
+      var listA = a[group.key], listB = b[group.key];
+      var body = [];
+      if(Array.isArray(listA) || Array.isArray(listB)){
+        var mapA = bonusStatMap(listA), mapB = bonusStatMap(listB);
+        var stats = STAT_ORDER.filter(function(stat){
+          return mapA[stat] !== undefined || mapB[stat] !== undefined;
+        });
+        if(!stats.length) return;
+        stats.forEach(function(stat){
+          var rawA = mapA[stat] !== undefined ? String(mapA[stat]) : "-";
+          var rawB = mapB[stat] !== undefined ? String(mapB[stat]) : "-";
+          var row = buildDiffRow(STAT_LABEL[stat], rawA, rawB, { suffix: PCT_STATS[stat] ? "%" : "" });
+          if(row) body.push(row);
+        });
+      } else if(a[group.textKey] || b[group.textKey]){
+        body.push(buildDiffTextRow(group.label, a[group.textKey], b[group.textKey]));
+      }
+      if(body.length) sections.push({ label: group.label, body: body.join("") });
+    });
+
     PIECE_ORDER.forEach(function(key){
       var pa = a.pieces && a.pieces[key];
       var pb = b.pieces && b.pieces[key];
       if(!pa && !pb) return;
-      rows.push('<div class="diff-piece-heading">' + PIECE_LABEL[key] + '</div>');
+      var body = [];
       STAT_ORDER.forEach(function(stat){
         var rangeA = pa && pa.stats && pa.stats[stat];
         var rangeB = pb && pb.stats && pb.stats[stat];
@@ -3337,11 +3400,21 @@
         var rawA = rangeA ? rangeA.min + (rangeA.min === rangeA.max ? "" : " to " + rangeA.max) : "-";
         var rawB = rangeB ? rangeB.min + (rangeB.min === rangeB.max ? "" : " to " + rangeB.max) : "-";
         var row = buildDiffRow(STAT_LABEL[stat], rawA, rawB, { suffix: PCT_STATS[stat] ? "%" : "" });
-        if(row) rows.push(row);
+        if(row) body.push(row);
       });
+      if(body.length) sections.push({ label: PIECE_LABEL[key], body: body.join("") });
     });
 
-    resultEl.innerHTML = header + rows.join("");
+    var sectionsHtml = sections.map(function(sec){
+      return (
+        '<details class="diff-section">' +
+          '<summary class="diff-piece-heading">' + escapeHtml(sec.label) + '</summary>' +
+          '<div class="diff-section-body">' + sec.body + '</div>' +
+        '</details>'
+      );
+    }).join("");
+
+    resultEl.innerHTML = header + rows.join("") + sectionsHtml;
   }
 
   document.getElementById("artifactDiffSwapBtn").addEventListener("click", function(){
