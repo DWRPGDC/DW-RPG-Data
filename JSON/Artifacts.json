@@ -3,44 +3,80 @@
     "setName": "Adventurer",
     "worldLevel": 1,
     "crucible": 20,
-    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
     "setBonus2pc": "+10 HP",
+    "setBonus2pcStats": [
+      {
+        "stat": "HP",
+        "value": 10
+      }
+    ],
     "setBonus4pc": "+20 HP",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": 20
+      }
+    ],
     "pieces": {
       "flower": {
         "name": "Flower of Life",
         "icon": "Adventurer_Flower.webp",
         "stats": {
-          "HP": { "min": 1, "max": 2 },
-          "ATK": { "min": 1, "max": 5 }
+          "HP": {
+            "min": 1,
+            "max": 2
+          },
+          "ATK": {
+            "min": 1,
+            "max": 5
+          }
         }
       },
       "plume": {
         "name": "Adventurer's Tail Feather",
         "icon": "Adventurer_Plume.webp",
         "stats": {
-          "ATK": { "min": 3, "max": 4 }
+          "ATK": {
+            "min": 3,
+            "max": 4
+          }
         }
       },
       "sands": {
         "name": "Adventurer's Pocket Watch",
         "icon": "Adventurer_Sands.webp",
         "stats": {
-          "ATK": { "min": 1, "max": 3 }
+          "ATK": {
+            "min": 1,
+            "max": 3
+          }
         }
       },
       "goblet": {
         "name": "Adventurer's Golden Goblet",
         "icon": "Adventurer_Goblet.webp",
         "stats": {
-          "CV": { "min": 3, "max": 5 }
+          "CV": {
+            "min": 3,
+            "max": 5
+          }
         }
       },
       "circlet": {
         "name": "Adventurer's Bandana",
         "icon": "Adventurer_Circlet.webp",
         "stats": {
-          "CR": { "min": 1, "max": 5 }
+          "CR": {
+            "min": 1,
+            "max": 5
+          }
         }
       }
     }
@@ -49,44 +85,80 @@
     "setName": "Traveling Doctor",
     "worldLevel": 1,
     "crucible": 20,
-    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
     "setBonus2pc": "+5 ATK",
+    "setBonus2pcStats": [
+      {
+        "stat": "ATK",
+        "value": 5
+      }
+    ],
     "setBonus4pc": "+10 ATK",
+    "setBonus4pcStats": [
+      {
+        "stat": "ATK",
+        "value": 10
+      }
+    ],
     "pieces": {
       "flower": {
         "name": "Traveling Doctor's Silver Lotus",
         "icon": "Travdoc_Flower.png",
         "stats": {
-          "HP": { "min": 6, "max": 15 },
-          "ATK": { "min": 1, "max": 2 }
+          "HP": {
+            "min": 6,
+            "max": 15
+          },
+          "ATK": {
+            "min": 1,
+            "max": 2
+          }
         }
       },
       "plume": {
         "name": "Traveling Doctor's Owl Feather",
         "icon": "Travdoc_Plume.webp",
         "stats": {
-          "HP": { "min": 3, "max": 12 }
+          "HP": {
+            "min": 3,
+            "max": 12
+          }
         }
       },
       "sands": {
         "name": "Traveling Doctor's Pocket Watch",
         "icon": "Travdoc_Sands.webp",
         "stats": {
-          "HP": { "min": 6, "max": 15 }
+          "HP": {
+            "min": 6,
+            "max": 15
+          }
         }
       },
       "goblet": {
         "name": "Traveling Doctor's Medicine Pot",
         "icon": "Travdoc_Goblet.webp",
         "stats": {
-          "HP": { "min": 9, "max": 12 }
+          "HP": {
+            "min": 9,
+            "max": 12
+          }
         }
       },
       "circlet": {
         "name": "Traveling Doctor's Handkerchief",
         "icon": "Travdoc_Circlet.webp",
         "stats": {
-          "HP": { "min": 3, "max": 9 }
+          "HP": {
+            "min": 3,
+            "max": 9
+          }
         }
       }
     }
@@ -95,44 +167,84 @@
     "setName": "Lucky Dog",
     "worldLevel": 1,
     "crucible": 20,
-    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
     "setBonus2pc": "+3% CR",
+    "setBonus2pcStats": [
+      {
+        "stat": "CR",
+        "value": 3
+      }
+    ],
     "setBonus4pc": "+6% CR, +6% CV",
+    "setBonus4pcStats": [
+      {
+        "stat": "CR",
+        "value": 6
+      },
+      {
+        "stat": "CV",
+        "value": 6
+      }
+    ],
     "pieces": {
       "flower": {
         "name": "Lucky Dog's Clover",
         "icon": "LuckyDog_Flower.png",
         "stats": {
-          "CR": { "min": 1, "max": 3 },
-          "CV": { "min": 2, "max": 4 }
+          "CR": {
+            "min": 1,
+            "max": 3
+          },
+          "CV": {
+            "min": 2,
+            "max": 4
+          }
         }
       },
       "plume": {
         "name": "Lucky Dog's Eagle Feather",
         "icon": "LuckyDog_Plume.webp",
         "stats": {
-          "CR": { "min": 3, "max": 5 }
+          "CR": {
+            "min": 3,
+            "max": 5
+          }
         }
       },
       "sands": {
         "name": "Lucky Dog's Hourglass",
         "icon": "LuckyDog_Sands.webp",
         "stats": {
-          "CV": { "min": 1, "max": 5 }
+          "CV": {
+            "min": 1,
+            "max": 5
+          }
         }
       },
       "goblet": {
         "name": "Lucky Dog's Goblet",
         "icon": "LuckyDog_Goblet.webp",
         "stats": {
-          "CV": { "min": 3, "max": 4 }
+          "CV": {
+            "min": 3,
+            "max": 4
+          }
         }
       },
       "circlet": {
         "name": "Lucky Dog's Silver Circlet",
         "icon": "LuckyDog_Circlet.webp",
         "stats": {
-          "CR": { "min": 1, "max": 2 }
+          "CR": {
+            "min": 1,
+            "max": 2
+          }
         }
       }
     }
@@ -141,52 +253,132 @@
     "setName": "Berserker",
     "worldLevel": 2,
     "crucible": 50,
-    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
     "setBonus2pc": "-12 HP, +4 ATK, +5% CR",
+    "setBonus2pcStats": [
+      {
+        "stat": "HP",
+        "value": -12
+      },
+      {
+        "stat": "ATK",
+        "value": 4
+      },
+      {
+        "stat": "CR",
+        "value": 5
+      }
+    ],
     "setBonus4pc": "-30 HP, +6 ATK, +10% CR, +10% CV",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": -30
+      },
+      {
+        "stat": "ATK",
+        "value": 6
+      },
+      {
+        "stat": "CR",
+        "value": 10
+      },
+      {
+        "stat": "CV",
+        "value": 10
+      }
+    ],
     "pieces": {
       "flower": {
         "name": "Berserker's Rose",
         "icon": "Berserker_Flower.png",
         "stats": {
-          "HP": { "min": -8, "max": -4 },
-          "ATK": { "min": 3, "max": 6 },
-          "CR": { "min": 2, "max": 5 }
+          "HP": {
+            "min": -8,
+            "max": -4
+          },
+          "ATK": {
+            "min": 3,
+            "max": 6
+          },
+          "CR": {
+            "min": 2,
+            "max": 5
+          }
         }
       },
       "plume": {
         "name": "Berserker's Indigo Feather",
         "icon": "Berserker_Plume.webp",
         "stats": {
-          "HP": { "min": -6, "max": -3 },
-          "ATK": { "min": 4, "max": 7 },
-          "CV": { "min": 3, "max": 6 }
+          "HP": {
+            "min": -6,
+            "max": -3
+          },
+          "ATK": {
+            "min": 4,
+            "max": 7
+          },
+          "CV": {
+            "min": 3,
+            "max": 6
+          }
         }
       },
       "sands": {
         "name": "Berserker's Timepiece",
         "icon": "Berserker_Sands.webp",
         "stats": {
-          "ATK": { "min": 3, "max": 5 },
-          "CR": { "min": 4, "max": 7 }
+          "ATK": {
+            "min": 3,
+            "max": 5
+          },
+          "CR": {
+            "min": 4,
+            "max": 7
+          }
         }
       },
       "goblet": {
         "name": "Berserker's Bone Goblet",
         "icon": "Berserker_Goblet.webp",
         "stats": {
-          "HP": { "min": -10, "max": -5 },
-          "ATK": { "min": 4, "max": 8 },
-          "CV": { "min": 4, "max": 8 }
+          "HP": {
+            "min": -10,
+            "max": -5
+          },
+          "ATK": {
+            "min": 4,
+            "max": 8
+          },
+          "CV": {
+            "min": 4,
+            "max": 8
+          }
         }
       },
       "circlet": {
         "name": "Berserker's Battle Mask",
         "icon": "Berserker_Circlet.webp",
         "stats": {
-          "HP": { "min": -12, "max": -6 },
-          "ATK": { "min": 2, "max": 5 },
-          "CR": { "min": 5, "max": 8 }
+          "HP": {
+            "min": -12,
+            "max": -6
+          },
+          "ATK": {
+            "min": 2,
+            "max": 5
+          },
+          "CR": {
+            "min": 5,
+            "max": 8
+          }
         }
       }
     }
@@ -195,48 +387,108 @@
     "setName": "Instructor",
     "worldLevel": 2,
     "crucible": 50,
-    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
     "setBonus2pc": "+8% DR, +8 DV",
+    "setBonus2pcStats": [
+      {
+        "stat": "DR",
+        "value": 8
+      },
+      {
+        "stat": "DV",
+        "value": 8
+      }
+    ],
     "setBonus4pc": "+20 HP, +15% DR, +30 DV",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": 20
+      },
+      {
+        "stat": "DR",
+        "value": 15
+      },
+      {
+        "stat": "DV",
+        "value": 30
+      }
+    ],
     "pieces": {
       "flower": {
         "name": "Instructor's Brooch",
         "icon": "Instructor_Flower.webp",
         "stats": {
-          "HP": { "min": 2, "max": 6 },
-          "DR": { "min": 3, "max": 8 }
+          "HP": {
+            "min": 2,
+            "max": 6
+          },
+          "DR": {
+            "min": 3,
+            "max": 8
+          }
         }
       },
       "plume": {
         "name": "Instructor's Feather Accessory",
         "icon": "Instructor_Plume.webp",
         "stats": {
-          "DR": { "min": 3, "max": 6 },
-          "DV": { "min": 4, "max": 8 }
+          "DR": {
+            "min": 3,
+            "max": 6
+          },
+          "DV": {
+            "min": 4,
+            "max": 8
+          }
         }
       },
       "sands": {
         "name": "Instructor's Pocket Watch",
         "icon": "Instructor_Sands.webp",
         "stats": {
-          "DR": { "min": 2, "max": 5 },
-          "DV": { "min": 4, "max": 10 }
+          "DR": {
+            "min": 2,
+            "max": 5
+          },
+          "DV": {
+            "min": 4,
+            "max": 10
+          }
         }
       },
       "goblet": {
         "name": "Instructor's Tea Cup",
         "icon": "Instructor_Goblet.webp",
         "stats": {
-          "HP": { "min": 5, "max": 12 },
-          "DV": { "min": 4, "max": 8 }
+          "HP": {
+            "min": 5,
+            "max": 12
+          },
+          "DV": {
+            "min": 4,
+            "max": 8
+          }
         }
       },
       "circlet": {
         "name": "Instructor's Cap",
         "icon": "Instructor_Circlet.webp",
         "stats": {
-          "HP": { "min": 3, "max": 8 },
-          "DR": { "min": 3, "max": 8 }
+          "HP": {
+            "min": 3,
+            "max": 8
+          },
+          "DR": {
+            "min": 3,
+            "max": 8
+          }
         }
       }
     }
@@ -245,52 +497,136 @@
     "setName": "The Exile",
     "worldLevel": 3,
     "crucible": 75,
-    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
     "setBonus2pc": "+5 ATK, +5% CR, -8 DV",
+    "setBonus2pcStats": [
+      {
+        "stat": "ATK",
+        "value": 5
+      },
+      {
+        "stat": "CR",
+        "value": 5
+      },
+      {
+        "stat": "DV",
+        "value": -8
+      }
+    ],
     "setBonus4pc": "+8 ATK, +7% CR, +10% CV, -5% DR, -18 DV",
+    "setBonus4pcStats": [
+      {
+        "stat": "ATK",
+        "value": 8
+      },
+      {
+        "stat": "CR",
+        "value": 7
+      },
+      {
+        "stat": "CV",
+        "value": 10
+      },
+      {
+        "stat": "DR",
+        "value": -5
+      },
+      {
+        "stat": "DV",
+        "value": -18
+      }
+    ],
     "pieces": {
       "flower": {
         "name": "Exile's Flower",
         "icon": "Exile_Flower.png",
         "stats": {
-          "ATK": { "min": 4, "max": 7 },
-          "CR": { "min": 3, "max": 5 },
-          "DV": { "min": -6, "max": -3 }
+          "ATK": {
+            "min": 4,
+            "max": 7
+          },
+          "CR": {
+            "min": 3,
+            "max": 5
+          },
+          "DV": {
+            "min": -6,
+            "max": -3
+          }
         }
       },
       "plume": {
         "name": "Exile's Feather",
         "icon": "Exile_Plume.webp",
         "stats": {
-          "ATK": { "min": 4, "max": 8 },
-          "CV": { "min": 4, "max": 7 },
-          "DV": { "min": -5, "max": -2 }
+          "ATK": {
+            "min": 4,
+            "max": 8
+          },
+          "CV": {
+            "min": 4,
+            "max": 7
+          },
+          "DV": {
+            "min": -5,
+            "max": -2
+          }
         }
       },
       "sands": {
         "name": "Exile's Pocket Watch",
         "icon": "Exile_Sands.webp",
         "stats": {
-          "ATK": { "min": 3, "max": 6 },
-          "CR": { "min": 4, "max": 8 }
+          "ATK": {
+            "min": 3,
+            "max": 6
+          },
+          "CR": {
+            "min": 4,
+            "max": 8
+          }
         }
       },
       "goblet": {
         "name": "Exile's Goblet",
         "icon": "Exile_Goblet.webp",
         "stats": {
-          "ATK": { "min": 4, "max": 9 },
-          "CV": { "min": 4, "max": 9 },
-          "DR": { "min": -5, "max": -2 }
+          "ATK": {
+            "min": 4,
+            "max": 9
+          },
+          "CV": {
+            "min": 4,
+            "max": 9
+          },
+          "DR": {
+            "min": -5,
+            "max": -2
+          }
         }
       },
       "circlet": {
         "name": "Exile's Circlet",
         "icon": "Exile_Circlet.webp",
         "stats": {
-          "ATK": { "min": 3, "max": 5 },
-          "CR": { "min": 5, "max": 9 },
-          "DV": { "min": -8, "max": -4 }
+          "ATK": {
+            "min": 3,
+            "max": 5
+          },
+          "CR": {
+            "min": 5,
+            "max": 9
+          },
+          "DV": {
+            "min": -8,
+            "max": -4
+          }
         }
       }
     }
@@ -299,52 +635,132 @@
     "setName": "Martial Artist",
     "worldLevel": 3,
     "crucible": 75,
-    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
     "setBonus2pc": "-15 HP, +12% CR, +10% CV",
+    "setBonus2pcStats": [
+      {
+        "stat": "HP",
+        "value": -15
+      },
+      {
+        "stat": "CR",
+        "value": 12
+      },
+      {
+        "stat": "CV",
+        "value": 10
+      }
+    ],
     "setBonus4pc": "-40 HP, +6 ATK, +18% CR, +28% CV",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": -40
+      },
+      {
+        "stat": "ATK",
+        "value": 6
+      },
+      {
+        "stat": "CR",
+        "value": 18
+      },
+      {
+        "stat": "CV",
+        "value": 28
+      }
+    ],
     "pieces": {
       "flower": {
         "name": "Martial Artist's Red Flower",
         "icon": "MartArt_Flower.png",
         "stats": {
-          "HP": { "min": -12, "max": -6 },
-          "ATK": { "min": 2, "max": 4 },
-          "CR": { "min": 7, "max": 12 },
-          "CV": { "min": 5, "max": 10 }
+          "HP": {
+            "min": -12,
+            "max": -6
+          },
+          "ATK": {
+            "min": 2,
+            "max": 4
+          },
+          "CR": {
+            "min": 7,
+            "max": 12
+          },
+          "CV": {
+            "min": 5,
+            "max": 10
+          }
         }
       },
       "plume": {
         "name": "Martial Artist's Feather",
         "icon": "MartArt_Plume.webp",
         "stats": {
-          "HP": { "min": -18, "max": -10 },
-          "CV": { "min": 12, "max": 18 }
+          "HP": {
+            "min": -18,
+            "max": -10
+          },
+          "CV": {
+            "min": 12,
+            "max": 18
+          }
         }
       },
       "sands": {
         "name": "Martial Artist's Water Hourglass",
         "icon": "MartArt_Sands.webp",
         "stats": {
-          "HP": { "min": -10, "max": -4 },
-          "CR": { "min": 6, "max": 10 },
-          "CV": { "min": 8, "max": 14 }
+          "HP": {
+            "min": -10,
+            "max": -4
+          },
+          "CR": {
+            "min": 6,
+            "max": 10
+          },
+          "CV": {
+            "min": 8,
+            "max": 14
+          }
         }
       },
       "goblet": {
         "name": "Martial Artist's Wine Cup",
         "icon": "MartArt_Goblet.webp",
         "stats": {
-          "HP": { "min": -22, "max": -14 },
-          "ATK": { "min": 2, "max": 5 },
-          "CV": { "min": 14, "max": 20 }
+          "HP": {
+            "min": -22,
+            "max": -14
+          },
+          "ATK": {
+            "min": 2,
+            "max": 5
+          },
+          "CV": {
+            "min": 14,
+            "max": 20
+          }
         }
       },
       "circlet": {
         "name": "Martial Artist's Bandana",
         "icon": "MartArt_Circlet.webp",
         "stats": {
-          "HP": { "min": -16, "max": -8 },
-          "CR": { "min": 10, "max": 16 }
+          "HP": {
+            "min": -16,
+            "max": -8
+          },
+          "CR": {
+            "min": 10,
+            "max": 16
+          }
         }
       }
     }
@@ -353,48 +769,104 @@
     "setName": "Wanderer's Troupe",
     "worldLevel": 3,
     "crucible": 100,
-    "weights": { "flower": 0.5, "plume": 0.3, "sands": 0.25, "goblet": 0.4, "circlet": 0.15 },
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
     "setBonus2pc": "+25 HP",
+    "setBonus2pcStats": [
+      {
+        "stat": "HP",
+        "value": 25
+      }
+    ],
     "setBonus4pc": "+50 HP, +10% CR, +12% CV",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": 50
+      },
+      {
+        "stat": "CR",
+        "value": 10
+      },
+      {
+        "stat": "CV",
+        "value": 12
+      }
+    ],
     "pieces": {
       "flower": {
         "name": "Troupe's Dawnlight",
         "icon": "WT_Flower.webp",
         "stats": {
-          "HP": { "min": 30, "max": 42 },
-          "CR": { "min": 3, "max": 6 }
+          "HP": {
+            "min": 30,
+            "max": 42
+          },
+          "CR": {
+            "min": 3,
+            "max": 6
+          }
         }
       },
       "plume": {
         "name": "Bard's Arrow Feather",
         "icon": "WT_Plume.webp",
         "stats": {
-          "HP": { "min": 26, "max": 38 },
-          "ATK": { "min": 3, "max": 6 }
+          "HP": {
+            "min": 26,
+            "max": 38
+          },
+          "ATK": {
+            "min": 3,
+            "max": 6
+          }
         }
       },
       "sands": {
         "name": "Concert's Final Hour",
         "icon": "WT_Sands.webp",
         "stats": {
-          "HP": { "min": 28, "max": 40 },
-          "CV": { "min": 6, "max": 12 }
+          "HP": {
+            "min": 28,
+            "max": 40
+          },
+          "CV": {
+            "min": 6,
+            "max": 12
+          }
         }
       },
       "goblet": {
         "name": "Wanderer's String-Kettle",
         "icon": "WT_Goblet.webp",
         "stats": {
-          "HP": { "min": 30, "max": 44 },
-          "CV": { "min": 8, "max": 14 }
+          "HP": {
+            "min": 30,
+            "max": 44
+          },
+          "CV": {
+            "min": 8,
+            "max": 14
+          }
         }
       },
       "circlet": {
         "name": "Conductor's Top Hat",
         "icon": "WT_Circlet.webp",
         "stats": {
-          "HP": { "min": 24, "max": 36 },
-          "CR": { "min": 8, "max": 14 }
+          "HP": {
+            "min": 24,
+            "max": 36
+          },
+          "CR": {
+            "min": 8,
+            "max": 14
+          }
         }
       }
     }
