@@ -248,7 +248,7 @@
   .card-compare-btn:hover, .card-diff-btn:hover{ color:var(--ink); border-color:var(--ink-dim); }
   .card-compare-btn.is-added, .card-diff-btn.is-added{
     background:var(--ink);
-    color:#fff;
+    color:var(--bg);
     border-color:var(--ink);
   }
   .card-compare-btn.is-added:hover, .card-diff-btn.is-added:hover{ background:#c0392b; border-color:#c0392b; }
@@ -574,7 +574,7 @@
     bottom:76px;
     transform:translate(-50%, 12px);
     background:var(--ink);
-    color:#fff;
+    color:var(--bg);
     font-size:13px;
     font-family:'Inter', sans-serif;
     padding:10px 18px;
@@ -612,15 +612,17 @@
     box-shadow:0 1px 3px rgba(0,0,0,0.05);
     transition:box-shadow .15s ease;
   }
-  .compare-card.is-dragging{
-    opacity:0.85;
-    user-select:none;
-    -webkit-user-select:none;
-    box-shadow:0 8px 20px rgba(0,0,0,0.18);
-    cursor:grabbing;
+  .compare-card.is-drag-source{
+    opacity:0;
+    pointer-events:none;
   }
   .compare-card.is-drag-over{
     box-shadow:0 0 0 2px var(--ink-dim) inset;
+  }
+  .compare-card-ghost{
+    box-shadow:0 10px 26px rgba(0,0,0,0.28);
+    cursor:grabbing;
+    transform:scale(1.02);
   }
   .compare-card-top{
     display:flex;
@@ -786,6 +788,21 @@
     line-height:1.25;
   }
   .compare-table-cell.is-last-row{ border-bottom:none; }
+
+  .compare-table-drag-handle{
+    position:absolute;
+    top:6px; left:6px;
+    margin:0;
+    width:28px; height:28px;
+  }
+  .compare-table-cell.compare-table-header{ position:relative; }
+  .compare-table-cell.is-dragging{
+    background:var(--bg-alt);
+    opacity:0.6;
+  }
+  .compare-table-cell.is-drag-over{
+    box-shadow:inset 2px 0 0 var(--accent), inset -2px 0 0 var(--accent);
+  }
 
   /* ---------- Differentiator ---------- */
   .diff-pickers{
@@ -1182,7 +1199,7 @@
           <h3>How to use</h3>
           <ol>
             <li><b>Finder:</b> Search by name and sort the results. Weapons can also be filtered by type, and both weapons and artifacts can be filtered by world level.</li>
-            <li><b>Compare:</b> Add several weapons or artifact sets to see their full stats side by side. Swipe to see more. Drag a card by its grip handle to reorder, or use Sort to order by a stat.</li>
+            <li><b>Compare:</b> Add several weapons or artifact sets to see their full stats side by side. Swipe to see more. Drag a card (or column) by its grip handle to reorder, or use Sort to order by a stat.</li>
             <li><b>Differentiator:</b> Pick exactly two weapons or artifact sets to see which one wins on each stat, and by how much. Tap the VS button to swap sides.</li>
             <li>Toggle <b>Dark mode</b> in Settings any time.</li>
             <li>Turn on <b>Remember selections</b> in Settings to keep your Compare and Differentiator picks saved in this browser between visits (off by default).</li>
@@ -1867,8 +1884,16 @@
     removeFromCompare(parseInt(btn.dataset.idx, 10));
   });
 
-  /* ---------- Compare: drag-to-reorder (pointer events, works for mouse + touch) ---------- */
-  var compareDrag = null; // { card, pointerId, startX, target, autoScrollDir }
+  /* ---------- Compare: drag-to-reorder (pointer events, works for mouse + touch) ----------
+     Rebuilt to use a floating "ghost" clone (position:fixed) that follows the
+     pointer instead of transforming the real card in place. Because the ghost
+     lives outside the flex flow entirely, it can never visually overlap/bleed
+     into sibling cards the way an in-flow transformed card could. The original
+     card is hidden (but keeps its layout space) while its ghost is being dragged.
+     The settle animation after drop uses the native Web Animations API
+     (element.animate()) instead of manually toggling `transition` + forcing a
+     reflow, which removes the timing footguns that caused visible flicker. */
+  var compareDrag = null; // { sourceCard, ghost, pointerId, grabDx, grabDy, target, cardWidth }
   var compareAutoScrollRAF = null;
 
   function wireCompareDrag(scrollWrap){
@@ -1879,18 +1904,32 @@
         if(!card) return;
         e.preventDefault();
 
+        var rect = card.getBoundingClientRect();
+
+        var ghost = card.cloneNode(true);
+        ghost.classList.add("compare-card-ghost");
+        ghost.style.position = "fixed";
+        ghost.style.left = rect.left + "px";
+        ghost.style.top = rect.top + "px";
+        ghost.style.width = rect.width + "px";
+        ghost.style.height = rect.height + "px";
+        ghost.style.margin = "0";
+        ghost.style.zIndex = "500";
+        ghost.style.pointerEvents = "none";
+        document.body.appendChild(ghost);
+
+        card.classList.add("is-drag-source");
+
         compareDrag = {
-          card: card,
+          sourceCard: card,
+          ghost: ghost,
           pointerId: e.pointerId,
-          startX: e.clientX,
-          target: null
+          grabDx: e.clientX - rect.left,
+          grabDy: e.clientY - rect.top,
+          target: null,
+          cardWidth: rect.width
         };
         try{ handle.setPointerCapture(e.pointerId); }catch(err){}
-
-        card.classList.add("is-dragging");
-        card.style.transition = "none";
-        card.style.zIndex = "5";
-        card.style.position = "relative";
 
         document.addEventListener("pointermove", onCompareDragMove);
         document.addEventListener("pointerup", onCompareDragEnd);
@@ -1904,8 +1943,10 @@
     e.preventDefault();
 
     var scrollWrap = document.getElementById("compareScroll");
-    var dx = e.clientX - compareDrag.startX;
-    compareDrag.card.style.transform = "translateX(" + dx + "px)";
+    var left = e.clientX - compareDrag.grabDx;
+    var top = e.clientY - compareDrag.grabDy;
+    compareDrag.ghost.style.left = left + "px";
+    compareDrag.ghost.style.top = top + "px";
 
     var wrapRect = scrollWrap.getBoundingClientRect();
     var edgeZone = 50;
@@ -1922,10 +1963,9 @@
 
   function updateCompareDragTarget(clientX){
     var scrollWrap = document.getElementById("compareScroll");
-    var cards = Array.prototype.slice.call(scrollWrap.querySelectorAll(".compare-card"));
+    var cards = Array.prototype.slice.call(scrollWrap.querySelectorAll(".compare-card:not(.is-drag-source)"));
     var best = null, bestDist = Infinity;
     cards.forEach(function(c){
-      if(c === compareDrag.card) return;
       var rect = c.getBoundingClientRect();
       var center = rect.left + rect.width / 2;
       var dist = Math.abs(clientX - center);
@@ -1955,7 +1995,8 @@
 
   function onCompareDragEnd(){
     if(!compareDrag) return;
-    var card = compareDrag.card;
+    var sourceCard = compareDrag.sourceCard;
+    var ghost = compareDrag.ghost;
     var target = compareDrag.target;
 
     stopCompareAutoScroll();
@@ -1963,15 +2004,12 @@
     document.removeEventListener("pointerup", onCompareDragEnd);
     document.removeEventListener("pointercancel", onCompareDragEnd);
 
-    card.classList.remove("is-dragging");
-    card.style.transform = "";
-    card.style.transition = "";
-    card.style.zIndex = "";
-    card.style.position = "";
     if(target) target.classList.remove("is-drag-over");
+    ghost.remove();
+    sourceCard.classList.remove("is-drag-source");
 
-    if(target && target !== card){
-      var dragIdxVal = parseInt(card.dataset.idx, 10);
+    if(target && target !== sourceCard){
+      var dragIdxVal = parseInt(sourceCard.dataset.idx, 10);
       var targetIdxVal = parseInt(target.dataset.idx, 10);
       var oldPos = compareList.indexOf(dragIdxVal);
       var newPos = compareList.indexOf(targetIdxVal);
@@ -1999,9 +2037,11 @@
     compareDrag = null;
   }
 
-  // FLIP-style animation: cards were captured at their old screen positions
-  // before the re-render; now that they've re-rendered in new DOM positions,
-  // slide each one from its old spot to its new spot instead of just popping.
+  // FLIP-style settle animation using the native Web Animations API. Cards
+  // were captured at their old screen positions before the re-render; now
+  // that they've re-rendered in new DOM positions, animate().play() handles
+  // the whole "start offset -> rest position" timeline internally, so there's
+  // no manual transition-toggling or forced-reflow timing to get wrong.
   function animateCompareReorder(oldRects){
     var scrollWrap = document.getElementById("compareScroll");
     var cards = scrollWrap.querySelectorAll(".compare-card");
@@ -2013,26 +2053,18 @@
       var dy = old.top - newRect.top;
       if(Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
 
-      // Scale duration by distance moved: tiny swaps used to be covered almost
-      // instantly by the front-loaded easing curve and read as a snap rather
-      // than a slide, so short moves get a shorter but still-visible duration.
       var dist = Math.max(Math.abs(dx), Math.abs(dy));
       var duration = Math.min(320, Math.max(160, dist * 1.1));
 
-      card.style.transition = "none";
-      card.style.transform = "translate(" + dx + "px, " + dy + "px)";
-      // Force reflow so the browser registers the starting position
-      // before we transition to the resting position.
-      card.getBoundingClientRect();
-
-      requestAnimationFrame(function(){
-        card.style.transition = "transform " + duration + "ms cubic-bezier(.33,.1,.2,1)";
-        card.style.transform = "";
-      });
-      card.addEventListener("transitionend", function handler(){
-        card.style.transition = "";
-        card.removeEventListener("transitionend", handler);
-      });
+      if(typeof card.animate === "function"){
+        card.animate(
+          [
+            { transform: "translate(" + dx + "px, " + dy + "px)" },
+            { transform: "translate(0, 0)" }
+          ],
+          { duration: duration, easing: "cubic-bezier(.33,.1,.2,1)" }
+        );
+      }
     });
   }
 
@@ -2161,6 +2193,15 @@
     sync();
     return { sync: sync };
   }
+
+  // Cache frequently-read elements once — these render/filter functions run on
+  // every keystroke/filter change, so avoid re-querying the DOM each time.
+  var elSearchInput = document.getElementById("searchInput");
+  var elTypeFilter = document.getElementById("typeFilter");
+  var elWlFilter = document.getElementById("wlFilter");
+  var elSortSelect = document.getElementById("sortSelect");
+  var elResultCount = document.getElementById("resultCount");
+  var elWeaponGrid = document.getElementById("weaponGrid");
 
   var typeFilterDropdown = enhanceSelect("typeFilter");
   var wlFilterDropdown = enhanceSelect("wlFilter");
@@ -2305,18 +2346,18 @@
   }
 
   function render(){
-    var query = document.getElementById("searchInput").value.trim().toLowerCase();
-    var type = document.getElementById("typeFilter").value;
-    var wl = document.getElementById("wlFilter").value;
-    var sortKey = document.getElementById("sortSelect").value;
+    var query = elSearchInput.value.trim().toLowerCase();
+    var type = elTypeFilter.value;
+    var wl = elWlFilter.value;
+    var sortKey = elSortSelect.value;
 
     var filtered = weapons.filter(function(w){ return matchesFilters(w, query, type, wl); });
     filtered = sortWeapons(filtered, sortKey);
 
-    var countEl = document.getElementById("resultCount");
+    var countEl = elResultCount;
     countEl.textContent = filtered.length + " weapon" + (filtered.length === 1 ? "" : "s") + " found";
 
-    var grid = document.getElementById("weaponGrid");
+    var grid = elWeaponGrid;
     if(!filtered.length){
       grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">No weapons match your search.</div>';
       return;
@@ -2547,7 +2588,7 @@
     } else if(neutral){
       html += '<div class="diff-note">Difference: ' + fmtDiff(diffInterval(cA, cB), suffix) + '</div>';
     } else if(!rA || !rB){
-      html += '<div class="diff-note">' + (!rA ? 'Weapon 1' : 'Weapon 2') + ' doesn\u2019t have this stat (counted as 0)</div>';
+      html += '<div class="diff-note">Only the ' + (!rA ? 'right' : 'left') + ' side has this stat (counted as 0 on the other)</div>';
     }
 
     html += '</div>';
@@ -2749,6 +2790,15 @@
   var STAT_ORDER = ["HP", "ATK", "CR", "CV", "DR", "DV"];
   var PCT_STATS = { CR: true, CV: true, DR: true };
 
+  function artifactPrimaryPiece(s){
+    if(!s || !s.pieces) return null;
+    for(var i = 0; i < PIECE_ORDER.length; i++){
+      var p = s.pieces[PIECE_ORDER[i]];
+      if(p) return p;
+    }
+    return null;
+  }
+
   function artifactIconPath(filename){
     return ARTIFACT_ICON_BASE + encodeURIComponent(filename).replace(/%2F/g, "/");
   }
@@ -2763,6 +2813,13 @@
     .then(function(res){ if(!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
     .then(function(data){
       artifactSets = Array.isArray(data) ? data : [];
+      artifactSets.forEach(function(s){
+        [["setBonus2pc", "setBonus2pcStats"], ["setBonus4pc", "setBonus4pcStats"]].forEach(function(pair){
+          if(s[pair[0]] && !Array.isArray(s[pair[1]])){
+            console.warn('Artifacts.json: "' + s.setName + '" has ' + pair[0] + ' text but no ' + pair[1] + ' — diff view will fall back to plain text (no per-stat winner highlight) for this set.');
+          }
+        });
+      });
       document.getElementById("artifactFinderEmpty").style.display = artifactSets.length ? "none" : "";
       populateArtifactFilters();
       renderArtifactGrid();
@@ -2823,12 +2880,18 @@
     return sorted;
   }
 
+  var elArtifactSearchInput = document.getElementById("artifactSearchInput");
+  var elArtifactWlFilter = document.getElementById("artifactWlFilter");
+  var elArtifactSortSelect = document.getElementById("artifactSortSelect");
+  var elArtifactGrid = document.getElementById("artifactGrid");
+  var elArtifactResultCount = document.getElementById("artifactResultCount");
+
   function renderArtifactGrid(){
-    var query = (document.getElementById("artifactSearchInput").value || "").trim().toLowerCase();
-    var wl = document.getElementById("artifactWlFilter").value;
-    var sortKey = document.getElementById("artifactSortSelect").value;
-    var grid = document.getElementById("artifactGrid");
-    var countEl = document.getElementById("artifactResultCount");
+    var query = (elArtifactSearchInput.value || "").trim().toLowerCase();
+    var wl = elArtifactWlFilter.value;
+    var sortKey = elArtifactSortSelect.value;
+    var grid = elArtifactGrid;
+    var countEl = elArtifactResultCount;
     var matches = artifactSets.filter(function(s){
       if(wl && String(s.worldLevel) !== wl) return false;
       return !query || s.setName.toLowerCase().indexOf(query) !== -1;
@@ -2838,7 +2901,7 @@
     countEl.textContent = artifactSets.length ? (matches.length + " set" + (matches.length === 1 ? "" : "s")) : "";
 
     grid.innerHTML = matches.map(function(s){
-      var cardIcon = s.pieces && s.pieces.flower ? s.pieces.flower.icon : "";
+      var cardIcon = (artifactPrimaryPiece(s) || {}).icon || "";
       var idx = artifactSets.indexOf(s);
       return (
         '<div class="card artifact-card" data-set="' + escapeHtml(s.setName) + '">' +
@@ -2938,7 +3001,7 @@
     modal.innerHTML =
       '<button class="modal-close" id="modalCloseBtn">&times;</button>' +
       '<div class="modal-header">' +
-        '<div class="modal-icon"><img src="' + artifactIconPath(s.pieces.flower.icon) + '" alt="" onerror="this.style.display=\'none\'"></div>' +
+        '<div class="modal-icon"><img src="' + artifactIconPath((artifactPrimaryPiece(s) || {}).icon || "") + '" alt="" onerror="this.style.display=\'none\'"></div>' +
         '<div class="modal-title">' + escapeHtml(s.setName) + '</div>' +
       '</div>' +
       (meta.length ? '<div class="modal-note">' + meta.join(" &middot; ") + '</div>' : '') +
@@ -3075,41 +3138,45 @@
     var items = artifactCompareList.map(function(idx){ return { idx: idx, s: artifactSets[idx] }; });
     var cols = items.length;
 
-    function cell(html, cls){
-      return '<div class="compare-table-cell' + (cls ? ' ' + cls : '') + '">' + html + '</div>';
+    function cell(html, cls, colIdx){
+      return '<div class="compare-table-cell' + (cls ? ' ' + cls : '') + '"' + (colIdx !== undefined ? ' data-col="' + colIdx + '"' : '') + '>' + html + '</div>';
     }
     function labelCell(text, cls){
       return cell('<span>' + text + '</span>', 'compare-table-label' + (cls ? ' ' + cls : ''));
     }
-    function valueCell(text, cls){
-      return cell(text, 'compare-table-value' + (cls ? ' ' + cls : ''));
+    function valueCell(text, cls, colIdx){
+      return cell(text, 'compare-table-value' + (cls ? ' ' + cls : ''), colIdx);
     }
 
     var rows = [];
 
     rows.push(labelCell("Set"));
-    items.forEach(function(item){
+    items.forEach(function(item, colIdx){
       rows.push(cell(
-        '<div class="compare-table-header-icon"><img src="' + artifactIconPath(item.s.pieces.flower.icon) + '" alt="" onerror="this.style.display=\'none\'"></div>' +
+        '<div class="compare-drag-handle compare-table-drag-handle" title="Drag to reorder" aria-label="Drag to reorder">' +
+          '<svg viewBox="0 0 24 24" width="15" height="18" fill="currentColor"><circle cx="8" cy="5" r="1.7"/><circle cx="16" cy="5" r="1.7"/><circle cx="8" cy="12" r="1.7"/><circle cx="16" cy="12" r="1.7"/><circle cx="8" cy="19" r="1.7"/><circle cx="16" cy="19" r="1.7"/></svg>' +
+        '</div>' +
+        '<div class="compare-table-header-icon"><img src="' + artifactIconPath((artifactPrimaryPiece(item.s) || {}).icon || "") + '" alt="" onerror="this.style.display=\'none\'"></div>' +
         '<div class="compare-table-header-name">' + escapeHtml(item.s.setName) + '</div>' +
         '<button class="compare-remove" data-idx="' + item.idx + '">Remove</button>',
-        'compare-table-header'
+        'compare-table-header',
+        colIdx
       ));
     });
 
     rows.push(labelCell("World Level"));
-    items.forEach(function(item){ rows.push(valueCell(item.s.worldLevel !== undefined ? item.s.worldLevel : "-")); });
+    items.forEach(function(item, colIdx){ rows.push(valueCell(item.s.worldLevel !== undefined ? item.s.worldLevel : "-", null, colIdx)); });
 
     rows.push(labelCell("Crucible"));
-    items.forEach(function(item){ rows.push(valueCell(item.s.crucible !== undefined ? item.s.crucible : "-")); });
+    items.forEach(function(item, colIdx){ rows.push(valueCell(item.s.crucible !== undefined ? item.s.crucible : "-", null, colIdx)); });
 
     if(items.some(function(item){ return item.s.setBonus2pc; })){
       rows.push(labelCell("2pc"));
-      items.forEach(function(item){ rows.push(valueCell(item.s.setBonus2pc ? escapeHtml(item.s.setBonus2pc) : "-")); });
+      items.forEach(function(item, colIdx){ rows.push(valueCell(item.s.setBonus2pc ? escapeHtml(item.s.setBonus2pc) : "-", null, colIdx)); });
     }
     if(items.some(function(item){ return item.s.setBonus4pc; })){
       rows.push(labelCell("4pc"));
-      items.forEach(function(item){ rows.push(valueCell(item.s.setBonus4pc ? escapeHtml(item.s.setBonus4pc) : "-")); });
+      items.forEach(function(item, colIdx){ rows.push(valueCell(item.s.setBonus4pc ? escapeHtml(item.s.setBonus4pc) : "-", null, colIdx)); });
     }
 
     PIECE_ORDER.forEach(function(key){
@@ -3117,9 +3184,9 @@
       if(!anyHasPiece) return;
 
       rows.push(labelCell(PIECE_LABEL[key], "compare-table-piece-heading"));
-      items.forEach(function(item){
+      items.forEach(function(item, colIdx){
         var p = item.s.pieces && item.s.pieces[key];
-        rows.push(cell(p ? escapeHtml(p.name) : "-", "compare-table-value compare-table-piece-heading"));
+        rows.push(cell(p ? escapeHtml(p.name) : "-", "compare-table-value compare-table-piece-heading", colIdx));
       });
 
       STAT_ORDER.forEach(function(stat){
@@ -3130,10 +3197,10 @@
         if(!anyHasStat) return;
 
         rows.push(labelCell(STAT_LABEL[stat]));
-        items.forEach(function(item){
+        items.forEach(function(item, colIdx){
           var p = item.s.pieces && item.s.pieces[key];
           var val = (p && p.stats && p.stats[stat]) ? fmtStatRange(stat, p.stats[stat]) : "-";
-          rows.push(valueCell(val));
+          rows.push(valueCell(val, null, colIdx));
         });
       });
     });
@@ -3148,6 +3215,145 @@
       '<div class="compare-table" style="grid-template-columns:130px repeat(' + cols + ', 150px);">' +
         rows.join("") +
       '</div>';
+
+    wireArtifactCompareDrag(scrollWrap, cols);
+  }
+
+  // ---------- Artifact Compare: drag-to-reorder (column-based, since the
+  // table is a CSS-grid of row-major cells rather than discrete cards) ----------
+  var artifactCompareDrag = null; // { colIdx, pointerId, startX, targetColIdx }
+  var artifactCompareAutoScrollRAF = null;
+
+  function wireArtifactCompareDrag(scrollWrap, cols){
+    scrollWrap.querySelectorAll(".compare-table-drag-handle").forEach(function(handle){
+      handle.addEventListener("pointerdown", function(e){
+        if(e.button !== undefined && e.button !== 0) return;
+        var headerCell = handle.closest(".compare-table-cell");
+        if(!headerCell) return;
+        var colIdx = parseInt(headerCell.dataset.col, 10);
+        if(isNaN(colIdx)) return;
+        e.preventDefault();
+
+        artifactCompareDrag = {
+          colIdx: colIdx,
+          pointerId: e.pointerId,
+          startX: e.clientX,
+          targetColIdx: null,
+          cols: cols
+        };
+        try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+
+        scrollWrap.querySelectorAll('[data-col="' + colIdx + '"]').forEach(function(c){
+          c.classList.add("is-dragging");
+          c.style.transition = "none";
+          c.style.position = "relative";
+          c.style.zIndex = "5";
+        });
+
+        document.addEventListener("pointermove", onArtifactCompareDragMove);
+        document.addEventListener("pointerup", onArtifactCompareDragEnd);
+        document.addEventListener("pointercancel", onArtifactCompareDragEnd);
+      });
+    });
+  }
+
+  function onArtifactCompareDragMove(e){
+    if(!artifactCompareDrag) return;
+    e.preventDefault();
+
+    var scrollWrap = document.getElementById("artifactCompareScroll");
+    var dx = e.clientX - artifactCompareDrag.startX;
+    scrollWrap.querySelectorAll('[data-col="' + artifactCompareDrag.colIdx + '"]').forEach(function(c){
+      c.style.transform = "translateX(" + dx + "px)";
+    });
+
+    var wrapRect = scrollWrap.getBoundingClientRect();
+    var edgeZone = 50;
+    if(e.clientX < wrapRect.left + edgeZone){
+      startArtifactCompareAutoScroll(scrollWrap, -1);
+    } else if(e.clientX > wrapRect.right - edgeZone){
+      startArtifactCompareAutoScroll(scrollWrap, 1);
+    } else {
+      stopArtifactCompareAutoScroll();
+    }
+
+    updateArtifactCompareDragTarget(e.clientX);
+  }
+
+  function updateArtifactCompareDragTarget(clientX){
+    var scrollWrap = document.getElementById("artifactCompareScroll");
+    // Column position only needs checking once per column — the header
+    // cell's X position represents the whole column since all its cells
+    // share the same grid column track.
+    var headers = Array.prototype.slice.call(scrollWrap.querySelectorAll(".compare-table-header"));
+    var best = null, bestDist = Infinity;
+    headers.forEach(function(h){
+      var hc = parseInt(h.dataset.col, 10);
+      if(hc === artifactCompareDrag.colIdx) return;
+      var rect = h.getBoundingClientRect();
+      var center = rect.left + rect.width / 2;
+      var dist = Math.abs(clientX - center);
+      if(dist < bestDist){ bestDist = dist; best = hc; }
+    });
+    scrollWrap.querySelectorAll(".compare-table-cell").forEach(function(c){ c.classList.remove("is-drag-over"); });
+    if(best !== null){
+      scrollWrap.querySelectorAll('[data-col="' + best + '"]').forEach(function(c){ c.classList.add("is-drag-over"); });
+    }
+    artifactCompareDrag.targetColIdx = best;
+  }
+
+  function startArtifactCompareAutoScroll(scrollWrap, dir){
+    if(artifactCompareAutoScrollRAF) return;
+    function step(){
+      if(!artifactCompareDrag){ artifactCompareAutoScrollRAF = null; return; }
+      scrollWrap.scrollLeft += dir * 12;
+      artifactCompareAutoScrollRAF = requestAnimationFrame(step);
+    }
+    artifactCompareAutoScrollRAF = requestAnimationFrame(step);
+  }
+
+  function stopArtifactCompareAutoScroll(){
+    if(artifactCompareAutoScrollRAF){
+      cancelAnimationFrame(artifactCompareAutoScrollRAF);
+      artifactCompareAutoScrollRAF = null;
+    }
+  }
+
+  function onArtifactCompareDragEnd(){
+    if(!artifactCompareDrag) return;
+    var colIdx = artifactCompareDrag.colIdx;
+    var targetColIdx = artifactCompareDrag.targetColIdx;
+
+    stopArtifactCompareAutoScroll();
+    document.removeEventListener("pointermove", onArtifactCompareDragMove);
+    document.removeEventListener("pointerup", onArtifactCompareDragEnd);
+    document.removeEventListener("pointercancel", onArtifactCompareDragEnd);
+
+    var scrollWrap = document.getElementById("artifactCompareScroll");
+    scrollWrap.querySelectorAll('[data-col="' + colIdx + '"]').forEach(function(c){
+      c.classList.remove("is-dragging");
+      c.style.transform = "";
+      c.style.transition = "";
+      c.style.zIndex = "";
+      c.style.position = "";
+    });
+    scrollWrap.querySelectorAll(".compare-table-cell").forEach(function(c){ c.classList.remove("is-drag-over"); });
+
+    if(targetColIdx !== null && targetColIdx !== colIdx){
+      var dragArtifactIdx = artifactCompareList[colIdx];
+      artifactCompareList.splice(colIdx, 1);
+      artifactCompareList.splice(targetColIdx, 0, dragArtifactIdx);
+
+      artifactCompareSortKey = "manual";
+      var sortSelect = document.getElementById("artifactCompareSortSelect");
+      if(sortSelect) sortSelect.value = "manual";
+      if(artifactCompareSortDropdown) artifactCompareSortDropdown.sync();
+
+      renderArtifactCompare();
+      saveArtifactCompareSelection();
+    }
+
+    artifactCompareDrag = null;
   }
 
   document.getElementById("artifactCompareScroll").addEventListener("click", function(e){
@@ -3249,7 +3455,7 @@
         searchBox.hidden = false;
       } else {
         var s = artifactSets[idx];
-        chipIcon.src = artifactIconPath(s.pieces.flower.icon);
+        chipIcon.src = artifactIconPath((artifactPrimaryPiece(s) || {}).icon || "");
         chipIcon.style.display = "";
         chipName.textContent = s.setName;
         chipEl.hidden = false;
@@ -3337,6 +3543,8 @@
     }
   }
 
+  var artifactDiffOpenSections = {}; // persists which sections (e.g. "Flower") are expanded across re-renders
+
   function renderArtifactDiff(){
     var emptyEl = document.getElementById("artifactDiffEmpty");
     var resultEl = document.getElementById("artifactDiffResult");
@@ -3353,9 +3561,9 @@
 
     var header =
       '<div class="diff-header">' +
-        '<div class="diff-header-weapon"><div class="diff-header-icon"><img src="' + artifactIconPath(a.pieces.flower.icon) + '" alt="" onerror="this.style.display=\'none\'"></div><div class="diff-header-name">' + escapeHtml(a.setName) + '</div></div>' +
+        '<div class="diff-header-weapon"><div class="diff-header-icon"><img src="' + artifactIconPath((artifactPrimaryPiece(a) || {}).icon || "") + '" alt="" onerror="this.style.display=\'none\'"></div><div class="diff-header-name">' + escapeHtml(a.setName) + '</div></div>' +
         '<div class="diff-header-vs">VS</div>' +
-        '<div class="diff-header-weapon side-b"><div class="diff-header-icon"><img src="' + artifactIconPath(b.pieces.flower.icon) + '" alt="" onerror="this.style.display=\'none\'"></div><div class="diff-header-name">' + escapeHtml(b.setName) + '</div></div>' +
+        '<div class="diff-header-weapon side-b"><div class="diff-header-icon"><img src="' + artifactIconPath((artifactPrimaryPiece(b) || {}).icon || "") + '" alt="" onerror="this.style.display=\'none\'"></div><div class="diff-header-name">' + escapeHtml(b.setName) + '</div></div>' +
       '</div>';
 
     var rows = [];
@@ -3406,15 +3614,22 @@
     });
 
     var sectionsHtml = sections.map(function(sec){
+      var isOpen = !!artifactDiffOpenSections[sec.label];
       return (
-        '<details class="diff-section">' +
+        '<details class="diff-section"' + (isOpen ? ' open' : '') + ' data-section="' + escapeHtml(sec.label) + '">' +
           '<summary class="diff-piece-heading">' + escapeHtml(sec.label) + '</summary>' +
           '<div class="diff-section-body">' + sec.body + '</div>' +
         '</details>'
       );
     }).join("");
 
-    resultEl.innerHTML = header + rows.join("") + sectionsHtml;
+    resultEl.innerHTML = '<div class="diff-card">' + header + rows.join("") + sectionsHtml + '</div>';
+
+    resultEl.querySelectorAll(".diff-section").forEach(function(det){
+      det.addEventListener("toggle", function(){
+        artifactDiffOpenSections[det.dataset.section] = det.open;
+      });
+    });
   }
 
   document.getElementById("artifactDiffSwapBtn").addEventListener("click", function(){
