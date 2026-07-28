@@ -568,5 +568,20 @@
     "defValue": "-",
     "type": "Claymore",
     "icon": "Weapon_Blackcliff_Slasher.webp"
+  },
+  {
+    "name": "Earth Shaker",
+    "worldLevel": 5,
+    "crucible": 125,
+    "weight": 4,
+    "hp": "-",
+    "atkType": "flat",
+    "atkRoll": "-50",
+    "critRate": "-",
+    "critValue": "-",
+    "defRate": "-",
+    "defValue": "300",
+    "type": "Claymore",
+    "icon": "Weapon_Earth_Shaker.webp"
   }
 ]
