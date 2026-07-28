@@ -1542,5 +1542,120 @@
         }
       }
     }
+  },
+  {
+    "setName": "Tiara of Flame",
+    "worldLevel": 1,
+    "crucible": 100,
+    "pieces": {
+      "circlet": {
+        "name": "Tiara of Flame",
+        "icon": "Item_Tiara_of_Flame.webp",
+        "stats": {
+          "ATK": {
+            "min": 5,
+            "max": 15
+          }
+        },
+        "special": {
+          "label": "Chance to avoid Pyro elemental debuffs",
+          "min": 1,
+          "max": 100,
+          "suffix": "%"
+        }
+      }
+    }
+  },
+  {
+    "setName": "Tiara of Frost",
+    "worldLevel": 1,
+    "crucible": 100,
+    "pieces": {
+      "circlet": {
+        "name": "Tiara of Frost",
+        "icon": "Item_Tiara_of_Frost.webp",
+        "stats": {
+          "ATK": {
+            "min": 5,
+            "max": 15
+          }
+        },
+        "special": {
+          "label": "Chance to avoid Cryo elemental debuffs",
+          "min": 1,
+          "max": 100,
+          "suffix": "%"
+        }
+      }
+    }
+  },
+  {
+    "setName": "Tiara of Thunder",
+    "worldLevel": 1,
+    "crucible": 100,
+    "pieces": {
+      "circlet": {
+        "name": "Tiara of Thunder",
+        "icon": "Item_Tiara_of_Thunder.webp",
+        "stats": {
+          "ATK": {
+            "min": 5,
+            "max": 15
+          }
+        },
+        "special": {
+          "label": "Chance to avoid Electro elemental debuffs",
+          "min": 1,
+          "max": 100,
+          "suffix": "%"
+        }
+      }
+    }
+  },
+  {
+    "setName": "Tiara of Torrents",
+    "worldLevel": 1,
+    "crucible": 100,
+    "pieces": {
+      "circlet": {
+        "name": "Tiara of Torrents",
+        "icon": "Item_Tiara_of_Torrents.webp",
+        "stats": {
+          "ATK": {
+            "min": 5,
+            "max": 15
+          }
+        },
+        "special": {
+          "label": "Chance to avoid Hydro elemental debuffs",
+          "min": 1,
+          "max": 100,
+          "suffix": "%"
+        }
+      }
+    }
+  },
+  {
+    "setName": "Tiara of Wind",
+    "worldLevel": 1,
+    "crucible": 100,
+    "pieces": {
+      "circlet": {
+        "name": "Tiara of Wind",
+        "icon": "Item_Tiara_of_Wind.png",
+        "stats": {
+          "ATK": {
+            "min": 5,
+            "max": 15
+          }
+        },
+        "special": {
+          "label": "Chance to avoid Anemo elemental debuffs",
+          "min": 1,
+          "max": 100,
+          "suffix": "%"
+        }
+      }
+    }
   }
 ]
