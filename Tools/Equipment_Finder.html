@@ -386,6 +386,9 @@
   .artifact-stat-line:last-child{ border-bottom:none; }
   .artifact-stat-line span:first-child{ color:var(--ink-dim); }
   .artifact-stat-line span:last-child{ font-family:'JetBrains Mono', monospace; font-weight:600; }
+  .artifact-stat-line.is-special{ flex-direction:column; align-items:flex-start; gap:2px; }
+  .artifact-stat-line.is-special span:first-child{ font-size:11px; }
+  .artifact-stat-line.is-special span:last-child{ align-self:flex-end; }
 
   .modal-ability{
     margin-top:14px;
@@ -1477,8 +1480,11 @@
 
   var weapons = [];
 
+  function buildIconPath(base, filename){
+    return base + encodeURIComponent(filename).replace(/%2F/g, "/");
+  }
   function iconPath(filename){
-    return ICON_BASE + encodeURIComponent(filename).replace(/%2F/g, "/");
+    return buildIconPath(ICON_BASE, filename);
   }
 
   function escapeHtml(str){
@@ -2800,13 +2806,19 @@
   }
 
   function artifactIconPath(filename){
-    return ARTIFACT_ICON_BASE + encodeURIComponent(filename).replace(/%2F/g, "/");
+    return buildIconPath(ARTIFACT_ICON_BASE, filename);
   }
 
   function fmtStatRange(key, range){
     var suffix = PCT_STATS[key] ? "%" : "";
     if(range.min === range.max) return range.min + suffix;
     return range.min + suffix + " to " + range.max + suffix;
+  }
+
+  function fmtSpecialRange(special){
+    var suffix = special.suffix !== undefined ? special.suffix : "%";
+    if(special.min === special.max) return special.min + suffix;
+    return special.min + suffix + " to " + special.max + suffix;
   }
 
   fetch(ARTIFACT_DATA_URL)
@@ -2981,7 +2993,11 @@
         .filter(function(stat){ return p.stats && p.stats[stat]; })
         .map(function(stat){
           return '<div class="artifact-stat-line"><span>' + STAT_LABEL[stat] + '</span><span>' + fmtStatRange(stat, p.stats[stat]) + '</span></div>';
-        }).join("") || '<div class="artifact-stat-line"><span>-</span></div>';
+        }).join("");
+      if(p.special){
+        statLines += '<div class="artifact-stat-line is-special"><span>' + escapeHtml(p.special.label) + '</span><span>' + fmtSpecialRange(p.special) + '</span></div>';
+      }
+      if(!statLines) statLines = '<div class="artifact-stat-line"><span>-</span></div>';
 
       return (
         '<div class="artifact-piece" data-piece="' + key + '">' +
@@ -3203,6 +3219,19 @@
           rows.push(valueCell(val, null, colIdx));
         });
       });
+
+      var anyHasSpecial = items.some(function(item){
+        var p = item.s.pieces && item.s.pieces[key];
+        return p && p.special;
+      });
+      if(anyHasSpecial){
+        rows.push(labelCell("Special"));
+        items.forEach(function(item, colIdx){
+          var p = item.s.pieces && item.s.pieces[key];
+          var val = (p && p.special) ? (escapeHtml(p.special.label) + ": " + fmtSpecialRange(p.special)) : "-";
+          rows.push(valueCell(val, null, colIdx));
+        });
+      }
     });
 
     // Remove the bottom border from the very last row so it sits flush with the table edge.
@@ -3610,6 +3639,11 @@
         var row = buildDiffRow(STAT_LABEL[stat], rawA, rawB, { suffix: PCT_STATS[stat] ? "%" : "" });
         if(row) body.push(row);
       });
+      if(pa && pa.special || pb && pb.special){
+        var textA = pa && pa.special ? (pa.special.label + ": " + fmtSpecialRange(pa.special)) : "";
+        var textB = pb && pb.special ? (pb.special.label + ": " + fmtSpecialRange(pb.special)) : "";
+        body.push(buildDiffTextRow("Special", textA, textB));
+      }
       if(body.length) sections.push({ label: PIECE_LABEL[key], body: body.join("") });
     });
 
