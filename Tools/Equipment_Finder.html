@@ -3370,6 +3370,17 @@
 
     if(targetColIdx !== null && targetColIdx !== colIdx){
       var dragArtifactIdx = artifactCompareList[colIdx];
+
+      // Capture each column's current on-screen left position, keyed by the
+      // artifact's stable list index rather than its column position (which
+      // is about to change), so the new layout can animate in from where it
+      // actually was - same idea as the weapon compare tab's oldRects capture.
+      var oldColRects = {};
+      artifactCompareList.forEach(function(itemIdx, pos){
+        var headerCell = scrollWrap.querySelector('.compare-table-header[data-col="' + pos + '"]');
+        if(headerCell) oldColRects[itemIdx] = headerCell.getBoundingClientRect();
+      });
+
       artifactCompareList.splice(colIdx, 1);
       artifactCompareList.splice(targetColIdx, 0, dragArtifactIdx);
 
@@ -3379,10 +3390,44 @@
       if(artifactCompareSortDropdown) artifactCompareSortDropdown.sync();
 
       renderArtifactCompare();
+      animateArtifactCompareReorder(oldColRects);
       saveArtifactCompareSelection();
     }
 
     artifactCompareDrag = null;
+  }
+
+  // FLIP-style settle animation, mirroring animateCompareReorder above. The
+  // table only ever shifts columns horizontally (rows stay put since the
+  // same items are present, just reordered), so this drives one translateX
+  // per column - grabbing every cell that shares the column's new data-col -
+  // rather than a per-card translate.
+  function animateArtifactCompareReorder(oldColRects){
+    var scrollWrap = document.getElementById("artifactCompareScroll");
+    artifactCompareList.forEach(function(itemIdx, newPos){
+      var old = oldColRects[itemIdx];
+      if(!old) return;
+      var headerCell = scrollWrap.querySelector('.compare-table-header[data-col="' + newPos + '"]');
+      if(!headerCell) return;
+      var newRect = headerCell.getBoundingClientRect();
+      var dx = old.left - newRect.left;
+      if(Math.abs(dx) < 1) return;
+
+      var dist = Math.abs(dx);
+      var duration = Math.min(320, Math.max(160, dist * 1.1));
+
+      scrollWrap.querySelectorAll('.compare-table-cell[data-col="' + newPos + '"]').forEach(function(cell){
+        if(typeof cell.animate === "function"){
+          cell.animate(
+            [
+              { transform: "translateX(" + dx + "px)" },
+              { transform: "translateX(0)" }
+            ],
+            { duration: duration, easing: "cubic-bezier(.33,.1,.2,1)" }
+          );
+        }
+      });
+    });
   }
 
   document.getElementById("artifactCompareScroll").addEventListener("click", function(e){
