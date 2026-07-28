@@ -1511,6 +1511,30 @@
         }
       ]
     },
+    "scrounge": {
+      "name": "Scrounge",
+      "emoji": "🪙",
+      "parent": null,
+      "unlock": "Unlocked through the Spare Change (Quest).",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Each defeated enemy also drops 2-3 Silver.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "bird_egg",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
     "stormeye": {
       "name": "Stormeye",
       "emoji": "👁️",
