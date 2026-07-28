@@ -447,7 +447,7 @@
   .result-parent{ font-size:11px; color:var(--ink-dim); margin-bottom:8px; }
   .result-effect{ font-size:13px; color:var(--ink-dim); margin-bottom:12px; line-height:1.45; }
   .result-ar{ font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--gold); margin-bottom:10px; }
-  .mat-row{ display:flex; align-items:center; gap:8px; font-size:13px; padding:4px 0; }
+  .mat-row{ display:flex; align-items:flex-start; gap:8px; font-size:13px; padding:4px 0; }
   .mat-icon{
     width:24px; height:24px; border-radius:5px;
     background:var(--panel-2); border:1px solid var(--line);
@@ -455,10 +455,14 @@
     overflow:hidden; flex:0 0 auto;
   }
   .mat-icon img{ width:100%; height:100%; object-fit:contain; }
-  .mat-name{ flex:1 1 auto; min-width:0; color:var(--ink); }
+  .mat-name{ flex:1 1 auto; min-width:0; color:var(--ink); padding-top:2px; }
   .mat-qty{
     font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--success);
-    flex:0 0 auto; display:flex; align-items:center; gap:6px; white-space:nowrap;
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end; gap:2px;
+  }
+  .mat-qty-main{ white-space:nowrap; }
+  .mat-qty-sub{
+    display:flex; align-items:center; gap:6px; white-space:nowrap;
   }
 
   .pending-note{ margin-top:24px; font-size:12.5px; color:var(--ink-dim); }
@@ -780,6 +784,21 @@
   .recipe-grind-copy.is-visible{ display:block; }
   .recipe-grind-body{ display:none; padding:0 14px 14px; }
   .recipe-grind-section.is-open .recipe-grind-body{ display:block; }
+  .recipe-grind-items-scroll{
+    max-height:34vh; overflow-y:auto; overflow-x:hidden;
+    padding-right:4px; margin-right:-4px;
+    scrollbar-width:thin; scrollbar-color:var(--gold-dim) transparent;
+  }
+  .recipe-grind-items-scroll::-webkit-scrollbar{ width:6px; }
+  .recipe-grind-items-scroll::-webkit-scrollbar-track{ background:transparent; }
+  .recipe-grind-items-scroll::-webkit-scrollbar-thumb{ background:var(--gold-dim); border-radius:6px; }
+  .recipe-grind-items-scroll::-webkit-scrollbar-thumb:hover{ background:var(--gold); }
+  /* Fade cue at the bottom of the scroll area hints there's more below it */
+  .recipe-grind-items-scroll.has-overflow{
+    -webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 18px), transparent 100%);
+    mask-image:linear-gradient(to bottom, #000 calc(100% - 18px), transparent 100%);
+  }
+  #recipeGrindTotalsWrap:empty{ display:none; }
   .recipe-grind-section.is-open .recipe-grind-bulk{ display:block; }
   .recipe-grind-bulk{ display:none; padding:0 14px 12px; }
   .recipe-grind-bulk-toggle{
@@ -1001,7 +1020,10 @@
       <span class="recipe-grind-heading">&#9733; Grind List <span class="count" id="recipeGrindCount">0</span></span>
     </button>
     <button type="button" class="recipe-grind-copy" id="recipeGrindCopy" title="Copy grind list as text" aria-label="Copy grind list as text">Copy</button>
-    <div class="recipe-grind-body" id="recipeGrindBody"></div>
+    <div class="recipe-grind-body" id="recipeGrindBody">
+      <div class="recipe-grind-items-scroll" id="recipeGrindItemsScroll"></div>
+      <div id="recipeGrindTotalsWrap"></div>
+    </div>
     <div class="recipe-grind-bulk" id="recipeGrindBulkBox">
       <button type="button" class="recipe-grind-bulk-toggle" id="recipeGrindBulkToggle">+ Bulk add to grind list</button>
       <div class="recipe-grind-bulk-body" id="recipeGrindBulkBody">
@@ -1653,14 +1675,19 @@
     var searchAttr = opts.search ? ' data-search="' + name.toLowerCase() + '"' : '';
     var craftText = craftNotePlain(itemId);
     var craftNote = craftText
-      ? ' <span class="mat-craft-note" title="Includes materials craftable from lower tiers">(' + craftText + ')</span>'
+      ? '<span class="mat-craft-note" title="Includes materials craftable from lower tiers">(' + craftText + ')</span>'
+      : '';
+    var shortBadge = short > 0 ? '<span class="mat-short">need ' + short + ' more</span>' : '';
+    var subLine = (craftNote || shortBadge)
+      ? '<span class="mat-qty-sub">' + craftNote + shortBadge + '</span>'
       : '';
     return (
       '<div class="mat-row' + (short > 0 ? ' is-missing' : '') + '"' + searchAttr + '>' +
         '<div class="mat-icon">' + iconMarkup(itemId) + '</div>' +
         '<div class="mat-name">' + name + '</div>' +
-        '<div class="mat-qty">' + have + ' / ' + qty + craftNote +
-          (short > 0 ? ' <span class="mat-short">need ' + short + ' more</span>' : '') +
+        '<div class="mat-qty">' +
+          '<span class="mat-qty-main">' + have + ' / ' + qty + '</span>' +
+          subLine +
         '</div>' +
       '</div>'
     );
@@ -1774,10 +1801,11 @@
   }
 
   function renderGrindList(){
-    var body = document.getElementById("recipeGrindBody");
+    var itemsScroll = document.getElementById("recipeGrindItemsScroll");
+    var totalsWrap = document.getElementById("recipeGrindTotalsWrap");
     var countEl = document.getElementById("recipeGrindCount");
     var copyBtn = document.getElementById("recipeGrindCopy");
-    if(!body) return;
+    if(!itemsScroll) return;
     clearEffectiveHaveCache(); // inventory may have changed since the last render pass
 
     var keys = Object.keys(favorites).filter(function(k){ return favorites[k]; });
@@ -1795,7 +1823,9 @@
     updateGrindTabBadge();
 
     if(!validKeys.length){
-      body.innerHTML = '<div class="recipe-grind-empty">Star a level below to add it here and see exactly what you still need to grind.</div>';
+      itemsScroll.innerHTML = '<div class="recipe-grind-empty">Star a level below to add it here and see exactly what you still need to grind.</div>';
+      itemsScroll.classList.remove("has-overflow");
+      totalsWrap.innerHTML = "";
       return;
     }
 
@@ -1870,7 +1900,12 @@
         '</div>';
     }
 
-    body.innerHTML = itemsHtml + totalsHtml;
+    itemsScroll.innerHTML = itemsHtml;
+    totalsWrap.innerHTML = totalsHtml;
+
+    // Only show the bottom fade cue when the list actually overflows its
+    // capped height - no point hinting at "more below" when there isn't any.
+    itemsScroll.classList.toggle("has-overflow", itemsScroll.scrollHeight > itemsScroll.clientHeight + 2);
   }
 
   (function initRecipeToolbar(){
@@ -1989,6 +2024,15 @@
       filterRecipeCards(e.target.value.trim().toLowerCase(), false);
       updateSearchClearVisibility();
       lsSet(LS_RECIPE_SEARCH, e.target.value);
+
+      // Typing a search means you're hunting for something to add - the
+      // grind list (which can run long) just eats space at that point, so
+      // fold it out of the way automatically instead of making you remember
+      // to minimize it yourself.
+      if(e.target.value.trim() && grindSection.classList.contains("is-open")){
+        grindSection.classList.remove("is-open");
+        grindToggle.setAttribute("aria-expanded", "false");
+      }
     });
 
     // Pressing Enter jumps the list to the first highlighted match, so you
