@@ -136,6 +136,19 @@
     font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--gold-dim);
     text-align:right; margin-top:2px;
   }
+  .stat-row .roll-quality{
+    font-family:'JetBrains Mono', monospace; font-size:.68rem; font-weight:400;
+    text-align:right; margin-top:1px; display:none; color:var(--ink-dim);
+  }
+  body[data-roll-quality="on"] .stat-row .roll-quality{ display:block; }
+  .stat-row .roll-quality.rq-perfect{ color:var(--gold-dim); }
+  .overall-roll-quality{
+    display:none; font-family:'JetBrains Mono', monospace; font-size:.72rem; font-weight:600;
+    text-align:right; margin-top:10px; padding-top:8px; border-top:1px solid var(--line);
+    color:var(--ink-dim); letter-spacing:.02em;
+  }
+  body[data-roll-quality="on"] .overall-roll-quality{ display:block; }
+  .overall-roll-quality.rq-perfect{ color:var(--gold-dim); }
   .flavor{ font-size:.75rem; color:var(--ink-dim); font-style:italic; margin-top:6px; line-height:1.5; }
   .empty-hint{ font-size:.8rem; color:var(--ink-dim); text-align:center; padding:10px 0; }
   .totals-list{ list-style:none; margin:0; padding:0; }
@@ -537,6 +550,7 @@
   .settings-row-btns button{ flex-shrink:0; }
   #darkToggle.is-active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
   #autosaveToggle.is-active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
+  #rollQualityToggle.is-active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
   .settings-divider{ border-top:1px dashed var(--divider); }
   .settings-full-btn{ width:100%; font-size:.78rem; padding:9px 10px; }
 
@@ -756,6 +770,13 @@
       </div>
       <div class="settings-row">
         <div class="settings-row-text">
+          <div class="settings-row-title">Roll Quality %</div>
+          <div class="settings-row-desc">Show how close each stat roll is to its max possible value.</div>
+        </div>
+        <button type="button" id="rollQualityToggle">Roll Quality: Off</button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-text">
           <div class="settings-row-title">Save Build</div>
           <div class="settings-row-desc" id="saveBuildDesc">Store your current build in this browser.</div>
         </div>
@@ -934,6 +955,7 @@ let state = {
   ar: 1,                // Adventure Rank (1-24). Every AR above 1 grants +5 HP / +1 ATK.
   frostTreeLevel: 0,    // Frostbearing Tree level (0-80). Unlocks at WL4. Milestones grant permanent Max HP.
   darkMode: false,
+  showRollQuality: false,
   bag: {flower:[], plume:[], sands:[], goblet:[], circlet:[]},  // slot -> [ {id, nickname, setName, pieceName, icon, statsDef, special, weight, rolls, specialRoll} ]
   weaponBag: []          // [ {id, nickname, weaponName, icon, type, worldLevel, crucible, weight, ability, atkType, rolls} ]
 };
@@ -1826,6 +1848,8 @@ function renderWeaponSlot(){
     slotDiv.appendChild(p);
   }
 
+  appendOverallRollQuality(slotDiv);
+
   const btnRow = document.createElement('div');
   btnRow.className = 'bag-btn-row';
   const saveBtn = document.createElement('button');
@@ -2008,6 +2032,26 @@ function makeSlider(label, key, range, onChange, currentVal, suffix='', getEffec
     row._refreshEffective = refreshEffective;
   }
 
+  // Roll quality % — how close this roll is to the max of its possible range.
+  // Toggleable via Settings; hidden entirely when the range has no spread (min === max).
+  let qualitySpan = null;
+  if(range.max > range.min){
+    qualitySpan = document.createElement('div');
+    qualitySpan.className = 'roll-quality';
+    row.appendChild(qualitySpan);
+    const refreshQuality = (v) => {
+      const pct = ((v - range.min) / (range.max - range.min)) * 100;
+      const clamped = Math.max(0, Math.min(100, pct));
+      qualitySpan.textContent = `(${clamped.toFixed(0)}% roll)`;
+      qualitySpan.classList.remove('rq-low','rq-mid','rq-high','rq-perfect');
+      qualitySpan.classList.add(clamped >= 100 ? 'rq-perfect' : clamped >= 75 ? 'rq-high' : clamped >= 40 ? 'rq-mid' : 'rq-low');
+      qualitySpan.dataset.pct = clamped;
+      row.dispatchEvent(new CustomEvent('rollqualitychange', { bubbles:true }));
+    };
+    refreshQuality(val);
+    row._refreshQuality = refreshQuality;
+  }
+
   const input = document.createElement('input');
   input.type = 'range';
   input.min = range.min; input.max = range.max; input.step = step; input.value = val;
@@ -2022,6 +2066,7 @@ function makeSlider(label, key, range, onChange, currentVal, suffix='', getEffec
     numInput.value = v;
     onChange(v);
     if(effectiveSpan) row._refreshEffective(v);
+    if(qualitySpan) row._refreshQuality(v);
   });
   numInput.addEventListener('input', ()=>{
     // Live-update state as they type, without clamping/reformatting mid-keystroke.
@@ -2030,6 +2075,7 @@ function makeSlider(label, key, range, onChange, currentVal, suffix='', getEffec
       input.value = clamp(v);
       onChange(clamp(v));
       if(effectiveSpan) row._refreshEffective(clamp(v));
+      if(qualitySpan) row._refreshQuality(clamp(v));
     }
   });
   numInput.addEventListener('blur', ()=>{
@@ -2038,6 +2084,7 @@ function makeSlider(label, key, range, onChange, currentVal, suffix='', getEffec
     input.value = v;
     onChange(v);
     if(effectiveSpan) row._refreshEffective(v);
+    if(qualitySpan) row._refreshQuality(v);
   });
   numInput.addEventListener('keydown', e=>{
     if(e.key === 'Enter') numInput.blur();
@@ -2045,6 +2092,31 @@ function makeSlider(label, key, range, onChange, currentVal, suffix='', getEffec
 
   row.appendChild(input);
   return row;
+}
+
+// Combined roll quality % for a whole piece of gear — the average of every
+// individual stat's roll quality, shown at the bottom of the equipment box.
+function appendOverallRollQuality(container){
+  const summary = document.createElement('div');
+  summary.className = 'overall-roll-quality';
+  container.appendChild(summary);
+
+  const refresh = () => {
+    const spans = container.querySelectorAll('.roll-quality[data-pct]');
+    if(!spans.length){
+      summary.style.display = 'none';
+      return;
+    }
+    let total = 0;
+    spans.forEach(s => { total += parseFloat(s.dataset.pct) || 0; });
+    const avg = total / spans.length;
+    summary.textContent = `Overall Roll Quality: ${avg.toFixed(0)}% of perfect`;
+    summary.classList.remove('rq-low','rq-mid','rq-high','rq-perfect');
+    summary.classList.add(avg >= 100 ? 'rq-perfect' : avg >= 75 ? 'rq-high' : avg >= 40 ? 'rq-mid' : 'rq-low');
+  };
+
+  container.addEventListener('rollqualitychange', refresh);
+  refresh();
 }
 
 // ---------- Artifact panel ----------
@@ -2176,6 +2248,8 @@ function renderArtifactSlotDetail(slot, options){
         current.specialRoll = val; renderTotals();
       }, current.specialRoll, sp.suffix || ''));
     }
+
+    appendOverallRollQuality(slotDiv);
 
     const btnRow = document.createElement('div');
     btnRow.className = 'bag-btn-row';
@@ -2957,6 +3031,8 @@ function renderQuickAddEditor(){
       p.textContent = w.ability;
       body.appendChild(p);
     }
+
+    appendOverallRollQuality(body);
   } else {
     const o = quickAdd.def;
     titleEl.textContent = `Add ${SLOT_LABELS[quickAdd.slot]} to Bag`;
@@ -2990,6 +3066,8 @@ function renderQuickAddEditor(){
         quickAdd.specialRoll = val;
       }, quickAdd.specialRoll, sp.suffix || ''));
     }
+
+    appendOverallRollQuality(body);
   }
 
   // Shared nickname + save/cancel row
@@ -3110,6 +3188,7 @@ function loadBuild(){
   if(state.weaponPrefix === undefined) state.weaponPrefix = 'None';
   if(state.weaponStarred === undefined) state.weaponStarred = false;
   if(state.autosave === undefined) state.autosave = true;
+  if(state.showRollQuality === undefined) state.showRollQuality = false;
 }
 
 function resetBuild(){
@@ -3118,7 +3197,7 @@ function resetBuild(){
     weaponStarred: state.weaponStarred, skillChoices: JSON.parse(JSON.stringify(state.skillChoices || {})),
     artifacts: JSON.parse(JSON.stringify(state.artifacts || {})), ar: state.ar, frostTreeLevel: state.frostTreeLevel
   };
-  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:false, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, bag: state.bag, weaponBag: state.weaponBag };
+  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:false, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, showRollQuality: state.showRollQuality, bag: state.bag, weaponBag: state.weaponBag };
   if(weaponPickerBtn) weaponPickerBtn.refresh();
   renderWeaponSlot();
   buildArtifactSlots();
@@ -3153,6 +3232,15 @@ function applyDarkMode(){
   if(btn){
     btn.textContent = state.darkMode ? '☀️ Light' : '🌙 Dark';
     btn.classList.toggle('is-active', !!state.darkMode);
+  }
+}
+
+function applyRollQualityUI(){
+  document.body.setAttribute('data-roll-quality', state.showRollQuality ? 'on' : 'off');
+  const btn = document.getElementById('rollQualityToggle');
+  if(btn){
+    btn.textContent = state.showRollQuality ? 'Roll Quality: On' : 'Roll Quality: Off';
+    btn.classList.toggle('is-active', !!state.showRollQuality);
   }
 }
 
@@ -3293,6 +3381,7 @@ async function init(){
   await loadData();
   applyDarkMode();
   applyAutosaveUI();
+  applyRollQualityUI();
   buildWeaponSelect();
   renderWeaponSlot();
   buildArtifactSlots();
@@ -3314,6 +3403,11 @@ async function init(){
     state.autosave = !state.autosave;
     applyAutosaveUI();
     if(state.autosave) saveBuild(true);
+  });
+  document.getElementById('rollQualityToggle').addEventListener('click', ()=>{
+    state.showRollQuality = !state.showRollQuality;
+    applyRollQualityUI();
+    scheduleAutosave();
   });
   document.getElementById('settingsToggleBtn').addEventListener('click', openSettingsModal);
   document.getElementById('howToUseBtn').addEventListener('click', ()=>{
