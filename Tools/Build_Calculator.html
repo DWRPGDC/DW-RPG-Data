@@ -1,0 +1,2548 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adventurer's Build Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:            #ffffff;
+    --bg-alt:        #f5f5f5;
+    --panel:         #ffffff;
+    --panel-2:       #f0f0f0;
+    --card:          #fafafa;
+    --line:          #999999;
+    --divider:       #c9c9c9;
+    --gold:          #000000;
+    --gold-dim:      #666666;
+    --ink:           #000000;
+    --ink-dim:       #555555;
+    --radius:        10px;
+    --shadow:        rgba(0,0,0,0.05);
+  }
+  [data-theme="dark"]{
+    --bg:            #000000;
+    --bg-alt:        #0a0a0a;
+    --panel:         #0f0f0f;
+    --panel-2:       #1a1a1a;
+    --card:          #141414;
+    --line:          #3a3a3a;
+    --divider:       #333333;
+    --gold:          #ffffff;
+    --gold-dim:      #888888;
+    --ink:           #f2f2f2;
+    --ink-dim:       #999999;
+    --shadow:        rgba(0,0,0,0.4);
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body{
+    margin:0; font-family:'Inter', sans-serif; background:var(--bg);
+    color:var(--ink); transition:background .2s, color .2s;
+  }
+  .top-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; background:var(--panel); border-bottom:1.5px solid var(--line);
+    position:sticky; top:0; z-index:10; flex-wrap:wrap; gap:10px;
+  }
+  .top-bar h1{
+    font-family:'Cinzel', serif; font-weight:600; font-size:1.15rem; margin:0;
+    letter-spacing:.02em; color:var(--ink);
+  }
+  .top-bar .btns{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  button{
+    font-family:'JetBrains Mono', monospace; background:var(--bg-alt); color:var(--ink);
+    border:1.5px solid var(--line); padding:7px 12px; border-radius:8px; cursor:pointer;
+    font-size:.75rem; letter-spacing:.02em; transition:border-color .15s ease, color .15s ease;
+  }
+  button:hover{ border-color:var(--gold-dim); }
+  button.primary{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
+  button.primary:hover{ opacity:.85; }
+  main{
+    max-width:1200px; margin:0 auto; padding:20px;
+    display:grid; grid-template-columns:1fr; gap:16px;
+  }
+  @media(min-width:981px){
+    main{
+      grid-template-columns:1fr 2fr;
+      grid-template-areas:
+        "stats weapon"
+        "stats artifacts"
+        "stats skills";
+    }
+    #totalsPanel{ grid-area:stats; }
+    #weaponPanel{ grid-area:weapon; }
+    #artifactPanel{ grid-area:artifacts; }
+    #skillsPanel{ grid-area:skills; }
+  }
+  .panel{
+    background:var(--panel); border:1.5px solid var(--line); border-radius:var(--radius);
+    padding:16px; box-shadow:0 1px 3px var(--shadow); min-width:0;
+  }
+  .panel h2{
+    font-family:'Cinzel', serif; font-weight:600; font-size:.85rem; margin:0 0 12px;
+    color:var(--ink); text-transform:uppercase; letter-spacing:.06em;
+    border-bottom:1.5px solid var(--line); padding-bottom:8px;
+  }
+  select, input[type=text]{
+    width:100%; padding:9px 10px; border-radius:8px; border:1.5px solid var(--line);
+    background:var(--bg-alt); color:var(--ink); font-family:'Inter', sans-serif;
+    font-size:.85rem; margin-bottom:8px;
+  }
+  select:focus, input[type=text]:focus{ outline:none; border-color:var(--gold-dim); }
+  .slot{
+    border:1.5px solid var(--line); border-radius:var(--radius); padding:10px; margin-bottom:12px;
+    background:var(--card);
+  }
+  .slot-head{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .slot-head-name{ flex:1; min-width:0; }
+  .slot-remove-btn{
+    margin-left:auto; flex:0 0 auto; width:26px; height:26px; padding:0;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:6px; font-size:14px; line-height:1; color:var(--ink-dim);
+  }
+  .slot-remove-btn:hover{ color:var(--ink); border-color:var(--gold-dim); }
+  .slot-remove-btn.is-confirming{
+    width:auto; padding:0 10px; font-size:.68rem; font-family:'JetBrains Mono', monospace;
+    white-space:nowrap; background:#b3261e; border-color:#b3261e; color:#fff;
+  }
+  .slot-remove-btn.is-confirming:hover{ color:#fff; opacity:.9; }
+  .slot-head img{
+    width:32px; height:32px; object-fit:contain; border-radius:6px;
+    background:var(--bg-alt); border:1px solid var(--line);
+  }
+  .slot-head .name{ font-family:'Cinzel', serif; font-weight:600; font-size:.88rem; color:var(--ink); overflow-wrap:break-word; }
+  .slot-head .sub{ font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--ink-dim); overflow-wrap:break-word; }
+  .stat-row{ margin-bottom:8px; }
+  .stat-row label{
+    display:flex; justify-content:space-between; font-size:.72rem; color:var(--ink-dim);
+    margin-bottom:3px; font-family:'JetBrains Mono', monospace; text-transform:uppercase; letter-spacing:.02em;
+  }
+  .stat-row input[type=range]{ width:100%; accent-color:var(--ink); }
+  .stat-row .val{ color:var(--ink); font-weight:600; text-transform:none; letter-spacing:0; }
+  .stat-row .val-wrap{ display:inline-flex; align-items:center; gap:2px; color:var(--ink); font-weight:600; }
+  .stat-row .val-input{
+    width:4.2em; padding:1px 4px; border:1px solid transparent; border-radius:4px;
+    background:transparent; color:var(--ink); font-family:'JetBrains Mono', monospace;
+    font-weight:600; font-size:.72rem; text-align:right; text-transform:none; letter-spacing:0;
+    -moz-appearance:textfield;
+  }
+  .stat-row .val-input::-webkit-outer-spin-button,
+  .stat-row .val-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  .stat-row .val-input:hover{ border-color:var(--line); background:var(--bg-alt); }
+  .stat-row .val-input:focus{ outline:none; border-color:var(--gold-dim); background:var(--bg-alt); }
+  .stat-row .stat-effective{
+    font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--gold-dim);
+    text-align:right; margin-top:2px;
+  }
+  .flavor{ font-size:.75rem; color:var(--ink-dim); font-style:italic; margin-top:6px; line-height:1.5; }
+  .empty-hint{ font-size:.8rem; color:var(--ink-dim); text-align:center; padding:10px 0; }
+  .totals-list{ list-style:none; margin:0; padding:0; }
+  .ar-row{
+    display:flex; align-items:center; gap:8px; margin-bottom:12px; padding-bottom:12px;
+    border-bottom:1.5px solid var(--line);
+  }
+  .ar-row label{
+    font-family:'JetBrains Mono', monospace; font-size:.72rem; color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:.03em;
+  }
+  .ar-row input{
+    width:60px; padding:6px 8px; border:1.5px solid var(--line); border-radius:8px;
+    background:var(--bg-alt); color:var(--ink); font-family:'JetBrains Mono', monospace;
+    font-size:.85rem; text-align:center; margin-bottom:0;
+  }
+  .ar-row input:focus{ outline:none; border-color:var(--gold-dim); }
+  .ar-wl-badge{
+    margin-left:auto; font-family:'Cinzel', serif; font-weight:600; font-size:.78rem;
+    color:var(--ink); background:var(--bg-alt); border:1.5px solid var(--line); border-radius:20px;
+    padding:4px 12px;
+  }
+  .frost-block{
+    display:none; margin-bottom:14px; padding:12px 14px 20px; border-radius:var(--radius);
+    background:var(--card); border:1.5px solid var(--line);
+  }
+  .frost-block.is-visible{ display:block; }
+  .frost-head{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+  .frost-head .frost-title{
+    font-family:'Cinzel', serif; font-weight:600; font-size:.82rem; color:var(--ink);
+  }
+  .frost-head .frost-total-badge{
+    margin-left:auto; font-family:'JetBrains Mono', monospace; font-weight:600; font-size:.72rem;
+    color:var(--bg); background:var(--gold); border-radius:20px; padding:3px 10px; white-space:nowrap;
+  }
+  .frost-lv-row{ display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+  .frost-lv-row label{
+    font-family:'JetBrains Mono', monospace; font-size:.66rem; color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:.03em;
+  }
+  .frost-lv-row input{
+    width:52px; padding:5px 7px; border:1.5px solid var(--line); border-radius:6px;
+    background:var(--bg-alt); color:var(--ink); font-family:'JetBrains Mono', monospace;
+    font-size:.8rem; text-align:center; margin-bottom:0;
+  }
+  .frost-lv-row input:focus{ outline:none; border-color:var(--gold-dim); }
+  .frost-lv-row .frost-lv-max{ font-family:'JetBrains Mono', monospace; font-size:.7rem; color:var(--ink-dim); }
+  .frost-track{
+    position:relative; height:6px; background:var(--panel-2); border-radius:3px;
+    margin:22px 8px 26px;
+  }
+  .frost-track-fill{
+    position:absolute; left:0; top:0; height:100%; background:var(--gold); border-radius:3px;
+    transition:width .2s ease;
+  }
+  .frost-node{
+    position:absolute; top:50%; left:0; transform:translate(-50%,-50%);
+    width:15px; height:15px; border-radius:50%; background:var(--bg-alt);
+    border:2px solid var(--line); transition:background .2s ease, border-color .2s ease;
+    cursor:pointer;
+  }
+  .frost-node.is-reached{ background:var(--gold); border-color:var(--gold); }
+  .frost-node-label{
+    position:absolute; top:14px; left:0; transform:translateX(-50%); text-align:center;
+    font-family:'JetBrains Mono', monospace; font-size:.62rem; color:var(--ink-dim); white-space:nowrap;
+    line-height:1.5; cursor:pointer;
+  }
+  .frost-node-label:hover, .frost-node:hover{ color:var(--gold); border-color:var(--gold); }
+  .frost-node-label .lv{ display:block; }
+  .frost-node-label .hp{ display:block; font-weight:600; }
+  .frost-node-label.is-reached{ color:var(--gold); }
+  .totals-list li{
+    display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--divider);
+    font-size:.9rem;
+  }
+  .totals-list li:last-child{ border-bottom:none; }
+  .totals-list .stat-name{
+    color:var(--ink-dim); font-family:'JetBrains Mono', monospace; font-size:.72rem;
+    text-transform:uppercase; letter-spacing:.03em;
+  }
+  .totals-list .stat-val{ font-weight:700; color:var(--ink); font-family:'JetBrains Mono', monospace; }
+  .bonus-block{ margin-top:14px; padding-top:10px; border-top:1.5px solid var(--line); }
+  .bonus-item{
+    font-size:.78rem; margin-bottom:6px; padding:7px 9px; background:var(--bg-alt);
+    border:1px solid var(--line); border-radius:8px;
+  }
+  .bonus-item .set-name{ font-weight:600; color:var(--ink); font-family:'Cinzel', serif; }
+  .special-item{ font-size:.76rem; color:var(--ink-dim); margin-top:6px; line-height:1.4; }
+  .weight-total{ font-family:'JetBrains Mono', monospace; font-size:.72rem; color:var(--ink-dim); margin-top:10px; text-align:right; }
+  #status{ font-family:'JetBrains Mono', monospace; font-size:.7rem; color:var(--ink-dim); margin-left:8px; }
+  .bag-btn-row{ display:flex; justify-content:flex-end; margin-top:4px; }
+  .bag-btn-row button{ font-size:.68rem; padding:5px 9px; }
+  .bag-section{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--divider); }
+  .bag-section .bag-title{
+    font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;
+  }
+  .bag-item{
+    display:flex; align-items:flex-start; gap:8px; padding:8px 9px; margin-bottom:6px;
+    border:1.5px solid var(--line); border-radius:8px; background:var(--panel);
+  }
+  .bag-item img{ width:24px; height:24px; object-fit:contain; border-radius:6px; flex-shrink:0; background:var(--bg-alt); margin-top:1px; }
+  .bag-item .bag-info{ flex:1; min-width:0; }
+  .bag-item .bag-info .bag-name{ font-size:.76rem; font-weight:600; color:var(--ink); overflow-wrap:break-word; }
+  .bag-item .bag-info .bag-meta{
+    font-family:'JetBrains Mono', monospace; font-size:.64rem; color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:.03em; margin:2px 0 6px;
+  }
+  .bag-item .bag-info .bag-stat-chips{ display:flex; flex-wrap:wrap; gap:4px; }
+  .bag-stat-chip{
+    display:inline-flex; align-items:center; padding:2px 6px; border-radius:6px;
+    background:var(--bg-alt); border:1px solid var(--line); color:var(--ink);
+    font-family:'JetBrains Mono', monospace; font-size:.62rem; white-space:nowrap; line-height:1.6;
+  }
+  .bag-item .bag-actions{ display:flex; flex-direction:column; gap:4px; flex-shrink:0; }
+  .bag-item .bag-actions button{ font-size:.64rem; padding:4px 7px; }
+  .bag-slot-tag{
+    display:inline-block; padding:1px 5px; margin-right:5px; border-radius:5px;
+    background:var(--gold); color:var(--bg); font-weight:600; text-transform:none; letter-spacing:0;
+  }
+
+  .bag-badge{
+    display:inline-block; min-width:16px; padding:0 4px; margin-left:4px; border-radius:20px;
+    background:var(--gold); color:var(--bg); font-family:'JetBrains Mono', monospace; font-size:.64rem;
+    font-weight:600; line-height:16px; text-align:center;
+  }
+  .bag-badge:empty{ display:none; }
+
+  .bag-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:20;
+    opacity:0; pointer-events:none; transition:opacity .2s ease;
+  }
+  .bag-overlay.open{ opacity:1; pointer-events:auto; }
+
+  .bag-sidebar{
+    position:fixed; top:0; right:0; height:100%; width:360px; max-width:88vw;
+    background:var(--panel); border-left:1.5px solid var(--line); z-index:21;
+    display:flex; flex-direction:column; box-shadow:-6px 0 16px var(--shadow);
+    transform:translateX(100%); transition:transform .25s ease; pointer-events:none;
+  }
+  .bag-sidebar.open{ transform:translateX(0); pointer-events:auto; }
+  .bag-sidebar-head{
+    display:flex; align-items:center; justify-content:space-between; padding:14px 16px;
+    border-bottom:1.5px solid var(--line); flex-shrink:0;
+  }
+  .bag-sidebar-head h2{ margin:0; font-family:'Cinzel', serif; font-size:1rem; color:var(--ink); }
+  .bag-controls-row{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:8px;
+    padding:10px 16px; border-bottom:1.5px solid var(--line); flex-shrink:0;
+  }
+  .bag-tabs{
+    display:flex; flex-wrap:wrap; gap:6px; flex:1 1 auto; min-width:0;
+  }
+  .bag-tabs button{ font-size:.68rem; padding:6px 9px; }
+  .bag-tabs button.active-tab{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
+  .bag-controls-row .picker-view-toggle{ flex:0 0 auto; }
+  .bag-sidebar-content{ flex:1; overflow-y:auto; padding:14px 16px; }
+  .bag-sidebar-content .bag-item{ margin-bottom:10px; }
+  .bag-sidebar-content.is-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(128px, 1fr)); gap:10px; align-content:start;
+  }
+  .bag-sidebar-content.is-grid .bag-item{ margin-bottom:0; }
+  .bag-sidebar-content.is-grid .empty-hint{ grid-column:1 / -1; }
+  .bag-item.is-grid-item{
+    flex-direction:column; align-items:center; text-align:center; padding:10px 8px;
+  }
+  .bag-item.is-grid-item img{ width:42px; height:42px; margin-top:0; }
+  .bag-item.is-grid-item .bag-info{ width:100%; }
+  .bag-item.is-grid-item .bag-info .bag-name{ font-size:.72rem; }
+  .bag-item.is-grid-item .bag-info .bag-meta{ margin:2px 0 4px; }
+  .bag-item.is-grid-item .bag-info .bag-stat-chips{ justify-content:center; }
+  .bag-item.is-grid-item .bag-actions{ flex-direction:row; width:100%; margin-top:8px; }
+  .bag-item.is-grid-item .bag-actions button{ flex:1; }
+
+  /* ---------- Custom dropdown (matches Equipment Finder) ---------- */
+  .custom-select{ position:relative; display:inline-block; }
+  .custom-select.full-width{ display:block; width:100%; }
+  .custom-select-native{ display:none; }
+  .custom-select-trigger{
+    display:inline-flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:9px 10px; border:1.5px solid var(--line); border-radius:8px;
+    font-family:'Inter', sans-serif; font-size:.85rem; background:var(--bg-alt); color:var(--ink);
+    cursor:pointer; white-space:nowrap; margin-bottom:8px;
+  }
+  .custom-select.full-width .custom-select-trigger{ width:100%; white-space:normal; text-align:left; }
+  .custom-select-trigger:hover{ border-color:var(--ink-dim); }
+  .custom-select-trigger.is-open{ border-color:var(--ink-dim); }
+  .custom-select-trigger svg{ flex:0 0 auto; color:var(--ink-dim); transition:transform .15s ease; }
+  .custom-select-trigger.is-open svg{ transform:rotate(180deg); }
+  .custom-select-menu{
+    display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:100%;
+    background:var(--panel); border:1.5px solid var(--line); border-radius:8px;
+    max-height:280px; overflow-y:auto; z-index:30; box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  }
+  .custom-select.full-width .custom-select-menu{ width:100%; }
+  .custom-select-menu.is-open{ display:block; }
+  .custom-select-option{ padding:9px 12px; font-size:.85rem; cursor:pointer; white-space:normal; color:var(--ink); }
+  .custom-select-option:not(:last-child){ border-bottom:1px solid var(--panel-2); }
+  .custom-select-option:hover, .custom-select-option.is-selected{ background:var(--bg-alt); }
+  .custom-select-option.is-selected{ font-weight:600; }
+  .custom-select-group-label{
+    padding:7px 12px 4px; font-family:'JetBrains Mono', monospace; font-size:.62rem;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--ink-dim); background:var(--bg-alt);
+  }
+  /* Anvil star toggle — same shell as the custom-select trigger */
+  .star-toggle{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:5px 8px; border:1.5px solid var(--line); border-radius:8px;
+    font-family:'Inter', sans-serif; font-size:.72rem; background:var(--bg-alt); color:var(--ink);
+    cursor:pointer; width:100%; margin-bottom:8px; user-select:none;
+  }
+  .star-toggle:hover{ border-color:var(--ink-dim); }
+  .star-toggle.is-active{
+    border-color:#d4af37; color:var(--ink);
+    background:rgba(212,175,55,.1);
+    box-shadow:0 0 7px rgba(212,175,55,.4);
+  }
+
+  /* ---------- Picker button (replaces the dropdown trigger) ---------- */
+  .picker-btn{
+    width:100%; display:flex; align-items:center; gap:10px;
+    padding:9px 10px; border:1.5px solid var(--line); border-radius:8px;
+    background:var(--bg-alt); color:var(--ink); cursor:pointer; text-align:left;
+    font-family:'Inter', sans-serif; font-size:.85rem; margin-bottom:8px;
+  }
+  .picker-btn:hover{ border-color:var(--gold-dim); }
+  .picker-btn-icon{
+    width:26px; height:26px; flex:0 0 auto; border-radius:6px; background:var(--panel-2);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .picker-btn-icon img{ width:100%; height:100%; object-fit:contain; }
+  .picker-btn-label{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .picker-btn-label.is-placeholder{ color:var(--ink-dim); }
+  .picker-btn svg{ flex:0 0 auto; color:var(--ink-dim); }
+
+  /* ---------- Picker modal ---------- */
+  .picker-overlay{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:100;
+    align-items:flex-start; justify-content:center; padding:24px 16px;
+  }
+  .picker-overlay.is-open{ display:flex; }
+  .picker-modal{
+    background:var(--panel); border:1.5px solid var(--line); border-radius:var(--radius);
+    width:100%; max-width:640px; max-height:88vh; display:flex; flex-direction:column;
+    box-shadow:0 20px 50px rgba(0,0,0,0.3); overflow:hidden;
+  }
+  .picker-modal-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:14px 16px; border-bottom:1.5px solid var(--line); flex-shrink:0;
+  }
+  .picker-modal-title{ font-family:'Cinzel', serif; font-weight:600; font-size:1rem; color:var(--ink); }
+  .picker-close{
+    background:none; border:none; font-size:20px; line-height:1; cursor:pointer; color:var(--ink-dim); padding:2px 4px;
+  }
+  .picker-close:hover{ color:var(--ink); }
+  .picker-controls{
+    display:flex; flex-wrap:wrap; gap:8px; padding:12px 16px; border-bottom:1.5px solid var(--line); flex-shrink:0;
+  }
+  .picker-search{ flex:1 1 200px; position:relative; }
+  .picker-search input{
+    width:100%; padding:9px 12px; border:1.5px solid var(--line); border-radius:8px;
+    font-family:'Inter', sans-serif; font-size:.85rem; background:var(--bg-alt); color:var(--ink); margin-bottom:0;
+  }
+  .picker-search input:focus{ outline:none; border-color:var(--gold-dim); }
+  .picker-controls select{ margin-bottom:0; width:auto; flex:0 0 auto; }
+  .picker-controls .custom-select{ flex:0 0 auto; }
+  .picker-controls .custom-select-trigger{ margin-bottom:0; width:auto; }
+  .picker-view-toggle{ display:flex; gap:2px; flex:0 0 auto; border:1.5px solid var(--line); border-radius:8px; overflow:hidden; }
+  .picker-view-btn{
+    display:flex; align-items:center; justify-content:center; width:34px; height:34px;
+    background:var(--bg-alt); color:var(--ink-dim); border:none; border-radius:0; cursor:pointer;
+    padding:0;
+  }
+  .picker-view-btn + .picker-view-btn{ border-left:1.5px solid var(--line); }
+  .picker-view-btn:hover{ color:var(--ink); }
+  .picker-view-btn.active{ background:var(--gold); color:var(--bg); }
+  .picker-view-btn svg{ width:16px; height:16px; }
+  .picker-result-count{
+    padding:8px 16px 0; font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--ink-dim); flex-shrink:0;
+  }
+  .picker-list{ flex:1; overflow-y:auto; padding:4px 0 0; }
+  .picker-none-row{
+    display:flex; align-items:center; gap:10px; padding:9px 16px; cursor:pointer;
+    color:var(--ink-dim); font-family:'JetBrains Mono', monospace; font-size:.78rem;
+    border-bottom:1px solid var(--panel-2);
+  }
+  .picker-none-row:hover{ background:var(--bg-alt); color:var(--ink); }
+  .picker-item{
+    display:flex; align-items:center; gap:10px; padding:9px 16px; cursor:pointer;
+    border-bottom:1px solid var(--panel-2);
+  }
+  .picker-item:last-child{ border-bottom:none; }
+  .picker-item:hover{ background:var(--bg-alt); }
+  .picker-item.is-current{ background:var(--bg-alt); font-weight:600; }
+  .picker-item-icon{
+    width:30px; height:30px; flex:0 0 auto; border-radius:6px; background:var(--bg-alt);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .picker-item-icon img{ width:100%; height:100%; object-fit:contain; }
+  .picker-item-text{ flex:1; min-width:0; }
+  .picker-item-name{ font-family:'Inter', sans-serif; font-weight:600; font-size:.85rem; color:var(--ink); overflow-wrap:break-word; }
+  .picker-item-meta{ font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--ink-dim); margin-top:2px; }
+  .picker-empty{ text-align:center; padding:40px 20px; color:var(--ink-dim); font-size:.85rem; }
+
+  .picker-list.is-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(96px, 1fr)); gap:10px;
+    padding:12px 16px; align-content:start;
+  }
+  .picker-list.is-grid .picker-none-row{ grid-column:1 / -1; border:1px solid var(--panel-2); border-radius:8px; }
+  .picker-list.is-grid .picker-empty{ grid-column:1 / -1; }
+  .picker-item.is-grid-item{
+    flex-direction:column; text-align:center; gap:6px; padding:10px 6px;
+    border:1.5px solid var(--line); border-radius:8px; background:var(--card);
+  }
+  .picker-item.is-grid-item:last-child{ border-bottom:1.5px solid var(--line); }
+  .picker-item.is-grid-item.is-current{ border-color:var(--gold); }
+  .picker-item.is-grid-item .picker-item-icon{ width:44px; height:44px; }
+  .picker-item.is-grid-item .picker-item-text{ width:100%; }
+  .picker-item.is-grid-item .picker-item-name{ font-size:.72rem; overflow-wrap:break-word; }
+  .picker-item.is-grid-item .picker-item-meta{ font-size:.62rem; margin-top:1px; }
+  @media(max-width:600px){
+    .picker-overlay{ padding:0; align-items:stretch; }
+    .picker-modal{ max-width:none; max-height:none; height:100%; border-radius:0; }
+    #nicknameOverlay{ padding:16px; align-items:center; }
+    #nicknameOverlay .picker-modal{ max-width:260px; max-height:none; height:auto; border-radius:var(--radius); }
+    #confirmOverlay{ padding:16px; align-items:center; }
+    #confirmOverlay .picker-modal{ max-width:280px; max-height:none; height:auto; border-radius:var(--radius); }
+    #settingsOverlay{ padding:16px; align-items:center; }
+    #settingsOverlay .picker-modal{ max-width:320px; max-height:none; height:auto; border-radius:var(--radius); }
+  }
+
+  /* ---------- Nickname modal (styled like the picker modal) ---------- */
+  #nicknameOverlay{ align-items:center; padding:16px; }
+  .nickname-modal{ max-width:260px; width:100%; }
+  .nickname-modal .picker-modal-head{ padding:9px 12px; }
+  .nickname-modal .picker-modal-title{ font-size:.82rem; }
+  .nickname-body{ padding:10px 12px 12px; display:flex; flex-direction:column; gap:2px; }
+  #nicknameInput{
+    width:100%; padding:7px 9px; border:1.5px solid var(--line); border-radius:8px;
+    font-family:'Inter', sans-serif; font-size:.8rem; background:var(--bg-alt); color:var(--ink);
+  }
+  #nicknameInput:focus{ outline:none; border-color:var(--gold-dim); }
+  .nickname-btn-row{ display:flex; justify-content:flex-end; gap:6px; margin-top:8px; }
+  .nickname-btn-row button{ font-size:.68rem; padding:6px 10px; }
+
+  /* ---------- Confirm modal (styled like the nickname/picker modal) ---------- */
+  .confirm-message{ font-size:.8rem; color:var(--ink-dim); line-height:1.45; margin:2px 0 0; }
+
+  /* ---------- Settings modal (styled like the nickname/picker modal) ---------- */
+  .settings-modal{ max-width:320px; width:100%; }
+  .settings-body{ padding:12px 16px 16px; display:flex; flex-direction:column; gap:14px; }
+  .settings-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .settings-row-text{ min-width:0; }
+  .settings-row-title{ font-size:.82rem; font-weight:600; color:var(--ink); }
+  .settings-row-desc{ font-size:.68rem; color:var(--ink-dim); margin-top:2px; line-height:1.35; }
+  .settings-row button{ flex-shrink:0; }
+  #darkToggle.is-active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
+  #autosaveToggle.is-active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
+  .settings-divider{ border-top:1px dashed var(--divider); }
+  .settings-full-btn{ width:100%; font-size:.78rem; padding:9px 10px; }
+
+  /* ---------- How to Use modal ---------- */
+  .howto-modal{ max-width:560px; }
+  .howto-body{ padding:6px 18px 18px; overflow-y:auto; }
+  .howto-section{ margin-top:14px; }
+  .howto-section:first-child{ margin-top:2px; }
+  .howto-section h3{
+    font-family:'Cinzel', serif; font-size:.88rem; color:var(--ink); margin:0 0 6px;
+  }
+  .howto-section p, .howto-section li{ font-size:.8rem; color:var(--ink-dim); line-height:1.55; }
+  .howto-section ul{ margin:0; padding-left:18px; }
+  .howto-section li + li{ margin-top:4px; }
+  .howto-section strong{ color:var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>⚔️ Adventurer's Build Calculator</h1>
+  <div class="btns">
+    <button id="bagToggleBtn">🎒 Bag <span id="bagBadge" class="bag-badge"></span></button>
+    <button id="settingsToggleBtn">⚙️ Settings</button>
+    <span id="status"></span>
+  </div>
+</div>
+
+<main>
+  <section class="panel" id="totalsPanel">
+    <h2>Final Stats</h2>
+    <div class="ar-row">
+      <label for="arInput">AR</label>
+      <input type="number" id="arInput" min="1" max="24" step="1">
+      <span class="ar-wl-badge" id="arWlBadge">WL 1</span>
+    </div>
+    <div class="frost-block" id="frostBlock">
+      <div class="frost-head">
+        <span class="frost-title">🌲 Frostbearing Tree</span>
+        <span class="frost-total-badge" id="frostBonusBadge">+0 Max HP</span>
+      </div>
+      <div class="frost-lv-row">
+        <label for="frostInput">Level</label>
+        <input type="number" id="frostInput" min="0" max="80" step="1">
+        <span class="frost-lv-max">/ 80</span>
+      </div>
+      <div class="frost-track" id="frostTrack">
+        <div class="frost-track-fill" id="frostTrackFill"></div>
+      </div>
+    </div>
+    <ul class="totals-list" id="totalsList"></ul>
+    <div class="bonus-block">
+      <h2 style="margin-top:0;">Active Set Bonuses</h2>
+      <div id="bonusList"><div class="empty-hint">No sets active yet.</div></div>
+    </div>
+    <div class="bonus-block">
+      <h2 style="margin-top:0;">Special Effects</h2>
+      <div id="specialList"><div class="empty-hint">None</div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="skillsPanel">
+    <h2>Skills</h2>
+    <div id="skillsContent"></div>
+  </section>
+
+  <section class="panel" id="weaponPanel">
+    <h2>Weapon</h2>
+    <div id="weaponPickerBtnWrap"></div>
+    <div id="weaponSlot"></div>
+  </section>
+
+  <section class="panel" id="artifactPanel">
+    <h2>Artifacts</h2>
+    <div id="artifactSlots"></div>
+    <div class="weight-total" id="weightTotal"></div>
+  </section>
+</main>
+
+<div id="bagOverlay" class="bag-overlay"></div>
+<aside id="bagSidebar" class="bag-sidebar">
+  <div class="bag-sidebar-head">
+    <h2>🎒 Bag</h2>
+    <button id="bagCloseBtn">✕</button>
+  </div>
+  <div class="bag-controls-row">
+    <div class="bag-tabs" id="bagTabs"></div>
+    <div class="picker-view-toggle" id="bagViewToggle">
+      <button type="button" class="picker-view-btn" id="bagViewListBtn" title="List view" aria-label="List view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
+      <button type="button" class="picker-view-btn" id="bagViewGridBtn" title="Grid view" aria-label="Grid view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="bag-sidebar-content" id="bagSidebarContent"></div>
+</aside>
+
+<div id="pickerOverlay" class="picker-overlay">
+  <div class="picker-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title" id="pickerTitle">Select</div>
+      <button class="picker-close" id="pickerCloseBtn">✕</button>
+    </div>
+    <div class="picker-controls">
+      <div class="picker-search">
+        <input type="text" id="pickerSearchInput" placeholder="Search...">
+      </div>
+      <select id="pickerFilterSelect"></select>
+      <select id="pickerSortSelect"></select>
+      <div class="picker-view-toggle" id="pickerViewToggle">
+        <button type="button" class="picker-view-btn" id="pickerViewListBtn" title="List view" aria-label="List view">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+        <button type="button" class="picker-view-btn" id="pickerViewGridBtn" title="Grid view" aria-label="Grid view">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="picker-result-count" id="pickerResultCount"></div>
+    <div class="picker-list" id="pickerList"></div>
+  </div>
+</div>
+
+<div id="nicknameOverlay" class="picker-overlay">
+  <div class="picker-modal nickname-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title" id="nicknameTitle">Nickname</div>
+      <button class="picker-close" id="nicknameCloseBtn">✕</button>
+    </div>
+    <div class="nickname-body">
+      <input type="text" id="nicknameInput" placeholder="Nickname (optional)">
+      <div class="nickname-btn-row">
+        <button type="button" id="nicknameCancelBtn">Cancel</button>
+        <button type="button" class="primary" id="nicknameSaveBtn">🎒 Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="confirmOverlay" class="picker-overlay">
+  <div class="picker-modal nickname-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title" id="confirmTitle">Confirm</div>
+      <button class="picker-close" id="confirmCloseBtn">✕</button>
+    </div>
+    <div class="nickname-body">
+      <p class="confirm-message" id="confirmMessage"></p>
+      <div class="nickname-btn-row">
+        <button type="button" id="confirmCancelBtn">Cancel</button>
+        <button type="button" class="primary" id="confirmOkBtn">Remove</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="settingsOverlay" class="picker-overlay">
+  <div class="picker-modal settings-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title">⚙️ Settings</div>
+      <button class="picker-close" id="settingsCloseBtn">✕</button>
+    </div>
+    <div class="settings-body">
+      <div class="settings-row">
+        <div class="settings-row-text">
+          <div class="settings-row-title">Dark Mode</div>
+          <div class="settings-row-desc">Switch between light and dark theme.</div>
+        </div>
+        <button type="button" id="darkToggle">🌙 Dark</button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-text">
+          <div class="settings-row-title">Autosave</div>
+          <div class="settings-row-desc">Automatically save changes as you build.</div>
+        </div>
+        <button type="button" id="autosaveToggle">Autosave: On</button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-text">
+          <div class="settings-row-title">Save Build</div>
+          <div class="settings-row-desc" id="saveBuildDesc">Store your current build in this browser.</div>
+        </div>
+        <button type="button" id="saveBtn">💾 Save</button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-text">
+          <div class="settings-row-title">Reset Build</div>
+          <div class="settings-row-desc">Clear the weapon, artifacts, and skills on screen.</div>
+        </div>
+        <button type="button" id="resetBtn">↺ Reset</button>
+      </div>
+      <div class="settings-divider"></div>
+      <button type="button" class="settings-full-btn" id="howToUseBtn">❓ How to Use</button>
+    </div>
+  </div>
+</div>
+
+<div id="howToUseOverlay" class="picker-overlay">
+  <div class="picker-modal howto-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title">❓ How to Use</div>
+      <button class="picker-close" id="howToUseCloseBtn">✕</button>
+    </div>
+    <div class="howto-body">
+      <div class="howto-section">
+        <h3>Building your character</h3>
+        <ul>
+          <li>Pick a weapon and artifact pieces from the panels on the page — click a slot to open the picker.</li>
+          <li>Enter rolled stats for each piece, and set your AR and Frostbearing Tree level to shape your final totals.</li>
+          <li><strong>Final Stats</strong> updates live as you change anything.</li>
+        </ul>
+      </div>
+      <div class="howto-section">
+        <h3>Using the Bag</h3>
+        <ul>
+          <li>Click <strong>🎒 Save to Bag</strong> under a weapon or artifact panel to store it for later.</li>
+          <li>Open <strong>🎒 Bag</strong> in the top bar to view saved items, sorted into tabs — including an <strong>All</strong> tab showing everything at once.</li>
+          <li>From the Bag, click <strong>Equip</strong> to put a saved item back on your character, or ✕ to remove it.</li>
+        </ul>
+      </div>
+      <div class="howto-section">
+        <h3>Settings</h3>
+        <ul>
+          <li><strong>Dark Mode</strong> switches the app theme.</li>
+          <li><strong>Save Build</strong> stores your current build in this browser, so it's there next time you visit.</li>
+          <li><strong>Reset</strong> clears your current build back to empty — this does not touch anything saved in your Bag.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+const WEAPON_ICON_PATH = '../Textures/Weapons/';
+const ARTIFACT_ICON_PATH = '../Textures/Artifacts/';
+const SLOTS = ['flower','plume','sands','goblet','circlet'];
+const SLOT_LABELS = {flower:'Flower', plume:'Plume', sands:'Sands', goblet:'Goblet', circlet:'Circlet'};
+
+const BASE_STATS = { hp:100, atkLow:5, atkHigh:7, cr:0, cv:100, dr:0, dv:0 };
+
+// Prefix system: multiplies an item's OWN rolled stats before they're added to totals.
+const PREFIXES = {
+  'None':     {},
+  'Rusted':   { ATK:0.5 },
+  'Godly':    { ATK:1.5 },
+  'Strong':   { DV:1.5 },
+  'Hearty':   { HP:1.5 },
+  'Broken':   { ATK:0.8, HP:0.5 },
+  'Old':      { CR:0.5, CV:0.5 },
+  'Sharp':    { ATK:1.5, CV:1.5 },
+  'Tainted':  { CV:2 },
+  'Sinful':   { ATK:2, HP:0.5 },
+  'Jaded':    { DV:1.5, HP:1.2 },
+  'Scornful': { ATK:2, CV:0.5 },
+  'Spicy':    { CR:2, CV:2 }
+};
+const PREFIX_NAMES = Object.keys(PREFIXES);
+// Maps weapon/artifact roll keys to the canonical stat key used in PREFIXES.
+const ROLL_TO_STATKEY = {
+  atk:'ATK', atkMin:'ATK', atkMax:'ATK', hp:'HP',
+  critRate:'CR', critValue:'CV', defRate:'DR', defValue:'DV',
+  HP:'HP', ATK:'ATK', CR:'CR', CV:'CV', DR:'DR', DV:'DV'
+};
+function prefixFactor(prefixName, statKey){
+  const p = PREFIXES[prefixName || 'None'] || {};
+  const canon = ROLL_TO_STATKEY[statKey] || statKey;
+  return p[canon] !== undefined ? p[canon] : 1;
+}
+function makePrefixSelect(currentValue, onChange){
+  const wrap = document.createElement('div');
+  wrap.className = 'field';
+  wrap.style.margin = '6px 0 10px';
+  const label = document.createElement('label');
+  label.textContent = 'Prefix';
+  label.style.display = 'block';
+  label.style.fontSize = '.72rem';
+  label.style.marginBottom = '2px';
+  const select = document.createElement('select');
+  PREFIX_NAMES.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    if((currentValue || 'None') === name) opt.selected = true;
+    select.appendChild(opt);
+  });
+  select.addEventListener('change', () => onChange(select.value));
+  wrap.appendChild(label);
+  wrap.appendChild(select);
+  const enhanced = enhanceSelectEl(select);
+  if(enhanced) enhanced.wrap.classList.add('full-width');
+  return wrap;
+}
+function makeStarToggle(currentValue, onChange){
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'star-toggle' + (currentValue ? ' is-active' : '');
+  btn.innerHTML = `<span>Anvil ✪ (2x stats)</span><span>${currentValue ? '✪ ON' : 'OFF'}</span>`;
+  btn.addEventListener('click', () => onChange(!currentValue));
+  return btn;
+}
+
+let weapons = [];
+let artifactSets = [];
+let skillsData = {}; // id -> {name, emoji, parent, unlock, levels:[{level, effect, ar, materials, tbd}]}
+let state = {
+  weapon: null,        // weapon name
+  weaponRolls: {},      // { atk / atkMin / atkMax / hp / critRate / critValue / defRate / defValue : value }
+  weaponPrefix: 'None', // prefix applied to the equipped weapon's own rolls
+  weaponStarred: false, // anvil "star" upgrade — doubles all of the weapon's own rolled stats
+  skillChoices: {},    // rootSkillId -> { skillId, level } — the active skill picked per skill-tree
+  artifacts: {},        // slot -> { setName, pieceName, rolls: {statKey:value}, specialRoll:value }
+  ar: 1,                // Adventure Rank (1-24). Every AR above 1 grants +5 HP / +1 ATK.
+  frostTreeLevel: 0,    // Frostbearing Tree level (0-80). Unlocks at WL4. Milestones grant permanent Max HP.
+  darkMode: false,
+  bag: {flower:[], plume:[], sands:[], goblet:[], circlet:[]},  // slot -> [ {id, nickname, setName, pieceName, icon, statsDef, special, weight, rolls, specialRoll} ]
+  weaponBag: []          // [ {id, nickname, weaponName, icon, type, worldLevel, crucible, weight, ability, atkType, rolls} ]
+};
+
+const AR_MIN = 1, AR_MAX = 24;
+function worldLevelForAR(ar){
+  if(ar <= 4) return 1;
+  if(ar <= 9) return 2;
+  if(ar <= 14) return 3;
+  if(ar <= 19) return 4;
+  return 5;
+}
+
+const FROST_TREE_MIN = 0, FROST_TREE_MAX = 80;
+const FROST_TREE_UNLOCK_WL = 4;
+const FROST_TREE_MILESTONES = [
+  { level:20, hp:10 },
+  { level:40, hp:20 },
+  { level:60, hp:30 },
+  { level:80, hp:40 }
+];
+function frostTreeBonusHP(level){
+  return FROST_TREE_MILESTONES.reduce((sum, m) => sum + (level >= m.level ? m.hp : 0), 0);
+}
+function frostTreeUnlocked(){
+  return worldLevelForAR(state.ar) >= FROST_TREE_UNLOCK_WL;
+}
+
+function parseRange(str){
+  if(str === undefined || str === null) return null;
+  if(typeof str === 'number') return {min:str, max:str};
+  const s = String(str).trim();
+  if(s === '-' || s === '') return null;
+  if(s.includes(' to ')){
+    const [a,b] = s.split(' to ').map(v => parseFloat(v));
+    if(isNaN(a) || isNaN(b)) return null;
+    return {min:a, max:b};
+  }
+  const n = parseFloat(s);
+  if(isNaN(n)) return null;
+  return {min:n, max:n};
+}
+
+function midpoint(range){ return Math.round(((range.min + range.max)/2) * 100) / 100; }
+
+async function loadData(){
+  try{
+    const [wRes, aRes, sRes] = await Promise.all([
+      fetch('../JSON/Weapons.json'), fetch('../JSON/Artifacts.json'), fetch('../JSON/Skills.json')
+    ]);
+    weapons = await wRes.json();
+    artifactSets = await aRes.json();
+    const skillsJson = await sRes.json();
+    skillsData = (skillsJson && skillsJson.skills) ? skillsJson.skills : {};
+    setStatus('Data loaded.');
+  }catch(e){
+    setStatus('⚠ Could not load ../JSON/Weapons.json, Artifacts.json, or Skills.json.');
+    console.error(e);
+  }
+}
+
+function setStatus(msg){
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  setTimeout(()=>{ if(el.textContent === msg) el.textContent=''; }, 3000);
+}
+
+function iconImg(src, path, alt){
+  const img = document.createElement('img');
+  img.src = path + src;
+  img.alt = alt;
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  img.onerror = () => { img.style.display='none'; };
+  return img;
+}
+
+// ---------- Picker modal (searchable / sortable / filterable) ----------
+// Generic modal used for both weapon and artifact-piece selection.
+// config: {
+//   title, iconPath, items: [...], getIcon, getName, getMeta(item)->string,
+//   getSearchText(item)->string, filterOptions:[{value,label,test(item)}],
+//   sortOptions:[{value,label,compare(a,b)}], allowNone, noneLabel,
+//   onSelect(item|null)
+// }
+const pickerEl = {
+  overlay: null, title: null, searchInput: null, filterSelect: null,
+  sortSelect: null, resultCount: null, list: null, closeBtn: null
+};
+let pickerConfig = null;
+let pickerState = { search:'', filter:'', sort:'' };
+let pickerViewMode = 'list';
+try{ pickerViewMode = localStorage.getItem('buildCalculator.pickerView') || 'list'; }catch(e){}
+
+/* ---------- Custom dropdown enhancer (matches Equipment Finder) ----------
+   Wraps a native <select> with a button + styled option list, while leaving
+   the original <select> in the DOM (hidden) so existing code that reads/sets
+   its .value and listens for "change" keeps working unchanged. Unlike the
+   Equipment Finder version, sync() here also rebuilds the menu, since the
+   picker dropdowns get their <option> list replaced each time openPicker()
+   runs (rather than being fixed for the page's lifetime). */
+function enhanceSelect(selectId){
+  const select = document.getElementById(selectId);
+  if(!select) return null;
+  return enhanceSelectEl(select);
+}
+
+function enhanceSelectEl(select){
+  if(!select) return null;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'custom-select';
+  select.parentNode.insertBefore(wrap, select);
+  wrap.appendChild(select);
+  select.classList.add('custom-select-native');
+
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'custom-select-trigger';
+  trigger.innerHTML =
+    '<span class="custom-select-trigger-label"></span>' +
+    '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  wrap.appendChild(trigger);
+
+  const menu = document.createElement('div');
+  menu.className = 'custom-select-menu';
+  wrap.appendChild(menu);
+
+  const labelEl = trigger.querySelector('.custom-select-trigger-label');
+
+  function buildMenu(){
+    menu.innerHTML = '';
+    Array.prototype.forEach.call(select.options, opt => {
+      const item = document.createElement('div');
+      item.className = 'custom-select-option' + (opt.value === select.value ? ' is-selected' : '');
+      item.textContent = opt.textContent;
+      item.dataset.value = opt.value;
+      item.addEventListener('click', () => {
+        if(select.value !== opt.value){
+          select.value = opt.value;
+          select.dispatchEvent(new Event('change', { bubbles:true }));
+        }
+        sync();
+        closeMenu();
+      });
+      menu.appendChild(item);
+    });
+  }
+
+  function sync(){
+    buildMenu();
+    const opt = select.options[select.selectedIndex];
+    labelEl.textContent = opt ? opt.textContent : '';
+  }
+
+  function openMenu(){
+    buildMenu();
+    menu.classList.add('is-open');
+    trigger.classList.add('is-open');
+  }
+  function closeMenu(){
+    menu.classList.remove('is-open');
+    trigger.classList.remove('is-open');
+  }
+
+  trigger.addEventListener('click', e => {
+    e.stopPropagation();
+    if(select.disabled) return;
+    if(menu.classList.contains('is-open')) closeMenu(); else openMenu();
+  });
+  document.addEventListener('click', e => {
+    if(!wrap.contains(e.target)) closeMenu();
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape') closeMenu();
+  });
+
+  sync();
+  return { sync, wrap };
+}
+
+function initPickerModal(){
+  pickerEl.overlay = document.getElementById('pickerOverlay');
+  pickerEl.title = document.getElementById('pickerTitle');
+  pickerEl.searchInput = document.getElementById('pickerSearchInput');
+  pickerEl.filterSelect = document.getElementById('pickerFilterSelect');
+  pickerEl.sortSelect = document.getElementById('pickerSortSelect');
+  pickerEl.resultCount = document.getElementById('pickerResultCount');
+  pickerEl.list = document.getElementById('pickerList');
+  pickerEl.closeBtn = document.getElementById('pickerCloseBtn');
+
+  pickerEl.filterDropdown = enhanceSelect('pickerFilterSelect');
+  pickerEl.sortDropdown = enhanceSelect('pickerSortSelect');
+
+  pickerEl.viewListBtn = document.getElementById('pickerViewListBtn');
+  pickerEl.viewGridBtn = document.getElementById('pickerViewGridBtn');
+  pickerEl.viewListBtn.addEventListener('click', ()=> setPickerViewMode('list'));
+  pickerEl.viewGridBtn.addEventListener('click', ()=> setPickerViewMode('grid'));
+  updatePickerViewButtons();
+
+  pickerEl.closeBtn.addEventListener('click', closePicker);
+  pickerEl.overlay.addEventListener('click', (e)=>{ if(e.target === pickerEl.overlay) closePicker(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && pickerEl.overlay.classList.contains('is-open')) closePicker(); });
+
+  pickerEl.searchInput.addEventListener('input', ()=>{
+    pickerState.search = pickerEl.searchInput.value.trim().toLowerCase();
+    renderPickerList();
+  });
+  pickerEl.filterSelect.addEventListener('change', ()=>{
+    pickerState.filter = pickerEl.filterSelect.value;
+    renderPickerList();
+  });
+  pickerEl.sortSelect.addEventListener('change', ()=>{
+    pickerState.sort = pickerEl.sortSelect.value;
+    renderPickerList();
+  });
+}
+
+function setPickerViewMode(mode){
+  if(pickerViewMode === mode) return;
+  pickerViewMode = mode;
+  try{ localStorage.setItem('buildCalculator.pickerView', mode); }catch(e){}
+  updatePickerViewButtons();
+  renderPickerList();
+}
+
+function updatePickerViewButtons(){
+  pickerEl.viewListBtn.classList.toggle('active', pickerViewMode === 'list');
+  pickerEl.viewGridBtn.classList.toggle('active', pickerViewMode === 'grid');
+}
+
+function openPicker(config){
+  pickerConfig = config;
+  const defaultSort = config.sortOptions && config.sortOptions.length
+    ? (config.sortOptions.find(s => s.value === 'wlAsc') || config.sortOptions[0]).value
+    : '';
+  pickerState = {
+    search:'',
+    filter: config.filterOptions && config.filterOptions.length ? config.filterOptions[0].value : '',
+    sort: defaultSort
+  };
+
+  pickerEl.title.textContent = config.title || 'Select';
+  pickerEl.searchInput.value = '';
+
+  // Filter dropdown
+  pickerEl.filterSelect.innerHTML = '';
+  if(config.filterOptions && config.filterOptions.length){
+    if(pickerEl.filterDropdown) pickerEl.filterDropdown.wrap.style.display = '';
+    config.filterOptions.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.value; opt.textContent = f.label;
+      pickerEl.filterSelect.appendChild(opt);
+    });
+  } else if(pickerEl.filterDropdown){
+    pickerEl.filterDropdown.wrap.style.display = 'none';
+  }
+  if(pickerEl.filterDropdown) pickerEl.filterDropdown.sync();
+
+  // Sort dropdown
+  pickerEl.sortSelect.innerHTML = '';
+  if(config.sortOptions && config.sortOptions.length){
+    if(pickerEl.sortDropdown) pickerEl.sortDropdown.wrap.style.display = '';
+    config.sortOptions.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.value; opt.textContent = 'Sort: ' + s.label;
+      pickerEl.sortSelect.appendChild(opt);
+    });
+    pickerEl.sortSelect.value = defaultSort;
+  } else if(pickerEl.sortDropdown){
+    pickerEl.sortDropdown.wrap.style.display = 'none';
+  }
+  if(pickerEl.sortDropdown) pickerEl.sortDropdown.sync();
+
+  pickerEl.overlay.classList.add('is-open');
+  renderPickerList();
+  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+  if(!isTouchDevice){
+    setTimeout(()=> pickerEl.searchInput.focus(), 30);
+  }
+}
+
+function closePicker(){
+  pickerEl.overlay.classList.remove('is-open');
+  pickerConfig = null;
+}
+
+// ---------- Shared simple-overlay modal helper ----------
+// Powers the nickname/confirm/settings/how-to-use popups: clicking the backdrop,
+// the ✕ button, or pressing Escape all close it. Each modal below layers its own
+// fields (inputs, callbacks) on top of this shared open/close/backdrop wiring.
+const simpleOverlays = [];
+function bindSimpleOverlay(overlayId, closeBtnId){
+  const overlay = document.getElementById(overlayId);
+  const closeBtn = closeBtnId ? document.getElementById(closeBtnId) : null;
+  const api = {
+    overlay,
+    open(){ overlay.classList.add('is-open'); },
+    close(){ overlay.classList.remove('is-open'); }
+  };
+  if(closeBtn) closeBtn.addEventListener('click', api.close);
+  overlay.addEventListener('click', e => { if(e.target === overlay) api.close(); });
+  simpleOverlays.push(api);
+  return api;
+}
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Escape') return;
+  simpleOverlays.forEach(m => { if(m.overlay.classList.contains('is-open')) m.close(); });
+});
+
+/* ---------- Nickname modal (replaces window.prompt for bag saves) ---------- */
+const nicknameEl = {};
+let nicknameConfirmCallback = null;
+
+function initNicknameModal(){
+  nicknameEl.modal = bindSimpleOverlay('nicknameOverlay', 'nicknameCloseBtn');
+  nicknameEl.overlay = nicknameEl.modal.overlay;
+  nicknameEl.title = document.getElementById('nicknameTitle');
+  nicknameEl.input = document.getElementById('nicknameInput');
+  nicknameEl.saveBtn = document.getElementById('nicknameSaveBtn');
+  nicknameEl.cancelBtn = document.getElementById('nicknameCancelBtn');
+
+  const confirm = () => {
+    const val = nicknameEl.input.value.trim();
+    const cb = nicknameConfirmCallback;
+    closeNicknameModal();
+    if(cb) cb(val);
+  };
+
+  nicknameEl.saveBtn.addEventListener('click', confirm);
+  nicknameEl.input.addEventListener('keydown', e => { if(e.key === 'Enter') confirm(); });
+  nicknameEl.cancelBtn.addEventListener('click', closeNicknameModal);
+}
+
+function openNicknameModal(title, onConfirm){
+  nicknameEl.title.textContent = title;
+  nicknameEl.input.value = '';
+  nicknameConfirmCallback = onConfirm;
+  nicknameEl.modal.open();
+  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+  if(!isTouchDevice){
+    setTimeout(()=> nicknameEl.input.focus(), 30);
+  }
+}
+
+function closeNicknameModal(){
+  nicknameEl.modal.close();
+  nicknameConfirmCallback = null;
+}
+
+/* ---------- Confirm modal (replaces window.confirm, styled like other popups) ---------- */
+const confirmEl = {};
+let confirmOkCallback = null;
+
+function initConfirmModal(){
+  confirmEl.modal = bindSimpleOverlay('confirmOverlay', 'confirmCloseBtn');
+  confirmEl.overlay = confirmEl.modal.overlay;
+  confirmEl.title = document.getElementById('confirmTitle');
+  confirmEl.message = document.getElementById('confirmMessage');
+  confirmEl.okBtn = document.getElementById('confirmOkBtn');
+  confirmEl.cancelBtn = document.getElementById('confirmCancelBtn');
+
+  const runConfirm = () => {
+    const cb = confirmOkCallback;
+    closeConfirmModal();
+    if(cb) cb();
+  };
+
+  confirmEl.okBtn.addEventListener('click', runConfirm);
+  confirmEl.cancelBtn.addEventListener('click', closeConfirmModal);
+}
+
+function openConfirmModal(title, message, okLabel, onConfirm){
+  confirmEl.title.textContent = title;
+  confirmEl.message.textContent = message;
+  confirmEl.okBtn.textContent = okLabel || 'Confirm';
+  confirmOkCallback = onConfirm;
+  confirmEl.modal.open();
+}
+
+function closeConfirmModal(){
+  confirmEl.modal.close();
+  confirmOkCallback = null;
+}
+
+/* ---------- Settings modal ---------- */
+let settingsModal = null;
+
+function initSettingsModal(){
+  settingsModal = bindSimpleOverlay('settingsOverlay', 'settingsCloseBtn');
+}
+
+function openSettingsModal(){ settingsModal.open(); }
+function closeSettingsModal(){ settingsModal.close(); }
+
+/* ---------- How to Use modal ---------- */
+let howToUseModal = null;
+
+function initHowToUseModal(){
+  howToUseModal = bindSimpleOverlay('howToUseOverlay', 'howToUseCloseBtn');
+}
+
+function openHowToUseModal(){ howToUseModal.open(); }
+function closeHowToUseModal(){ howToUseModal.close(); }
+
+function renderPickerList(){
+  if(!pickerConfig) return;
+  const cfg = pickerConfig;
+  let items = cfg.items.slice();
+
+  // Filter
+  if(pickerState.filter && cfg.filterOptions){
+    const f = cfg.filterOptions.find(x => x.value === pickerState.filter);
+    if(f && f.test) items = items.filter(f.test);
+  }
+
+  // Search
+  if(pickerState.search){
+    items = items.filter(it => cfg.getSearchText(it).toLowerCase().includes(pickerState.search));
+  }
+
+  // Sort
+  if(pickerState.sort && cfg.sortOptions){
+    const s = cfg.sortOptions.find(x => x.value === pickerState.sort);
+    if(s && s.compare) items = items.slice().sort(s.compare);
+  }
+
+  pickerEl.resultCount.textContent = `${items.length} result${items.length === 1 ? '' : 's'}`;
+
+  pickerEl.list.innerHTML = '';
+  pickerEl.list.classList.toggle('is-grid', pickerViewMode === 'grid');
+
+  if(cfg.allowNone){
+    const noneRow = document.createElement('div');
+    noneRow.className = 'picker-none-row';
+    noneRow.textContent = cfg.noneLabel || '— None —';
+    noneRow.addEventListener('click', ()=>{ cfg.onSelect(null); closePicker(); });
+    pickerEl.list.appendChild(noneRow);
+  }
+
+  if(!items.length){
+    const empty = document.createElement('div');
+    empty.className = 'picker-empty';
+    empty.textContent = 'No matches found.';
+    pickerEl.list.appendChild(empty);
+    return;
+  }
+
+  items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'picker-item' +
+      (pickerViewMode === 'grid' ? ' is-grid-item' : '') +
+      (cfg.isCurrent && cfg.isCurrent(item) ? ' is-current' : '');
+
+    const iconWrap = document.createElement('div');
+    iconWrap.className = 'picker-item-icon';
+    iconWrap.appendChild(iconImg(cfg.getIcon(item), cfg.iconPath, cfg.getName(item)));
+    row.appendChild(iconWrap);
+
+    const text = document.createElement('div');
+    text.className = 'picker-item-text';
+    text.innerHTML = `<div class="picker-item-name"></div><div class="picker-item-meta"></div>`;
+    text.querySelector('.picker-item-name').textContent = cfg.getName(item);
+    text.querySelector('.picker-item-meta').textContent = cfg.getMeta(item);
+    row.appendChild(text);
+
+    row.addEventListener('click', ()=>{ cfg.onSelect(item); closePicker(); });
+    pickerEl.list.appendChild(row);
+  });
+}
+
+// Builds a "picker-btn" element that opens the picker modal on click.
+function buildPickerButton(getLabel, getIconInfo, onClick){
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'picker-btn';
+
+  const iconWrap = document.createElement('div');
+  iconWrap.className = 'picker-btn-icon';
+  btn.appendChild(iconWrap);
+
+  const label = document.createElement('span');
+  label.className = 'picker-btn-label';
+  btn.appendChild(label);
+
+  const chevron = document.createElement('span');
+  chevron.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  btn.appendChild(chevron);
+
+  function refresh(){
+    const text = getLabel();
+    label.textContent = text.label;
+    label.classList.toggle('is-placeholder', !!text.isPlaceholder);
+    iconWrap.innerHTML = '';
+    const info = getIconInfo();
+    if(info){
+      iconWrap.appendChild(iconImg(info.icon, info.path, text.label));
+    }
+  }
+  refresh();
+
+  btn.addEventListener('click', onClick);
+  return { el: btn, refresh: refresh };
+}
+
+// ---------- Weapon panel ----------
+var weaponPickerBtn = null;
+function weaponPickerLabel(){
+  if(!state.weapon) return { label: '— Select a weapon —', isPlaceholder:true };
+  const w = weapons.find(x => x.name === state.weapon);
+  return { label: w ? `${w.name}${state.weaponStarred ? ' ✪' : ''} (WL${w.worldLevel})` : state.weapon };
+}
+function weaponPickerIconInfo(){
+  const w = weapons.find(x => x.name === state.weapon);
+  return w ? { icon: w.icon, path: WEAPON_ICON_PATH } : null;
+}
+function openWeaponPicker(){
+  const types = Array.from(new Set(weapons.map(w => w.type))).sort();
+  openPicker({
+    title: 'Select a Weapon',
+    iconPath: WEAPON_ICON_PATH,
+    items: weapons,
+    allowNone: true,
+    noneLabel: '— No weapon —',
+    isCurrent: (w) => w.name === state.weapon,
+    getIcon: (w) => w.icon,
+    getName: (w) => w.name,
+    getMeta: (w) => `${w.type} · WL${w.worldLevel}`,
+    getSearchText: (w) => `${w.name} ${w.type}`,
+    filterOptions: [
+      { value:'', label:'All Types' },
+      ...types.map(t => ({ value:t, label:t, test:(w)=> w.type === t }))
+    ],
+    sortOptions: [
+      { value:'name', label:'Name (A–Z)', compare:(a,b)=> a.name.localeCompare(b.name) },
+      { value:'wlAsc', label:'World Level (Low–High)', compare:(a,b)=> a.worldLevel - b.worldLevel || a.name.localeCompare(b.name) },
+      { value:'wlDesc', label:'World Level (High–Low)', compare:(a,b)=> b.worldLevel - a.worldLevel || a.name.localeCompare(b.name) }
+    ],
+    onSelect: (w) => {
+      state.weapon = w ? w.name : null;
+      state.weaponRolls = {};
+      state.weaponPrefix = 'None';
+      state.weaponStarred = false;
+      weaponPickerBtn.refresh();
+      renderWeaponSlot();
+      renderTotals();
+    }
+  });
+}
+function buildWeaponSelect(){
+  const wrap = document.getElementById('weaponPickerBtnWrap');
+  wrap.innerHTML = '';
+  weaponPickerBtn = buildPickerButton(weaponPickerLabel, weaponPickerIconInfo, openWeaponPicker);
+  wrap.appendChild(weaponPickerBtn.el);
+}
+
+function renderWeaponSlot(){
+  const container = document.getElementById('weaponSlot');
+  container.innerHTML = '';
+  if(!state.weapon){
+    container.innerHTML = '<div class="empty-hint">No weapon selected.</div>';
+    return;
+  }
+  const w = weapons.find(x => x.name === state.weapon);
+  if(!w) return;
+
+  const slotDiv = document.createElement('div');
+  slotDiv.className = 'slot';
+
+  const head = document.createElement('div');
+  head.className = 'slot-head';
+  head.appendChild(iconImg(w.icon, WEAPON_ICON_PATH, w.name));
+  const nameWrap = document.createElement('div');
+  nameWrap.className = 'slot-head-name';
+  nameWrap.innerHTML = `<div class="name">${w.name}${state.weaponStarred ? ' ✪' : ''}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
+  head.appendChild(nameWrap);
+  const removeBtn = makeRemoveButton('weapon', ()=>{
+    state.weapon = null;
+    state.weaponRolls = {};
+    state.weaponPrefix = 'None';
+    state.weaponStarred = false;
+    if(weaponPickerBtn) weaponPickerBtn.refresh();
+    renderWeaponSlot();
+    renderTotals();
+  });
+  head.appendChild(removeBtn);
+  slotDiv.appendChild(head);
+
+  slotDiv.appendChild(makePrefixSelect(state.weaponPrefix, (val) => {
+    state.weaponPrefix = val;
+    renderWeaponSlot();
+    renderTotals();
+  }));
+
+  slotDiv.appendChild(makeStarToggle(state.weaponStarred, (val) => {
+    state.weaponStarred = val;
+    if(weaponPickerBtn) weaponPickerBtn.refresh();
+    renderWeaponSlot();
+    renderTotals();
+  }));
+
+  // ATK
+  const weaponMult = (rollKey) => prefixFactor(state.weaponPrefix, rollKey) * (state.weaponStarred ? 2 : 1);
+  const effFn = (rollKey) => (v) => {
+    const m = weaponMult(rollKey);
+    return m !== 1 ? round(v * m) : null;
+  };
+  if(w.atkType === 'flat'){
+    const range = parseRange(w.atkRoll);
+    if(range) slotDiv.appendChild(makeSlider('ATK Roll', 'atk', range, val => {
+      state.weaponRolls.atk = val; renderTotals();
+    }, state.weaponRolls.atk, '', effFn('atk')));
+  } else if(w.atkType === 'minMax'){
+    const minR = parseRange(w.atkRollMin);
+    const maxR = parseRange(w.atkRollMax);
+    if(minR) slotDiv.appendChild(makeSlider('ATK Roll (low end)', 'atkMin', minR, val => {
+      state.weaponRolls.atkMin = val; renderTotals();
+    }, state.weaponRolls.atkMin, '', effFn('atkMin')));
+    if(maxR) slotDiv.appendChild(makeSlider('ATK Roll (high end)', 'atkMax', maxR, val => {
+      state.weaponRolls.atkMax = val; renderTotals();
+    }, state.weaponRolls.atkMax, '', effFn('atkMax')));
+  }
+
+  // Secondary stats
+  const secondary = [
+    ['hp','HP'], ['critRate','Crit Rate'], ['critValue','Crit Value'],
+    ['defRate','Def Rate'], ['defValue','Def Value']
+  ];
+  secondary.forEach(([key,label])=>{
+    const range = parseRange(w[key]);
+    if(range) slotDiv.appendChild(makeSlider(label, key, range, val => {
+      state.weaponRolls[key] = val; renderTotals();
+    }, state.weaponRolls[key], key==='critRate'||key==='defRate' ? '%' : '', effFn(key)));
+  });
+
+  if(w.ability){
+    const p = document.createElement('div');
+    p.className = 'flavor';
+    p.textContent = w.ability;
+    slotDiv.appendChild(p);
+  }
+
+  const btnRow = document.createElement('div');
+  btnRow.className = 'bag-btn-row';
+  const saveBtn = document.createElement('button');
+  saveBtn.textContent = '🎒 Save to Bag';
+  saveBtn.addEventListener('click', saveWeaponToBag);
+  btnRow.appendChild(saveBtn);
+  slotDiv.appendChild(btnRow);
+
+  container.appendChild(slotDiv);
+}
+
+// Short meta line: item type, world level, and prefix (if any).
+function weaponBagMeta(item){
+  const parts = [item.type, `WL${item.worldLevel}`];
+  if(item.prefix && item.prefix !== 'None') parts.push(item.prefix);
+  return parts.join(' · ');
+}
+
+// Individual stat chips (kept short so they wrap cleanly instead of one long run-on line).
+function weaponBagChips(item){
+  const rolls = item.rolls || {};
+  const chips = [];
+  if(rolls.atkMin !== undefined && rolls.atkMax !== undefined){
+    chips.push(`ATK ${rolls.atkMin}\u2013${rolls.atkMax}`);
+  } else {
+    if(rolls.atkMin !== undefined) chips.push(`ATK low ${rolls.atkMin}`);
+    if(rolls.atkMax !== undefined) chips.push(`ATK high ${rolls.atkMax}`);
+  }
+  if(rolls.atk !== undefined) chips.push(`ATK ${rolls.atk}`);
+  if(rolls.hp !== undefined) chips.push(`HP ${rolls.hp}`);
+  if(rolls.critRate !== undefined) chips.push(`CR ${rolls.critRate}%`);
+  if(rolls.critValue !== undefined) chips.push(`CV ${rolls.critValue}`);
+  if(rolls.defRate !== undefined) chips.push(`DR ${rolls.defRate}%`);
+  if(rolls.defValue !== undefined) chips.push(`DV ${rolls.defValue}`);
+  if(item.starred) chips.push('✪ Anvil');
+  return chips;
+}
+
+function saveWeaponToBag(){
+  if(!state.weapon) return;
+  const w = weapons.find(x => x.name === state.weapon);
+  if(!w) return;
+  openNicknameModal('Nickname for this weapon', (nickname) => {
+    const item = {
+      id: 'w' + Date.now() + Math.random().toString(36).slice(2, 7),
+      nickname,
+      weaponName: w.name,
+      icon: w.icon,
+      type: w.type,
+      worldLevel: w.worldLevel,
+      crucible: w.crucible,
+      weight: w.weight,
+      ability: w.ability,
+      rolls: {...state.weaponRolls},
+      prefix: state.weaponPrefix || 'None',
+      starred: !!state.weaponStarred
+    };
+    state.weaponBag.push(item);
+    saveWeaponBagToStorage();
+    refreshBagUI();
+    setStatus('Saved to bag.');
+  });
+}
+
+function equipWeaponFromBag(id){
+  const item = (state.weaponBag || []).find(b => b.id === id);
+  if(!item) return;
+  state.weapon = item.weaponName;
+  state.weaponRolls = {...item.rolls};
+  state.weaponPrefix = item.prefix || 'None';
+  state.weaponStarred = !!item.starred;
+  if(weaponPickerBtn) weaponPickerBtn.refresh();
+  renderWeaponSlot();
+  renderTotals();
+  setStatus('Equipped from bag.');
+}
+
+function deleteWeaponFromBag(id){
+  state.weaponBag = (state.weaponBag || []).filter(b => b.id !== id);
+  saveWeaponBagToStorage();
+  refreshBagUI();
+}
+
+function saveWeaponBagToStorage(){
+  try{ localStorage.setItem('buildCalculator.weaponBag', JSON.stringify(state.weaponBag)); }
+  catch(e){ setStatus('Could not save weapon bag.'); }
+}
+
+function loadWeaponBagFromStorage(){
+  try{
+    const raw = localStorage.getItem('buildCalculator.weaponBag');
+    state.weaponBag = raw ? JSON.parse(raw) : [];
+  }catch(e){
+    state.weaponBag = [];
+  }
+}
+
+function makeRemoveButton(label, onConfirm){
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'slot-remove-btn';
+  btn.title = `Remove ${label}`;
+  btn.setAttribute('aria-label', `Remove ${label}`);
+  btn.textContent = '✕';
+  let confirming = false;
+  let timer = null;
+  function reset(){
+    confirming = false;
+    clearTimeout(timer);
+    btn.classList.remove('is-confirming');
+    btn.textContent = '✕';
+    btn.title = `Remove ${label}`;
+  }
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    if(!confirming){
+      confirming = true;
+      btn.classList.add('is-confirming');
+      btn.textContent = 'Remove?';
+      btn.title = `Click again to remove ${label}`;
+      timer = setTimeout(reset, 2500);
+    } else {
+      reset();
+      onConfirm();
+    }
+  });
+  document.addEventListener('click', (e)=>{
+    if(confirming && e.target !== btn) reset();
+  });
+  return btn;
+}
+
+function makeSlider(label, key, range, onChange, currentVal, suffix='', getEffective=null){
+  const row = document.createElement('div');
+  row.className = 'stat-row';
+  const step = (Number.isInteger(range.min) && Number.isInteger(range.max)) ? 1 : 0.1;
+  const val = (currentVal !== undefined && currentVal !== null) ? currentVal : midpoint(range);
+  onChange(val); // ensure state initialized
+  row.innerHTML = `<label><span>${label} (${range.min} to ${range.max})</span><span class="val-wrap"><input type="number" class="val-input"></span></label>`;
+
+  const numInput = row.querySelector('.val-input');
+  numInput.min = range.min; numInput.max = range.max; numInput.step = step; numInput.value = val;
+  if(suffix){
+    const suffixSpan = document.createElement('span');
+    suffixSpan.textContent = suffix;
+    numInput.insertAdjacentElement('afterend', suffixSpan);
+  }
+
+  let effectiveSpan = null;
+  if(getEffective){
+    effectiveSpan = document.createElement('div');
+    effectiveSpan.className = 'stat-effective';
+    row.appendChild(effectiveSpan);
+    const refreshEffective = (v) => {
+      const eff = getEffective(v);
+      effectiveSpan.textContent = eff !== null ? `→ ${eff}${suffix}` : '';
+      effectiveSpan.style.display = eff !== null ? '' : 'none';
+    };
+    refreshEffective(val);
+    row._refreshEffective = refreshEffective;
+  }
+
+  const input = document.createElement('input');
+  input.type = 'range';
+  input.min = range.min; input.max = range.max; input.step = step; input.value = val;
+
+  function clamp(v){
+    if(isNaN(v)) return parseFloat(input.value);
+    return Math.min(range.max, Math.max(range.min, v));
+  }
+
+  input.addEventListener('input', ()=>{
+    const v = parseFloat(input.value);
+    numInput.value = v;
+    onChange(v);
+    if(effectiveSpan) row._refreshEffective(v);
+  });
+  numInput.addEventListener('input', ()=>{
+    // Live-update state as they type, without clamping/reformatting mid-keystroke.
+    const v = parseFloat(numInput.value);
+    if(!isNaN(v)){
+      input.value = clamp(v);
+      onChange(clamp(v));
+      if(effectiveSpan) row._refreshEffective(clamp(v));
+    }
+  });
+  numInput.addEventListener('blur', ()=>{
+    const v = clamp(parseFloat(numInput.value));
+    numInput.value = v;
+    input.value = v;
+    onChange(v);
+    if(effectiveSpan) row._refreshEffective(v);
+  });
+  numInput.addEventListener('keydown', e=>{
+    if(e.key === 'Enter') numInput.blur();
+  });
+
+  row.appendChild(input);
+  return row;
+}
+
+// ---------- Artifact panel ----------
+function findPieceOptions(slot){
+  const opts = [];
+  artifactSets.forEach(set => {
+    const piece = set.pieces && set.pieces[slot];
+    if(piece){
+      opts.push({ setName: set.setName, pieceName: piece.name, icon: piece.icon, stats: piece.stats, special: piece.special, worldLevel: set.worldLevel, weight: (set.weights ? set.weights[slot] : null) });
+    }
+  });
+  return opts.sort((a,b)=> a.worldLevel - b.worldLevel || a.setName.localeCompare(b.setName));
+}
+
+var artifactPickerBtns = {};
+function artifactPickerLabel(slot){
+  const current = state.artifacts[slot];
+  if(!current) return { label: `— ${SLOT_LABELS[slot]}: none —`, isPlaceholder:true };
+  return { label: `${current.setName} — ${current.pieceName}` };
+}
+function artifactPickerIconInfo(slot){
+  const current = state.artifacts[slot];
+  return current ? { icon: current.icon, path: ARTIFACT_ICON_PATH } : null;
+}
+function openArtifactPicker(slot){
+  const options = findPieceOptions(slot);
+  const setNames = Array.from(new Set(options.map(o => o.setName))).sort();
+  const current = state.artifacts[slot];
+  openPicker({
+    title: `Select ${SLOT_LABELS[slot]}`,
+    iconPath: ARTIFACT_ICON_PATH,
+    items: options,
+    allowNone: true,
+    noneLabel: `— ${SLOT_LABELS[slot]}: none —`,
+    isCurrent: (o) => !!current && o.setName === current.setName && o.pieceName === current.pieceName,
+    getIcon: (o) => o.icon,
+    getName: (o) => `${o.setName} — ${o.pieceName}`,
+    getMeta: (o) => `WL${o.worldLevel}`,
+    getSearchText: (o) => `${o.setName} ${o.pieceName}`,
+    filterOptions: [
+      { value:'', label:'All Sets' },
+      ...setNames.map(s => ({ value:s, label:s, test:(o)=> o.setName === s }))
+    ],
+    sortOptions: [
+      { value:'name', label:'Set Name (A–Z)', compare:(a,b)=> a.setName.localeCompare(b.setName) || a.pieceName.localeCompare(b.pieceName) },
+      { value:'wlAsc', label:'World Level (Low–High)', compare:(a,b)=> a.worldLevel - b.worldLevel || a.setName.localeCompare(b.setName) },
+      { value:'wlDesc', label:'World Level (High–Low)', compare:(a,b)=> b.worldLevel - a.worldLevel || a.setName.localeCompare(b.setName) }
+    ],
+    onSelect: (o) => {
+      if(!o){
+        delete state.artifacts[slot];
+      } else {
+        state.artifacts[slot] = { setName: o.setName, pieceName: o.pieceName, icon: o.icon, statsDef: o.stats, special: o.special, weight: o.weight, rolls: {}, specialRoll: undefined, prefix: 'None' };
+      }
+      if(artifactPickerBtns[slot]) artifactPickerBtns[slot].refresh();
+      renderArtifactSlotDetail(slot, options);
+      renderTotals();
+    }
+  });
+}
+function buildArtifactSlots(){
+  const container = document.getElementById('artifactSlots');
+  container.innerHTML = '';
+  artifactPickerBtns = {};
+  SLOTS.forEach(slot => {
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '14px';
+
+    const btn = buildPickerButton(
+      () => artifactPickerLabel(slot),
+      () => artifactPickerIconInfo(slot),
+      () => openArtifactPicker(slot)
+    );
+    artifactPickerBtns[slot] = btn;
+    wrap.appendChild(btn.el);
+
+    const detailDiv = document.createElement('div');
+    detailDiv.id = `detail-${slot}`;
+    wrap.appendChild(detailDiv);
+    container.appendChild(wrap);
+
+    renderArtifactSlotDetail(slot, findPieceOptions(slot));
+  });
+}
+
+function renderArtifactSlotDetail(slot, options){
+  const detailDiv = document.getElementById(`detail-${slot}`);
+  detailDiv.innerHTML = '';
+  const current = state.artifacts[slot];
+
+  if(current){
+    const slotDiv = document.createElement('div');
+    slotDiv.className = 'slot';
+
+    const head = document.createElement('div');
+    head.className = 'slot-head';
+    head.appendChild(iconImg(current.icon, ARTIFACT_ICON_PATH, current.pieceName));
+    const nameWrap = document.createElement('div');
+    nameWrap.className = 'slot-head-name';
+    nameWrap.innerHTML = `<div class="name">${current.pieceName}</div><div class="sub">${current.setName}</div>`;
+    head.appendChild(nameWrap);
+    const removeBtn = makeRemoveButton(SLOT_LABELS[slot], ()=>{
+      delete state.artifacts[slot];
+      if(artifactPickerBtns[slot]) artifactPickerBtns[slot].refresh();
+      renderArtifactSlotDetail(slot, options);
+      renderTotals();
+    });
+    head.appendChild(removeBtn);
+    slotDiv.appendChild(head);
+
+    slotDiv.appendChild(makePrefixSelect(current.prefix, (val) => {
+      current.prefix = val;
+      renderArtifactSlotDetail(slot, options);
+      renderTotals();
+    }));
+
+    Object.entries(current.statsDef).forEach(([statKey, range]) => {
+      slotDiv.appendChild(makeSlider(statLabel(statKey), statKey, range, val => {
+        current.rolls[statKey] = val; renderTotals();
+      }, current.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR') ? '%' : '', (v) => {
+        const m = prefixFactor(current.prefix, statKey);
+        return m !== 1 ? round(v * m) : null;
+      }));
+    });
+
+    if(current.special){
+      const sp = current.special;
+      slotDiv.appendChild(makeSlider(sp.label, 'special', {min:sp.min, max:sp.max}, val => {
+        current.specialRoll = val; renderTotals();
+      }, current.specialRoll, sp.suffix || ''));
+    }
+
+    const btnRow = document.createElement('div');
+    btnRow.className = 'bag-btn-row';
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = '🎒 Save to Bag';
+    saveBtn.addEventListener('click', () => saveToBag(slot));
+    btnRow.appendChild(saveBtn);
+    slotDiv.appendChild(btnRow);
+
+    detailDiv.appendChild(slotDiv);
+  }
+
+  renderWeightTotal();
+}
+
+// Short meta line: set name and prefix (if any).
+function artifactBagMeta(item){
+  const parts = [item.setName];
+  if(item.prefix && item.prefix !== 'None') parts.push(item.prefix);
+  return parts.join(' · ');
+}
+
+// Individual stat chips (short labels, kept as separate chips instead of one long line).
+function artifactBagChips(item){
+  const shortLabel = {HP:'HP', ATK:'ATK', CR:'CR', CV:'CV', DR:'DR', DV:'DV'};
+  const chips = Object.entries(item.rolls || {}).map(([k,v]) =>
+    `${shortLabel[k] || statLabel(k)} ${v}${(k==='CR'||k==='CV'||k==='DR') ? '%' : ''}`
+  );
+  if(item.special && item.specialRoll !== undefined){
+    chips.push(`${item.special.label} ${item.specialRoll}${item.special.suffix || ''}`);
+  }
+  return chips;
+}
+
+function saveToBag(slot){
+  const current = state.artifacts[slot];
+  if(!current) return;
+  openNicknameModal('Nickname for this piece', (nickname) => {
+    const item = {
+      id: 'b' + Date.now() + Math.random().toString(36).slice(2, 7),
+      nickname,
+      setName: current.setName,
+      pieceName: current.pieceName,
+      icon: current.icon,
+      statsDef: current.statsDef,
+      special: current.special,
+      weight: current.weight,
+      rolls: {...current.rolls},
+      specialRoll: current.specialRoll,
+      prefix: current.prefix || 'None'
+    };
+    if(!state.bag[slot]) state.bag[slot] = [];
+    state.bag[slot].push(item);
+    saveBagToStorage();
+    renderArtifactSlotDetail(slot, options_for(slot));
+    refreshBagUI();
+    setStatus('Saved to bag.');
+  });
+}
+
+function equipFromBag(slot, id){
+  const item = (state.bag[slot] || []).find(b => b.id === id);
+  if(!item) return;
+  state.artifacts[slot] = {
+    setName: item.setName,
+    pieceName: item.pieceName,
+    icon: item.icon,
+    statsDef: item.statsDef,
+    special: item.special,
+    weight: item.weight,
+    rolls: {...item.rolls},
+    specialRoll: item.specialRoll,
+    prefix: item.prefix || 'None'
+  };
+  const options = options_for(slot);
+  if(artifactPickerBtns[slot]) artifactPickerBtns[slot].refresh();
+  renderArtifactSlotDetail(slot, options);
+  renderTotals();
+  setStatus('Equipped from bag.');
+}
+
+function deleteFromBag(slot, id){
+  state.bag[slot] = (state.bag[slot] || []).filter(b => b.id !== id);
+  saveBagToStorage();
+  renderArtifactSlotDetail(slot, options_for(slot));
+  refreshBagUI();
+}
+
+function options_for(slot){
+  return findPieceOptions(slot);
+}
+
+function saveBagToStorage(){
+  try{ localStorage.setItem('buildCalculator.bag', JSON.stringify(state.bag)); }
+  catch(e){ setStatus('Could not save bag.'); }
+}
+
+function loadBagFromStorage(){
+  try{
+    const raw = localStorage.getItem('buildCalculator.bag');
+    state.bag = raw ? JSON.parse(raw) : {flower:[], plume:[], sands:[], goblet:[], circlet:[]};
+  }catch(e){
+    state.bag = {flower:[], plume:[], sands:[], goblet:[], circlet:[]};
+  }
+  SLOTS.forEach(slot => { if(!state.bag[slot]) state.bag[slot] = []; });
+}
+
+function statLabel(key){
+  const map = {HP:'HP', ATK:'ATK', CR:'Crit Rate', CV:'Crit Value', DR:'Def Rate', DV:'Def Value'};
+  return map[key] || key;
+}
+
+function renderWeightTotal(){
+  let total = 0;
+  SLOTS.forEach(slot => {
+    const a = state.artifacts[slot];
+    if(a && a.weight) total += a.weight;
+  });
+  document.getElementById('weightTotal').textContent = total > 0 ? `Total artifact weight: ${total.toFixed(2)}` : '';
+}
+
+// ---------- AR / WL ----------
+function renderArInput(){
+  const input = document.getElementById('arInput');
+  const badge = document.getElementById('arWlBadge');
+  if(input) input.value = state.ar;
+  if(badge) badge.textContent = `WL ${worldLevelForAR(state.ar)}`;
+}
+
+function initArInput(){
+  const input = document.getElementById('arInput');
+  if(!input) return;
+  const commit = () => {
+    let v = parseInt(input.value, 10);
+    if(isNaN(v)) v = state.ar;
+    v = Math.min(AR_MAX, Math.max(AR_MIN, v));
+    state.ar = v;
+    renderArInput();
+    renderFrostTree();
+    renderTotals();
+  };
+  input.addEventListener('input', ()=>{
+    const v = parseInt(input.value, 10);
+    if(!isNaN(v)){
+      state.ar = Math.min(AR_MAX, Math.max(AR_MIN, v));
+      document.getElementById('arWlBadge').textContent = `WL ${worldLevelForAR(state.ar)}`;
+      renderFrostTree();
+      renderTotals();
+    }
+  });
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', e => { if(e.key === 'Enter') input.blur(); });
+}
+
+function renderFrostTree(){
+  const block = document.getElementById('frostBlock');
+  const input = document.getElementById('frostInput');
+  const badge = document.getElementById('frostBonusBadge');
+  const fill = document.getElementById('frostTrackFill');
+  const track = document.getElementById('frostTrack');
+  if(!block) return;
+
+  const unlocked = frostTreeUnlocked();
+  block.classList.toggle('is-visible', unlocked);
+  if(!unlocked) return;
+
+  const level = state.frostTreeLevel || 0;
+  input.value = level;
+  badge.textContent = `+${frostTreeBonusHP(level)} Max HP`;
+  fill.style.width = `${Math.min(100, (level / FROST_TREE_MAX) * 100)}%`;
+
+  track.querySelectorAll('.frost-node, .frost-node-label').forEach(el => el.remove());
+  FROST_TREE_MILESTONES.forEach(m => {
+    const pct = (m.level / FROST_TREE_MAX) * 100;
+    const reached = level >= m.level;
+
+    const node = document.createElement('div');
+    node.className = 'frost-node' + (reached ? ' is-reached' : '');
+    node.style.left = `${pct}%`;
+    node.addEventListener('click', () => setFrostTreeLevel(m.level));
+    track.appendChild(node);
+
+    const label = document.createElement('div');
+    label.className = 'frost-node-label' + (reached ? ' is-reached' : '');
+    label.style.left = `${pct}%`;
+    label.innerHTML = `<span class="lv">Lv${m.level}</span><span class="hp">+${m.hp}</span>`;
+    label.addEventListener('click', () => setFrostTreeLevel(m.level));
+    track.appendChild(label);
+  });
+}
+
+function setFrostTreeLevel(level){
+  state.frostTreeLevel = Math.min(FROST_TREE_MAX, Math.max(FROST_TREE_MIN, level));
+  renderFrostTree();
+  renderTotals();
+}
+
+function initFrostTreeInput(){
+  const input = document.getElementById('frostInput');
+  if(!input) return;
+  const commit = () => {
+    let v = parseInt(input.value, 10);
+    if(isNaN(v)) v = state.frostTreeLevel || 0;
+    v = Math.min(FROST_TREE_MAX, Math.max(FROST_TREE_MIN, v));
+    state.frostTreeLevel = v;
+    renderFrostTree();
+    renderTotals();
+  };
+  input.addEventListener('input', ()=>{
+    const v = parseInt(input.value, 10);
+    if(!isNaN(v)){
+      state.frostTreeLevel = Math.min(FROST_TREE_MAX, Math.max(FROST_TREE_MIN, v));
+      renderFrostTree();
+      renderTotals();
+    }
+  });
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', e => { if(e.key === 'Enter') input.blur(); });
+}
+
+// ---------- Totals & set bonuses ----------
+// Sliders fire many 'input' events per second while being dragged; batching every
+// call into a single requestAnimationFrame keeps dragging smooth instead of forcing
+// a full totals/bonus/specials re-render (3 innerHTML rebuilds) per tiny tick.
+let totalsRenderQueued = false;
+function renderTotals(){
+  if(totalsRenderQueued) return;
+  totalsRenderQueued = true;
+  requestAnimationFrame(() => {
+    totalsRenderQueued = false;
+    computeAndRenderTotals();
+    scheduleAutosave();
+  });
+}
+
+function computeAndRenderTotals(){
+  const totals = { hp: BASE_STATS.hp, atkLow: BASE_STATS.atkLow, atkHigh: BASE_STATS.atkHigh,
+                    cr: BASE_STATS.cr, cv: BASE_STATS.cv, dr: BASE_STATS.dr, dv: BASE_STATS.dv };
+
+  // AR contributions — every AR above 1 grants +5 HP and +1 ATK (both ends of the roll).
+  const arLevels = Math.max(0, (state.ar || 1) - 1);
+  totals.hp += arLevels * 5;
+  totals.atkLow += arLevels;
+  totals.atkHigh += arLevels;
+
+  // Frostbearing Tree — unlocked at WL4, milestone levels grant permanent Max HP.
+  if(frostTreeUnlocked()){
+    totals.hp += frostTreeBonusHP(state.frostTreeLevel || 0);
+  }
+
+  // Weapon contributions (prefix multiplies the weapon's own rolls)
+  const wr = state.weaponRolls;
+  const wPfx = state.weaponPrefix || 'None';
+  const wStar = state.weaponStarred ? 2 : 1;
+  if(wr.atk !== undefined){ const v = wr.atk * prefixFactor(wPfx,'atk') * wStar; totals.atkLow += v; totals.atkHigh += v; }
+  if(wr.atkMin !== undefined) totals.atkLow += wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar;
+  if(wr.atkMax !== undefined) totals.atkHigh += wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar;
+  if(wr.hp !== undefined) totals.hp += wr.hp * prefixFactor(wPfx,'hp') * wStar;
+  if(wr.critRate !== undefined) totals.cr += wr.critRate * prefixFactor(wPfx,'critRate') * wStar;
+  if(wr.critValue !== undefined) totals.cv += wr.critValue * prefixFactor(wPfx,'critValue') * wStar;
+  if(wr.defRate !== undefined) totals.dr += wr.defRate * prefixFactor(wPfx,'defRate') * wStar;
+  if(wr.defValue !== undefined) totals.dv += wr.defValue * prefixFactor(wPfx,'defValue') * wStar;
+
+  // Artifact piece contributions (prefix multiplies that piece's own rolls)
+  const specials = [];
+  SLOTS.forEach(slot => {
+    const a = state.artifacts[slot];
+    if(!a) return;
+    const aPfx = a.prefix || 'None';
+    Object.entries(a.rolls).forEach(([statKey, val]) => {
+      if(val === undefined) return;
+      addStatToTotals(totals, statKey, val * prefixFactor(aPfx, statKey));
+    });
+    if(a.special && a.specialRoll !== undefined){
+      specials.push(`${a.setName} (${a.pieceName}): ${a.special.label} — ${a.specialRoll}${a.special.suffix || ''}`);
+    }
+  });
+
+  // Set bonuses
+  const setCounts = {};
+  SLOTS.forEach(slot => {
+    const a = state.artifacts[slot];
+    if(a) setCounts[a.setName] = (setCounts[a.setName] || 0) + 1;
+  });
+
+  const activeBonuses = [];
+  Object.entries(setCounts).forEach(([setName, count]) => {
+    const setDef = artifactSets.find(s => s.setName === setName);
+    if(!setDef) return;
+    if(count >= 4 && setDef.setBonus4pcStats){
+      setDef.setBonus4pcStats.forEach(b => addStatToTotals(totals, b.stat, b.value));
+      activeBonuses.push({setName, count, label: `4pc: ${setDef.setBonus4pc}`});
+    } else if(count >= 2 && setDef.setBonus2pcStats){
+      setDef.setBonus2pcStats.forEach(b => addStatToTotals(totals, b.stat, b.value));
+      activeBonuses.push({setName, count, label: `2pc: ${setDef.setBonus2pc}`});
+    }
+  });
+
+  // Active skill bonuses (e.g. Critical Focus / Hyperfocus / Critical Mastery)
+  const skillBonuses = activeSkillCritBonuses();
+  skillBonuses.forEach(b => { totals.cr += b.cr; totals.cv += b.cv; });
+
+  // Render totals list
+  const list = document.getElementById('totalsList');
+  const atkDisplay = totals.atkLow === totals.atkHigh ? `${round(totals.atkLow)}` : `${round(totals.atkLow)} to ${round(totals.atkHigh)}`;
+  list.innerHTML = `
+    <li><span class="stat-name">Max HP</span><span class="stat-val">${round(totals.hp)}</span></li>
+    <li><span class="stat-name">ATK</span><span class="stat-val">${atkDisplay}</span></li>
+    <li><span class="stat-name">Crit Rate</span><span class="stat-val">${round(totals.cr)}%</span></li>
+    <li><span class="stat-name">Crit Value</span><span class="stat-val">${round(totals.cv)}%</span></li>
+    <li><span class="stat-name">Def Rate</span><span class="stat-val">${round(totals.dr)}%</span></li>
+    <li><span class="stat-name">Def Value</span><span class="stat-val">${round(totals.dv)}</span></li>
+  `;
+
+  // Render bonus list
+  const bonusDiv = document.getElementById('bonusList');
+  if(activeBonuses.length === 0){
+    bonusDiv.innerHTML = '<div class="empty-hint">No sets active yet.</div>';
+  } else {
+    bonusDiv.innerHTML = activeBonuses.map(b =>
+      `<div class="bonus-item"><span class="set-name">${b.setName}</span> (${b.count} pc) — ${b.label}</div>`
+    ).join('');
+  }
+
+  skillBonuses.forEach(b => {
+    const parts = [];
+    if(b.cr) parts.push(`+${b.cr}% CR`);
+    if(b.cv) parts.push(`+${b.cv}% CV`);
+    specials.push(`${b.label}: ${parts.join(', ')}`);
+  });
+
+  // Render specials
+  const specialDiv = document.getElementById('specialList');
+  specialDiv.innerHTML = specials.length
+    ? specials.map(s => `<div class="special-item">${s}</div>`).join('')
+    : '<div class="empty-hint">None</div>';
+}
+
+function addStatToTotals(totals, statKey, value){
+  switch(statKey){
+    case 'HP': totals.hp += value; break;
+    case 'ATK': totals.atkLow += value; totals.atkHigh += value; break;
+    case 'CR': totals.cr += value; break;
+    case 'CV': totals.cv += value; break;
+    case 'DR': totals.dr += value; break;
+    case 'DV': totals.dv += value; break;
+  }
+}
+
+function round(n){ return Math.round(n * 100) / 100; }
+
+// ---------- Bag sidebar ----------
+const bagUI = { open:false, tab:'all' };
+let bagViewMode = 'list';
+try{ bagViewMode = localStorage.getItem('buildCalculator.bagView') || 'list'; }catch(e){}
+const BAG_TABS = [
+  {key:'all', label:'📦 All', name:'All'},
+  {key:'weapon', label:'⚔️', name:'Weapon'},
+  {key:'flower', label:'🌸', name:'Flower'},
+  {key:'plume', label:'🪶', name:'Plume'},
+  {key:'sands', label:'⏳', name:'Sands'},
+  {key:'goblet', label:'🏆', name:'Goblet'},
+  {key:'circlet', label:'👑', name:'Circlet'}
+];
+
+function bagCount(key){
+  if(key === 'all') return totalBagCount();
+  return key === 'weapon' ? (state.weaponBag || []).length : (state.bag[key] || []).length;
+}
+
+// Sums every real slot directly (not via BAG_TABS) so the "All" tab's own count doesn't double-count itself.
+function totalBagCount(){
+  return (state.weaponBag || []).length + SLOTS.reduce((sum, slot) => sum + (state.bag[slot] || []).length, 0);
+}
+
+function updateBagBadge(){
+  const badge = document.getElementById('bagBadge');
+  const total = totalBagCount();
+  badge.textContent = total > 0 ? total : '';
+}
+
+function setBagViewMode(mode){
+  if(bagViewMode === mode) return;
+  bagViewMode = mode;
+  try{ localStorage.setItem('buildCalculator.bagView', mode); }catch(e){}
+  updateBagViewButtons();
+  renderBagSidebar();
+}
+
+function updateBagViewButtons(){
+  const listBtn = document.getElementById('bagViewListBtn');
+  const gridBtn = document.getElementById('bagViewGridBtn');
+  if(listBtn) listBtn.classList.toggle('active', bagViewMode === 'list');
+  if(gridBtn) gridBtn.classList.toggle('active', bagViewMode === 'grid');
+}
+
+function openBagSidebar(tab){
+  bagUI.open = true;
+  if(tab) bagUI.tab = tab;
+  document.getElementById('bagSidebar').classList.add('open');
+  document.getElementById('bagOverlay').classList.add('open');
+  renderBagSidebar();
+}
+
+function closeBagSidebar(){
+  bagUI.open = false;
+  document.getElementById('bagSidebar').classList.remove('open');
+  document.getElementById('bagOverlay').classList.remove('open');
+}
+
+function refreshBagUI(){
+  updateBagBadge();
+  if(bagUI.open) renderBagSidebar();
+}
+
+function renderBagSidebar(){
+  updateBagBadge();
+
+  const tabsDiv = document.getElementById('bagTabs');
+  tabsDiv.innerHTML = '';
+  BAG_TABS.forEach(t => {
+    const btn = document.createElement('button');
+    const count = bagCount(t.key);
+    btn.textContent = `${t.label}${count ? ' (' + count + ')' : ''}`;
+    btn.title = t.name;
+    if(t.key === bagUI.tab) btn.classList.add('active-tab');
+    btn.addEventListener('click', () => { bagUI.tab = t.key; renderBagSidebar(); });
+    tabsDiv.appendChild(btn);
+  });
+
+  const content = document.getElementById('bagSidebarContent');
+  content.innerHTML = '';
+  content.classList.toggle('is-grid', bagViewMode === 'grid');
+
+  if(bagUI.tab === 'all'){
+    const weaponItems = state.weaponBag || [];
+    const artifactCount = SLOTS.reduce((sum, slot) => sum + (state.bag[slot] || []).length, 0);
+    if(!weaponItems.length && !artifactCount){
+      content.innerHTML = '<div class="empty-hint">No items saved yet.</div>';
+      return;
+    }
+    weaponItems.forEach(item => content.appendChild(buildWeaponBagRow(item, true)));
+    SLOTS.forEach(slot => {
+      (state.bag[slot] || []).forEach(item => content.appendChild(buildArtifactBagRow(slot, item, true)));
+    });
+  } else if(bagUI.tab === 'weapon'){
+    const items = state.weaponBag || [];
+    if(!items.length){
+      content.innerHTML = '<div class="empty-hint">No weapons saved yet.</div>';
+      return;
+    }
+    items.forEach(item => content.appendChild(buildWeaponBagRow(item)));
+  } else {
+    const slot = bagUI.tab;
+    const items = state.bag[slot] || [];
+    if(!items.length){
+      content.innerHTML = '<div class="empty-hint">No pieces saved yet.</div>';
+      return;
+    }
+    items.forEach(item => content.appendChild(buildArtifactBagRow(slot, item)));
+  }
+}
+
+// `showSlotTag` is used by the "All" tab to label which slot a weapon belongs to.
+// Shared shell for a bag row: icon + name/meta/stat-chips + Equip/✕ actions.
+// Both weapon and artifact rows only differ in icon path, text content, and
+// what their Equip/Remove buttons do — so that's all callers need to supply.
+function buildBagRow({icon, iconPath, iconAlt, nameHtml, metaHtml, chips, onEquip, onDelete}){
+  const row = document.createElement('div');
+  row.className = 'bag-item' + (bagViewMode === 'grid' ? ' is-grid-item' : '');
+  row.appendChild(iconImg(icon, iconPath, iconAlt));
+
+  const info = document.createElement('div');
+  info.className = 'bag-info';
+  const chipsHtml = chips.map(c => `<span class="bag-stat-chip">${c}</span>`).join('');
+  info.innerHTML = `
+    <div class="bag-name">${nameHtml}</div>
+    <div class="bag-meta">${metaHtml}</div>
+    <div class="bag-stat-chips">${chipsHtml}</div>
+  `;
+  row.appendChild(info);
+
+  const actions = document.createElement('div');
+  actions.className = 'bag-actions';
+  const equipBtn = document.createElement('button');
+  equipBtn.textContent = 'Equip';
+  equipBtn.addEventListener('click', onEquip);
+  const delBtn = document.createElement('button');
+  delBtn.textContent = '✕';
+  delBtn.title = 'Remove from bag';
+  delBtn.addEventListener('click', onDelete);
+  actions.appendChild(equipBtn);
+  actions.appendChild(delBtn);
+  row.appendChild(actions);
+  return row;
+}
+
+// `showSlotTag` is used by the "All" tab to label which slot an item belongs to.
+function buildWeaponBagRow(item, showSlotTag){
+  const slotTag = showSlotTag ? '<span class="bag-slot-tag">Weapon</span>' : '';
+  return buildBagRow({
+    icon: item.icon, iconPath: WEAPON_ICON_PATH, iconAlt: item.weaponName,
+    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.weaponName}${item.starred ? ' ✪' : ''}`,
+    metaHtml: `${slotTag}${weaponBagMeta(item)}`,
+    chips: weaponBagChips(item),
+    onEquip: () => equipWeaponFromBag(item.id),
+    onDelete: () => openConfirmModal('Remove weapon?', 'Remove this weapon from your bag?', 'Remove', () => deleteWeaponFromBag(item.id))
+  });
+}
+
+// `showSlotTag` is used by the "All" tab to label which slot a piece belongs to.
+function buildArtifactBagRow(slot, item, showSlotTag){
+  const slotTag = showSlotTag ? `<span class="bag-slot-tag">${SLOT_LABELS[slot] || slot}</span>` : '';
+  return buildBagRow({
+    icon: item.icon, iconPath: ARTIFACT_ICON_PATH, iconAlt: item.pieceName,
+    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.pieceName}`,
+    metaHtml: `${slotTag}${artifactBagMeta(item)}`,
+    chips: artifactBagChips(item),
+    onEquip: () => equipFromBag(slot, item.id),
+    onDelete: () => openConfirmModal('Remove piece?', 'Remove this piece from your bag?', 'Remove', () => deleteFromBag(slot, item.id))
+  });
+}
+
+// ---------- Persistence ----------
+let hasUnsavedChanges = false;
+
+function saveBuild(silent){
+  try{
+    localStorage.setItem('buildCalculator.state', JSON.stringify(state));
+    hasUnsavedChanges = false;
+    setStatus(silent ? 'Autosaved.' : 'Build saved.');
+  }catch(e){ setStatus('Could not save build.'); }
+}
+
+// Debounced autosave — fires a short while after the last state change,
+// so rapid slider drags / typing don't hammer localStorage.
+let autosaveTimer = null;
+function scheduleAutosave(){
+  if(!state.autosave){
+    hasUnsavedChanges = true;
+    return;
+  }
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(() => saveBuild(true), 600);
+}
+
+window.addEventListener('beforeunload', (e) => {
+  if(hasUnsavedChanges){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+function loadBuild(){
+  try{
+    const raw = localStorage.getItem('buildCalculator.state');
+    if(raw) state = JSON.parse(raw);
+  }catch(e){ /* ignore */ }
+  if(!state.ar || state.ar < AR_MIN || state.ar > AR_MAX) state.ar = 1;
+  if(state.frostTreeLevel === undefined || state.frostTreeLevel < FROST_TREE_MIN || state.frostTreeLevel > FROST_TREE_MAX) state.frostTreeLevel = 0;
+  if(!state.skillChoices) state.skillChoices = {};
+  if(state.weaponPrefix === undefined) state.weaponPrefix = 'None';
+  if(state.weaponStarred === undefined) state.weaponStarred = false;
+  if(state.autosave === undefined) state.autosave = true;
+}
+
+function resetBuild(){
+  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:false, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, bag: state.bag, weaponBag: state.weaponBag };
+  if(weaponPickerBtn) weaponPickerBtn.refresh();
+  renderWeaponSlot();
+  buildArtifactSlots();
+  renderSkillsPanel();
+  renderArInput();
+  renderFrostTree();
+  renderTotals();
+  setStatus('Build reset.');
+}
+
+// ---------- Dark mode ----------
+function applyDarkMode(){
+  document.documentElement.setAttribute('data-theme', state.darkMode ? 'dark' : 'light');
+  const btn = document.getElementById('darkToggle');
+  if(btn){
+    btn.textContent = state.darkMode ? '☀️ Light' : '🌙 Dark';
+    btn.classList.toggle('is-active', !!state.darkMode);
+  }
+}
+
+function applyAutosaveUI(){
+  const btn = document.getElementById('autosaveToggle');
+  if(btn){
+    btn.textContent = state.autosave ? 'Autosave: On' : 'Autosave: Off';
+    btn.classList.toggle('is-active', !!state.autosave);
+  }
+  const desc = document.getElementById('saveBuildDesc');
+  if(desc){
+    desc.textContent = state.autosave
+      ? 'Autosave is on. Use this if you want to save right now anyway.'
+      : 'Store your current build in this browser.';
+  }
+}
+
+// ---------- Skills panel ----------
+// Parses a skill level's effect text for permanent Crit Rate / Crit Value bonuses.
+function parseCritFromEffect(effect){
+  if(!effect) return {cr:0, cv:0};
+  const crMatch = effect.match(/([\d.]+)%\s*Crit Rate/i);
+  const cvMatch = effect.match(/([\d.]+)%\s*Crit Value/i);
+  return {
+    cr: crMatch ? parseFloat(crMatch[1]) : 0,
+    cv: cvMatch ? parseFloat(cvMatch[1]) : 0
+  };
+}
+
+function skillRootId(id){
+  let cur = id;
+  let guard = 0;
+  while(skillsData[cur] && skillsData[cur].parent && guard < 20){
+    cur = skillsData[cur].parent;
+    guard++;
+  }
+  return cur;
+}
+
+// Groups skills by their tree root, keeping only trees that have at least
+// one level (on any skill in the tree) granting Crit Rate or Crit Value.
+function getCritSkillGroups(){
+  const groups = {}; // rootId -> { rootId, rootName, options:[{skillId, skillName, level, effect, cr, cv}] }
+  Object.entries(skillsData).forEach(([id, sk]) => {
+    (sk.levels || []).forEach(lvl => {
+      const {cr, cv} = parseCritFromEffect(lvl.effect);
+      if(cr > 0 || cv > 0){
+        const root = skillRootId(id);
+        if(!groups[root]){
+          groups[root] = { rootId: root, rootName: (skillsData[root] && skillsData[root].name) || root, options: [] };
+        }
+        groups[root].options.push({ skillId:id, skillName:sk.name, level:lvl.level, effect:lvl.effect, cr, cv });
+      }
+    });
+  });
+  return Object.values(groups);
+}
+
+function renderSkillsPanel(){
+  const container = document.getElementById('skillsContent');
+  if(!container) return;
+  container.innerHTML = '';
+  const groups = getCritSkillGroups();
+  if(groups.length === 0){
+    container.innerHTML = '<div class="empty-hint">No crit-boosting skills loaded.</div>';
+    return;
+  }
+  groups.forEach(group => {
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '14px';
+
+    const label = document.createElement('label');
+    label.textContent = group.rootName;
+    label.style.display = 'block';
+    label.style.fontSize = '.72rem';
+    label.style.marginBottom = '2px';
+    wrap.appendChild(label);
+
+    const select = document.createElement('select');
+    const noneOpt = document.createElement('option');
+    noneOpt.value = '';
+    noneOpt.textContent = '— None —';
+    select.appendChild(noneOpt);
+
+    const current = state.skillChoices[group.rootId];
+    group.options.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = `${opt.skillId}|${opt.level}`;
+      o.textContent = `${opt.skillName} (Lv${opt.level}) — ${opt.cr ? opt.cr+'% CR ' : ''}${opt.cv ? opt.cv+'% CV' : ''}`.trim();
+      if(current && current.skillId === opt.skillId && current.level === opt.level) o.selected = true;
+      select.appendChild(o);
+    });
+
+    select.addEventListener('change', () => {
+      if(!select.value){
+        delete state.skillChoices[group.rootId];
+      } else {
+        const [skillId, levelStr] = select.value.split('|');
+        state.skillChoices[group.rootId] = { skillId, level: parseInt(levelStr, 10) };
+      }
+      renderTotals();
+    });
+
+    wrap.appendChild(select);
+    const enhanced = enhanceSelectEl(select);
+    if(enhanced) enhanced.wrap.classList.add('full-width');
+    container.appendChild(wrap);
+  });
+}
+
+// Returns [{label, effect, cr, cv}] for every currently-active skill choice.
+function activeSkillCritBonuses(){
+  return Object.entries(state.skillChoices || {}).map(([rootId, choice]) => {
+    const sk = skillsData[choice.skillId];
+    if(!sk) return null;
+    const lvl = (sk.levels || []).find(l => l.level === choice.level);
+    if(!lvl) return null;
+    const {cr, cv} = parseCritFromEffect(lvl.effect);
+    return { label: `${sk.name} (Lv${choice.level})`, effect: lvl.effect, cr, cv };
+  }).filter(Boolean);
+}
+
+// ---------- Init ----------
+async function init(){
+  loadBuild();
+  loadBagFromStorage();
+  loadWeaponBagFromStorage();
+  initPickerModal();
+  initNicknameModal();
+  initConfirmModal();
+  initSettingsModal();
+  initHowToUseModal();
+  initArInput();
+  initFrostTreeInput();
+  await loadData();
+  applyDarkMode();
+  applyAutosaveUI();
+  buildWeaponSelect();
+  renderWeaponSlot();
+  buildArtifactSlots();
+  renderSkillsPanel();
+  renderArInput();
+  renderFrostTree();
+  renderTotals();
+
+  document.getElementById('saveBtn').addEventListener('click', saveBuild);
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    openConfirmModal('Reset build?', 'Clear the weapon, artifacts, and skills currently equipped? Your Bag is not affected.', 'Reset', resetBuild);
+  });
+  document.getElementById('darkToggle').addEventListener('click', ()=>{
+    state.darkMode = !state.darkMode;
+    applyDarkMode();
+    scheduleAutosave();
+  });
+  document.getElementById('autosaveToggle').addEventListener('click', ()=>{
+    state.autosave = !state.autosave;
+    applyAutosaveUI();
+    if(state.autosave) saveBuild(true);
+  });
+  document.getElementById('settingsToggleBtn').addEventListener('click', openSettingsModal);
+  document.getElementById('howToUseBtn').addEventListener('click', ()=>{
+    closeSettingsModal();
+    openHowToUseModal();
+  });
+  document.getElementById('bagToggleBtn').addEventListener('click', ()=>{
+    if(bagUI.open) closeBagSidebar(); else openBagSidebar();
+  });
+  document.getElementById('bagCloseBtn').addEventListener('click', closeBagSidebar);
+  document.getElementById('bagOverlay').addEventListener('click', closeBagSidebar);
+  document.getElementById('bagViewListBtn').addEventListener('click', ()=> setBagViewMode('list'));
+  document.getElementById('bagViewGridBtn').addEventListener('click', ()=> setBagViewMode('grid'));
+  updateBagViewButtons();
+  updateBagBadge();
+}
+
+init();
+</script>
+</body>
+</html>
