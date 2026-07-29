@@ -809,17 +809,30 @@
         },
         {
           "level": 2,
-          "effect": null,
-          "ar": null,
+          "effect": "Deal 70% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
           "materials": null,
           "tbd": true
         },
         {
           "level": 3,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Deal 80% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "chaos_device",
+              "qty": 30
+            },
+            {
+              "item": "ominous_mask",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 3500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 4,
@@ -939,7 +952,7 @@
       "name": "Fortress",
       "emoji": "🏰",
       "parent": null,
-      "unlock": null,
+      "unlock": "Unlocked through the Geo Statue of the Seven.",
       "levels": [
         {
           "level": 1,
@@ -1460,6 +1473,30 @@
           "ar": null,
           "materials": null,
           "tbd": true
+        }
+      ]
+    },
+    "scrounge": {
+      "name": "Paladin",
+      "emoji": "🛡",
+      "parent": null,
+      "unlock": "Unlocked through the Geo Statue of the Seven.",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "While active, swap your ATK with your DV. Your Defence Value becomes your ATK, and your current ATK (lowest in range) becomes your Defence Value.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "black_bronze_horn",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
         }
       ]
     },
