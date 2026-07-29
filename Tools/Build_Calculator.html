@@ -228,15 +228,11 @@
   #status{ font-family:'JetBrains Mono', monospace; font-size:.7rem; color:var(--ink-dim); margin-left:8px; }
   .bag-btn-row{ display:flex; justify-content:flex-end; margin-top:4px; }
   .bag-btn-row button{ font-size:.68rem; padding:5px 9px; }
-  .bag-section{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--divider); }
-  .bag-section .bag-title{
-    font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--ink-dim);
-    text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;
-  }
   .bag-item{
     display:flex; align-items:flex-start; gap:8px; padding:8px 9px; margin-bottom:6px;
     border:1.5px solid var(--line); border-radius:8px; background:var(--panel);
   }
+  .bag-item.is-favorite{ border-color:var(--gold); box-shadow:0 0 0 1px var(--gold); }
   .bag-item img{ width:24px; height:24px; object-fit:contain; border-radius:6px; flex-shrink:0; background:var(--bg-alt); margin-top:1px; }
   .bag-item .bag-info{ flex:1; min-width:0; }
   .bag-item .bag-info .bag-name{ font-size:.76rem; font-weight:600; color:var(--ink); overflow-wrap:break-word; }
@@ -252,6 +248,8 @@
   }
   .bag-item .bag-actions{ display:flex; flex-direction:column; gap:4px; flex-shrink:0; }
   .bag-item .bag-actions button{ font-size:.64rem; padding:4px 7px; }
+  .bag-fav-btn{ color:var(--ink-dim); }
+  .bag-fav-btn.is-active{ background:var(--gold); border-color:var(--gold); color:var(--bg); }
   .bag-slot-tag{
     display:inline-block; padding:1px 5px; margin-right:5px; border-radius:5px;
     background:var(--gold); color:var(--bg); font-weight:600; text-transform:none; letter-spacing:0;
@@ -263,6 +261,30 @@
     font-weight:600; line-height:16px; text-align:center;
   }
   .bag-badge:empty{ display:none; }
+
+  /* ---------- Undo toast ---------- */
+  .undo-toast{
+    position:fixed; left:50%; bottom:20px; transform:translate(-50%, 20px);
+    background:var(--ink); color:var(--bg); padding:10px 10px 10px 16px; border-radius:10px;
+    display:flex; align-items:center; gap:14px; font-family:'Inter', sans-serif; font-size:.8rem;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35); opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease; z-index:200; max-width:90vw;
+  }
+  .undo-toast.is-open{ opacity:1; pointer-events:auto; transform:translate(-50%, 0); }
+  .undo-toast button{
+    background:var(--bg); color:var(--ink); border:1.5px solid var(--bg); flex-shrink:0;
+    font-family:'JetBrains Mono', monospace; font-size:.72rem; padding:6px 12px; border-radius:7px;
+  }
+
+  /* ---------- Simple confirmation toast ---------- */
+  .simple-toast{
+    position:fixed; left:50%; bottom:20px; transform:translate(-50%, 20px);
+    background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px;
+    font-family:'Inter', sans-serif; font-size:.8rem;
+    box-shadow:0 10px 30px rgba(0,0,0,0.35); opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease; z-index:200; max-width:90vw;
+  }
+  .simple-toast.is-open{ opacity:1; transform:translate(-50%, 0); }
 
   .bag-overlay{
     position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:20;
@@ -292,6 +314,9 @@
   .bag-tabs button{ font-size:.68rem; padding:6px 9px; }
   .bag-tabs button.active-tab{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
   .bag-controls-row .picker-view-toggle{ flex:0 0 auto; }
+  .bag-quickadd-row{ padding:10px 16px 0; flex-shrink:0; }
+  .bag-quickadd-row button{ width:100%; }
+  .bag-search-row{ padding:12px 16px 0; flex-shrink:0; }
   .bag-sidebar-content{ flex:1; overflow-y:auto; padding:14px 16px; }
   .bag-sidebar-content .bag-item{ margin-bottom:10px; }
   .bag-sidebar-content.is-grid{
@@ -301,6 +326,7 @@
   .bag-sidebar-content.is-grid .empty-hint{ grid-column:1 / -1; }
   .bag-item.is-grid-item{
     flex-direction:column; align-items:center; text-align:center; padding:10px 8px;
+    position:relative;
   }
   .bag-item.is-grid-item img{ width:42px; height:42px; margin-top:0; }
   .bag-item.is-grid-item .bag-info{ width:100%; }
@@ -309,6 +335,11 @@
   .bag-item.is-grid-item .bag-info .bag-stat-chips{ justify-content:center; }
   .bag-item.is-grid-item .bag-actions{ flex-direction:row; width:100%; margin-top:8px; }
   .bag-item.is-grid-item .bag-actions button{ flex:1; }
+  .bag-fav-corner{
+    position:absolute; top:6px; right:6px; width:22px; height:22px; padding:0;
+    display:flex; align-items:center; justify-content:center; border-radius:50%;
+    line-height:1; z-index:1;
+  }
 
   /* ---------- Custom dropdown (matches Equipment Finder) ---------- */
   .custom-select{ position:relative; display:inline-block; }
@@ -336,10 +367,6 @@
   .custom-select-option:not(:last-child){ border-bottom:1px solid var(--panel-2); }
   .custom-select-option:hover, .custom-select-option.is-selected{ background:var(--bg-alt); }
   .custom-select-option.is-selected{ font-weight:600; }
-  .custom-select-group-label{
-    padding:7px 12px 4px; font-family:'JetBrains Mono', monospace; font-size:.62rem;
-    text-transform:uppercase; letter-spacing:.05em; color:var(--ink-dim); background:var(--bg-alt);
-  }
   /* Anvil star toggle — same shell as the custom-select trigger */
   .star-toggle{
     display:flex; align-items:center; justify-content:space-between; gap:8px;
@@ -468,7 +495,10 @@
   }
 
   /* ---------- Nickname modal (styled like the picker modal) ---------- */
-  #nicknameOverlay{ align-items:center; padding:16px; }
+  /* Higher z-index than other overlays — this one is opened FROM other modals
+     (Builds, Quick Add, Settings) so it must always render above them, not
+     just above whichever one happens to come first in DOM order. */
+  #nicknameOverlay{ align-items:center; padding:16px; z-index:110; }
   .nickname-modal{ max-width:260px; width:100%; }
   .nickname-modal .picker-modal-head{ padding:9px 12px; }
   .nickname-modal .picker-modal-title{ font-size:.82rem; }
@@ -482,7 +512,18 @@
   .nickname-btn-row button{ font-size:.68rem; padding:6px 10px; }
 
   /* ---------- Confirm modal (styled like the nickname/picker modal) ---------- */
+  /* Same reasoning as nicknameOverlay above — opened from within other modals. */
+  #confirmOverlay{ z-index:110; }
   .confirm-message{ font-size:.8rem; color:var(--ink-dim); line-height:1.45; margin:2px 0 0; }
+
+  /* ---------- Quick Add modal (add straight to bag, no equip slot needed) ---------- */
+  .quickadd-modal{ max-width:480px; width:100%; max-height:88vh; }
+  .quickadd-body{ padding:14px 16px 16px; overflow-y:auto; }
+  .quickadd-body .slot-head{ margin-bottom:10px; }
+  @media(max-width:600px){
+    #quickAddOverlay{ align-items:center; padding:16px; }
+    #quickAddOverlay .picker-modal{ max-width:480px; max-height:88vh; height:auto; border-radius:var(--radius); }
+  }
 
   /* ---------- Settings modal (styled like the nickname/picker modal) ---------- */
   .settings-modal{ max-width:320px; width:100%; }
@@ -492,10 +533,27 @@
   .settings-row-title{ font-size:.82rem; font-weight:600; color:var(--ink); }
   .settings-row-desc{ font-size:.68rem; color:var(--ink-dim); margin-top:2px; line-height:1.35; }
   .settings-row button{ flex-shrink:0; }
+  .settings-row-btns{ display:flex; gap:6px; flex-shrink:0; }
+  .settings-row-btns button{ flex-shrink:0; }
   #darkToggle.is-active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
   #autosaveToggle.is-active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
   .settings-divider{ border-top:1px dashed var(--divider); }
   .settings-full-btn{ width:100%; font-size:.78rem; padding:9px 10px; }
+
+  /* ---------- Build Slots modal ---------- */
+  .builds-modal{ max-width:480px; width:100%; max-height:88vh; }
+  .builds-body{ padding:12px 16px 16px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; }
+  .build-row{
+    display:flex; align-items:center; gap:10px; padding:10px 6px;
+    border-bottom:1px solid var(--divider); border-radius:6px;
+  }
+  .build-row.is-favorite{ background:var(--bg-alt); box-shadow:inset 0 0 0 1px var(--gold); }
+  .build-row:last-child{ border-bottom:none; }
+  .build-row-text{ flex:1; min-width:0; }
+  .build-row-name{ font-size:.82rem; font-weight:600; color:var(--ink); overflow-wrap:break-word; }
+  .build-row-meta{ font-size:.68rem; color:var(--ink-dim); margin-top:2px; }
+  .build-row-actions{ display:flex; gap:5px; flex-shrink:0; }
+  .build-row-actions button{ font-size:.68rem; padding:5px 8px; }
 
   /* ---------- How to Use modal ---------- */
   .howto-modal{ max-width:560px; }
@@ -517,6 +575,7 @@
   <h1>⚔️ Adventurer's Build Calculator</h1>
   <div class="btns">
     <button id="bagToggleBtn">🎒 Bag <span id="bagBadge" class="bag-badge"></span></button>
+    <button id="buildsToggleBtn">📋 Builds</button>
     <button id="settingsToggleBtn">⚙️ Settings</button>
     <span id="status"></span>
   </div>
@@ -573,11 +632,21 @@
   </section>
 </main>
 
+<div id="undoToast" class="undo-toast">
+  <span id="undoToastMsg"></span>
+  <button type="button" id="undoToastBtn">Undo</button>
+</div>
+
+<div id="simpleToast" class="simple-toast"></div>
+
 <div id="bagOverlay" class="bag-overlay"></div>
 <aside id="bagSidebar" class="bag-sidebar">
   <div class="bag-sidebar-head">
     <h2>🎒 Bag</h2>
     <button id="bagCloseBtn">✕</button>
+  </div>
+  <div class="bag-search-row">
+    <input type="text" id="bagSearchInput" placeholder="🔍 Search bag...">
   </div>
   <div class="bag-controls-row">
     <div class="bag-tabs" id="bagTabs"></div>
@@ -589,6 +658,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       </button>
     </div>
+  </div>
+  <div class="bag-quickadd-row" id="bagQuickAddRow">
+    <button type="button" class="primary" id="bagQuickAddBtn">➕ Add New</button>
   </div>
   <div class="bag-sidebar-content" id="bagSidebarContent"></div>
 </aside>
@@ -651,6 +723,16 @@
   </div>
 </div>
 
+<div id="quickAddOverlay" class="picker-overlay">
+  <div class="picker-modal quickadd-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title" id="quickAddTitle">Add to Bag</div>
+      <button class="picker-close" id="quickAddCloseBtn">✕</button>
+    </div>
+    <div class="quickadd-body" id="quickAddBody"></div>
+  </div>
+</div>
+
 <div id="settingsOverlay" class="picker-overlay">
   <div class="picker-modal settings-modal">
     <div class="picker-modal-head">
@@ -687,7 +769,32 @@
         <button type="button" id="resetBtn">↺ Reset</button>
       </div>
       <div class="settings-divider"></div>
+      <div class="settings-row">
+        <div class="settings-row-text">
+          <div class="settings-row-title">Backup</div>
+          <div class="settings-row-desc">Export your bag and build slots to a file, or import from one.</div>
+        </div>
+        <div class="settings-row-btns">
+          <button type="button" id="exportBagBtn">⬇ Export</button>
+          <button type="button" id="importBagBtn">⬆ Import</button>
+        </div>
+      </div>
+      <input type="file" id="importBagFile" accept="application/json" style="display:none">
+      <div class="settings-divider"></div>
       <button type="button" class="settings-full-btn" id="howToUseBtn">❓ How to Use</button>
+    </div>
+  </div>
+</div>
+
+<div id="buildsOverlay" class="picker-overlay">
+  <div class="picker-modal builds-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title">📋 Build Slots</div>
+      <button class="picker-close" id="buildsCloseBtn">✕</button>
+    </div>
+    <div class="builds-body">
+      <button type="button" class="settings-full-btn" id="saveNewBuildBtn">💾 Save Current as New Build</button>
+      <div id="buildsList"></div>
     </div>
   </div>
 </div>
@@ -712,7 +819,23 @@
         <ul>
           <li>Click <strong>🎒 Save to Bag</strong> under a weapon or artifact panel to store it for later.</li>
           <li>Open <strong>🎒 Bag</strong> in the top bar to view saved items, sorted into tabs — including an <strong>All</strong> tab showing everything at once.</li>
-          <li>From the Bag, click <strong>Equip</strong> to put a saved item back on your character, or ✕ to remove it.</li>
+          <li>From the Bag, click <strong>☆</strong> to favorite an item (favorites float to the top of their tab), <strong>Equip</strong> to put it back on your character, <strong>⧉</strong> to duplicate it, or ✕ to remove it.</li>
+          <li>To add an item straight to the Bag without equipping it first, switch to a specific tab (Weapon, Flower, Plume, Sands, Goblet, or Circlet) and click <strong>➕ Add New</strong>. Pick the item, set its stats, and click <strong>🎒 Save to Bag</strong>.</li>
+          <li>Use the <strong>🔍 Search bag</strong> box at the top of the Bag to find an item by name across every tab at once.</li>
+        </ul>
+      </div>
+      <div class="howto-section">
+        <h3>Build Slots</h3>
+        <ul>
+          <li>Open <strong>📋 Builds</strong> in the top bar to save your entire current build — weapon, artifacts, skills, AR, and Frostbearing Tree — under a name.</li>
+          <li><strong>Load</strong> switches to that build, <strong>Rename</strong> renames it, and ✕ deletes it.</li>
+          <li>Build Slots capture everything, including your skill picks and AR/Frost level — not just gear.</li>
+        </ul>
+      </div>
+      <div class="howto-section">
+        <h3>Undo</h3>
+        <ul>
+          <li>After resetting your build or removing something from the Bag or Build Slots, a brief <strong>Undo</strong> toast appears at the bottom of the screen — tap it to bring the item back.</li>
         </ul>
       </div>
       <div class="howto-section">
@@ -721,6 +844,7 @@
           <li><strong>Dark Mode</strong> switches the app theme.</li>
           <li><strong>Save Build</strong> stores your current build in this browser, so it's there next time you visit.</li>
           <li><strong>Reset</strong> clears your current build back to empty — this does not touch anything saved in your Bag.</li>
+          <li><strong>Backup</strong> lets you <strong>Export</strong> your Bag and Build Slots to a file, or <strong>Import</strong> one back in — handy for switching devices or keeping a backup.</li>
         </ul>
       </div>
     </div>
@@ -875,6 +999,39 @@ function setStatus(msg){
   const el = document.getElementById('status');
   el.textContent = msg;
   setTimeout(()=>{ if(el.textContent === msg) el.textContent=''; }, 3000);
+}
+
+// ---------- Simple toast (brief confirmation, no action button) ----------
+let simpleToastTimer = null;
+function showToast(msg){
+  const toast = document.getElementById('simpleToast');
+  toast.textContent = msg;
+  toast.classList.add('is-open');
+  clearTimeout(simpleToastTimer);
+  simpleToastTimer = setTimeout(() => { toast.classList.remove('is-open'); }, 2200);
+}
+
+// ---------- Undo toast (single-level undo for destructive actions) ----------
+let undoRestoreFn = null;
+let undoTimer = null;
+function offerUndo(message, restoreFn){
+  undoRestoreFn = restoreFn;
+  clearTimeout(undoTimer);
+  const toast = document.getElementById('undoToast');
+  document.getElementById('undoToastMsg').textContent = message;
+  toast.classList.add('is-open');
+  undoTimer = setTimeout(hideUndoToast, 6000);
+}
+function hideUndoToast(){
+  const toast = document.getElementById('undoToast');
+  if(toast) toast.classList.remove('is-open');
+  undoRestoreFn = null;
+  clearTimeout(undoTimer);
+}
+function runUndo(){
+  const fn = undoRestoreFn;
+  hideUndoToast();
+  if(fn) fn();
 }
 
 function iconImg(src, path, alt){
@@ -1215,6 +1372,223 @@ function initHowToUseModal(){
 function openHowToUseModal(){ howToUseModal.open(); }
 function closeHowToUseModal(){ howToUseModal.close(); }
 
+/* ---------- Build Slots modal (multiple named full-build saves) ---------- */
+let buildsModal = null;
+let builds = [];
+
+function initBuildsModal(){
+  buildsModal = bindSimpleOverlay('buildsOverlay', 'buildsCloseBtn');
+  document.getElementById('saveNewBuildBtn').addEventListener('click', saveCurrentAsBuildSlot);
+}
+
+function openBuildsModal(){ renderBuildsList(); buildsModal.open(); }
+function closeBuildsModal(){ buildsModal.close(); }
+
+function loadBuildsFromStorage(){
+  try{
+    const raw = localStorage.getItem('buildCalculator.builds');
+    builds = raw ? JSON.parse(raw) : [];
+  }catch(e){
+    builds = [];
+  }
+}
+
+function saveBuildsToStorage(){
+  try{ localStorage.setItem('buildCalculator.builds', JSON.stringify(builds)); }
+  catch(e){ setStatus('Could not save build slots.'); }
+}
+
+function snapshotCurrentBuildData(){
+  return {
+    weapon: state.weapon,
+    weaponRolls: {...state.weaponRolls},
+    weaponPrefix: state.weaponPrefix,
+    weaponStarred: state.weaponStarred,
+    skillChoices: JSON.parse(JSON.stringify(state.skillChoices || {})),
+    artifacts: JSON.parse(JSON.stringify(state.artifacts || {})),
+    ar: state.ar,
+    frostTreeLevel: state.frostTreeLevel
+  };
+}
+
+function saveCurrentAsBuildSlot(){
+  openNicknameModal('Name this build', (name) => {
+    builds.push({
+      id: 's' + Date.now() + Math.random().toString(36).slice(2, 7),
+      name: name || `Build ${builds.length + 1}`,
+      favorite: false,
+      data: snapshotCurrentBuildData()
+    });
+    saveBuildsToStorage();
+    renderBuildsList();
+    setStatus('Build slot saved.');
+  });
+}
+
+function loadBuildSlot(id){
+  const b = builds.find(x => x.id === id);
+  if(!b) return;
+  const d = b.data;
+  state.weapon = d.weapon;
+  state.weaponRolls = {...d.weaponRolls};
+  state.weaponPrefix = d.weaponPrefix || 'None';
+  state.weaponStarred = !!d.weaponStarred;
+  state.skillChoices = JSON.parse(JSON.stringify(d.skillChoices || {}));
+  state.artifacts = JSON.parse(JSON.stringify(d.artifacts || {}));
+  state.ar = d.ar || 1;
+  state.frostTreeLevel = d.frostTreeLevel || 0;
+  if(weaponPickerBtn) weaponPickerBtn.refresh();
+  renderWeaponSlot();
+  buildArtifactSlots();
+  renderSkillsPanel();
+  renderArInput();
+  renderFrostTree();
+  renderTotals();
+  closeBuildsModal();
+  setStatus(`Loaded "${b.name}".`);
+  showToast('Load successful');
+}
+
+function renameBuildSlot(id){
+  const b = builds.find(x => x.id === id);
+  if(!b) return;
+  openNicknameModal('Rename build', (name) => {
+    if(name) b.name = name;
+    saveBuildsToStorage();
+    renderBuildsList();
+  });
+}
+
+function toggleBuildFavorite(id){
+  const b = builds.find(x => x.id === id);
+  if(!b) return;
+  b.favorite = !b.favorite;
+  saveBuildsToStorage();
+  renderBuildsList();
+}
+
+function deleteBuildSlot(id){
+  const idx = builds.findIndex(x => x.id === id);
+  if(idx === -1) return;
+  const removed = builds[idx];
+  builds.splice(idx, 1);
+  saveBuildsToStorage();
+  renderBuildsList();
+  offerUndo('Build slot removed.', () => {
+    builds.splice(idx, 0, removed);
+    saveBuildsToStorage();
+    renderBuildsList();
+  });
+}
+
+function renderBuildsList(){
+  const list = document.getElementById('buildsList');
+  list.innerHTML = '';
+  if(!builds.length){
+    list.innerHTML = '<div class="empty-hint">No saved builds yet. Set up a weapon and artifacts, then save it as a build below.</div>';
+    return;
+  }
+  sortByFavorite(builds).forEach(b => {
+    const row = document.createElement('div');
+    row.className = 'build-row' + (b.favorite ? ' is-favorite' : '');
+    const text = document.createElement('div');
+    text.className = 'build-row-text';
+    const pieceCount = SLOTS.reduce((sum, slot) => sum + (b.data.artifacts && b.data.artifacts[slot] ? 1 : 0), 0);
+    text.innerHTML = `<div class="build-row-name">${b.name}</div><div class="build-row-meta">${b.data.weapon || 'No weapon'} · ${pieceCount} piece${pieceCount === 1 ? '' : 's'}</div>`;
+    row.appendChild(text);
+
+    const actions = document.createElement('div');
+    actions.className = 'build-row-actions';
+    const favBtn = document.createElement('button');
+    favBtn.className = 'bag-fav-btn' + (b.favorite ? ' is-active' : '');
+    favBtn.textContent = b.favorite ? '★' : '☆';
+    favBtn.title = b.favorite ? 'Remove from favorites' : 'Mark as favorite';
+    favBtn.addEventListener('click', () => toggleBuildFavorite(b.id));
+    const loadBtn = document.createElement('button');
+    loadBtn.textContent = 'Load';
+    loadBtn.addEventListener('click', () => loadBuildSlot(b.id));
+    const renameBtn = document.createElement('button');
+    renameBtn.textContent = 'Rename';
+    renameBtn.addEventListener('click', () => renameBuildSlot(b.id));
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '✕';
+    delBtn.title = 'Delete build';
+    delBtn.addEventListener('click', () => openConfirmModal('Delete build?', `Delete "${b.name}"? You can undo this right after.`, 'Delete', () => deleteBuildSlot(b.id)));
+    actions.appendChild(favBtn);
+    actions.appendChild(loadBtn);
+    actions.appendChild(renameBtn);
+    actions.appendChild(delBtn);
+    row.appendChild(actions);
+    list.appendChild(row);
+  });
+}
+
+/* ---------- Export / Import (backs up bag and build slots as a JSON file) ---------- */
+function exportBagData(){
+  const payload = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    bag: state.bag,
+    weaponBag: state.weaponBag,
+    builds: builds
+  };
+  try{
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `build-calculator-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setStatus('Exported.');
+  }catch(e){
+    setStatus('Could not export.');
+  }
+}
+
+function triggerImportBag(){
+  document.getElementById('importBagFile').click();
+}
+
+function handleImportBagFile(e){
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try{ data = JSON.parse(reader.result); }
+    catch(err){ setStatus('That file is not valid JSON.'); return; }
+
+    let count = 0;
+    SLOTS.forEach(slot => { if(data.bag && Array.isArray(data.bag[slot])) count += data.bag[slot].length; });
+    if(Array.isArray(data.weaponBag)) count += data.weaponBag.length;
+    if(Array.isArray(data.builds)) count += data.builds.length;
+
+    if(!count){
+      setStatus('No importable items found in that file.');
+      return;
+    }
+
+    openConfirmModal('Import items?', `Add ${count} item${count === 1 ? '' : 's'} from this file into your bag and build slots? Nothing you already have will be removed.`, 'Import', () => {
+      SLOTS.forEach(slot => {
+        if(data.bag && Array.isArray(data.bag[slot])) state.bag[slot] = (state.bag[slot] || []).concat(data.bag[slot]);
+      });
+      if(Array.isArray(data.weaponBag)) state.weaponBag = (state.weaponBag || []).concat(data.weaponBag);
+      if(Array.isArray(data.builds)) builds = (builds || []).concat(data.builds);
+      saveBagToStorage();
+      saveWeaponBagToStorage();
+      saveBuildsToStorage();
+      refreshBagUI();
+      renderBuildsList();
+      setStatus(`Imported ${count} item${count === 1 ? '' : 's'}.`);
+    });
+  };
+  reader.readAsText(file);
+}
+
 function renderPickerList(){
   if(!pickerConfig) return;
   const cfg = pickerConfig;
@@ -1507,7 +1881,8 @@ function saveWeaponToBag(){
       ability: w.ability,
       rolls: {...state.weaponRolls},
       prefix: state.weaponPrefix || 'None',
-      starred: !!state.weaponStarred
+      starred: !!state.weaponStarred,
+      favorite: false
     };
     state.weaponBag.push(item);
     saveWeaponBagToStorage();
@@ -1530,9 +1905,28 @@ function equipWeaponFromBag(id){
 }
 
 function deleteWeaponFromBag(id){
-  state.weaponBag = (state.weaponBag || []).filter(b => b.id !== id);
+  const idx = (state.weaponBag || []).findIndex(b => b.id === id);
+  if(idx === -1) return;
+  const removed = state.weaponBag[idx];
+  state.weaponBag.splice(idx, 1);
   saveWeaponBagToStorage();
   refreshBagUI();
+  offerUndo('Weapon removed from bag.', () => {
+    state.weaponBag.splice(idx, 0, removed);
+    saveWeaponBagToStorage();
+    refreshBagUI();
+  });
+}
+
+function duplicateWeaponBagItem(id){
+  const item = (state.weaponBag || []).find(b => b.id === id);
+  if(!item) return;
+  const copy = {...item, id: 'w' + Date.now() + Math.random().toString(36).slice(2, 7), rolls: {...item.rolls},
+    nickname: item.nickname ? item.nickname + ' (copy)' : '', favorite: false};
+  state.weaponBag.push(copy);
+  saveWeaponBagToStorage();
+  refreshBagUI();
+  setStatus('Duplicated.');
 }
 
 function saveWeaponBagToStorage(){
@@ -1831,7 +2225,8 @@ function saveToBag(slot){
       weight: current.weight,
       rolls: {...current.rolls},
       specialRoll: current.specialRoll,
-      prefix: current.prefix || 'None'
+      prefix: current.prefix || 'None',
+      favorite: false
     };
     if(!state.bag[slot]) state.bag[slot] = [];
     state.bag[slot].push(item);
@@ -1864,10 +2259,30 @@ function equipFromBag(slot, id){
 }
 
 function deleteFromBag(slot, id){
-  state.bag[slot] = (state.bag[slot] || []).filter(b => b.id !== id);
+  const idx = (state.bag[slot] || []).findIndex(b => b.id === id);
+  if(idx === -1) return;
+  const removed = state.bag[slot][idx];
+  state.bag[slot].splice(idx, 1);
   saveBagToStorage();
   renderArtifactSlotDetail(slot, options_for(slot));
   refreshBagUI();
+  offerUndo('Piece removed from bag.', () => {
+    state.bag[slot].splice(idx, 0, removed);
+    saveBagToStorage();
+    renderArtifactSlotDetail(slot, options_for(slot));
+    refreshBagUI();
+  });
+}
+
+function duplicateArtifactBagItem(slot, id){
+  const item = (state.bag[slot] || []).find(b => b.id === id);
+  if(!item) return;
+  const copy = {...item, id: 'b' + Date.now() + Math.random().toString(36).slice(2, 7), rolls: {...item.rolls},
+    nickname: item.nickname ? item.nickname + ' (copy)' : '', favorite: false};
+  state.bag[slot].push(copy);
+  saveBagToStorage();
+  refreshBagUI();
+  setStatus('Duplicated.');
 }
 
 function options_for(slot){
@@ -2134,7 +2549,7 @@ function addStatToTotals(totals, statKey, value){
 function round(n){ return Math.round(n * 100) / 100; }
 
 // ---------- Bag sidebar ----------
-const bagUI = { open:false, tab:'all' };
+const bagUI = { open:false, tab:'all', search:'' };
 let bagViewMode = 'list';
 try{ bagViewMode = localStorage.getItem('buildCalculator.bagView') || 'list'; }catch(e){}
 const BAG_TABS = [
@@ -2149,12 +2564,14 @@ const BAG_TABS = [
 
 function bagCount(key){
   if(key === 'all') return totalBagCount();
-  return key === 'weapon' ? (state.weaponBag || []).length : (state.bag[key] || []).length;
+  if(key === 'weapon') return (state.weaponBag || []).length;
+  return (state.bag[key] || []).length;
 }
 
 // Sums every real slot directly (not via BAG_TABS) so the "All" tab's own count doesn't double-count itself.
 function totalBagCount(){
-  return (state.weaponBag || []).length + SLOTS.reduce((sum, slot) => sum + (state.bag[slot] || []).length, 0);
+  return (state.weaponBag || []).length
+    + SLOTS.reduce((sum, slot) => sum + (state.bag[slot] || []).length, 0);
 }
 
 function updateBagBadge(){
@@ -2208,13 +2625,53 @@ function renderBagSidebar(){
     btn.textContent = `${t.label}${count ? ' (' + count + ')' : ''}`;
     btn.title = t.name;
     if(t.key === bagUI.tab) btn.classList.add('active-tab');
-    btn.addEventListener('click', () => { bagUI.tab = t.key; renderBagSidebar(); });
+    btn.addEventListener('click', () => {
+      bagUI.tab = t.key;
+      bagUI.search = '';
+      const searchInput = document.getElementById('bagSearchInput');
+      if(searchInput) searchInput.value = '';
+      renderBagSidebar();
+    });
     tabsDiv.appendChild(btn);
   });
+
+  const searching = !!bagUI.search;
+  const quickAddRow = document.getElementById('bagQuickAddRow');
+  const quickAddBtn = document.getElementById('bagQuickAddBtn');
+  if(searching || bagUI.tab === 'all'){
+    quickAddRow.style.display = 'none';
+  } else {
+    quickAddRow.style.display = '';
+    const label = bagUI.tab === 'weapon' ? 'Weapon' : SLOT_LABELS[bagUI.tab];
+    quickAddBtn.textContent = `➕ Add New ${label}`;
+  }
 
   const content = document.getElementById('bagSidebarContent');
   content.innerHTML = '';
   content.classList.toggle('is-grid', bagViewMode === 'grid');
+
+  if(searching){
+    const term = bagUI.search;
+    const matched = [];
+    (state.weaponBag || []).forEach(item => {
+      if(weaponSearchText(item).includes(term)) matched.push({type:'weapon', item});
+    });
+    SLOTS.forEach(slot => {
+      (state.bag[slot] || []).forEach(item => {
+        if(artifactSearchText(item).includes(term)) matched.push({type:'artifact', slot, item});
+      });
+    });
+    if(!matched.length){
+      content.innerHTML = '<div class="empty-hint">No matches found.</div>';
+      return;
+    }
+    matched.sort((a, b) => (b.item.favorite ? 1 : 0) - (a.item.favorite ? 1 : 0));
+    matched.forEach(m => {
+      if(m.type === 'weapon') content.appendChild(buildWeaponBagRow(m.item, true));
+      else content.appendChild(buildArtifactBagRow(m.slot, m.item, true));
+    });
+    return;
+  }
 
   if(bagUI.tab === 'all'){
     const weaponItems = state.weaponBag || [];
@@ -2223,9 +2680,9 @@ function renderBagSidebar(){
       content.innerHTML = '<div class="empty-hint">No items saved yet.</div>';
       return;
     }
-    weaponItems.forEach(item => content.appendChild(buildWeaponBagRow(item, true)));
+    sortByFavorite(weaponItems).forEach(item => content.appendChild(buildWeaponBagRow(item, true)));
     SLOTS.forEach(slot => {
-      (state.bag[slot] || []).forEach(item => content.appendChild(buildArtifactBagRow(slot, item, true)));
+      sortByFavorite(state.bag[slot] || []).forEach(item => content.appendChild(buildArtifactBagRow(slot, item, true)));
     });
   } else if(bagUI.tab === 'weapon'){
     const items = state.weaponBag || [];
@@ -2233,7 +2690,7 @@ function renderBagSidebar(){
       content.innerHTML = '<div class="empty-hint">No weapons saved yet.</div>';
       return;
     }
-    items.forEach(item => content.appendChild(buildWeaponBagRow(item)));
+    sortByFavorite(items).forEach(item => content.appendChild(buildWeaponBagRow(item)));
   } else {
     const slot = bagUI.tab;
     const items = state.bag[slot] || [];
@@ -2241,17 +2698,36 @@ function renderBagSidebar(){
       content.innerHTML = '<div class="empty-hint">No pieces saved yet.</div>';
       return;
     }
-    items.forEach(item => content.appendChild(buildArtifactBagRow(slot, item)));
+    sortByFavorite(items).forEach(item => content.appendChild(buildArtifactBagRow(slot, item)));
   }
 }
 
+function weaponSearchText(item){
+  return `${item.nickname || ''} ${item.weaponName} ${item.type || ''}`.toLowerCase();
+}
+function artifactSearchText(item){
+  return `${item.nickname || ''} ${item.setName} ${item.pieceName}`.toLowerCase();
+}
 // `showSlotTag` is used by the "All" tab to label which slot a weapon belongs to.
-// Shared shell for a bag row: icon + name/meta/stat-chips + Equip/✕ actions.
+// Shared shell for a bag row: icon + name/meta/stat-chips + Fav/Equip/Duplicate/✕ actions.
 // Both weapon and artifact rows only differ in icon path, text content, and
-// what their Equip/Remove buttons do — so that's all callers need to supply.
-function buildBagRow({icon, iconPath, iconAlt, nameHtml, metaHtml, chips, onEquip, onDelete}){
+// what their buttons do — so that's all callers need to supply.
+function buildBagRow({icon, iconPath, iconAlt, nameHtml, metaHtml, chips, favorite, onToggleFavorite, onEquip, onDuplicate, onDelete}){
+  const isGrid = bagViewMode === 'grid';
   const row = document.createElement('div');
-  row.className = 'bag-item' + (bagViewMode === 'grid' ? ' is-grid-item' : '');
+  row.className = 'bag-item' + (isGrid ? ' is-grid-item' : '') + (favorite ? ' is-favorite' : '');
+
+  let favBtn = null;
+  if(onToggleFavorite){
+    favBtn = document.createElement('button');
+    favBtn.className = 'bag-fav-btn' + (favorite ? ' is-active' : '') + (isGrid ? ' bag-fav-corner' : '');
+    favBtn.textContent = favorite ? '★' : '☆';
+    favBtn.title = favorite ? 'Remove from favorites' : 'Mark as favorite';
+    favBtn.addEventListener('click', onToggleFavorite);
+  }
+  // In grid mode the star sits as a corner overlay so it doesn't crowd the action row.
+  if(isGrid && favBtn) row.appendChild(favBtn);
+
   row.appendChild(iconImg(icon, iconPath, iconAlt));
 
   const info = document.createElement('div');
@@ -2266,14 +2742,22 @@ function buildBagRow({icon, iconPath, iconAlt, nameHtml, metaHtml, chips, onEqui
 
   const actions = document.createElement('div');
   actions.className = 'bag-actions';
+  if(!isGrid && favBtn) actions.appendChild(favBtn);
   const equipBtn = document.createElement('button');
   equipBtn.textContent = 'Equip';
   equipBtn.addEventListener('click', onEquip);
+  actions.appendChild(equipBtn);
+  if(onDuplicate){
+    const dupBtn = document.createElement('button');
+    dupBtn.textContent = '⧉';
+    dupBtn.title = 'Duplicate';
+    dupBtn.addEventListener('click', onDuplicate);
+    actions.appendChild(dupBtn);
+  }
   const delBtn = document.createElement('button');
   delBtn.textContent = '✕';
   delBtn.title = 'Remove from bag';
   delBtn.addEventListener('click', onDelete);
-  actions.appendChild(equipBtn);
   actions.appendChild(delBtn);
   row.appendChild(actions);
   return row;
@@ -2287,7 +2771,10 @@ function buildWeaponBagRow(item, showSlotTag){
     nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.weaponName}${item.starred ? ' ✪' : ''}`,
     metaHtml: `${slotTag}${weaponBagMeta(item)}`,
     chips: weaponBagChips(item),
+    favorite: !!item.favorite,
+    onToggleFavorite: () => toggleWeaponBagFavorite(item.id),
     onEquip: () => equipWeaponFromBag(item.id),
+    onDuplicate: () => duplicateWeaponBagItem(item.id),
     onDelete: () => openConfirmModal('Remove weapon?', 'Remove this weapon from your bag?', 'Remove', () => deleteWeaponFromBag(item.id))
   });
 }
@@ -2300,9 +2787,286 @@ function buildArtifactBagRow(slot, item, showSlotTag){
     nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.pieceName}`,
     metaHtml: `${slotTag}${artifactBagMeta(item)}`,
     chips: artifactBagChips(item),
+    favorite: !!item.favorite,
+    onToggleFavorite: () => toggleArtifactBagFavorite(slot, item.id),
     onEquip: () => equipFromBag(slot, item.id),
+    onDuplicate: () => duplicateArtifactBagItem(slot, item.id),
     onDelete: () => openConfirmModal('Remove piece?', 'Remove this piece from your bag?', 'Remove', () => deleteFromBag(slot, item.id))
   });
+}
+
+// ---------- Favorites ----------
+function toggleWeaponBagFavorite(id){
+  const item = (state.weaponBag || []).find(b => b.id === id);
+  if(!item) return;
+  item.favorite = !item.favorite;
+  saveWeaponBagToStorage();
+  refreshBagUI();
+}
+function toggleArtifactBagFavorite(slot, id){
+  const item = (state.bag[slot] || []).find(b => b.id === id);
+  if(!item) return;
+  item.favorite = !item.favorite;
+  saveBagToStorage();
+  refreshBagUI();
+}
+// Stable sort — favorited items float to the top, original order preserved otherwise.
+function sortByFavorite(items){
+  return items.slice().sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
+}
+
+// ---------- Quick Add (add straight to bag, no equip slot needed) ----------
+// `quickAdd` is a scratch object — separate from `state.weapon`/`state.artifacts` —
+// so setting stats here never touches whatever's currently equipped.
+let quickAdd = null;
+let quickAddModal = null;
+
+function initQuickAddModal(){
+  quickAddModal = bindSimpleOverlay('quickAddOverlay', 'quickAddCloseBtn');
+}
+
+function openQuickAddForActiveTab(){
+  if(bagUI.tab === 'weapon') openQuickAddWeaponPicker();
+  else if(SLOTS.includes(bagUI.tab)) openQuickAddArtifactPicker(bagUI.tab);
+}
+
+function openQuickAddWeaponPicker(){
+  const types = Array.from(new Set(weapons.map(w => w.type))).sort();
+  openPicker({
+    title: 'Add Weapon to Bag',
+    iconPath: WEAPON_ICON_PATH,
+    items: weapons,
+    allowNone: false,
+    getIcon: (w) => w.icon,
+    getName: (w) => w.name,
+    getMeta: (w) => `${w.type} · WL${w.worldLevel}`,
+    getSearchText: (w) => `${w.name} ${w.type}`,
+    filterOptions: [
+      { value:'', label:'All Types' },
+      ...types.map(t => ({ value:t, label:t, test:(w)=> w.type === t }))
+    ],
+    sortOptions: [
+      { value:'name', label:'Name (A–Z)', compare:(a,b)=> a.name.localeCompare(b.name) },
+      { value:'wlAsc', label:'World Level (Low–High)', compare:(a,b)=> a.worldLevel - b.worldLevel || a.name.localeCompare(b.name) },
+      { value:'wlDesc', label:'World Level (High–Low)', compare:(a,b)=> b.worldLevel - a.worldLevel || a.name.localeCompare(b.name) }
+    ],
+    onSelect: (w) => startQuickAddWeapon(w)
+  });
+}
+
+function startQuickAddWeapon(w){
+  quickAdd = { kind:'weapon', def:w, rolls:{}, prefix:'None', starred:false, nickname:'' };
+  renderQuickAddEditor();
+  quickAddModal.open();
+}
+
+function openQuickAddArtifactPicker(slot){
+  const options = findPieceOptions(slot);
+  const setNames = Array.from(new Set(options.map(o => o.setName))).sort();
+  openPicker({
+    title: `Add ${SLOT_LABELS[slot]} to Bag`,
+    iconPath: ARTIFACT_ICON_PATH,
+    items: options,
+    allowNone: false,
+    getIcon: (o) => o.icon,
+    getName: (o) => `${o.setName} — ${o.pieceName}`,
+    getMeta: (o) => `WL${o.worldLevel}`,
+    getSearchText: (o) => `${o.setName} ${o.pieceName}`,
+    filterOptions: [
+      { value:'', label:'All Sets' },
+      ...setNames.map(s => ({ value:s, label:s, test:(o)=> o.setName === s }))
+    ],
+    sortOptions: [
+      { value:'name', label:'Set Name (A–Z)', compare:(a,b)=> a.setName.localeCompare(b.setName) || a.pieceName.localeCompare(b.pieceName) },
+      { value:'wlAsc', label:'World Level (Low–High)', compare:(a,b)=> a.worldLevel - b.worldLevel || a.setName.localeCompare(b.setName) },
+      { value:'wlDesc', label:'World Level (High–Low)', compare:(a,b)=> b.worldLevel - a.worldLevel || a.setName.localeCompare(b.setName) }
+    ],
+    onSelect: (o) => startQuickAddArtifact(slot, o)
+  });
+}
+
+function startQuickAddArtifact(slot, o){
+  quickAdd = { kind:'artifact', slot, def:o, rolls:{}, prefix:'None', specialRoll:undefined, nickname:'' };
+  renderQuickAddEditor();
+  quickAddModal.open();
+}
+
+function renderQuickAddEditor(){
+  if(!quickAdd) return;
+  const body = document.getElementById('quickAddBody');
+  const titleEl = document.getElementById('quickAddTitle');
+  body.innerHTML = '';
+
+  if(quickAdd.kind === 'weapon'){
+    const w = quickAdd.def;
+    titleEl.textContent = 'Add Weapon to Bag';
+
+    const head = document.createElement('div');
+    head.className = 'slot-head';
+    head.appendChild(iconImg(w.icon, WEAPON_ICON_PATH, w.name));
+    const nameWrap = document.createElement('div');
+    nameWrap.className = 'slot-head-name';
+    nameWrap.innerHTML = `<div class="name">${w.name}${quickAdd.starred ? ' ✪' : ''}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
+    head.appendChild(nameWrap);
+    body.appendChild(head);
+
+    body.appendChild(makePrefixSelect(quickAdd.prefix, (val) => {
+      quickAdd.prefix = val;
+      renderQuickAddEditor();
+    }));
+    body.appendChild(makeStarToggle(quickAdd.starred, (val) => {
+      quickAdd.starred = val;
+      renderQuickAddEditor();
+    }));
+
+    const weaponMult = (rollKey) => prefixFactor(quickAdd.prefix, rollKey) * (quickAdd.starred ? 2 : 1);
+    const effFn = (rollKey) => (v) => {
+      const m = weaponMult(rollKey);
+      return m !== 1 ? round(v * m) : null;
+    };
+    if(w.atkType === 'flat'){
+      const range = parseRange(w.atkRoll);
+      if(range) body.appendChild(makeSlider('ATK Roll', 'atk', range, val => {
+        quickAdd.rolls.atk = val;
+      }, quickAdd.rolls.atk, '', effFn('atk')));
+    } else if(w.atkType === 'minMax'){
+      const minR = parseRange(w.atkRollMin);
+      const maxR = parseRange(w.atkRollMax);
+      if(minR) body.appendChild(makeSlider('ATK Roll (low end)', 'atkMin', minR, val => {
+        quickAdd.rolls.atkMin = val;
+      }, quickAdd.rolls.atkMin, '', effFn('atkMin')));
+      if(maxR) body.appendChild(makeSlider('ATK Roll (high end)', 'atkMax', maxR, val => {
+        quickAdd.rolls.atkMax = val;
+      }, quickAdd.rolls.atkMax, '', effFn('atkMax')));
+    }
+
+    const secondary = [
+      ['hp','HP'], ['critRate','Crit Rate'], ['critValue','Crit Value'],
+      ['defRate','Def Rate'], ['defValue','Def Value']
+    ];
+    secondary.forEach(([key,label])=>{
+      const range = parseRange(w[key]);
+      if(range) body.appendChild(makeSlider(label, key, range, val => {
+        quickAdd.rolls[key] = val;
+      }, quickAdd.rolls[key], key==='critRate'||key==='defRate' ? '%' : '', effFn(key)));
+    });
+
+    if(w.ability){
+      const p = document.createElement('div');
+      p.className = 'flavor';
+      p.textContent = w.ability;
+      body.appendChild(p);
+    }
+  } else {
+    const o = quickAdd.def;
+    titleEl.textContent = `Add ${SLOT_LABELS[quickAdd.slot]} to Bag`;
+
+    const head = document.createElement('div');
+    head.className = 'slot-head';
+    head.appendChild(iconImg(o.icon, ARTIFACT_ICON_PATH, o.pieceName));
+    const nameWrap = document.createElement('div');
+    nameWrap.className = 'slot-head-name';
+    nameWrap.innerHTML = `<div class="name">${o.pieceName}</div><div class="sub">${o.setName}</div>`;
+    head.appendChild(nameWrap);
+    body.appendChild(head);
+
+    body.appendChild(makePrefixSelect(quickAdd.prefix, (val) => {
+      quickAdd.prefix = val;
+      renderQuickAddEditor();
+    }));
+
+    Object.entries(o.stats).forEach(([statKey, range]) => {
+      body.appendChild(makeSlider(statLabel(statKey), statKey, range, val => {
+        quickAdd.rolls[statKey] = val;
+      }, quickAdd.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR') ? '%' : '', (v) => {
+        const m = prefixFactor(quickAdd.prefix, statKey);
+        return m !== 1 ? round(v * m) : null;
+      }));
+    });
+
+    if(o.special){
+      const sp = o.special;
+      body.appendChild(makeSlider(sp.label, 'special', {min:sp.min, max:sp.max}, val => {
+        quickAdd.specialRoll = val;
+      }, quickAdd.specialRoll, sp.suffix || ''));
+    }
+  }
+
+  // Shared nickname + save/cancel row
+  const nickWrap = document.createElement('div');
+  nickWrap.style.marginTop = '10px';
+  const nickInput = document.createElement('input');
+  nickInput.type = 'text';
+  nickInput.placeholder = 'Nickname (optional)';
+  nickInput.value = quickAdd.nickname || '';
+  nickInput.addEventListener('input', () => { quickAdd.nickname = nickInput.value; });
+  nickWrap.appendChild(nickInput);
+  body.appendChild(nickWrap);
+
+  const btnRow = document.createElement('div');
+  btnRow.className = 'nickname-btn-row';
+  const cancelBtn = document.createElement('button');
+  cancelBtn.type = 'button';
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.addEventListener('click', () => quickAddModal.close());
+  const saveBtn = document.createElement('button');
+  saveBtn.type = 'button';
+  saveBtn.className = 'primary';
+  saveBtn.textContent = '🎒 Save to Bag';
+  saveBtn.addEventListener('click', saveQuickAdd);
+  btnRow.appendChild(cancelBtn);
+  btnRow.appendChild(saveBtn);
+  body.appendChild(btnRow);
+}
+
+function saveQuickAdd(){
+  if(!quickAdd) return;
+
+  if(quickAdd.kind === 'weapon'){
+    const w = quickAdd.def;
+    const item = {
+      id: 'w' + Date.now() + Math.random().toString(36).slice(2, 7),
+      nickname: quickAdd.nickname || '',
+      weaponName: w.name,
+      icon: w.icon,
+      type: w.type,
+      worldLevel: w.worldLevel,
+      crucible: w.crucible,
+      weight: w.weight,
+      ability: w.ability,
+      rolls: {...quickAdd.rolls},
+      prefix: quickAdd.prefix || 'None',
+      starred: !!quickAdd.starred,
+      favorite: false
+    };
+    state.weaponBag.push(item);
+    saveWeaponBagToStorage();
+  } else {
+    const o = quickAdd.def;
+    const slot = quickAdd.slot;
+    const item = {
+      id: 'b' + Date.now() + Math.random().toString(36).slice(2, 7),
+      nickname: quickAdd.nickname || '',
+      setName: o.setName,
+      pieceName: o.pieceName,
+      icon: o.icon,
+      statsDef: o.stats,
+      special: o.special,
+      weight: o.weight,
+      rolls: {...quickAdd.rolls},
+      specialRoll: quickAdd.specialRoll,
+      prefix: quickAdd.prefix || 'None',
+      favorite: false
+    };
+    if(!state.bag[slot]) state.bag[slot] = [];
+    state.bag[slot].push(item);
+    saveBagToStorage();
+  }
+
+  quickAddModal.close();
+  quickAdd = null;
+  refreshBagUI();
+  setStatus('Added to bag.');
 }
 
 // ---------- Persistence ----------
@@ -2349,6 +3113,11 @@ function loadBuild(){
 }
 
 function resetBuild(){
+  const prevGear = {
+    weapon: state.weapon, weaponRolls: {...state.weaponRolls}, weaponPrefix: state.weaponPrefix,
+    weaponStarred: state.weaponStarred, skillChoices: JSON.parse(JSON.stringify(state.skillChoices || {})),
+    artifacts: JSON.parse(JSON.stringify(state.artifacts || {})), ar: state.ar, frostTreeLevel: state.frostTreeLevel
+  };
   state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:false, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, bag: state.bag, weaponBag: state.weaponBag };
   if(weaponPickerBtn) weaponPickerBtn.refresh();
   renderWeaponSlot();
@@ -2357,7 +3126,24 @@ function resetBuild(){
   renderArInput();
   renderFrostTree();
   renderTotals();
-  setStatus('Build reset.');
+  offerUndo('Build reset.', () => {
+    state.weapon = prevGear.weapon;
+    state.weaponRolls = prevGear.weaponRolls;
+    state.weaponPrefix = prevGear.weaponPrefix;
+    state.weaponStarred = prevGear.weaponStarred;
+    state.skillChoices = prevGear.skillChoices;
+    state.artifacts = prevGear.artifacts;
+    state.ar = prevGear.ar;
+    state.frostTreeLevel = prevGear.frostTreeLevel;
+    if(weaponPickerBtn) weaponPickerBtn.refresh();
+    renderWeaponSlot();
+    buildArtifactSlots();
+    renderSkillsPanel();
+    renderArInput();
+    renderFrostTree();
+    renderTotals();
+    setStatus('Reset undone.');
+  });
 }
 
 // ---------- Dark mode ----------
@@ -2494,11 +3280,14 @@ async function init(){
   loadBuild();
   loadBagFromStorage();
   loadWeaponBagFromStorage();
+  loadBuildsFromStorage();
   initPickerModal();
   initNicknameModal();
   initConfirmModal();
   initSettingsModal();
   initHowToUseModal();
+  initQuickAddModal();
+  initBuildsModal();
   initArInput();
   initFrostTreeInput();
   await loadData();
@@ -2531,13 +3320,23 @@ async function init(){
     closeSettingsModal();
     openHowToUseModal();
   });
+  document.getElementById('buildsToggleBtn').addEventListener('click', openBuildsModal);
+  document.getElementById('exportBagBtn').addEventListener('click', exportBagData);
+  document.getElementById('importBagBtn').addEventListener('click', triggerImportBag);
+  document.getElementById('importBagFile').addEventListener('change', handleImportBagFile);
   document.getElementById('bagToggleBtn').addEventListener('click', ()=>{
     if(bagUI.open) closeBagSidebar(); else openBagSidebar();
   });
   document.getElementById('bagCloseBtn').addEventListener('click', closeBagSidebar);
+  document.getElementById('bagQuickAddBtn').addEventListener('click', openQuickAddForActiveTab);
+  document.getElementById('bagSearchInput').addEventListener('input', (e)=>{
+    bagUI.search = e.target.value.trim().toLowerCase();
+    renderBagSidebar();
+  });
   document.getElementById('bagOverlay').addEventListener('click', closeBagSidebar);
   document.getElementById('bagViewListBtn').addEventListener('click', ()=> setBagViewMode('list'));
   document.getElementById('bagViewGridBtn').addEventListener('click', ()=> setBagViewMode('grid'));
+  document.getElementById('undoToastBtn').addEventListener('click', runUndo);
   updateBagViewButtons();
   updateBagBadge();
 }
