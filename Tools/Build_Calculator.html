@@ -922,7 +922,9 @@ function makePrefixSelect(currentValue, onChange){
   PREFIX_NAMES.forEach(name => {
     const opt = document.createElement('option');
     opt.value = name;
-    opt.textContent = name;
+    const stats = PREFIXES[name];
+    const statStr = Object.keys(stats).map(k => `${k} x${stats[k]}`).join(', ');
+    opt.textContent = statStr ? `${name} (${statStr})` : name;
     if((currentValue || 'None') === name) opt.selected = true;
     select.appendChild(opt);
   });
