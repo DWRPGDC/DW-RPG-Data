@@ -3,7 +3,7 @@
   "skills": {
     "backstep": {
       "name": "Backstep",
-      "emoji": "💨",
+      "emoji": "\ud83d\udca8",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -91,7 +91,7 @@
     },
     "parry": {
       "name": "Parry",
-      "emoji": "💨",
+      "emoji": "\ud83d\udca8",
       "parent": "backstep",
       "unlock": null,
       "levels": [
@@ -160,7 +160,7 @@
     },
     "evasion": {
       "name": "Evasion",
-      "emoji": "💨",
+      "emoji": "\ud83d\udca8",
       "parent": "backstep",
       "unlock": null,
       "levels": [
@@ -216,7 +216,7 @@
     },
     "chihayaburu": {
       "name": "Chihayaburu",
-      "emoji": "🌀",
+      "emoji": "\ud83c\udf00",
       "parent": null,
       "unlock": "Unlocked through the Anemo Statue of the Seven.",
       "levels": [
@@ -240,7 +240,7 @@
     },
     "critical_focus": {
       "name": "Critical Focus",
-      "emoji": "🎯",
+      "emoji": "\ud83c\udfaf",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -348,7 +348,7 @@
     },
     "hyperfocus": {
       "name": "Hyperfocus",
-      "emoji": "🎯",
+      "emoji": "\ud83c\udfaf",
       "parent": "critical_focus",
       "unlock": null,
       "levels": [
@@ -404,7 +404,7 @@
     },
     "critical_mastery": {
       "name": "Critical Mastery",
-      "emoji": "🎯",
+      "emoji": "\ud83c\udfaf",
       "parent": "critical_focus",
       "unlock": null,
       "levels": [
@@ -460,7 +460,7 @@
     },
     "curse": {
       "name": "Curse",
-      "emoji": "🟣",
+      "emoji": "\ud83d\udfe3",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -488,7 +488,7 @@
     },
     "discipline": {
       "name": "Discipline",
-      "emoji": "🏛",
+      "emoji": "\ud83c\udfdb",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -560,7 +560,7 @@
     },
     "effortless_victory": {
       "name": "Effortless Victory",
-      "emoji": "🧘",
+      "emoji": "\ud83e\uddd8",
       "parent": null,
       "unlock": "Unlocked through Meditation (Quest).",
       "levels": [
@@ -616,7 +616,7 @@
     },
     "fast_travels": {
       "name": "Fast Travels",
-      "emoji": "🗺️",
+      "emoji": "\ud83d\uddfa\ufe0f",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -704,7 +704,7 @@
     },
     "fireball": {
       "name": "Fireball",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "parent": null,
       "unlock": "Unlocked through Saltflame Rite (Quest).",
       "levels": [
@@ -774,16 +774,25 @@
         },
         {
           "level": 5,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Deal 50% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "stained_mask",
+              "qty": 160
+            },
+            {
+              "item": "silver",
+              "qty": 1600
+            }
+          ],
+          "tbd": false
         }
       ]
     },
     "inferno": {
       "name": "Inferno",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "parent": "fireball",
       "unlock": null,
       "levels": [
@@ -811,8 +820,21 @@
           "level": 2,
           "effect": "Deal 70% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
           "ar": 20,
-          "materials": null,
-          "tbd": true
+          "materials": [
+            {
+              "item": "sealed_scroll",
+              "qty": 40
+            },
+            {
+              "item": "ominous_mask",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 3,
@@ -852,7 +874,7 @@
     },
     "hellflare": {
       "name": "Hellflare",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "parent": "inferno",
       "unlock": null,
       "levels": [
@@ -894,7 +916,7 @@
     },
     "meteor": {
       "name": "Meteor",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "parent": "fireball",
       "unlock": null,
       "levels": [
@@ -920,17 +942,43 @@
         },
         {
           "level": 2,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Deal 26% of your max HP to all enemies when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "chaos_circuit",
+              "qty": 20
+            },
+            {
+              "item": "sealed_scroll",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 3,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Deal 30% of your max HP to all enemies when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "dismal_prism",
+              "qty": 25
+            },
+            {
+              "item": "sealed_scroll",
+              "qty": 60
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 4,
@@ -950,7 +998,7 @@
     },
     "fortress": {
       "name": "Fortress",
-      "emoji": "🏰",
+      "emoji": "\ud83c\udff0",
       "parent": null,
       "unlock": "Unlocked through the Geo Statue of the Seven.",
       "levels": [
@@ -974,7 +1022,7 @@
     },
     "leech": {
       "name": "Leech",
-      "emoji": "🩸",
+      "emoji": "\ud83e\ude78",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1030,7 +1078,7 @@
     },
     "drain": {
       "name": "Drain",
-      "emoji": "🩸",
+      "emoji": "\ud83e\ude78",
       "parent": "leech",
       "unlock": null,
       "levels": [
@@ -1086,7 +1134,7 @@
     },
     "parasite": {
       "name": "Parasite",
-      "emoji": "🩸",
+      "emoji": "\ud83e\ude78",
       "parent": "leech",
       "unlock": null,
       "levels": [
@@ -1194,7 +1242,7 @@
     },
     "sting": {
       "name": "Sting",
-      "emoji": "🩸",
+      "emoji": "\ud83e\ude78",
       "parent": "parasite",
       "unlock": null,
       "levels": [
@@ -1250,7 +1298,7 @@
     },
     "lesser_heal": {
       "name": "Lesser Heal",
-      "emoji": "💚",
+      "emoji": "\ud83d\udc9a",
       "parent": null,
       "unlock": "Unlocked through Valley Remedy (Quest).",
       "levels": [
@@ -1338,7 +1386,7 @@
     },
     "prayer": {
       "name": "Prayer",
-      "emoji": "💚",
+      "emoji": "\ud83d\udc9a",
       "parent": "lesser_heal",
       "unlock": null,
       "levels": [
@@ -1394,7 +1442,7 @@
     },
     "resurrect": {
       "name": "Resurrect",
-      "emoji": "💚",
+      "emoji": "\ud83d\udc9a",
       "parent": "prayer",
       "unlock": null,
       "levels": [
@@ -1422,7 +1470,7 @@
     },
     "major_heal": {
       "name": "Major Heal",
-      "emoji": "💚",
+      "emoji": "\ud83d\udc9a",
       "parent": "lesser_heal",
       "unlock": null,
       "levels": [
@@ -1478,7 +1526,7 @@
     },
     "paladin": {
       "name": "Paladin",
-      "emoji": "🛡",
+      "emoji": "\ud83d\udee1",
       "parent": null,
       "unlock": "Unlocked through the Geo Statue of the Seven.",
       "levels": [
@@ -1502,7 +1550,7 @@
     },
     "sage": {
       "name": "Sage",
-      "emoji": "📜",
+      "emoji": "\ud83d\udcdc",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1545,12 +1593,32 @@
             }
           ],
           "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Deal 6% more damage to all elemental enemies.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "divining_scroll",
+              "qty": 40
+            },
+            {
+              "item": "crystal_chunk",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 400
+            }
+          ],
+          "tbd": false
         }
       ]
     },
     "scrounge": {
       "name": "Scrounge",
-      "emoji": "🪙",
+      "emoji": "\ud83e\ude99",
       "parent": null,
       "unlock": "Unlocked through Spare Change (Quest).",
       "levels": [
@@ -1574,7 +1642,7 @@
     },
     "stormeye": {
       "name": "Stormeye",
-      "emoji": "👁️",
+      "emoji": "\ud83d\udc41\ufe0f",
       "parent": null,
       "unlock": "Unlocked through the Anemo Statue of the Seven.",
       "levels": [
@@ -1598,7 +1666,7 @@
     },
     "taunt": {
       "name": "Taunt",
-      "emoji": "📣",
+      "emoji": "\ud83d\udce3",
       "parent": null,
       "unlock": "Unlocked through Brawny Lesson (Quest).",
       "levels": [
@@ -1622,7 +1690,7 @@
     },
     "vigilance": {
       "name": "Vigilance",
-      "emoji": "⚔️",
+      "emoji": "\u2694\ufe0f",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1690,7 +1758,7 @@
     },
     "first_strike": {
       "name": "First Strike",
-      "emoji": "⚔️",
+      "emoji": "\u2694\ufe0f",
       "parent": "vigilance",
       "unlock": null,
       "levels": [
@@ -1758,7 +1826,7 @@
     },
     "bash": {
       "name": "Bash",
-      "emoji": "⚔️",
+      "emoji": "\u2694\ufe0f",
       "parent": "vigilance",
       "unlock": null,
       "levels": [
@@ -1825,4 +1893,4 @@
       ]
     }
   }
-    }
+}
