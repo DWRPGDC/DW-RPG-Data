@@ -935,12 +935,20 @@ function makePrefixSelect(currentValue, onChange){
   if(enhanced) enhanced.wrap.classList.add('full-width');
   return wrap;
 }
+function starGlyph(level){
+  return '✪'.repeat(Math.max(0, Math.min(2, level|0)));
+}
+function starMult(level){
+  return Math.pow(2, Math.max(0, Math.min(2, level|0)));
+}
 function makeStarToggle(currentValue, onChange){
+  const level = Math.max(0, Math.min(2, currentValue|0));
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = 'star-toggle' + (currentValue ? ' is-active' : '');
-  btn.innerHTML = `<span>Anvil ✪ (2x stats)</span><span>${currentValue ? '✪ ON' : 'OFF'}</span>`;
-  btn.addEventListener('click', () => onChange(!currentValue));
+  btn.className = 'star-toggle' + (level > 0 ? ' is-active' : '');
+  const stateText = level === 0 ? 'OFF' : (level === 1 ? '✪ ON (2x)' : '✪✪ ON (4x)');
+  btn.innerHTML = `<span>Anvil Star</span><span>${stateText}</span>`;
+  btn.addEventListener('click', () => onChange((level + 1) % 3));
   return btn;
 }
 
@@ -951,7 +959,7 @@ let state = {
   weapon: null,        // weapon name
   weaponRolls: {},      // { atk / atkMin / atkMax / hp / critRate / critValue / defRate / defValue : value }
   weaponPrefix: 'None', // prefix applied to the equipped weapon's own rolls
-  weaponStarred: false, // anvil "star" upgrade — doubles all of the weapon's own rolled stats
+  weaponStarred: 0, // anvil "star" upgrade level (0/1/2) — ✪ doubles, ✪✪ quadruples the weapon's own rolled stats
   skillChoices: {},    // rootSkillId -> { skillId, level } — the active skill picked per skill-tree
   artifacts: {},        // slot -> { setName, pieceName, rolls: {statKey:value}, specialRoll:value }
   ar: 1,                // Adventure Rank (1-24). Every AR above 1 grants +5 HP / +1 ATK.
@@ -1456,7 +1464,7 @@ function loadBuildSlot(id){
   state.weapon = d.weapon;
   state.weaponRolls = {...d.weaponRolls};
   state.weaponPrefix = d.weaponPrefix || 'None';
-  state.weaponStarred = !!d.weaponStarred;
+  state.weaponStarred = typeof d.weaponStarred === 'number' ? d.weaponStarred : (d.weaponStarred ? 1 : 0);
   state.skillChoices = JSON.parse(JSON.stringify(d.skillChoices || {}));
   state.artifacts = JSON.parse(JSON.stringify(d.artifacts || {}));
   state.ar = d.ar || 1;
@@ -1718,7 +1726,7 @@ var weaponPickerBtn = null;
 function weaponPickerLabel(){
   if(!state.weapon) return { label: '— Select a weapon —', isPlaceholder:true };
   const w = weapons.find(x => x.name === state.weapon);
-  return { label: w ? `${w.name}${state.weaponStarred ? ' ✪' : ''} (WL${w.worldLevel})` : state.weapon };
+  return { label: w ? `${w.name}${state.weaponStarred ? ' ' + starGlyph(state.weaponStarred) : ''} (WL${w.worldLevel})` : state.weapon };
 }
 function weaponPickerIconInfo(){
   const w = weapons.find(x => x.name === state.weapon);
@@ -1750,7 +1758,7 @@ function openWeaponPicker(){
       state.weapon = w ? w.name : null;
       state.weaponRolls = {};
       state.weaponPrefix = 'None';
-      state.weaponStarred = false;
+      state.weaponStarred = 0;
       weaponPickerBtn.refresh();
       renderWeaponSlot();
       renderTotals();
@@ -1782,13 +1790,13 @@ function renderWeaponSlot(){
   head.appendChild(iconImg(w.icon, WEAPON_ICON_PATH, w.name));
   const nameWrap = document.createElement('div');
   nameWrap.className = 'slot-head-name';
-  nameWrap.innerHTML = `<div class="name">${w.name}${state.weaponStarred ? ' ✪' : ''}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
+  nameWrap.innerHTML = `<div class="name">${w.name}${state.weaponStarred ? ' ' + starGlyph(state.weaponStarred) : ''}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
   head.appendChild(nameWrap);
   const removeBtn = makeRemoveButton('weapon', ()=>{
     state.weapon = null;
     state.weaponRolls = {};
     state.weaponPrefix = 'None';
-    state.weaponStarred = false;
+    state.weaponStarred = 0;
     if(weaponPickerBtn) weaponPickerBtn.refresh();
     renderWeaponSlot();
     renderTotals();
@@ -1810,7 +1818,7 @@ function renderWeaponSlot(){
   }));
 
   // ATK
-  const weaponMult = (rollKey) => prefixFactor(state.weaponPrefix, rollKey) * (state.weaponStarred ? 2 : 1);
+  const weaponMult = (rollKey) => prefixFactor(state.weaponPrefix, rollKey) * starMult(state.weaponStarred);
   const effFn = (rollKey) => (v) => {
     const m = weaponMult(rollKey);
     return m !== 1 ? round(v * m) : null;
@@ -1886,7 +1894,7 @@ function weaponBagChips(item){
   if(rolls.critValue !== undefined) chips.push(`CV ${rolls.critValue}`);
   if(rolls.defRate !== undefined) chips.push(`DR ${rolls.defRate}%`);
   if(rolls.defValue !== undefined) chips.push(`DV ${rolls.defValue}`);
-  if(item.starred) chips.push('✪ Anvil');
+  if(item.starred) chips.push(starGlyph(item.starred) + ' Anvil');
   return chips;
 }
 
@@ -1907,7 +1915,7 @@ function saveWeaponToBag(){
       ability: w.ability,
       rolls: {...state.weaponRolls},
       prefix: state.weaponPrefix || 'None',
-      starred: !!state.weaponStarred,
+      starred: state.weaponStarred|0,
       favorite: false
     };
     state.weaponBag.push(item);
@@ -1923,7 +1931,7 @@ function equipWeaponFromBag(id){
   state.weapon = item.weaponName;
   state.weaponRolls = {...item.rolls};
   state.weaponPrefix = item.prefix || 'None';
-  state.weaponStarred = !!item.starred;
+  state.weaponStarred = item.starred|0;
   if(weaponPickerBtn) weaponPickerBtn.refresh();
   renderWeaponSlot();
   renderTotals();
@@ -2526,7 +2534,7 @@ function computeAndRenderTotals(){
   // Weapon contributions (prefix multiplies the weapon's own rolls)
   const wr = state.weaponRolls;
   const wPfx = state.weaponPrefix || 'None';
-  const wStar = state.weaponStarred ? 2 : 1;
+  const wStar = starMult(state.weaponStarred);
   if(wr.atk !== undefined){ const v = wr.atk * prefixFactor(wPfx,'atk') * wStar; totals.atkLow += v; totals.atkHigh += v; }
   if(wr.atkMin !== undefined) totals.atkLow += wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar;
   if(wr.atkMax !== undefined) totals.atkHigh += wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar;
@@ -2844,7 +2852,7 @@ function buildWeaponBagRow(item, showSlotTag){
   const slotTag = showSlotTag ? '<span class="bag-slot-tag">Weapon</span>' : '';
   return buildBagRow({
     icon: item.icon, iconPath: WEAPON_ICON_PATH, iconAlt: item.weaponName,
-    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.weaponName}${item.starred ? ' ✪' : ''}`,
+    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.weaponName}${item.starred ? ' ' + starGlyph(item.starred) : ''}`,
     metaHtml: `${slotTag}${weaponBagMeta(item)}`,
     chips: weaponBagChips(item),
     favorite: !!item.favorite,
@@ -2931,7 +2939,7 @@ function openQuickAddWeaponPicker(){
 }
 
 function startQuickAddWeapon(w){
-  quickAdd = { kind:'weapon', def:w, rolls:{}, prefix:'None', starred:false, nickname:'' };
+  quickAdd = { kind:'weapon', def:w, rolls:{}, prefix:'None', starred:0, nickname:'' };
   renderQuickAddEditor();
   quickAddModal.open();
 }
@@ -2982,7 +2990,7 @@ function renderQuickAddEditor(){
     head.appendChild(iconImg(w.icon, WEAPON_ICON_PATH, w.name));
     const nameWrap = document.createElement('div');
     nameWrap.className = 'slot-head-name';
-    nameWrap.innerHTML = `<div class="name">${w.name}${quickAdd.starred ? ' ✪' : ''}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
+    nameWrap.innerHTML = `<div class="name">${w.name}${quickAdd.starred ? ' ' + starGlyph(quickAdd.starred) : ''}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
     head.appendChild(nameWrap);
     body.appendChild(head);
 
@@ -2995,7 +3003,7 @@ function renderQuickAddEditor(){
       renderQuickAddEditor();
     }));
 
-    const weaponMult = (rollKey) => prefixFactor(quickAdd.prefix, rollKey) * (quickAdd.starred ? 2 : 1);
+    const weaponMult = (rollKey) => prefixFactor(quickAdd.prefix, rollKey) * starMult(quickAdd.starred);
     const effFn = (rollKey) => (v) => {
       const m = weaponMult(rollKey);
       return m !== 1 ? round(v * m) : null;
@@ -3116,7 +3124,7 @@ function saveQuickAdd(){
       ability: w.ability,
       rolls: {...quickAdd.rolls},
       prefix: quickAdd.prefix || 'None',
-      starred: !!quickAdd.starred,
+      starred: quickAdd.starred|0,
       favorite: false
     };
     state.weaponBag.push(item);
@@ -3188,7 +3196,8 @@ function loadBuild(){
   if(state.frostTreeLevel === undefined || state.frostTreeLevel < FROST_TREE_MIN || state.frostTreeLevel > FROST_TREE_MAX) state.frostTreeLevel = 0;
   if(!state.skillChoices) state.skillChoices = {};
   if(state.weaponPrefix === undefined) state.weaponPrefix = 'None';
-  if(state.weaponStarred === undefined) state.weaponStarred = false;
+  if(state.weaponStarred === undefined) state.weaponStarred = 0;
+  state.weaponStarred = typeof state.weaponStarred === 'number' ? state.weaponStarred : (state.weaponStarred ? 1 : 0);
   if(state.autosave === undefined) state.autosave = true;
   if(state.showRollQuality === undefined) state.showRollQuality = false;
 }
@@ -3199,7 +3208,7 @@ function resetBuild(){
     weaponStarred: state.weaponStarred, skillChoices: JSON.parse(JSON.stringify(state.skillChoices || {})),
     artifacts: JSON.parse(JSON.stringify(state.artifacts || {})), ar: state.ar, frostTreeLevel: state.frostTreeLevel
   };
-  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:false, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, showRollQuality: state.showRollQuality, bag: state.bag, weaponBag: state.weaponBag };
+  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:0, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, showRollQuality: state.showRollQuality, bag: state.bag, weaponBag: state.weaponBag };
   if(weaponPickerBtn) weaponPickerBtn.refresh();
   renderWeaponSlot();
   buildArtifactSlots();
