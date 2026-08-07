@@ -10,21 +10,21 @@
 body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14px;height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
 #app{display:flex;flex:1;overflow:hidden}
 #branch-panel{width:100%;display:flex;flex-direction:column;overflow:hidden}
-#branch-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+#branch-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;scroll-behavior:smooth}
 #branch-header::-webkit-scrollbar{display:none}
-#back-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;align-items:center;gap:4px;text-decoration:none;font-family:sans-serif}
+#back-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;align-items:center;gap:4px;text-decoration:none;font-family:sans-serif;flex-shrink:0}
 #back-btn.visible{display:inline-flex}
 #back-btn:hover{background:var(--bg3);color:var(--text)}
-.panel-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);flex:1}
-#mode-toggle{display:flex;border:1px solid var(--border2);border-radius:5px;overflow:hidden}
-#mode-toggle button{background:none;border:none;padding:5px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:background .12s,color .12s}
+.panel-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);flex:0 0 auto;white-space:nowrap}
+#mode-toggle{display:flex;border:1px solid var(--border2);border-radius:5px;overflow:hidden;flex-shrink:0}
+#mode-toggle button{background:none;border:none;padding:5px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:background .12s,color .12s;white-space:nowrap}
 #mode-toggle button.active{background:var(--gold);color:#fff8ee}
-#best-route-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+#best-route-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s;flex-shrink:0}
 #best-route-btn:hover{background:var(--bg3);color:var(--text)}
 #best-route-btn.active-normal{background:#fff0ee;border-color:#e03020;color:#b02010}
 #best-route-btn.active-important{background:#e03020;border-color:#b02010;color:#fff8ee}
 .ellipsis-card{text-align:center;color:var(--text3);font-size:20px;letter-spacing:4px;padding:8px 0;user-select:none}
-#collapse-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none}
+#collapse-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;flex-shrink:0}
 #collapse-btn.visible{display:inline-flex;align-items:center;gap:4px}
 #branch-body{flex:1;overflow:auto;padding:12px 12px 40px}
 #sim-fab{position:fixed;bottom:24px;right:24px;z-index:400;width:68px;height:68px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:background .15s,transform .15s;padding:0}
@@ -132,7 +132,15 @@ summary::-webkit-details-marker{display:none}
 .tloc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#1a4a5a}
 .tloc a{color:#1a4a5a;text-decoration:underline}
 .cnote-box{border:1px solid #7a5c10;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:var(--text,#1a1a1a);line-height:1.6;display:block}
-.cnote-lbl{font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:11px;display:block;margin-bottom:3px}
+.cnote-lbl{font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:11px;display:flex;align-items:center;gap:5px;margin-bottom:3px;cursor:pointer;user-select:none}
+.cnote-lbl::before{content:"▸";font-size:9px;display:inline-block}
+.cnote-box:not(.collapsed) .cnote-lbl::before{content:"▾"}
+.cnote-box.collapsed .cnote-lbl{margin-bottom:0}
+.cnote-content{display:none}
+.cnote-box:not(.collapsed) .cnote-content{display:block}
+.cnote-lbl.no-toggle{cursor:default}
+.cnote-lbl.no-toggle::before,
+.cnote-box:not(.collapsed) .cnote-lbl.no-toggle::before{content:""}
 .cnote-box a{text-decoration:underline}
 .meta-banner{margin-bottom:8px}
 .troot{padding-left:4px;display:table;min-width:100%}
@@ -188,6 +196,19 @@ summary::-webkit-details-marker{display:none}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .obj-icon{width:18px;height:18px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin:0 2px;display:inline-block}
+#endings-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s;flex-shrink:0}
+#endings-btn:hover{background:var(--bg3);color:var(--text)}
+#endings-btn.active{background:var(--gold);color:#fff8ee;border-color:var(--gold)}
+.endings-list{display:flex;flex-direction:column;gap:12px}
+.endings-list-hint{font-size:11px;color:var(--text3);padding:0 2px 2px;line-height:1.5}
+.ending-pick-card{cursor:pointer;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.ending-pick-card:hover{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.15)}
+.endings-empty{text-align:center;padding:30px 12px;color:var(--text3);font-size:13px}
+.back-to-endings-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:6px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;margin-bottom:12px;display:inline-flex;align-items:center;gap:4px;font-family:sans-serif}
+.back-to-endings-btn:hover{background:var(--bg3);color:var(--text)}
+.path-choice{cursor:default}
+.path-choice:hover{background:var(--bg3);border-color:var(--border)}
+.path-unreachable{text-align:center;padding:24px 12px;color:#b03020;font-size:13px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -198,6 +219,7 @@ summary::-webkit-details-marker{display:none}
       <span class="panel-label">🌿 Branches</span>
       <button id="collapse-btn" onclick="toggleTreeCollapse()">▼ Collapse</button>
       <button id="best-route-btn" onclick="toggleBestRoute()">⭐ Best Route</button>
+      <button id="endings-btn" onclick="toggleEndingsMode()">🏁 Endings</button>
       <div id="mode-toggle">
         <button id="btn-tree" class="active" onclick="setBranchMode('tree')">Tree</button>
         <button id="btn-cards" onclick="setBranchMode('cards')">Cards</button>
@@ -239,7 +261,7 @@ summary::-webkit-details-marker{display:none}
 </div>
 <script>
 const scenes={"start":{"id":"start","type":"start","title":"Skills and Prayers","text":"''Near one of the farmhouses at the edge of Springvale, you notice a woman in white robes crouching before a Swordsman. Her hands are folded over his, her lips moving in quiet prayer. The Swordsman's eyes are closed. A faint warmth seems to radiate from the two of them, though it may just be the afternoon sun.''\n\n''You slow your pace. Something about the moment feels deliberate. Significant''.","dialogues":[],"choices":[{"label":"Approach and watch","next":"apprch"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"apprch":{"id":"apprch","type":"scene","title":"","text":"''The Nun finishes her prayer and rises gracefully. She notices you with a calm smile''.\n\nNun: You are welcome to observe. The blessing is almost complete. ''She turns back and places one hand over the Swordsman's sword hilt, murmuring a final verse''.\n\n''The Swordsman opens his eyes. He looks different somehow. More settled. He bows his head to the Nun, then rises and walks away without a word''.","dialogues":[],"choices":[{"label":"What did you do to him?","next":"whtudo"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"whtudo":{"id":"whtudo","type":"scene","title":"","text":"Nun: ''tilts her head thoughtfully'' Nothing that was not already inside him. A skill blessing anchors what the body has learned and gives it form. That man has fought for years. He simply did not know how to call on what he already knew. ''she folds her hands'' Now he does.","dialogues":[],"choices":[{"label":"Skills can be blessed into someone?","next":"Skills_can_be_blessed_into_someone"},{"label":"That sounds like magic","next":"magik"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"magik":{"id":"magik","type":"scene","title":"","text":"Nun: *smiles* It is faith, traveller. Faith in the body, in the wind, in something larger than a single sword arm. The Church does not conjure skills from nothing. It teaches the spirit to listen. *pauses* That is a subtle distinction, I know. Magic is faster to say.","dialogues":[],"choices":[{"label":"Can anyone receive a skill blessing?","next":"Skills_can_be_blessed_into_someone"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"Skills_can_be_blessed_into_someone":{"id":"Skills_can_be_blessed_into_someone","type":"scene","title":"","text":"Nun: Anyone who is willing, yes. The Cathedral in Mondstadt City offers skill instruction to all who come. The Church asks only that those who wish to learn first make a small offering. Twenty silver pieces, donated to the church fund. It covers the candles, the texts, the time. ''A gentle smile''. The Archon does not charge for blessings. The building, however, does have a roof to maintain.","dialogues":[],"choices":[{"label":"Twenty silver for access to skills?","next":"20silv"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"20silv":{"id":"20silv","type":"scene","title":"","text":"Nun: That is all. Once the donation is recorded, the Cathedral's doors are open to you whenever you are in Mondstadt. The instructors there can teach you things that no dungeon or battlefield can. ''She studies you with kind eyes''. You look like someone who would benefit from it. Will you go?","dialogues":[],"choices":[{"label":"I will. Twenty silver to the church","next":"silv20ch","best":true},{"label":"I will think about it","next":"willthnk"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"willthnk":{"id":"willthnk","type":"scene","title":"","text":"Nun: There is no rush, traveller. The Cathedral has stood for three hundred years. It will be there when you are ready. ''She begins gathering her things''. Take your time. I will be in the fields awhile longer if you wish to speak again.\n\n''She walks a short way down the path, white robes trailing through the grass''.","dialogues":[{"speaker":"Objective","text":"Return to the Nun in Springvale in 3 hours. The donation may change","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"rtrnnun3hr","label":"Wait 3 hours in real life, then travel to Springvale and talk to the nun"}]},"silv20ch":{"id":"silv20ch","type":"scene","title":"","text":"Nun: ''nods warmly'' Good. The Cathedral will be expecting you. Just twenty silver at the entrance, and all of its teachings are yours. ''She glances back toward the fields''. Another blessing waits. Safe travels, traveller.\n\n''She walks away into the tall grass, her white robes catching the wind''.","dialogues":[{"speaker":"Objective","text":"Donate 20 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_20_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":"Travel to Mondstadt City (Mondstadt)"}]},"rtrnnun3hr":{"id":"rtrnnun3hr","type":"scene","title":"","text":"''You find the Nun again near the same farmhouse. She looks up from a small prayer book tucked under one arm''.\n\nNun: Back already? ''She tilts her head''. While you were deciding, word reached me from Mondstadt. The church council reviewed its costs. Roof tiles, hymnals, winter fuel for the dormitory. The required offering is seventy silver now, not twenty.\n\nNun: ''A sympathetic smile''. I am sorry. The Cathedral and its instructors are unchanged. Only the donation has gone up. Will you still go?","dialogues":[],"choices":[{"label":"Seventy silver. I will go","next":"70slvgo"},{"label":"I need more time to think","next":"mrtimrtothn"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"70slvgo":{"id":"70slvgo","type":"scene","title":"","text":"Nun: ''nods warmly'' Good. The Cathedral will be expecting you. Seventy silver at the entrance, and all of its teachings are yours. She'' glances back toward the fields''. Another blessing waits. Safe travels, traveller.\n\n''She walks away into the tall grass, her white robes catching the wind''.","dialogues":[{"speaker":"Objective","text":"Donate 70 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":"Travel to Mondstadt City (Mondstadt)"}]},"mrtimrtothn":{"id":"mrtimrtothn","type":"scene","title":"","text":"Nun: ''nods without judgment'' Then take it. The Cathedral is not going anywhere, and neither am I for a little while yet. ''She glances toward the fields''. Come find me when you are ready.","dialogues":[{"speaker":"Objective","text":"Donate 70 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":"Travel to Mondstadt City (Mondstadt)"}]},"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt":{"id":"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt","type":"scene","title":"","text":"''The Cathedral of Favonius rises at the heart of Mondstadt City, pale stone and tall windows catching the afternoon light. At the entrance, Barbara stands beside a donations box with a handwritten notice pinned beside it''.\n\nBarbara: Welcome, traveller. Are you here to make the offering? Seventy silver, as the council set it.","dialogues":[],"choices":[{"label":"Seventy silver. Fine, for the skill blessing.","next":"donet70"},{"label":"I am just looking for now","next":"looknarnd70"},{"label":"I'll return when I have enough silver","next":"rtrnltr70"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"donet70":{"id":"donet70","type":"ending","title":"Donation Made, 70 Silver","text":"''You count out seventy silver pieces into the donations box. Barbara records each one in her ledger without comment, though her smile when she looks up is genuinely relieved''.\n\nBarbara: Recorded. ''She closes the ledger''. The Cathedral's instructors are available whenever you are in Mondstadt. You can visit any time and learn at your own pace. ''She gestures toward the inner doors''. Welcome, traveller. This place is yours.","dialogues":[{"speaker":"Gave","text":"70x [img:../Textures/silver.png] '''Silver'''","collapsed":false}],"choices":[],"rewards":[{"item":"AEXP","qty":50}],"unlocks":"[[Skills|Cathedral]]","requirement":"","continues":[]},"looknarnd70":{"id":"looknarnd70","type":"scene","title":"","text":"Barbara: ''smiles patiently'' Of course. Take your time. The Cathedral is always open, and the donation box is right here when you are ready. Seventy silver is all we ask now.","dialogues":[],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_70_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":""}]},"rtrnltr70":{"id":"rtrnltr70","type":"scene","title":"","text":"Barbara: ''nods warmly'' Of course. The donation box will be right here when you return. Seventy silver is all we ask.\n\n''You step away from the entrance for now. The Cathedral will wait''.","dialogues":[{"speaker":"Objective","text":"Donate 70 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[]},"donet20":{"id":"donet20","type":"ending","title":"Donation Made, 20 Silver","text":"''You place twenty silver pieces into the donations box. Barbara counts them with a practiced eye and writes your name in a small ledger''.\n\nBarbara: Recorded. ''She looks up with a genuine smile''. The Cathedral's instructors are available whenever you are in Mondstadt. You can visit any time and learn at your own pace. ''She gestures toward the inner doors''. Welcome, traveller. This place is yours.","dialogues":[{"speaker":"Gave","text":"20x [img:../Textures/silver.png] '''Silver'''","collapsed":false}],"choices":[],"rewards":[],"unlocks":"[[Skills|Cathedral]]","requirement":"","continues":[]},"rtrn20":{"id":"rtrn20","type":"scene","title":"","text":"Barbara: ''nods warmly'' Of course. The donation box will be right here when you return. Twenty silver is all we ask.\n\n''You step away from the entrance for now. The Cathedral will wait''.","dialogues":[{"speaker":"Objective","text":"Donate 20 Silver to the Church of Favonius in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[]},"lknarn20":{"id":"lknarn20","type":"scene","title":"","text":"Barbara: ''smiles patiently'' Of course. Take your time. The Cathedral is always open, and the donation box is right here when you are ready. Tweenty silver is all we ask.","dialogues":[],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Donate_20_Silver_to_the_Church_of_Favonius_in_Mondstadt","label":""}]},"Donate_20_Silver_to_the_Church_of_Favonius_in_Mondstadt":{"id":"Donate_20_Silver_to_the_Church_of_Favonius_in_Mondstadt","type":"scene","title":"","text":"''The Cathedral of Favonius rises at the heart of Mondstadt City, pale stone and tall windows catching the afternoon light. At the entrance, Barbara stands beside a small wooden donations box, hands folded''.\n\nBarbara: Welcome, traveller. Are you here to make an offering?","dialogues":[],"choices":[{"label":"Yes. Twenty silver, for the skill blessing","next":"donet20","best":true},{"label":"I am just looking for now","next":"lknarn20"},{"label":"I'll return when I have enough silver","next":"rtrn20"}],"rewards":[],"unlocks":"","requirement":"","continues":[]}};
-const questMeta={"requirement":"Explore Springvale (1%–5% exploration) to trigger this quest.","locations":["[[Locations#Springvale|Springvale]]"],"questType":"special","customTabs":[{"id":"cmrr1ggz500pd","label":"tip","color":"#ff0000","content":"You can click on '''Collapse''' and '''Best Route''' -> '''Important Only''' button to minimize it.\n''Some quests will not have Best Route choice because the best choice is subjective/not found yet.''"}],"tabOrder":["ct_cmrr1ggz500pd","loc","req","type"]};
+const questMeta={"requirement":"Explore Springvale (1%+ exploration) to trigger this quest.","locations":["[[Locations#Springvale|Springvale]]"],"questType":"special","customTabs":[{"id":"cmrr1ggz500pd","label":"tip","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.","collapsible":true}],"tabOrder":["loc","req","type","ct_cmrr1ggz500pd"]};
 const ICONS_OBJ={};
 var WIKI_BASE="https://dawnwineryrpg.miraheze.org/wiki/";
 var WIKI_MODE=true;
@@ -251,8 +273,8 @@ let currentPlayId="start";
 let branchMode="tree";
 let treeVisited={};
 function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
-function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+e(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+e(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+e(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var clr=WCLR[m[12]]||m[12];result+='<span style="color:'+clr+'">'+wlInline(m[13])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  return lines.map(function(line){    var headM=line.match(/^==(.+?)==\s*$/);    if(headM)return "<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";    return wlInline(line);  }).join("<br>");}
-function metaBannersHTML(variant){  var order=(questMeta.tabOrder||[]).slice();  var validKeys=["loc","req","type"].concat((questMeta.customTabs||[]).map(function(t){return "ct_"+t.id;}));  order=order.filter(function(k){return validKeys.indexOf(k)!==-1;});  validKeys.forEach(function(k){if(order.indexOf(k)===-1)order.push(k);});  var locClass=variant==="t"?"tloc":(variant==="play"?"loc-box":"bloc");  var locLblClass=variant==="t"?"tloc-lbl":(variant==="play"?"loc-lbl":"bloc-lbl");  var reqClass=variant==="t"?"treq":(variant==="play"?"req-box":"breq");  var reqLblClass=variant==="t"?"treq-lbl":(variant==="play"?"req-lbl":"breq-lbl");  var out="";  order.forEach(function(key){    if(key==="loc"){      var locs=(questMeta.locations||[]).filter(function(l){return l.trim();});      if(locs.length)out+="<div class=\""+locClass+"\"><span class=\""+locLblClass+"\">📍 Locations</span>"+locs.map(function(l){return wl(l);}).join("<br>")+"</div>";    } else if(key==="req"){      if(questMeta.requirement)out+="<div class=\""+reqClass+"\"><span class=\""+reqLblClass+"\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";    } else if(key.indexOf("ct_")===0){      var t=(questMeta.customTabs||[]).filter(function(ct){return "ct_"+ct.id===key;})[0];      if(t&&t.content&&t.content.trim()){        var c=t.color||"#7a5c10";        out+="<div class=\"cnote-box\" style=\"border-color:"+eh(c)+";background:"+eh(c)+"1a\"><span class=\"cnote-lbl\" style=\"color:"+eh(c)+"\">"+eh(t.label||"Note")+"</span>"+wl(t.content)+"</div>";      }    }  });  return out;}
+function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\[size:((?:[\\d.]+(?:em|px|%)?)|sm|small|xs|lg|large|xl|xxl)\\|([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+wlInline(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+wlInline(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+wlInline(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var rawSz=m[12].trim();var szMap={sm:"0.8em",small:"0.8em",xs:"0.65em",lg:"1.25em",large:"1.25em",xl:"1.5em",xxl:"1.8em"};var szv=szMap[rawSz.toLowerCase()]||rawSz;result+='<span style="font-size:'+e(szv)+'">'+wlInline(m[13])+'</span>';}      else if(m[14]!==undefined){var clr=WCLR[m[14]]||m[14];result+='<span style="color:'+clr+'">'+wlInline(m[15])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  return lines.map(function(line){    var headM=line.match(/^==(.+?)==\s*$/);    if(headM)return "<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";    return wlInline(line);  }).join("<br>");}
+function metaBannersHTML(variant){  var order=(questMeta.tabOrder||[]).slice();  var validKeys=["loc","req","type"].concat((questMeta.customTabs||[]).map(function(t){return "ct_"+t.id;}));  order=order.filter(function(k){return validKeys.indexOf(k)!==-1;});  validKeys.forEach(function(k){if(order.indexOf(k)===-1)order.push(k);});  var locClass=variant==="t"?"tloc":(variant==="play"?"loc-box":"bloc");  var locLblClass=variant==="t"?"tloc-lbl":(variant==="play"?"loc-lbl":"bloc-lbl");  var reqClass=variant==="t"?"treq":(variant==="play"?"req-box":"breq");  var reqLblClass=variant==="t"?"treq-lbl":(variant==="play"?"req-lbl":"breq-lbl");  var out="";  order.forEach(function(key){    if(key==="loc"){      var locs=(questMeta.locations||[]).filter(function(l){return l.trim();});      if(locs.length)out+="<div class=\""+locClass+"\"><span class=\""+locLblClass+"\">📍 Locations</span>"+locs.map(function(l){return wl(l);}).join("<br>")+"</div>";    } else if(key==="req"){      if(questMeta.requirement)out+="<div class=\""+reqClass+"\"><span class=\""+reqLblClass+"\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";    } else if(key.indexOf("ct_")===0){      var t=(questMeta.customTabs||[]).filter(function(ct){return "ct_"+ct.id===key;})[0];      if(t&&t.content&&t.content.trim()){        var c=t.color||"#7a5c10";        var collapsible=t.collapsible!==false;        var boxClass=collapsible?"cnote-box collapsed":"cnote-box";        var lblClass=collapsible?"cnote-lbl":"cnote-lbl no-toggle";        var onclk=collapsible?" onclick=\"this.parentElement.classList.toggle('collapsed')\"":"";        out+="<div class=\""+boxClass+"\" style=\"border-color:"+eh(c)+";background:"+eh(c)+"1a\"><span class=\""+lblClass+"\" style=\"color:"+eh(c)+"\""+onclk+">"+eh(t.label||"Note")+"</span><div class=\"cnote-content\">"+wl(t.content)+"</div></div>";      }    }  });  return out;}
 var ICONS={Silver:"../Textures/silver.png",AEXP:"../Textures/aexp.png",Mora:"../Textures/mora.png"};
 function rewardItemsHtml(rewards,imgW){var h="";(rewards||[]).forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\""+imgW+"\" height=\""+imgW+"\" style=\"object-fit:contain;image-rendering:pixelated\">":"";h+="<span class=\"reward-it\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});return h;}
 function openPlay(){go(currentPlayId);document.getElementById("sim-modal").classList.add("open");}
@@ -263,8 +285,147 @@ function setBranchMode(m){
   document.getElementById("btn-cards").classList.toggle("active",m==="cards");
   document.getElementById("btn-tree").classList.toggle("active",m==="tree");
   var cb=document.getElementById("collapse-btn");
-  cb.classList.toggle("visible",m==="tree");
-  if(m==="cards"){renderCards();}else{treeCollapsed=false;cb.textContent="▼ Collapse";renderTree();}
+  cb.classList.toggle("visible",m==="tree"&&!(endingsMode&&!selectedEndingPath));
+  if(m==="tree"){treeCollapsed=false;cb.textContent="▼ Collapse";}
+  renderBranchBody();
+}
+var endingsMode=false;
+var selectedEndingPath=null;
+function toggleEndingsMode(){
+  endingsMode=!endingsMode;
+  selectedEndingPath=null;
+  document.getElementById("endings-btn").classList.toggle("active",endingsMode);
+  renderBranchBody();
+}
+function renderBranchBody(){
+  var cb=document.getElementById("collapse-btn");
+  cb.classList.toggle("visible",branchMode==="tree"&&!(endingsMode&&!selectedEndingPath));
+  if(endingsMode){
+    if(selectedEndingPath){branchMode==="tree"?renderPathTree(selectedEndingPath):renderPathCards(selectedEndingPath);}
+    else{renderEndingsList();}
+  } else {
+    branchMode==="tree"?renderTree():renderCards();
+  }
+}
+function findEdgeLabel(s,nextId){
+  var m=(s.choices||[]).filter(function(c){return c.next===nextId;})[0];
+  if(m)return m.label||"...";
+  var mc=(s.continues||[]).filter(function(c){return c.next===nextId;})[0];
+  if(mc)return mc.label||"Continue";
+  return "...";
+}
+function findPathToEnding(targetId){
+  if(!scenes[targetId])return null;
+  var visited={start:true};
+  var queue=[["start"]];
+  while(queue.length){
+    var path=queue.shift();
+    var id=path[path.length-1];
+    if(id===targetId)return path;
+    var s=scenes[id];if(!s)continue;
+    var edges=[];
+    (s.choices||[]).forEach(function(c){if(c.next)edges.push(c.next);});
+    (s.continues||[]).forEach(function(c){if(c.next)edges.push(c.next);});
+    for(var i=0;i<edges.length;i++){
+      var nid=edges[i];
+      if(!visited[nid]&&scenes[nid]){visited[nid]=true;queue.push(path.concat([nid]));}
+    }
+  }
+  return null;
+}
+function renderEndingsList(){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var endingIds=Object.keys(scenes).filter(function(k){return scenes[k].type==="ending";});
+  if(!endingIds.length){bv.innerHTML="<div class=\"endings-empty\">No endings in this quest yet.</div>";return;}
+  var hint=document.createElement("div");hint.className="endings-list-hint";hint.textContent="Tap an ending to see the branches that lead to it.";bv.appendChild(hint);
+  var wrap=document.createElement("div");wrap.className="endings-list";
+  endingIds.forEach(function(id){
+    var s=scenes[id];
+    var el=document.createElement("div");el.className="ending-pick-card";
+    el.onclick=function(){selectEndingPath(id);};
+    var inner="<div class=\"bhead\"><span class=\"bbadge b-ending\">Ending</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"</div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";ri+="<span class=\"breward-item\">"+ic+"<span class=\"breward-item-txt\">"+eh(r.item)+" ×"+r.qty+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;wrap.appendChild(el);
+  });
+  bv.appendChild(wrap);
+}
+function selectEndingPath(id){
+  var path=findPathToEnding(id);
+  if(!path){
+    var bv=document.getElementById("branch-body");
+    bv.innerHTML="<button class=\"back-to-endings-btn\" onclick=\"selectedEndingPath=null;renderBranchBody();\">← All Endings</button><div class=\"path-unreachable\">This ending has no path from Start — it may only be reachable through branches that aren't currently connected.</div>";
+    return;
+  }
+  selectedEndingPath=path;
+  renderBranchBody();
+}
+function backToEndingsList(){selectedEndingPath=null;renderBranchBody();}
+function renderPathCards(path){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var back=document.createElement("button");back.className="back-to-endings-btn";back.textContent="← All Endings";back.onclick=backToEndingsList;bv.appendChild(back);
+  path.forEach(function(id,idx){
+    var s=scenes[id];if(!s)return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    var el=document.createElement("div");el.className="bscene"+(id===currentPlayId?" playing":"");el.id="bscene-"+id;
+    var inner="<div class=\"bhead\"><span class=\"bbadge "+bclass+"\">"+blabel+"</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"<button class=\"bplay-btn\" onclick=\"go('"+id+"')\">&#9654;</button></div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.dialogues&&s.dialogues.length){
+      inner+="<div class=\"bdlg-wrap\">";
+      s.dialogues.forEach(function(d){if(d.collapsed){inner+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{inner+="<div class=\"dlg-visible\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";}});
+      inner+="</div>";
+    }
+    if(idx<path.length-1){
+      var label=findEdgeLabel(s,path[idx+1]);
+      inner+="<div class=\"bchoices\"><div class=\"bchoice path-choice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(label)+"</span></div></div>";
+    }
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";ri+="<span class=\"breward-item\">"+ic+"<span class=\"breward-item-txt\">"+eh(r.item)+" ×"+r.qty+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;bv.appendChild(el);
+  });
+}
+function renderPathTree(path){
+  var bv=document.getElementById("branch-body");
+  var html="<button class=\"back-to-endings-btn\" onclick=\"backToEndingsList()\">← All Endings</button>";
+  html+="<div class=\"troot\">";
+  path.forEach(function(id,idx){
+    var s=scenes[id];if(!s)return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    html+="<div class=\"tnode\">";
+    html+="<div class=\"tcard"+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+    html+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span><span class=\"ttitle\">"+eh(s.title)+"</span>";
+    html+="</div>";
+    var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+    if(hasBody){
+      html+="<div class=\"tnode-body\">";
+      if(s.text)html+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";
+      if(s.dialogues&&s.dialogues.length){
+        html+="<div class=\"tdlgs\">";
+        s.dialogues.forEach(function(d){
+          if(d.collapsed){html+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}
+          else{html+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}
+        });
+        html+="</div>";
+      }
+      if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";html+="<span class=\"treward-item\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});html+="</div>";}
+      if(s.type==="ending"&&s.unlocks){html+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+      html+="</div>";
+    }
+    if(idx<path.length-1){
+      var label=findEdgeLabel(s,path[idx+1]);
+      html+="<div class=\"tchoice-inline\"><div class=\"tchoice-label\">"+eh(label)+"</div></div>";
+    }
+    html+="</div>";
+  });
+  html+="</div>";
+  bv.innerHTML=html;
 }
 var treeCollapsed=false;
 var bestRouteMode=0;
@@ -328,7 +489,7 @@ function toggleBestRoute(){
   if(bestRouteMode===0){btn.textContent="⭐ Best Route";}
   else if(bestRouteMode===1){btn.textContent="⭐ Best Route";btn.classList.add("active-normal");}
   else{btn.textContent="⭐ Important Only";btn.classList.add("active-important");}
-  if(branchMode==="tree")renderTree();else renderCards();
+  renderBranchBody();
 }
 function toggleTreeCollapse(){
   treeCollapsed=!treeCollapsed;
@@ -638,7 +799,7 @@ function drawTreeLines(){
 })();
 function goBack(){history.back();}
 go("start");
-renderTree();
+renderBranchBody();
 document.getElementById("collapse-btn").classList.add("visible");
 </script>
 </body>
