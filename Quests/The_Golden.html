@@ -10,21 +10,21 @@
 body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14px;height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
 #app{display:flex;flex:1;overflow:hidden}
 #branch-panel{width:100%;display:flex;flex-direction:column;overflow:hidden}
-#branch-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+#branch-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;scroll-behavior:smooth}
 #branch-header::-webkit-scrollbar{display:none}
-#back-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;align-items:center;gap:4px;text-decoration:none;font-family:sans-serif}
+#back-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;align-items:center;gap:4px;text-decoration:none;font-family:sans-serif;flex-shrink:0}
 #back-btn.visible{display:inline-flex}
 #back-btn:hover{background:var(--bg3);color:var(--text)}
-.panel-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);flex:1}
-#mode-toggle{display:flex;border:1px solid var(--border2);border-radius:5px;overflow:hidden}
-#mode-toggle button{background:none;border:none;padding:5px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:background .12s,color .12s}
+.panel-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);flex:0 0 auto;white-space:nowrap}
+#mode-toggle{display:flex;border:1px solid var(--border2);border-radius:5px;overflow:hidden;flex-shrink:0}
+#mode-toggle button{background:none;border:none;padding:5px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:background .12s,color .12s;white-space:nowrap}
 #mode-toggle button.active{background:var(--gold);color:#fff8ee}
-#best-route-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s}
+#best-route-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s;flex-shrink:0}
 #best-route-btn:hover{background:var(--bg3);color:var(--text)}
 #best-route-btn.active-normal{background:#fff0ee;border-color:#e03020;color:#b02010}
 #best-route-btn.active-important{background:#e03020;border-color:#b02010;color:#fff8ee}
 .ellipsis-card{text-align:center;color:var(--text3);font-size:20px;letter-spacing:4px;padding:8px 0;user-select:none}
-#collapse-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none}
+#collapse-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;flex-shrink:0}
 #collapse-btn.visible{display:inline-flex;align-items:center;gap:4px}
 #branch-body{flex:1;overflow:auto;padding:12px 12px 40px}
 #sim-fab{position:fixed;bottom:24px;right:24px;z-index:400;width:68px;height:68px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:background .15s,transform .15s;padding:0}
@@ -132,7 +132,15 @@ summary::-webkit-details-marker{display:none}
 .tloc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#1a4a5a}
 .tloc a{color:#1a4a5a;text-decoration:underline}
 .cnote-box{border:1px solid #7a5c10;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:var(--text,#1a1a1a);line-height:1.6;display:block}
-.cnote-lbl{font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:11px;display:block;margin-bottom:3px}
+.cnote-lbl{font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:11px;display:flex;align-items:center;gap:5px;margin-bottom:3px;cursor:pointer;user-select:none}
+.cnote-lbl::before{content:"▸";font-size:9px;display:inline-block}
+.cnote-box:not(.collapsed) .cnote-lbl::before{content:"▾"}
+.cnote-box.collapsed .cnote-lbl{margin-bottom:0}
+.cnote-content{display:none}
+.cnote-box:not(.collapsed) .cnote-content{display:block}
+.cnote-lbl.no-toggle{cursor:default}
+.cnote-lbl.no-toggle::before,
+.cnote-box:not(.collapsed) .cnote-lbl.no-toggle::before{content:""}
 .cnote-box a{text-decoration:underline}
 .meta-banner{margin-bottom:8px}
 .troot{padding-left:4px;display:table;min-width:100%}
@@ -188,6 +196,19 @@ summary::-webkit-details-marker{display:none}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .obj-icon{width:18px;height:18px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin:0 2px;display:inline-block}
+#endings-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s;flex-shrink:0}
+#endings-btn:hover{background:var(--bg3);color:var(--text)}
+#endings-btn.active{background:var(--gold);color:#fff8ee;border-color:var(--gold)}
+.endings-list{display:flex;flex-direction:column;gap:12px}
+.endings-list-hint{font-size:11px;color:var(--text3);padding:0 2px 2px;line-height:1.5}
+.ending-pick-card{cursor:pointer;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.ending-pick-card:hover{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.15)}
+.endings-empty{text-align:center;padding:30px 12px;color:var(--text3);font-size:13px}
+.back-to-endings-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:6px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;margin-bottom:12px;display:inline-flex;align-items:center;gap:4px;font-family:sans-serif}
+.back-to-endings-btn:hover{background:var(--bg3);color:var(--text)}
+.path-choice{cursor:default}
+.path-choice:hover{background:var(--bg3);border-color:var(--border)}
+.path-unreachable{text-align:center;padding:24px 12px;color:#b03020;font-size:13px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -198,6 +219,7 @@ summary::-webkit-details-marker{display:none}
       <span class="panel-label">🌿 Branches</span>
       <button id="collapse-btn" onclick="toggleTreeCollapse()">▼ Collapse</button>
       <button id="best-route-btn" onclick="toggleBestRoute()">⭐ Best Route</button>
+      <button id="endings-btn" onclick="toggleEndingsMode()">🏁 Endings</button>
       <div id="mode-toggle">
         <button id="btn-tree" class="active" onclick="setBranchMode('tree')">Tree</button>
         <button id="btn-cards" onclick="setBranchMode('cards')">Cards</button>
@@ -239,7 +261,7 @@ summary::-webkit-details-marker{display:none}
 </div>
 <script>
 const scenes={"start":{"id":"start","type":"start","title":"The Golden","text":"''The valley is quiet in the way only deep cold can manage. Your breath hangs in the air. Snow crunches underfoot with a sound too sharp for such a soft surface.'' \n\n''Ahead, someone sits on a folding stool beside a small easel, brush in hand, completely unbothered by the wind. Pale hair, a white coat dusted with frost at the shoulders. The canvas shows a half-finished study of the ridgeline, gold leaf catching what little sun breaks through the clouds.''\n\n''He does not turn around when you approach. He only pauses mid-stroke.''\n\nAlbedo: ''calmly'' You are making more noise than the weather. That usually means a traveller, not wildlife.","dialogues":[],"choices":[{"label":"Who are you?","next":"who_are_you"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"who_are_you":{"id":"who_are_you","type":"scene","title":"","text":"Albedo: ''sets the brush down and finally looks over his shoulder'' An alchemist. I live here in Dragonspine, though most of my work keeps me closer to the camp than the trails.\n\n''He gestures at the canvas with the handle of the brush.''\n\nAlbedo: Painting is a useful exercise. It forces you to observe structure instead of assuming it. Snow, light, stone. All of it has rules if you look long enough.\n\n''He turns back to the easel, considering the unfinished gold.''\n\nAlbedo: And you? Passing through, or staying?","dialogues":[],"choices":[{"label":"Just exploring.","next":"Just_exploring"},{"label":"What brings you out here?","next":"Just_exploring"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"declined":{"id":"declined","type":"scene","title":"","text":"Albedo: ''nods once, without disappointment'' I cannot force you to help. I will post a request at the Adventurers' Guild instead.\n\n''He begins closing his pigment jars with neat, unhurried motions.''\n\nAlbedo: Someone with more time will answer it. Safe travels, then—\n\n''A sharp crack of ice. Something shifts in the snowdrifts behind the easel.''","dialogues":[],"choices":[{"label":"Look out!","next":"lookout"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"lookout":{"id":"lookout","type":"scene","title":"","text":"''A Cryo Samachurl lurches out of the white, staff raised, chanting in a guttural rasp. A Cryo Slime bounces up beside it, frost spreading across the ground in a brittle sheet.''\n\n''Albedo sets his brush down without hurry and steps clear of the easel.''\n\nAlbedo: ''flatly'' Unfortunate timing.\n\n''The samachurl's staff flares. The slime compresses, ready to spring.''","dialogues":[{"speaker":"Objective","text":"Fight off the ambush with Albedo at Wyrmrest Valley","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"after_fight","label":"Win the fight against the ambush"}]},"after_fight":{"id":"after_fight","type":"scene","title":"","text":"''The last frost melts into grey slush. The valley goes quiet again, too quiet.''\n\n''Albedo checks the easel. The canvas is untouched. He pulls his coat tighter at the collar.''\n\nAlbedo: It is really cold here. ''a brief pause'' You should go on your way.\n\n''He does not ask again. He does not mention the guild request. He simply turns back to his painting, as if the ambush were another weather pattern to note and move past.''","dialogues":[],"choices":[{"label":"Take care.","next":"take_care"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"take_care":{"id":"take_care","type":"ending","title":"Parted Ways","text":"Albedo: ''without looking up'' You as well.\n\n''The wind picks up. Gold leaf glints on the canvas one last time before you turn downslope.''","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":75},{"item":"AEXP","qty":75}],"unlocks":"","requirement":"","continues":[]},"accept":{"id":"accept","type":"scene","title":"","text":"Albedo: ''some of the tension leaves his shoulders, subtle but real''\n\nAlbedo: Thank you. Ten of each should be sufficient. I will remain here while you search.\n\n''He looks at the half-finished painting, then at the snow around the easel.''\n\nAlbedo: Try not to bruise the Valberry if you can help it. Fresh pigment behaves differently when the skin is damaged.","dialogues":[{"speaker":"Objective","text":"Bring Albedo gathering materials at Wyrmrest Valley (10 Valberry, 10 Wolfhook, 10 Sweet Flower, 10 Mushroom)","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"check_stage_one","label":"Do /rpg again and click return to Albedo"}]},"check_stage_one":{"id":"check_stage_one","type":"scene","title":"","text":"''Albedo is exactly where you left him, easel angled against the wind. The painting has progressed. More gold on the ridgeline, more shadow in the valley floor.''\n\nAlbedo: ''glances up'' You are back. Did you find everything?","dialogues":[],"choices":[{"label":"Here. 10 Valberry, 10 Wolfhook, 10 Sweet Flower, 10 Mushroom.","next":"here_stage_one","best":true},{"label":"Not yet. Still gathering.","next":"notyet_stage_one"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"notyet_stage_one":{"id":"notyet_stage_one","type":"scene","title":"","text":"Albedo: ''returns to the canvas without fuss'' Take your time. Cold preserves most of what you need, though Valberry spoils faster once picked.\n\n''He mixes a small amount of pigment on his palette, testing the color against the snow.''\n\nAlbedo: I will be here.","dialogues":[{"speaker":"Objective","text":"Bring Albedo gathering materials at Wyrmrest Valley (10 Valberry, 10 Wolfhook, 10 Sweet Flower, 10 Mushroom)","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[]},"here_stage_one":{"id":"here_stage_one","type":"scene","title":"","text":"''Albedo sets his brush aside and inspects each bundle in turn. Valberry for color stability. Wolfhook for binding resin. Sweet Flower for base alkalinity. Mushroom for texture in the compound layer.''\n\nAlbedo: ''quietly satisfied'' This is a good batch. Better than I would have managed between experiments.\n\n''He sorts the materials into labeled pouches with practiced efficiency, then pauses over the last one.''\n\nAlbedo: ...There are still a few key things missing. The formula is not finished yet.","dialogues":[{"speaker":"Gave","text":"10x [img:../Textures/Items/Valberry_icon.webp] '''Valberry'''\n10x [img:../Textures/Items/Wolfhook_icon.webp] '''Wolfhook'''\n10x [img:../Textures/Items/Item_Sweet_Flower.webp] '''Sweet Flower'''\n10x [img:../Textures/Items/Mushroom_icon.webp] '''Mushroom'''","collapsed":false}],"choices":[{"label":"What else do you need?","next":"whatelse","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"whatelse":{"id":"whatelse","type":"scene","title":"","text":"Albedo: Slime Condensate and Damaged Masks. Ten of each.\n\n''He says it the way someone reads a list they have memorized and resent for being incomplete.''\n\nAlbedo: The condensate stabilizes the mixture. The masks provide a mineral trace I cannot replicate with what grows in the valley. Common enough if you hunt slimes and hilichurls, but I have not had the hours to collect them myself.\n\n''He looks at you directly.''\n\nAlbedo: If you can bring those as well, we will be much closer.","dialogues":[{"speaker":"Objective","text":"Bring Albedo more materials at Wyrmrest Valley (10 Slime Condensate, 10 Damaged Mask)","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"check_stage_two","label":"Do /rpg again and click return to Albedo"}]},"check_stage_two":{"id":"check_stage_two","type":"scene","title":"","text":"''Albedo has moved the easel slightly to catch a different angle of light. The painting is nearly done. Only the sky remains unfinished.''\n\nAlbedo: Back again. ''not looking up from a small mortar he is cleaning'' Do you have them?","dialogues":[],"choices":[{"label":"Here. 10 Slime Condensate and 10 Damaged Masks.","next":"here_stage_two","best":true},{"label":"Still working on it.","next":"still_working"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"still_working":{"id":"still_working","type":"scene","title":"","text":"Albedo: ''nods'' No rush. The condensate keeps if sealed. The masks less so, but ten is a manageable number.\n\n''He wipes the mortar clean and sets it aside.''\n\nAlbedo: I will wait.","dialogues":[{"speaker":"Objective","text":"Bring Albedo more materials at Wyrmrest Valley (10 Slime Condensate, 10 Damaged Mask)","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[]},"here_stage_two":{"id":"here_stage_two","type":"scene","title":"","text":"''Albedo takes the condensate first, checking viscosity between two fingers. Then the masks, turning each one to the light before setting it aside.''\n\nAlbedo: Good quality throughout. This will hold.\n\n''He begins measuring the condensate into a glass vessel. Halfway through, he stops.''\n\nAlbedo: ...There is still something missing. The final catalyst. Without it, the whole formula fails at the last step.","dialogues":[{"speaker":"Gave","text":"10x [img:../Textures/Items/Slime%20Condensate_icon.png] '''Slime Condensate'''\n10x [img:../Textures/Items/Damaged%20Mask_icon.png] '''Damaged Mask'''","collapsed":false}],"choices":[{"label":"What is it?","next":"whatisit","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"whatisit":{"id":"whatisit","type":"scene","title":"","text":"Albedo: ''sets the vessel down carefully'' Vayuda Turquoise. Sliver and Fragment grade. The elemental signature is specific. Anemo, crystallized.\n\n''He looks north, toward the distant peaks beyond the valley.''\n\nAlbedo: There is an elemental creature on Stormbearer Mountains that drops what I need. I have studied its composition from samples others brought back. Twenty Slivers and ten Fragments should be enough to complete the work.\n\n''He meets your eyes.''\n\nAlbedo: I know that is a greater ask than berries and mushrooms. But it is the last piece.","dialogues":[{"speaker":"Objective","text":"Bring Albedo elemental materials at Wyrmrest Valley (20 Vayuda Turquoise Sliver, 10 Vayuda Turquoise Fragment)","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"check_stage_three","label":"Do /rpg again and click return to Albedo"}]},"check_stage_three":{"id":"check_stage_three","type":"scene","title":"","text":"''The painting is finished. Albedo has covered it with a cloth against the wind. His work table is laid out with everything from the earlier deliveries, sorted and labeled.''\n\nAlbedo: ''looking up'' You returned. Do you have the turquoise?","dialogues":[],"choices":[{"label":"Here. 20 Vayuda Turquoise Sliver and 10 Vayuda Turquoise Fragment.","next":"here_stage_three","best":true},{"label":"Not yet.","next":"notyet_stage_three"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"notyet_stage_three":{"id":"notyet_stage_three","type":"scene","title":"","text":"Albedo: ''accepts this without frustration'' Stormbearer is not close, and that creature is not trivial. Take the time you need.\n\n''He adjusts the cloth over the finished painting.''\n\nAlbedo: Everything else is ready. The formula waits on the catalyst alone.","dialogues":[{"speaker":"Objective","text":"Bring Albedo elemental materials at Wyrmrest Valley (20 Vayuda Turquoise Sliver, 10 Vayuda Turquoise Fragment)","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[]},"here_stage_three":{"id":"here_stage_three","type":"scene","title":"","text":"''Albedo takes the turquoise with both hands, almost reverently. He holds a Sliver to the grey sky and watches the pale green catch what light there is.''\n\nAlbedo: ...Perfect. The resonance is exactly what the formula requires.\n\n''He works quickly after that, combining the earlier materials with measured portions of condensate and turquoise. The mixture shifts from dull to luminous as the last Fragment dissolves.''\n\nAlbedo: ''quietly'' It held. All of it held.\n\n''He seals the result in a small alchemical flask and sets it beside the finished painting.''","dialogues":[{"speaker":"Gave","text":"20x [img:../Textures/Items/Vayuda_Turquoise_Sliver_icon.webp] '''Vayuda Turquoise Sliver'''\n10x [img:../Textures/Items/Vayuda_Turquoise_Fragment_icon.webp] '''Vayuda Turquoise Fragment'''","collapsed":false}],"choices":[{"label":"Glad I could help.","next":"glad_i_could_help"}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"glad_i_could_help":{"id":"glad_i_could_help","type":"ending","title":"Materials Delivered","text":"Albedo: ''after a moment's consideration'' You did more than help. You finished what I could not leave my work to gather.\n\n''He produces a folded note from his coat and offers it to you.''\n\nAlbedo: Compensation, from the camp ledger. It is not extravagant, but it is honest.\n\n''He glances at the cloth-covered painting, then back at you.''\n\nAlbedo: My workstation is yours whenever you return to Wyrmrest Valley. Combine materials there as you need. I will not be far.\n\n''He picks up his brush. The wind does not seem to bother him at all.''\n\nAlbedo: Safe travels, traveller.","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":350},{"item":"AEXP","qty":200}],"unlocks":"[[Alchemy]]","requirement":"","continues":[]},"Just_exploring":{"id":"Just_exploring","type":"scene","title":"","text":"Albedo: ''a brief, thoughtful pause'' Materials, mostly. I do not leave Dragonspine often. The cold suits my work, but gathering supplies does not suit my schedule.\n\n''He caps a small jar of pigment and sets it on the snow beside the stool, careful not to let it sink.''\n\nAlbedo: I have a formula waiting on common reagents. Valberry, Wolfhook, Sweet Flower, Mushroom. Nothing exotic. Just volume. If you are willing to collect them and bring them back here, I would be grateful.","dialogues":[],"choices":[{"label":"I'll gather them for you.","next":"accept","best":true},{"label":"I can't help right now.","next":"declined"}],"rewards":[],"unlocks":"","requirement":"","continues":[]}};
-const questMeta={"requirement":"Explore Wyrmrest Valley (1%–5% exploration) to trigger this quest.","locations":["[[Locations#Wyrmrest_Valley|Wyrmrest Valley]]"],"questType":"special","customTabs":[{"id":"cmrr0nuz2gnpw","label":"Tip","color":"#ff0000","content":"You can click on '''Collapse''' and '''Best Route''' -> '''Important Only''' button to minimize it.\n''Some quests will not have Best Route choice because the best choice is subjective/not found yet.''"}],"tabOrder":["ct_cmrr0nuz2gnpw","loc","req","type"]};
+const questMeta={"requirement":"Explore Wyrmrest Valley (1%+ exploration) to trigger this quest.","locations":["[[Locations#Wrymrest_Valley|Wrymrest Valley]]"],"questType":"special","customTabs":[{"id":"cmrr0nuz2gnpw","label":"Tip","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.","collapsible":true}],"tabOrder":["loc","req","type","ct_cmrr0nuz2gnpw"]};
 const ICONS_OBJ={};
 var WIKI_BASE="https://dawnwineryrpg.miraheze.org/wiki/";
 var WIKI_MODE=true;
@@ -251,8 +273,8 @@ let currentPlayId="start";
 let branchMode="tree";
 let treeVisited={};
 function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
-function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+e(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+e(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+e(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var clr=WCLR[m[12]]||m[12];result+='<span style="color:'+clr+'">'+wlInline(m[13])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  return lines.map(function(line){    var headM=line.match(/^==(.+?)==\s*$/);    if(headM)return "<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";    return wlInline(line);  }).join("<br>");}
-function metaBannersHTML(variant){  var order=(questMeta.tabOrder||[]).slice();  var validKeys=["loc","req","type"].concat((questMeta.customTabs||[]).map(function(t){return "ct_"+t.id;}));  order=order.filter(function(k){return validKeys.indexOf(k)!==-1;});  validKeys.forEach(function(k){if(order.indexOf(k)===-1)order.push(k);});  var locClass=variant==="t"?"tloc":(variant==="play"?"loc-box":"bloc");  var locLblClass=variant==="t"?"tloc-lbl":(variant==="play"?"loc-lbl":"bloc-lbl");  var reqClass=variant==="t"?"treq":(variant==="play"?"req-box":"breq");  var reqLblClass=variant==="t"?"treq-lbl":(variant==="play"?"req-lbl":"breq-lbl");  var out="";  order.forEach(function(key){    if(key==="loc"){      var locs=(questMeta.locations||[]).filter(function(l){return l.trim();});      if(locs.length)out+="<div class=\""+locClass+"\"><span class=\""+locLblClass+"\">📍 Locations</span>"+locs.map(function(l){return wl(l);}).join("<br>")+"</div>";    } else if(key==="req"){      if(questMeta.requirement)out+="<div class=\""+reqClass+"\"><span class=\""+reqLblClass+"\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";    } else if(key.indexOf("ct_")===0){      var t=(questMeta.customTabs||[]).filter(function(ct){return "ct_"+ct.id===key;})[0];      if(t&&t.content&&t.content.trim()){        var c=t.color||"#7a5c10";        out+="<div class=\"cnote-box\" style=\"border-color:"+eh(c)+";background:"+eh(c)+"1a\"><span class=\"cnote-lbl\" style=\"color:"+eh(c)+"\">"+eh(t.label||"Note")+"</span>"+wl(t.content)+"</div>";      }    }  });  return out;}
+function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\[size:((?:[\\d.]+(?:em|px|%)?)|sm|small|xs|lg|large|xl|xxl)\\|([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+wlInline(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+wlInline(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+wlInline(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var rawSz=m[12].trim();var szMap={sm:"0.8em",small:"0.8em",xs:"0.65em",lg:"1.25em",large:"1.25em",xl:"1.5em",xxl:"1.8em"};var szv=szMap[rawSz.toLowerCase()]||rawSz;result+='<span style="font-size:'+e(szv)+'">'+wlInline(m[13])+'</span>';}      else if(m[14]!==undefined){var clr=WCLR[m[14]]||m[14];result+='<span style="color:'+clr+'">'+wlInline(m[15])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  return lines.map(function(line){    var headM=line.match(/^==(.+?)==\s*$/);    if(headM)return "<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";    return wlInline(line);  }).join("<br>");}
+function metaBannersHTML(variant){  var order=(questMeta.tabOrder||[]).slice();  var validKeys=["loc","req","type"].concat((questMeta.customTabs||[]).map(function(t){return "ct_"+t.id;}));  order=order.filter(function(k){return validKeys.indexOf(k)!==-1;});  validKeys.forEach(function(k){if(order.indexOf(k)===-1)order.push(k);});  var locClass=variant==="t"?"tloc":(variant==="play"?"loc-box":"bloc");  var locLblClass=variant==="t"?"tloc-lbl":(variant==="play"?"loc-lbl":"bloc-lbl");  var reqClass=variant==="t"?"treq":(variant==="play"?"req-box":"breq");  var reqLblClass=variant==="t"?"treq-lbl":(variant==="play"?"req-lbl":"breq-lbl");  var out="";  order.forEach(function(key){    if(key==="loc"){      var locs=(questMeta.locations||[]).filter(function(l){return l.trim();});      if(locs.length)out+="<div class=\""+locClass+"\"><span class=\""+locLblClass+"\">📍 Locations</span>"+locs.map(function(l){return wl(l);}).join("<br>")+"</div>";    } else if(key==="req"){      if(questMeta.requirement)out+="<div class=\""+reqClass+"\"><span class=\""+reqLblClass+"\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";    } else if(key.indexOf("ct_")===0){      var t=(questMeta.customTabs||[]).filter(function(ct){return "ct_"+ct.id===key;})[0];      if(t&&t.content&&t.content.trim()){        var c=t.color||"#7a5c10";        var collapsible=t.collapsible!==false;        var boxClass=collapsible?"cnote-box collapsed":"cnote-box";        var lblClass=collapsible?"cnote-lbl":"cnote-lbl no-toggle";        var onclk=collapsible?" onclick=\"this.parentElement.classList.toggle('collapsed')\"":"";        out+="<div class=\""+boxClass+"\" style=\"border-color:"+eh(c)+";background:"+eh(c)+"1a\"><span class=\""+lblClass+"\" style=\"color:"+eh(c)+"\""+onclk+">"+eh(t.label||"Note")+"</span><div class=\"cnote-content\">"+wl(t.content)+"</div></div>";      }    }  });  return out;}
 var ICONS={Silver:"../Textures/silver.png",AEXP:"../Textures/aexp.png",Mora:"../Textures/mora.png"};
 function rewardItemsHtml(rewards,imgW){var h="";(rewards||[]).forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\""+imgW+"\" height=\""+imgW+"\" style=\"object-fit:contain;image-rendering:pixelated\">":"";h+="<span class=\"reward-it\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});return h;}
 function openPlay(){go(currentPlayId);document.getElementById("sim-modal").classList.add("open");}
@@ -263,8 +285,147 @@ function setBranchMode(m){
   document.getElementById("btn-cards").classList.toggle("active",m==="cards");
   document.getElementById("btn-tree").classList.toggle("active",m==="tree");
   var cb=document.getElementById("collapse-btn");
-  cb.classList.toggle("visible",m==="tree");
-  if(m==="cards"){renderCards();}else{treeCollapsed=false;cb.textContent="▼ Collapse";renderTree();}
+  cb.classList.toggle("visible",m==="tree"&&!(endingsMode&&!selectedEndingPath));
+  if(m==="tree"){treeCollapsed=false;cb.textContent="▼ Collapse";}
+  renderBranchBody();
+}
+var endingsMode=false;
+var selectedEndingPath=null;
+function toggleEndingsMode(){
+  endingsMode=!endingsMode;
+  selectedEndingPath=null;
+  document.getElementById("endings-btn").classList.toggle("active",endingsMode);
+  renderBranchBody();
+}
+function renderBranchBody(){
+  var cb=document.getElementById("collapse-btn");
+  cb.classList.toggle("visible",branchMode==="tree"&&!(endingsMode&&!selectedEndingPath));
+  if(endingsMode){
+    if(selectedEndingPath){branchMode==="tree"?renderPathTree(selectedEndingPath):renderPathCards(selectedEndingPath);}
+    else{renderEndingsList();}
+  } else {
+    branchMode==="tree"?renderTree():renderCards();
+  }
+}
+function findEdgeLabel(s,nextId){
+  var m=(s.choices||[]).filter(function(c){return c.next===nextId;})[0];
+  if(m)return m.label||"...";
+  var mc=(s.continues||[]).filter(function(c){return c.next===nextId;})[0];
+  if(mc)return mc.label||"Continue";
+  return "...";
+}
+function findPathToEnding(targetId){
+  if(!scenes[targetId])return null;
+  var visited={start:true};
+  var queue=[["start"]];
+  while(queue.length){
+    var path=queue.shift();
+    var id=path[path.length-1];
+    if(id===targetId)return path;
+    var s=scenes[id];if(!s)continue;
+    var edges=[];
+    (s.choices||[]).forEach(function(c){if(c.next)edges.push(c.next);});
+    (s.continues||[]).forEach(function(c){if(c.next)edges.push(c.next);});
+    for(var i=0;i<edges.length;i++){
+      var nid=edges[i];
+      if(!visited[nid]&&scenes[nid]){visited[nid]=true;queue.push(path.concat([nid]));}
+    }
+  }
+  return null;
+}
+function renderEndingsList(){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var endingIds=Object.keys(scenes).filter(function(k){return scenes[k].type==="ending";});
+  if(!endingIds.length){bv.innerHTML="<div class=\"endings-empty\">No endings in this quest yet.</div>";return;}
+  var hint=document.createElement("div");hint.className="endings-list-hint";hint.textContent="Tap an ending to see the branches that lead to it.";bv.appendChild(hint);
+  var wrap=document.createElement("div");wrap.className="endings-list";
+  endingIds.forEach(function(id){
+    var s=scenes[id];
+    var el=document.createElement("div");el.className="ending-pick-card";
+    el.onclick=function(){selectEndingPath(id);};
+    var inner="<div class=\"bhead\"><span class=\"bbadge b-ending\">Ending</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"</div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";ri+="<span class=\"breward-item\">"+ic+"<span class=\"breward-item-txt\">"+eh(r.item)+" ×"+r.qty+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;wrap.appendChild(el);
+  });
+  bv.appendChild(wrap);
+}
+function selectEndingPath(id){
+  var path=findPathToEnding(id);
+  if(!path){
+    var bv=document.getElementById("branch-body");
+    bv.innerHTML="<button class=\"back-to-endings-btn\" onclick=\"selectedEndingPath=null;renderBranchBody();\">← All Endings</button><div class=\"path-unreachable\">This ending has no path from Start — it may only be reachable through branches that aren't currently connected.</div>";
+    return;
+  }
+  selectedEndingPath=path;
+  renderBranchBody();
+}
+function backToEndingsList(){selectedEndingPath=null;renderBranchBody();}
+function renderPathCards(path){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var back=document.createElement("button");back.className="back-to-endings-btn";back.textContent="← All Endings";back.onclick=backToEndingsList;bv.appendChild(back);
+  path.forEach(function(id,idx){
+    var s=scenes[id];if(!s)return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    var el=document.createElement("div");el.className="bscene"+(id===currentPlayId?" playing":"");el.id="bscene-"+id;
+    var inner="<div class=\"bhead\"><span class=\"bbadge "+bclass+"\">"+blabel+"</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"<button class=\"bplay-btn\" onclick=\"go('"+id+"')\">&#9654;</button></div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.dialogues&&s.dialogues.length){
+      inner+="<div class=\"bdlg-wrap\">";
+      s.dialogues.forEach(function(d){if(d.collapsed){inner+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{inner+="<div class=\"dlg-visible\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";}});
+      inner+="</div>";
+    }
+    if(idx<path.length-1){
+      var label=findEdgeLabel(s,path[idx+1]);
+      inner+="<div class=\"bchoices\"><div class=\"bchoice path-choice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(label)+"</span></div></div>";
+    }
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";ri+="<span class=\"breward-item\">"+ic+"<span class=\"breward-item-txt\">"+eh(r.item)+" ×"+r.qty+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;bv.appendChild(el);
+  });
+}
+function renderPathTree(path){
+  var bv=document.getElementById("branch-body");
+  var html="<button class=\"back-to-endings-btn\" onclick=\"backToEndingsList()\">← All Endings</button>";
+  html+="<div class=\"troot\">";
+  path.forEach(function(id,idx){
+    var s=scenes[id];if(!s)return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    html+="<div class=\"tnode\">";
+    html+="<div class=\"tcard"+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+    html+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span><span class=\"ttitle\">"+eh(s.title)+"</span>";
+    html+="</div>";
+    var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+    if(hasBody){
+      html+="<div class=\"tnode-body\">";
+      if(s.text)html+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";
+      if(s.dialogues&&s.dialogues.length){
+        html+="<div class=\"tdlgs\">";
+        s.dialogues.forEach(function(d){
+          if(d.collapsed){html+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}
+          else{html+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}
+        });
+        html+="</div>";
+      }
+      if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){var ic=ICONS[r.item]?"<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item)+"\" width=\"16\" height=\"16\" style=\"object-fit:contain;image-rendering:pixelated\">":"";html+="<span class=\"treward-item\">"+ic+eh(r.item)+" ×"+r.qty+"</span>";});html+="</div>";}
+      if(s.type==="ending"&&s.unlocks){html+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+      html+="</div>";
+    }
+    if(idx<path.length-1){
+      var label=findEdgeLabel(s,path[idx+1]);
+      html+="<div class=\"tchoice-inline\"><div class=\"tchoice-label\">"+eh(label)+"</div></div>";
+    }
+    html+="</div>";
+  });
+  html+="</div>";
+  bv.innerHTML=html;
 }
 var treeCollapsed=false;
 var bestRouteMode=0;
@@ -328,7 +489,7 @@ function toggleBestRoute(){
   if(bestRouteMode===0){btn.textContent="⭐ Best Route";}
   else if(bestRouteMode===1){btn.textContent="⭐ Best Route";btn.classList.add("active-normal");}
   else{btn.textContent="⭐ Important Only";btn.classList.add("active-important");}
-  if(branchMode==="tree")renderTree();else renderCards();
+  renderBranchBody();
 }
 function toggleTreeCollapse(){
   treeCollapsed=!treeCollapsed;
@@ -638,7 +799,7 @@ function drawTreeLines(){
 })();
 function goBack(){history.back();}
 go("start");
-renderTree();
+renderBranchBody();
 document.getElementById("collapse-btn").classList.add("visible");
 </script>
 </body>
