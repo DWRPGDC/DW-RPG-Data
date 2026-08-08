@@ -150,6 +150,36 @@
   body[data-roll-quality="on"] .overall-roll-quality{ display:block; }
   .overall-roll-quality.rq-perfect{ color:var(--gold-dim); }
   .flavor{ font-size:.75rem; color:var(--ink-dim); font-style:italic; margin-top:6px; line-height:1.5; }
+  .dps-toggle-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .dps-toggle-row label{
+    font-family:'JetBrains Mono', monospace; font-size:.72rem; color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:.03em;
+  }
+  .dps-toggle{
+    width:38px; height:22px; border-radius:20px; border:1.5px solid var(--line);
+    background:var(--bg-alt); position:relative; cursor:pointer; flex:0 0 auto;
+  }
+  .dps-toggle::after{
+    content:''; position:absolute; top:2px; left:2px; width:15px; height:15px;
+    border-radius:50%; background:var(--ink-dim); transition:left .15s ease, background .15s ease;
+  }
+  .dps-toggle.is-active{ border-color:var(--gold); }
+  .dps-toggle.is-active::after{ left:18px; background:var(--gold); }
+  .dps-results{ margin-top:14px; padding-top:12px; border-top:1.5px solid var(--line); }
+  .dps-row{
+    display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;
+    font-family:'JetBrains Mono', monospace; font-size:.78rem; color:var(--ink-dim);
+  }
+  .dps-row .dps-val{ color:var(--ink); font-weight:600; font-size:.92rem; }
+  .dps-row.dps-total{ border-top:1px solid var(--divider); padding-top:8px; margin-top:2px; }
+  .dps-row.dps-total .dps-val{ color:var(--gold-dim); font-size:1.05rem; }
+  .dps-note{ font-size:.7rem; color:var(--ink-dim); margin-top:8px; line-height:1.5; }
+  .dps-subhead{
+    font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:.05em; margin:14px 0 8px; padding-top:10px;
+    border-top:1px solid var(--divider);
+  }
+  .dps-hint{ font-size:.7rem; color:var(--ink-dim); margin-top:5px; line-height:1.45; }
   .empty-hint{ font-size:.8rem; color:var(--ink-dim); text-align:center; padding:10px 0; }
   .totals-list{ list-style:none; margin:0; padding:0; }
   .ar-row{
@@ -546,6 +576,14 @@
   .settings-row-title{ font-size:.82rem; font-weight:600; color:var(--ink); }
   .settings-row-desc{ font-size:.68rem; color:var(--ink-dim); margin-top:2px; line-height:1.35; }
   .settings-row button{ flex-shrink:0; }
+
+  /* ---------- DPS modal ---------- */
+  #dpsOverlay .picker-modal{ max-width:420px; width:100%; }
+  .dps-body{ padding:14px 16px 18px; overflow-y:auto; }
+  @media(max-width:640px){
+    #dpsOverlay{ padding:16px; align-items:center; }
+    #dpsOverlay .picker-modal{ max-width:360px; max-height:80vh; height:auto; border-radius:var(--radius); }
+  }
   .settings-row-btns{ display:flex; gap:6px; flex-shrink:0; }
   .settings-row-btns button{ flex-shrink:0; }
   #darkToggle.is-active{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
@@ -626,12 +664,65 @@
       <h2 style="margin-top:0;">Special Effects</h2>
       <div id="specialList"><div class="empty-hint">None</div></div>
     </div>
+    <button type="button" id="dpsOpenBtn" style="width:100%; margin-top:14px;">📊 Show Avg DPS</button>
   </section>
 
   <section class="panel" id="skillsPanel">
     <h2>Skills</h2>
     <div id="skillsContent"></div>
   </section>
+
+  <div id="dpsOverlay" class="picker-overlay">
+    <div class="picker-modal">
+      <div class="picker-modal-head">
+        <div class="picker-modal-title">📊 Expected Damage</div>
+        <button class="picker-close" id="dpsCloseBtn">✕</button>
+      </div>
+      <div class="dps-body">
+        <div class="dps-toggle-row" style="display:block;">
+          <label for="dpsActionSelect" style="display:block; margin-bottom:4px;">🎯 What are you doing this turn?</label>
+          <select id="dpsActionSelect">
+            <option value="basic">Basic Attack</option>
+            <option value="curseNormal">Cast Curse (uses your whole turn)</option>
+            <option value="curseBonus">Basic Attack + free Curse (uses Vigilance/Bash bonus)</option>
+          </select>
+          <div class="dps-hint" id="dpsActionHint"></div>
+        </div>
+
+        <div class="dps-subhead">Vigilance / Bash</div>
+        <div class="dps-toggle-row" style="display:block;">
+          <label for="dpsVigilanceSelect" style="display:block; margin-bottom:4px;">Your unlocked tier (for the follow-up hit)</label>
+          <select id="dpsVigilanceSelect"></select>
+        </div>
+
+        <div class="dps-subhead">Modifiers</div>
+        <div class="dps-toggle-row">
+          <label for="dpsPaladinToggle">🛡 Paladin active</label>
+          <div class="dps-toggle" id="dpsPaladinToggle"></div>
+        </div>
+        <div class="dps-toggle-row" id="dpsHomaRow" style="display:none;">
+          <label for="dpsHomaHp">🩸 Current HP %</label>
+          <div class="val-wrap"><input type="range" id="dpsHomaHp" min="0" max="100" step="0.1" style="width:120px;"><span class="val" id="dpsHomaHpVal">100%</span></div>
+        </div>
+        <div class="dps-toggle-row" style="display:block;">
+          <label for="dpsSageSelect" style="display:block; margin-bottom:4px;">📖 Sage (vs elemental enemy, basic attack only)</label>
+          <select id="dpsSageSelect">
+            <option value="0">— None —</option>
+            <option value="2">Lv1 (+2%)</option>
+            <option value="4">Lv2 (+4%)</option>
+            <option value="6">Lv3 (+6%)</option>
+          </select>
+        </div>
+        <div class="dps-toggle-row">
+          <label for="dpsCurseStacks">☠️ Curse stacks on enemy</label>
+          <input type="number" id="dpsCurseStacks" min="0" max="6" step="1" value="0" style="width:56px; margin-bottom:0;">
+        </div>
+
+        <div class="dps-results" id="dpsResults"></div>
+        <div class="dps-note">Assumes a non-crit roll averages the ATK range midpoint; crit rolls apply Crit Value as a bonus multiplier on top of the roll. Ignores enemy DR/DV (raw output).</div>
+      </div>
+    </div>
+  </div>
 
   <section class="panel" id="weaponPanel">
     <h2>Weapon</h2>
@@ -868,6 +959,17 @@
           <li><strong>Backup</strong> lets you <strong>Export</strong> your Bag and Build Slots to a file, or <strong>Import</strong> one back in — handy for switching devices or keeping a backup.</li>
         </ul>
       </div>
+      <div class="howto-section">
+        <h3>Expected Damage</h3>
+        <ul>
+          <li>Click <strong>📊 Show Avg DPS</strong> under Final Stats to open the damage calculator.</li>
+          <li><strong>What are you doing this turn?</strong> picks your action: a Basic Attack, casting Curse (costs your whole turn), Basic Attack + free Curse (if you have a Vigilance/Bash tier selected), Slash (Primordial Jade Winged-Spear only), or a catalyst spell (Chihayaburu, Fireball line, Meteor, Stormeye).</li>
+          <li>Spells and Slash replace your basic attack for the turn and never trigger the Vigilance/Bash follow-up.</li>
+          <li><strong>Vigilance/Bash</strong> — pick your unlocked tier to add its follow-up hit onto a Basic Attack.</li>
+          <li><strong>Modifiers:</strong> toggle <strong>Paladin</strong> to swap ATK and DV, set <strong>Current HP %</strong> if Staff of Homa is equipped (its low-HP multiplier applies automatically), pick a <strong>Sage</strong> tier for bonus damage vs elemental enemies (basic attacks only), and enter existing <strong>Curse stacks</strong> on the enemy (each stack multiplies the hit by 1.5x).</li>
+          <li>This ignores enemy DR/DV — it's your raw expected output, not damage after enemy defense.</li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -964,6 +1066,12 @@ let state = {
   artifacts: {},        // slot -> { setName, pieceName, rolls: {statKey:value}, specialRoll:value }
   ar: 1,                // Adventure Rank (1-24). Every AR above 1 grants +5 HP / +1 ATK.
   frostTreeLevel: 0,    // Frostbearing Tree level (0-80). Unlocks at WL4. Milestones grant permanent Max HP.
+  dpsPaladin: false,    // DPS panel: is the Paladin skill (ATK<->DV swap) toggled on
+  dpsFollowUp: '',      // DPS panel: "vigilance|1" / "bash|2" etc, or '' for none
+  dpsHomaHpPct: 100,    // DPS panel: current HP % used for Staff of Homa's low-HP multiplier
+  dpsSageBonus: 0,      // DPS panel: Sage elemental damage bonus % (0/2/4/6), basic attack only
+  dpsCurseStacks: 0,    // DPS panel: existing Curse stacks on the enemy (each = x1.5, multiplicative)
+  dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'curseBonus' / 'slash' / 'spell:<id>|<level>'
   darkMode: false,
   showRollQuality: false,
   bag: {flower:[], plume:[], sands:[], goblet:[], circlet:[]},  // slot -> [ {id, nickname, setName, pieceName, icon, statsDef, special, weight, rolls, specialRoll} ]
@@ -1393,6 +1501,12 @@ function initSettingsModal(){
 
 function openSettingsModal(){ settingsModal.open(); }
 function closeSettingsModal(){ settingsModal.close(); }
+
+let dpsModal = null;
+function initDpsModal(){
+  dpsModal = bindSimpleOverlay('dpsOverlay', 'dpsCloseBtn');
+}
+function openDpsModal(){ dpsModal.open(); renderDpsPanel(); }
 
 /* ---------- How to Use modal ---------- */
 let howToUseModal = null;
@@ -2516,6 +2630,7 @@ function renderTotals(){
   });
 }
 
+let currentTotals = null;
 function computeAndRenderTotals(){
   const totals = { hp: BASE_STATS.hp, atkLow: BASE_STATS.atkLow, atkHigh: BASE_STATS.atkHigh,
                     cr: BASE_STATS.cr, cv: BASE_STATS.cv, dr: BASE_STATS.dr, dv: BASE_STATS.dv };
@@ -2617,6 +2732,9 @@ function computeAndRenderTotals(){
   specialDiv.innerHTML = specials.length
     ? specials.map(s => `<div class="special-item">${s}</div>`).join('')
     : '<div class="empty-hint">None</div>';
+
+  currentTotals = totals;
+  renderDpsPanel();
 }
 
 function addStatToTotals(totals, statKey, value){
@@ -3269,6 +3387,318 @@ function applyAutosaveUI(){
   }
 }
 
+// ---------- DPS panel ----------
+// Average roll of a "roll between min and max" attack, before crit.
+function avgRoll(low, high){ return (low + high) / 2; }
+
+// Expected damage of a single hit given an ATK range and Crit Rate/Value (both in %).
+// On crit, the roll is multiplied by (1 + critValue/100); crit chance is critRate% (clamped 0-100).
+function expectedHitDamage(atkLow, atkHigh, cr, cv){
+  const base = avgRoll(atkLow, atkHigh);
+  const crFrac = Math.max(0, Math.min(100, cr)) / 100;
+  const critMult = 1 + (cv / 100);
+  return base * (1 - crFrac) + base * critMult * crFrac;
+}
+
+// Follow-up % parser, matches e.g. "deals 20% damage" / "hits all enemies for 30% damage".
+function parseFollowUpPct(effect){
+  if(!effect) return 0;
+  const m = effect.match(/(?:deals|for)\s*([\d.]+)%\s*damage/i);
+  return m ? parseFloat(m[1]) : 0;
+}
+
+// Walks the Vigilance/Bash tree (any skill whose root is 'vigilance') and returns
+// every level that grants a follow-up strike, across the whole branch.
+function getFollowUpOptions(){
+  const opts = [];
+  Object.entries(skillsData).forEach(([id, sk]) => {
+    if(skillRootId(id) !== 'vigilance') return;
+    (sk.levels || []).forEach(lvl => {
+      const pct = parseFollowUpPct(lvl.effect);
+      if(pct > 0){
+        opts.push({ skillId:id, skillName:sk.name, emoji: sk.emoji || '', level:lvl.level, pct, effect:lvl.effect,
+          allEnemies: /all enemies/i.test(lvl.effect || '') });
+      }
+    });
+  });
+  return opts;
+}
+
+// Staff of Homa: "deal more damage the lower your HP is." Matches the formula
+// from the bot's snapshotUniqueWeaponCombatantParams (lowHpDamageScale).
+function homaMultiplier(currentHp, maxHp){
+  if(maxHp <= 0) return 1;
+  const ratio = Math.max(1 / maxHp, Math.min(currentHp, maxHp) / maxHp);
+  if(ratio >= 0.01) return 1 / ratio;
+  return (1 / ratio) * Math.pow(4, Math.log10(0.01 / ratio));
+}
+
+// Spell actions (catalyst-only): Chihayaburu, the Fireball line, Meteor, Stormeye.
+// These are separate actions that can be cast every turn (Stormeye has its own cooldown)
+// but never trigger the basic-attack Vigilance/Bash follow-up.
+const SPELL_IDS = ['chihayaburu', 'fireball', 'inferno', 'hellflare', 'meteor', 'stormeye'];
+function getSpellOptions(){
+  const opts = [];
+  SPELL_IDS.forEach(id => {
+    const sk = skillsData[id];
+    if(!sk) return;
+    (sk.levels || []).forEach(lvl => {
+      if(lvl.effect) opts.push({ skillId:id, skillName:sk.name, emoji: sk.emoji || '', level:lvl.level, effect:lvl.effect });
+    });
+  });
+  return opts;
+}
+
+// Computes a spell's damage from its effect text. Returns {dmg, aoe, note}. dmg is null
+// when the formula depends on enemy stats we don't track here (e.g. Stormeye).
+function computeSpellDamage(effect, maxHp, atkAvg){
+  let m;
+  if((m = effect.match(/Sacrifice ([\d.]+)% of your max HP to deal ([\d.]+)% of your max HP/i))){
+    return { dmg: maxHp * parseFloat(m[2]) / 100, aoe:false, note:`Costs ${m[1]}% of your max HP to cast.` };
+  }
+  if((m = effect.match(/Deal ([\d.]+)% of your ATK to all enemies/i))){
+    return { dmg: atkAvg * parseFloat(m[1]) / 100, aoe:true };
+  }
+  if((m = effect.match(/Deal ([\d.]+)% of your max HP to all enemies/i))){
+    return { dmg: maxHp * parseFloat(m[1]) / 100, aoe:true };
+  }
+  if((m = effect.match(/Deal ([\d.]+)% of your max HP to one enemy/i))){
+    return { dmg: maxHp * parseFloat(m[1]) / 100, aoe:false };
+  }
+  if((m = effect.match(/Deal ([\d.]+)% of each enemy's current HP/i))){
+    return { dmg: null, aoe:true, note:'Depends on enemy current HP — not computed here (raw output only).' };
+  }
+  return { dmg:0, aoe:false };
+}
+
+let dpsSelectEnhanced = {};
+function renderDpsPanel(){
+  const resultsDiv = document.getElementById('dpsResults');
+  if(!resultsDiv || !currentTotals) return;
+
+  // Populate the follow-up select once.
+  const followSelect = document.getElementById('dpsVigilanceSelect');
+  if(followSelect && followSelect.childElementCount === 0){
+    const noneOpt = document.createElement('option');
+    noneOpt.value = '';
+    noneOpt.textContent = '— None —';
+    followSelect.appendChild(noneOpt);
+    getFollowUpOptions().forEach(opt => {
+      const o = document.createElement('option');
+      o.value = `${opt.skillId}|${opt.level}`;
+      o.textContent = `${opt.emoji ? opt.emoji + ' ' : ''}${opt.skillName} (Lv${opt.level}) — ${opt.pct}%${opt.allEnemies ? ' AoE' : ''}`;
+      followSelect.appendChild(o);
+    });
+    followSelect.value = state.dpsFollowUp || '';
+    followSelect.addEventListener('change', () => {
+      state.dpsFollowUp = followSelect.value;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+    dpsSelectEnhanced.follow = enhanceSelectEl(followSelect);
+  } else if(dpsSelectEnhanced.follow){
+    dpsSelectEnhanced.follow.sync();
+  }
+
+  // Populate the action select once: basic attack / curse variants / slash (if PJWS) / spells.
+  const actionSelect = document.getElementById('dpsActionSelect');
+  const isPjws = state.weapon === 'Primordial Jade Winged-Spear';
+  if(actionSelect && actionSelect.dataset.builtFor !== state.weapon){
+    actionSelect.dataset.builtFor = state.weapon || '';
+    actionSelect.innerHTML = `
+      <option value="basic">Basic Attack</option>
+      <option value="curseNormal">Cast Curse (uses your whole turn)</option>
+      <option value="curseBonus">Basic Attack + free Curse (uses Vigilance/Bash bonus)</option>
+    `;
+    if(isPjws){
+      const o = document.createElement('option');
+      o.value = 'slash'; o.textContent = '🌊 Slash (replaces basic attack — 100% ATK, AoE)';
+      actionSelect.appendChild(o);
+    }
+    const spellGroup = document.createElement('optgroup');
+    spellGroup.label = 'Cast a spell (replaces basic attack)';
+    getSpellOptions().forEach(opt => {
+      const o = document.createElement('option');
+      o.value = `spell:${opt.skillId}|${opt.level}`;
+      o.textContent = `${opt.emoji ? opt.emoji + ' ' : ''}${opt.skillName} (Lv${opt.level})`;
+      spellGroup.appendChild(o);
+    });
+    if(spellGroup.childElementCount) actionSelect.appendChild(spellGroup);
+    actionSelect.value = state.dpsAction || 'basic';
+    if(actionSelect.value !== state.dpsAction) { state.dpsAction = actionSelect.value; }
+    if(dpsSelectEnhanced.action) dpsSelectEnhanced.action.sync();
+  }
+  if(actionSelect && !actionSelect.dataset.wired){
+    actionSelect.dataset.wired = '1';
+    actionSelect.addEventListener('change', () => {
+      state.dpsAction = actionSelect.value;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+    dpsSelectEnhanced.action = enhanceSelectEl(actionSelect);
+  }
+
+  const actionHint = document.getElementById('dpsActionHint');
+  if(actionHint){
+    const hints = {
+      basic: 'Rolls your ATK range and applies crit. Adds the Vigilance/Bash follow-up below if you have one selected.',
+      curseNormal: 'No damage this turn — just marks the enemy. The mark boosts your next basic attack (1.5x per stack).',
+      curseBonus: 'Your basic attack still lands normally. The bonus action marks the enemy instead of hitting again.',
+      slash: 'Hits every enemy for 100% of your ATK and heals 10% of the damage dealt. Doesn\'t trigger the follow-up.',
+    };
+    const action = state.dpsAction || 'basic';
+    actionHint.textContent = hints[action] || (action.startsWith('spell:') ? 'A catalyst spell — doesn\'t use your basic attack and never triggers a follow-up.' : '');
+  }
+
+  const sageSelect = document.getElementById('dpsSageSelect');
+  if(sageSelect && !sageSelect.dataset.wired){
+    sageSelect.dataset.wired = '1';
+    sageSelect.value = String(state.dpsSageBonus || 0);
+    sageSelect.addEventListener('change', () => {
+      state.dpsSageBonus = parseFloat(sageSelect.value) || 0;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+    dpsSelectEnhanced.sage = enhanceSelectEl(sageSelect);
+  }
+  const curseInput = document.getElementById('dpsCurseStacks');
+  if(curseInput && !curseInput.dataset.wired){
+    curseInput.dataset.wired = '1';
+    curseInput.value = state.dpsCurseStacks || 0;
+    curseInput.addEventListener('input', () => {
+      state.dpsCurseStacks = Math.max(0, parseInt(curseInput.value, 10) || 0);
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+
+  const paladinToggle = document.getElementById('dpsPaladinToggle');
+  if(paladinToggle && !paladinToggle.dataset.wired){
+    paladinToggle.dataset.wired = '1';
+    paladinToggle.addEventListener('click', () => {
+      state.dpsPaladin = !state.dpsPaladin;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+  if(paladinToggle) paladinToggle.classList.toggle('is-active', !!state.dpsPaladin);
+
+  const isHoma = state.weapon === 'Staff of Homa';
+  const homaRow = document.getElementById('dpsHomaRow');
+  const homaSlider = document.getElementById('dpsHomaHp');
+  const homaVal = document.getElementById('dpsHomaHpVal');
+  if(homaRow) homaRow.style.display = isHoma ? 'flex' : 'none';
+  if(homaSlider && !homaSlider.dataset.wired){
+    homaSlider.dataset.wired = '1';
+    homaSlider.addEventListener('input', () => {
+      state.dpsHomaHpPct = parseFloat(homaSlider.value);
+      if(homaVal) homaVal.textContent = `${round(state.dpsHomaHpPct)}%`;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+  if(homaSlider && document.activeElement !== homaSlider){
+    homaSlider.value = state.dpsHomaHpPct != null ? state.dpsHomaHpPct : 100;
+  }
+  if(homaVal) homaVal.textContent = `${round(state.dpsHomaHpPct != null ? state.dpsHomaHpPct : 100)}%`;
+
+  // Work off a copy so toggling Paladin doesn't mutate the real totals used elsewhere.
+  let { atkLow, atkHigh, cr, cv, dv, hp: maxHp } = currentTotals;
+  const notes = [];
+  if(state.dpsPaladin){
+    // Paladin: DV becomes ATK (flat, both ends of the range), current (lowest) ATK becomes the new DV.
+    const newDv = atkLow;
+    atkLow = dv; atkHigh = dv;
+    dv = newDv;
+    notes.push(`Paladin swap: ATK is now flat ${round(dv)} (from old DV), DV is now ${round(newDv)} (from old lowest ATK).`);
+  }
+
+  const curseStacks = state.dpsCurseStacks || 0;
+  const curseMult = Math.pow(1.5, curseStacks);
+  const sageBonus = state.dpsSageBonus || 0;
+
+  // Computes one basic-attack hit, applying Curse stacks, Sage, and Homa — the modifiers
+  // that only apply to real basic attacks (per how the bot actually rolls damage).
+  function basicHit(){
+    let dmg = expectedHitDamage(atkLow, atkHigh, cr, cv);
+    if(curseStacks > 0) dmg *= curseMult;
+    if(sageBonus > 0) dmg *= (1 + sageBonus / 100);
+    if(isHoma){
+      const hpPct = state.dpsHomaHpPct != null ? state.dpsHomaHpPct : 100;
+      dmg *= homaMultiplier(hpPct, 100);
+    }
+    return dmg;
+  }
+
+  if(isHoma){
+    notes.push(`Staff of Homa: ${round(homaMultiplier(state.dpsHomaHpPct != null ? state.dpsHomaHpPct : 100, 100))}x multiplier at ${round(state.dpsHomaHpPct != null ? state.dpsHomaHpPct : 100)}% HP.`);
+  }
+  if(curseStacks > 0){
+    notes.push(`Curse: ${curseStacks} stack${curseStacks > 1 ? 's' : ''} = ${round(curseMult)}x on the next basic attack.`);
+  }
+  if(sageBonus > 0){
+    notes.push(`Sage: +${sageBonus}% vs elemental enemies (basic attack only).`);
+  }
+
+  let hit1 = 0, hit2 = 0, followLabel = null, slashDmg = 0, slashHeal = 0, spellDmg = null, spellLabel = null;
+  const action = state.dpsAction || 'basic';
+
+  if(action === 'basic' || action === 'curseBonus'){
+    hit1 = basicHit();
+    if(action === 'curseBonus'){
+      if(state.dpsFollowUp){
+        notes.push(`Vigilance/Bash bonus action spent casting Curse instead of the follow-up — enemy gets an extra mark, no follow-up damage this turn.`);
+      } else {
+        notes.push(`Casting Curse "for free" requires an unlocked Vigilance/Bash tier selected above.`);
+      }
+    } else if(state.dpsFollowUp){
+      const [skillId, levelStr] = state.dpsFollowUp.split('|');
+      const sk = skillsData[skillId];
+      const lvl = sk && (sk.levels || []).find(l => l.level === parseInt(levelStr, 10));
+      if(lvl){
+        const pct = parseFollowUpPct(lvl.effect);
+        hit2 = hit1 * (pct / 100);
+        followLabel = `${sk.name} (Lv${lvl.level}, ${pct}%)`;
+      }
+    }
+  } else if(action === 'curseNormal'){
+    notes.push(`This turn is spent casting Curse — no damage dealt, and no follow-up (it isn't a basic attack). The mark boosts your NEXT basic attack.`);
+  } else if(action === 'slash' && isPjws){
+    // Slash: 100% of attack, hits all enemies, 1-turn cooldown, heals 10% of total damage dealt.
+    // Weapon-based (not the ATK-roll auto-attack), so it still benefits from Homa/Curse/Sage on the underlying attack value.
+    slashDmg = basicHit();
+    slashHeal = slashDmg * 0.10;
+    notes.push(`Slash: AoE, 1-turn cooldown, doesn't trigger Vigilance/Bash. Heal shown assumes a single target — multiply by enemy count for actual heal.`);
+  } else if(action.startsWith('spell:')){
+    const [skillId, levelStr] = action.slice(6).split('|');
+    const sk = skillsData[skillId];
+    const lvl = sk && (sk.levels || []).find(l => l.level === parseInt(levelStr, 10));
+    if(lvl){
+      const atkAvg = avgRoll(atkLow, atkHigh);
+      const result = computeSpellDamage(lvl.effect, maxHp, atkAvg);
+      spellDmg = result.dmg;
+      spellLabel = `${sk.name} (Lv${lvl.level})`;
+      notes.push(`Spells don't trigger the basic-attack Vigilance/Bash follow-up.`);
+      if(result.note) notes.push(result.note);
+    }
+  }
+
+  const total = hit1 + hit2 + slashDmg + (spellDmg || 0);
+
+  resultsDiv.innerHTML = `
+    ${action === 'curseNormal' ? '' : `<div class="dps-row"><span>Avg hit (w/ crit)</span><span class="dps-val">${round(hit1)}</span></div>`}
+    ${followLabel ? `<div class="dps-row"><span>Follow-up — ${followLabel}</span><span class="dps-val">${round(hit2)}</span></div>` : ''}
+    ${slashDmg ? `<div class="dps-row"><span>Slash (AoE, per enemy)</span><span class="dps-val">${round(slashDmg)}</span></div>` : ''}
+    ${slashDmg ? `<div class="dps-row"><span>Slash heal (10%, single-target basis)</span><span class="dps-val">${round(slashHeal)}</span></div>` : ''}
+    ${spellLabel ? `<div class="dps-row"><span>${spellLabel}</span><span class="dps-val">${spellDmg == null ? '—' : round(spellDmg)}</span></div>` : ''}
+    <div class="dps-row dps-total"><span>Total expected (this turn)</span><span class="dps-val">${total ? round(total) : (spellDmg == null ? '—' : 0)}</span></div>
+  `;
+  if(notes.length){
+    resultsDiv.innerHTML += `<div class="dps-note">${notes.join('<br>')}</div>`;
+  }
+}
+
+
 // ---------- Skills panel ----------
 // Parses a skill level's effect text for permanent Crit Rate / Crit Value bonuses.
 function parseCritFromEffect(effect){
@@ -3301,9 +3731,10 @@ function getCritSkillGroups(){
       if(cr > 0 || cv > 0){
         const root = skillRootId(id);
         if(!groups[root]){
-          groups[root] = { rootId: root, rootName: (skillsData[root] && skillsData[root].name) || root, options: [] };
+          groups[root] = { rootId: root, rootName: (skillsData[root] && skillsData[root].name) || root,
+            rootEmoji: (skillsData[root] && skillsData[root].emoji) || '', options: [] };
         }
-        groups[root].options.push({ skillId:id, skillName:sk.name, level:lvl.level, effect:lvl.effect, cr, cv });
+        groups[root].options.push({ skillId:id, skillName:sk.name, emoji: sk.emoji || '', level:lvl.level, effect:lvl.effect, cr, cv });
       }
     });
   });
@@ -3324,7 +3755,7 @@ function renderSkillsPanel(){
     wrap.style.marginBottom = '14px';
 
     const label = document.createElement('label');
-    label.textContent = group.rootName;
+    label.textContent = `${group.rootEmoji ? group.rootEmoji + ' ' : ''}${group.rootName}`;
     label.style.display = 'block';
     label.style.fontSize = '.72rem';
     label.style.marginBottom = '2px';
@@ -3340,7 +3771,7 @@ function renderSkillsPanel(){
     group.options.forEach(opt => {
       const o = document.createElement('option');
       o.value = `${opt.skillId}|${opt.level}`;
-      o.textContent = `${opt.skillName} (Lv${opt.level}) — ${opt.cr ? opt.cr+'% CR ' : ''}${opt.cv ? opt.cv+'% CV' : ''}`.trim();
+      o.textContent = `${opt.emoji ? opt.emoji + ' ' : ''}${opt.skillName} (Lv${opt.level}) — ${opt.cr ? opt.cr+'% CR ' : ''}${opt.cv ? opt.cv+'% CV' : ''}`.trim();
       if(current && current.skillId === opt.skillId && current.level === opt.level) o.selected = true;
       select.appendChild(o);
     });
@@ -3384,6 +3815,7 @@ async function init(){
   initNicknameModal();
   initConfirmModal();
   initSettingsModal();
+  initDpsModal();
   initHowToUseModal();
   initQuickAddModal();
   initBuildsModal();
@@ -3421,6 +3853,7 @@ async function init(){
     scheduleAutosave();
   });
   document.getElementById('settingsToggleBtn').addEventListener('click', openSettingsModal);
+  document.getElementById('dpsOpenBtn').addEventListener('click', openDpsModal);
   document.getElementById('howToUseBtn').addEventListener('click', ()=>{
     closeSettingsModal();
     openHowToUseModal();
