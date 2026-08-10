@@ -790,6 +790,44 @@
           <input type="number" id="dpsCurseStacks" min="0" max="6" step="1" value="0" style="width:56px; margin-bottom:0;">
         </div>
 
+        <div class="dps-toggle-row" id="dpsMasteryRow" style="display:none;">
+          <label for="dpsMasteryToggle" id="dpsMasteryLabel">⚔️ Weapon Mastery learned</label>
+          <div class="dps-toggle" id="dpsMasteryToggle"></div>
+        </div>
+        <div class="dps-toggle-row" id="dpsGuashuaRow" style="display:none;">
+          <label for="dpsGuashuaToggle">🌫️ Guashua Arts active
+            <span class="dps-term-def">Sword skill: +5% damage on hits that do not crit. Applied to the non-crit share of the expected hit.</span>
+          </label>
+          <div class="dps-toggle" id="dpsGuashuaToggle"></div>
+        </div>
+        <div class="dps-toggle-row" id="dpsFavoniusRow" style="display:none; block-size:auto;">
+          <label for="dpsFavoniusInput">🍃 Favonius Bladework — turns elapsed this battle
+            <span class="dps-term-def">Sword skill: each turn adds +3% ATK cumulatively for the battle. Enter how many turns have passed so far.</span>
+          </label>
+          <input type="number" id="dpsFavoniusInput" min="0" max="30" step="1" value="0" style="width:56px; margin-bottom:0;">
+        </div>
+        <div class="dps-toggle-row" id="dpsKatzleinRow" style="display:none;">
+          <label for="dpsKatzleinToggle">⚡ Katzlein Style — this is the 5th basic attack
+            <span class="dps-term-def">Sword skill: every 5th basic attack deals 50% more damage.</span>
+          </label>
+          <div class="dps-toggle" id="dpsKatzleinToggle"></div>
+        </div>
+
+        <div class="dps-toggle-row" style="display:block;">
+          <label for="dpsUniqueSelect" style="display:block; margin-bottom:4px;">🔮 Unique alignment skill (damage-affecting)</label>
+          <span class="dps-term-def">Pick your Unique skill if it changes damage output this turn.</span>
+          <select id="dpsUniqueSelect">
+            <option value="">— None —</option>
+            <option value="kindness">🤝 Kindness (2x per enemy alive, stacking)</option>
+            <option value="pride">👑 Pride (3x, never act first)</option>
+            <option value="wrath">😡 Wrath (2x, -50% starting HP)</option>
+          </select>
+        </div>
+        <div class="dps-toggle-row" id="dpsKindnessRow" style="display:none;">
+          <label for="dpsKindnessInput">Enemies still alive</label>
+          <input type="number" id="dpsKindnessInput" min="1" max="10" step="1" value="1" style="width:56px; margin-bottom:0;">
+        </div>
+
         <div class="dps-results" id="dpsResults"></div>
         <div class="dps-note">Assumes a non-crit roll averages the ATK range midpoint; crit rolls apply Crit Value as a bonus multiplier on top of the roll. Ignores enemy DR/DV (raw output).</div>
         <div class="dps-note dps-term-def">In plain terms: this ignores the enemy's defense stats and just shows the raw damage your hit would deal before their armor reduces it.</div>
@@ -1147,6 +1185,12 @@ let state = {
   dpsHomaHpPct: 100,    // DPS panel: current HP % used for Staff of Homa's low-HP multiplier
   dpsSageBonus: 0,      // DPS panel: Sage elemental damage bonus % (0/2/4/6), basic attack only
   dpsCurseStacks: 0,    // DPS panel: existing Curse stacks on the enemy (each = x1.5, multiplicative)
+  dpsMasteryLearned: false, // DPS panel: is the matching Weapon Mastery skill learned? (+2% dmg while that weapon type is equipped)
+  dpsGuashua: false,    // DPS panel: Guashua Arts active (Sword) — +5% dmg on non-crit hits
+  dpsFavonius: 0,       // DPS panel: Favonius Bladework (Sword) — turns elapsed this battle, +3% dmg each, cumulative
+  dpsKatzlein: false,   // DPS panel: Katzlein Style (Sword) — this is the 5th basic attack, +50% dmg
+  dpsUniqueUltimate: '', // DPS panel: '' / 'kindness' / 'pride' / 'wrath' — Unique alignment skill damage multiplier
+  dpsKindnessEnemies: 1, // DPS panel: enemies still alive, used by Kindness (2x damage per enemy alive)
   dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'curseBonus' / 'slash' / 'spell:<id>|<level>'
   darkMode: false,
   showRollQuality: false,
@@ -3683,6 +3727,92 @@ function renderDpsPanel(){
     });
   }
 
+  // Weapon Mastery: matches the equipped weapon's type to its mastery skill (e.g. Sword -> sword_mastery)
+  // and pulls the "X% more damage" figure straight out of skillsData, so it stays in sync if the numbers change.
+  const masteryRow = document.getElementById('dpsMasteryRow');
+  const masteryToggle = document.getElementById('dpsMasteryToggle');
+  const masteryLabel = document.getElementById('dpsMasteryLabel');
+  const masterySkillId = equippedWeaponType ? `${equippedWeaponType}_mastery` : null;
+  const masterySkill = masterySkillId ? skillsData[masterySkillId] : null;
+  const masteryPct = masterySkill && masterySkill.levels[0] ? parseDamagePctFromEffect(masterySkill.levels[0].effect) : 0;
+  if(masteryRow) masteryRow.style.display = masterySkill ? 'flex' : 'none';
+  if(masteryLabel && masterySkill) masteryLabel.textContent = `⚔️ ${masterySkill.name} learned (+${masteryPct}% dmg)`;
+  if(masteryToggle && !masteryToggle.dataset.wired){
+    masteryToggle.dataset.wired = '1';
+    masteryToggle.addEventListener('click', () => {
+      state.dpsMasteryLearned = !state.dpsMasteryLearned;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+  if(masteryToggle) masteryToggle.classList.toggle('is-active', !!state.dpsMasteryLearned);
+
+  // Sword sub-skills: Guashua Arts / Favonius Bladework / Katzlein Style only apply with a Sword equipped.
+  const isSword = equippedWeaponType === 'sword';
+  const guashuaRow = document.getElementById('dpsGuashuaRow');
+  const guashuaToggle = document.getElementById('dpsGuashuaToggle');
+  if(guashuaRow) guashuaRow.style.display = isSword ? 'flex' : 'none';
+  if(guashuaToggle && !guashuaToggle.dataset.wired){
+    guashuaToggle.dataset.wired = '1';
+    guashuaToggle.addEventListener('click', () => {
+      state.dpsGuashua = !state.dpsGuashua;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+  if(guashuaToggle) guashuaToggle.classList.toggle('is-active', !!state.dpsGuashua);
+
+  const favoniusRow = document.getElementById('dpsFavoniusRow');
+  const favoniusInput = document.getElementById('dpsFavoniusInput');
+  if(favoniusRow) favoniusRow.style.display = isSword ? 'flex' : 'none';
+  if(favoniusInput && !favoniusInput.dataset.wired){
+    favoniusInput.dataset.wired = '1';
+    favoniusInput.value = state.dpsFavonius || 0;
+    favoniusInput.addEventListener('input', () => {
+      state.dpsFavonius = Math.max(0, parseInt(favoniusInput.value, 10) || 0);
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+
+  const katzleinRow = document.getElementById('dpsKatzleinRow');
+  const katzleinToggle = document.getElementById('dpsKatzleinToggle');
+  if(katzleinRow) katzleinRow.style.display = isSword ? 'flex' : 'none';
+  if(katzleinToggle && !katzleinToggle.dataset.wired){
+    katzleinToggle.dataset.wired = '1';
+    katzleinToggle.addEventListener('click', () => {
+      state.dpsKatzlein = !state.dpsKatzlein;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+  if(katzleinToggle) katzleinToggle.classList.toggle('is-active', !!state.dpsKatzlein);
+
+  // Unique alignment ultimates that affect damage this turn (Kindness / Pride / Wrath).
+  const uniqueSelect = document.getElementById('dpsUniqueSelect');
+  const kindnessRow = document.getElementById('dpsKindnessRow');
+  const kindnessInput = document.getElementById('dpsKindnessInput');
+  if(uniqueSelect && !uniqueSelect.dataset.wired){
+    uniqueSelect.dataset.wired = '1';
+    uniqueSelect.value = state.dpsUniqueUltimate || '';
+    uniqueSelect.addEventListener('change', () => {
+      state.dpsUniqueUltimate = uniqueSelect.value;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+    dpsSelectEnhanced.unique = enhanceSelectEl(uniqueSelect);
+  }
+  if(kindnessRow) kindnessRow.style.display = (state.dpsUniqueUltimate === 'kindness') ? 'flex' : 'none';
+  if(kindnessInput && !kindnessInput.dataset.wired){
+    kindnessInput.dataset.wired = '1';
+    kindnessInput.value = state.dpsKindnessEnemies || 1;
+    kindnessInput.addEventListener('input', () => {
+      state.dpsKindnessEnemies = Math.max(1, parseInt(kindnessInput.value, 10) || 1);
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+
   const paladinToggle = document.getElementById('dpsPaladinToggle');
   if(paladinToggle && !paladinToggle.dataset.wired){
     paladinToggle.dataset.wired = '1';
@@ -3777,6 +3907,22 @@ function renderDpsPanel(){
   const curseMult = Math.pow(1.5, curseStacks);
   const sageBonus = state.dpsSageBonus || 0;
 
+  // Weapon Mastery: flat % while the matching weapon type is equipped and the skill is learned.
+  const masterySkillIdCalc = isBow ? 'bow_mastery' : isClaymore ? 'claymore_mastery' : isCatalyst ? 'catalyst_mastery'
+    : (equippedWeaponType === 'polearm') ? 'polearm_mastery' : (equippedWeaponType === 'sword') ? 'sword_mastery' : null;
+  const masterySkillCalc = masterySkillIdCalc ? skillsData[masterySkillIdCalc] : null;
+  const masteryPctCalc = (state.dpsMasteryLearned && masterySkillCalc && masterySkillCalc.levels[0])
+    ? parseDamagePctFromEffect(masterySkillCalc.levels[0].effect) : 0;
+
+  // Favonius Bladework: +3%/turn cumulative, Sword only.
+  const favoniusPct = (equippedWeaponType === 'sword') ? (state.dpsFavonius || 0) * 3 : 0;
+
+  // Unique alignment ultimates.
+  const uniqueMult = state.dpsUniqueUltimate === 'pride' ? 3
+    : state.dpsUniqueUltimate === 'wrath' ? 2
+    : state.dpsUniqueUltimate === 'kindness' ? Math.pow(2, Math.max(1, state.dpsKindnessEnemies || 1))
+    : 1;
+
   // Computes one basic-attack hit, applying Curse stacks, Sage, Homa, and the Bow
   // elemental penalty — the modifiers that only apply to real basic attacks (per how
   // the bot actually rolls damage).
@@ -3789,7 +3935,35 @@ function renderDpsPanel(){
       dmg *= homaMultiplier(hpPct, 100);
     }
     if(isBow && state.dpsBowElement) dmg *= 0.8;
+    if(masteryPctCalc > 0) dmg *= (1 + masteryPctCalc / 100);
+    if(state.dpsGuashua && equippedWeaponType === 'sword'){
+      // +5% damage on non-crit hits only — apply that 5% to just the non-crit share of the expected value.
+      const critChance = Math.max(0, Math.min(1, (cr || 0) / 100));
+      dmg *= (1 + 0.05 * (1 - critChance));
+    }
+    if(favoniusPct > 0) dmg *= (1 + favoniusPct / 100);
+    if(state.dpsKatzlein && equippedWeaponType === 'sword') dmg *= 1.5;
+    if(uniqueMult !== 1) dmg *= uniqueMult;
     return dmg;
+  }
+
+  if(masteryPctCalc > 0){
+    notes.push(`${masterySkillCalc.name}: +${masteryPctCalc}% damage while this weapon type is equipped.`);
+  }
+  if(state.dpsGuashua && equippedWeaponType === 'sword'){
+    notes.push(`Guashua Arts: +5% damage on non-crit hits (applied to the non-crit share of the expected hit).`);
+  }
+  if(favoniusPct > 0){
+    notes.push(`Favonius Bladework: +${favoniusPct}% damage from ${state.dpsFavonius} turn(s) elapsed this battle.`);
+  }
+  if(state.dpsKatzlein && equippedWeaponType === 'sword'){
+    notes.push(`Katzlein Style: this is your 5th basic attack — +50% damage.`);
+  }
+  if(uniqueMult !== 1){
+    const label = state.dpsUniqueUltimate === 'pride' ? 'Pride: 3x damage (never act first).'
+      : state.dpsUniqueUltimate === 'wrath' ? 'Wrath: 2x damage (-50% starting HP).'
+      : `Kindness: 2x damage per enemy alive, multiplicatively (${state.dpsKindnessEnemies || 1} enemies = ${round(uniqueMult)}x).`;
+    notes.push(label);
   }
 
   if(isHoma){
@@ -3872,6 +4046,14 @@ function renderDpsPanel(){
 
 // ---------- Skills panel ----------
 // Parses a skill level's effect text for permanent Crit Rate / Crit Value bonuses.
+// Parses a skill level's effect text for a flat "X% more/increases damage" style bonus,
+// used for the Weapon Mastery skills (e.g. "Deal 2% more damage while a Sword is equipped.").
+function parseDamagePctFromEffect(effect){
+  if(!effect) return 0;
+  const m = effect.match(/([\d.]+)%\s*more damage/i);
+  return m ? parseFloat(m[1]) : 0;
+}
+
 function parseCritFromEffect(effect){
   if(!effect) return {cr:0, cv:0};
   const crMatch = effect.match(/([\d.]+)%\s*Crit Rate/i);
