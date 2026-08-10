@@ -680,7 +680,7 @@
     <h2>Final Stats</h2>
     <div class="ar-row">
       <label for="arInput">AR</label>
-      <input type="number" id="arInput" min="1" max="24" step="1">
+      <input type="number" id="arInput" min="1" max="30" step="1">
       <span class="ar-wl-badge" id="arWlBadge">WL 1</span>
     </div>
     <div class="frost-block" id="frostBlock">
@@ -1138,7 +1138,7 @@ let state = {
   weaponStarred: 0, // anvil "star" upgrade level (0/1/2) — ✪ doubles, ✪✪ quadruples the weapon's own rolled stats
   skillChoices: {},    // rootSkillId -> { skillId, level } — the active skill picked per skill-tree
   artifacts: {},        // slot -> { setName, pieceName, rolls: {statKey:value}, specialRoll:value }
-  ar: 1,                // Adventure Rank (1-24). Every AR above 1 grants +5 HP / +1 ATK.
+  ar: 1,                // Adventure Rank (1-30). Every AR above 1 grants +5 HP / +1 ATK.
   frostTreeLevel: 0,    // Frostbearing Tree level (0-80). Unlocks at WL4. Milestones grant permanent Max HP.
   dpsPaladin: false,    // DPS panel: is the Paladin skill (ATK<->DV swap) toggled on
   dpsSlashTurnOne: false, // DPS panel: is this turn 1? (Slash is locked turn 1 unless Vigilance/Bash also procs)
@@ -1154,13 +1154,14 @@ let state = {
   weaponBag: []          // [ {id, nickname, weaponName, icon, type, worldLevel, crucible, weight, ability, atkType, rolls} ]
 };
 
-const AR_MIN = 1, AR_MAX = 24;
+const AR_MIN = 1, AR_MAX = 30;
 function worldLevelForAR(ar){
   if(ar <= 4) return 1;
   if(ar <= 9) return 2;
   if(ar <= 14) return 3;
   if(ar <= 19) return 4;
-  return 5;
+  if(ar <= 24) return 5;
+  return 6;
 }
 
 const FROST_TREE_MIN = 0, FROST_TREE_MAX = 80;
