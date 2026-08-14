@@ -176,13 +176,13 @@ summary::-webkit-details-marker{display:none}
 .tchoice{position:relative;padding-top:7px;display:flex;flex-direction:column;box-sizing:border-box}
 .tc-vert{position:absolute;left:0;width:4px;pointer-events:none;border-radius:1px}
 .tc-horiz{position:absolute;left:-12px;top:19px;width:12px;height:2px;pointer-events:none}
-.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:inline-flex;align-items:center;gap:5px;max-width:90%;white-space:normal;word-break:break-word;vertical-align:top}
+.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:flex;align-items:center;gap:5px;width:clamp(220px,78vw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
 .tchoice-label.tchoice-best{background:#fff0ee;border-color:#e03020}
 .tvisited{font-size:11px;color:var(--text3);font-style:italic;padding:4px 0 4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;display:block}
 .tvisited:hover{color:var(--gold)}
 .tmissing{font-size:11px;color:#b03020;padding:4px;font-style:italic}
 .tchoice-inline{margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;box-sizing:border-box}
-.tchoice-inline>.tchoice-label{display:inline-flex;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;max-width:90%}
+.tchoice-inline>.tchoice-label{display:flex;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;width:clamp(220px,78vw,340px);box-sizing:border-box}
 .tchoice-inline>.tchoice-label.tchoice-best{color:var(--text);background:#fff0ee;border-color:#e03020}
 .tchoice-inline>.tnode{margin-top:10px;display:block}
 .tcard-best{border-left:3px solid #e03020!important}
