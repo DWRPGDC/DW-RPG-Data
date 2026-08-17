@@ -439,6 +439,11 @@
   .custom-select.full-width .custom-select-trigger{ width:100%; white-space:normal; text-align:left; }
   .custom-select-trigger:hover{ border-color:var(--ink-dim); }
   .custom-select-trigger.is-open{ border-color:var(--ink-dim); }
+  .custom-select.is-active .custom-select-trigger{
+    border-color:#d4af37; color:var(--ink);
+    background:rgba(212,175,55,.1);
+    box-shadow:0 0 7px rgba(212,175,55,.4);
+  }
   .custom-select-trigger svg{ flex:0 0 auto; color:var(--ink-dim); transition:transform .15s ease; }
   .custom-select-trigger.is-open svg{ transform:rotate(180deg); }
   .custom-select-menu{
@@ -465,6 +470,20 @@
     background:rgba(212,175,55,.1);
     box-shadow:0 0 7px rgba(212,175,55,.4);
   }
+  .star-stepper{
+    display:flex; align-items:center; gap:8px; width:100%; margin-bottom:8px;
+    padding:5px 8px; border:1.5px solid var(--line); border-radius:8px;
+    font-family:'Inter', sans-serif; font-size:.72rem; background:var(--bg-alt); color:var(--ink);
+  }
+  .star-stepper.is-active{ border-color:#d4af37; box-shadow:0 0 7px rgba(212,175,55,.4); }
+  .star-stepper-label{ flex:1; }
+  .star-stepper-controls{ display:flex; align-items:center; gap:6px; }
+  .star-stepper-controls button{
+    width:22px; height:22px; line-height:1; padding:0; border:1px solid var(--line); border-radius:6px;
+    background:var(--panel); color:var(--ink); cursor:pointer; font-size:.85rem;
+  }
+  .star-stepper-controls button:disabled{ opacity:.35; cursor:not-allowed; }
+  .star-stepper-value{ min-width:64px; text-align:center; }
 
   /* ---------- Picker button (replaces the dropdown trigger) ---------- */
   .picker-btn{
@@ -996,6 +1015,17 @@
         </div>
         <button type="button" id="resetBtn">↺ Reset</button>
       </div>
+      <div class="settings-row">
+        <div class="settings-row-text">
+          <div class="settings-row-title">Anvil Star Control</div>
+          <div class="settings-row-desc">Choose how tapping the Anvil Star control changes its level.</div>
+        </div>
+        <select id="starModeSelect">
+          <option value="click">Tap to Cycle</option>
+          <option value="dropdown">Dropdown</option>
+          <option value="stepper">+ / − Buttons</option>
+        </select>
+      </div>
       <div class="settings-divider"></div>
       <div class="settings-row">
         <div class="settings-row-text">
@@ -1067,9 +1097,20 @@
         </ul>
       </div>
       <div class="howto-section">
+        <h3>Prefixes & Anvil Star</h3>
+        <ul>
+          <li><strong>Prefix</strong> multiplies that specific weapon or artifact piece's own rolled stats — pick one from the dropdown on its detail panel. Hover/read the option text to see exactly which stats it affects and by how much.</li>
+          <li><strong>Anvil Star</strong> is a separate multiplier stacked on top of the prefix, also applied to that piece's own rolls. It has 4 levels: OFF, ✪, ✪✪, and ✪✪✪ — weapons scale 2x / 4x / 8x per star, artifacts scale 1.5x / 2x / 2.5x per star.</li>
+          <li>Change how you set the Anvil Star level in <strong>Settings → Anvil Star Control</strong>: <strong>Tap to Cycle</strong> (tap through OFF → ✪ → ✪✪ → ✪✪✪ → back to OFF), <strong>Dropdown</strong> (pick a level directly), or <strong>+ / − Buttons</strong> (step one level at a time).</li>
+        </ul>
+      </div>
+      <div class="howto-section">
         <h3>Settings</h3>
         <ul>
           <li><strong>Dark Mode</strong> switches the app theme.</li>
+          <li><strong>Autosave</strong> automatically saves your build as you make changes.</li>
+          <li><strong>Roll Quality %</strong> shows how close each stat roll is to its max possible value.</li>
+          <li><strong>Anvil Star Control</strong> picks how the Anvil Star buttons on weapons/artifacts respond to input — Tap to Cycle, Dropdown, or + / − Buttons.</li>
           <li><strong>Save Build</strong> stores your current build in this browser, so it's there next time you visit.</li>
           <li><strong>Reset</strong> clears your current build back to empty — this does not touch anything saved in your Bag.</li>
           <li><strong>Backup</strong> lets you <strong>Export</strong> your Bag and Build Slots to a file, or <strong>Import</strong> one back in — handy for switching devices or keeping a backup.</li>
@@ -1114,7 +1155,13 @@ const PREFIXES = {
   'Sinful':   { ATK:2, HP:0.5 },
   'Jaded':    { DV:1.5, HP:1.2 },
   'Scornful': { ATK:2, CV:0.5 },
-  'Spicy':    { CR:2, CV:2 }
+  'Spicy':    { CR:2, CV:2 },
+  'Cursed':   { ATK:-1, HP:-1, CR:-1, CV:-1, DR:-1, DV:-1 },
+  'Gilded':   { CR:1.5, DV:-2 },
+  'Revered':  { HP:2, CR:-1.5 },
+  'Salty':    { ATK:2, HP:-1.5 },
+  'Strange':  { CR:2, CV:-1.5 },
+  'Ancient':  { ATK:2.5, HP:2.5, CR:2.5, CV:2.5, DR:2.5, DV:2.5 }
 };
 const PREFIX_NAMES = Object.keys(PREFIXES);
 // Maps weapon/artifact roll keys to the canonical stat key used in PREFIXES.
@@ -1154,20 +1201,81 @@ function makePrefixSelect(currentValue, onChange){
   if(enhanced) enhanced.wrap.classList.add('full-width');
   return wrap;
 }
+// Anvil star enhancement multipliers (level 0 = off). Weapons and artifacts scale differently.
+const STAR_MULTS = {
+  weapon:   [1, 2, 4, 8],
+  artifact: [1, 1.5, 2, 2.5]
+};
 function starGlyph(level){
-  return '✪'.repeat(Math.max(0, Math.min(2, level|0)));
+  return '✪'.repeat(Math.max(0, Math.min(3, level|0)));
 }
-function starMult(level){
-  return Math.pow(2, Math.max(0, Math.min(2, level|0)));
+function starMult(level, kind){
+  const table = STAR_MULTS[kind] || STAR_MULTS.weapon;
+  const lvl = Math.max(0, Math.min(3, level|0));
+  return table[lvl];
 }
-function makeStarToggle(currentValue, onChange){
-  const level = Math.max(0, Math.min(2, currentValue|0));
+function makeStarToggle(currentValue, onChange, kind){
+  const table = STAR_MULTS[kind] || STAR_MULTS.weapon;
+  const level = Math.max(0, Math.min(3, currentValue|0));
+  const mode = state.starInputMode || 'click';
+  const stateText = level === 0 ? 'OFF' : `${starGlyph(level)} ON (${table[level]}x)`;
+
+  if(mode === 'dropdown'){
+    const wrap = document.createElement('div');
+    wrap.style.marginBottom = '8px';
+    const select = document.createElement('select');
+    for(let i = 0; i <= 3; i++){
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = i === 0 ? 'Anvil Star: OFF' : `Anvil Star: ${starGlyph(i)} (${table[i]}x)`;
+      if(i === level) opt.selected = true;
+      select.appendChild(opt);
+    }
+    select.addEventListener('change', () => onChange(parseInt(select.value, 10)));
+    wrap.appendChild(select);
+    const enhanced = enhanceSelectEl(select);
+    if(enhanced){
+      enhanced.wrap.classList.add('full-width');
+      if(level > 0) enhanced.wrap.classList.add('is-active');
+    }
+    return wrap;
+  }
+
+  if(mode === 'stepper'){
+    const wrap = document.createElement('div');
+    wrap.className = 'star-stepper' + (level > 0 ? ' is-active' : '');
+    const label = document.createElement('span');
+    label.className = 'star-stepper-label';
+    label.textContent = 'Anvil Star';
+    const controls = document.createElement('div');
+    controls.className = 'star-stepper-controls';
+    const minusBtn = document.createElement('button');
+    minusBtn.type = 'button';
+    minusBtn.textContent = '−';
+    minusBtn.disabled = level <= 0;
+    minusBtn.addEventListener('click', () => onChange(Math.max(0, level - 1)));
+    const valueSpan = document.createElement('span');
+    valueSpan.className = 'star-stepper-value';
+    valueSpan.textContent = stateText;
+    const plusBtn = document.createElement('button');
+    plusBtn.type = 'button';
+    plusBtn.textContent = '+';
+    plusBtn.disabled = level >= 3;
+    plusBtn.addEventListener('click', () => onChange(Math.min(3, level + 1)));
+    controls.appendChild(minusBtn);
+    controls.appendChild(valueSpan);
+    controls.appendChild(plusBtn);
+    wrap.appendChild(label);
+    wrap.appendChild(controls);
+    return wrap;
+  }
+
+  // Default: tap-to-cycle button
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'star-toggle' + (level > 0 ? ' is-active' : '');
-  const stateText = level === 0 ? 'OFF' : (level === 1 ? '✪ ON (2x)' : '✪✪ ON (4x)');
   btn.innerHTML = `<span>Anvil Star</span><span>${stateText}</span>`;
-  btn.addEventListener('click', () => onChange((level + 1) % 3));
+  btn.addEventListener('click', () => onChange((level + 1) % 4));
   return btn;
 }
 
@@ -1200,6 +1308,7 @@ let state = {
   dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'curseBonus' / 'slash' / 'spell:<id>|<level>'
   darkMode: false,
   showRollQuality: false,
+  starInputMode: 'click', // 'click' (tap to cycle) / 'dropdown' / 'stepper' — how Anvil Star controls change level
   bag: {flower:[], plume:[], sands:[], goblet:[], circlet:[]},  // slot -> [ {id, nickname, setName, pieceName, icon, statsDef, special, weight, rolls, specialRoll} ]
   weaponBag: []          // [ {id, nickname, weaponName, icon, type, worldLevel, crucible, weight, ability, atkType, rolls} ]
 };
@@ -1622,8 +1731,17 @@ function closeConfirmModal(){
 /* ---------- Settings modal ---------- */
 let settingsModal = null;
 
+let starModeDropdown = null;
 function initSettingsModal(){
   settingsModal = bindSimpleOverlay('settingsOverlay', 'settingsCloseBtn');
+  const select = document.getElementById('starModeSelect');
+  if(select){
+    const enhanced = enhanceSelectEl(select);
+    if(enhanced){
+      enhanced.wrap.classList.add('full-width');
+      starModeDropdown = enhanced;
+    }
+  }
 }
 
 function openSettingsModal(){ settingsModal.open(); }
@@ -2072,10 +2190,10 @@ function renderWeaponSlot(){
     if(weaponPickerBtn) weaponPickerBtn.refresh();
     renderWeaponSlot();
     renderTotals();
-  }));
+  }, 'weapon'));
 
   // ATK
-  const weaponMult = (rollKey) => prefixFactor(state.weaponPrefix, rollKey) * starMult(state.weaponStarred);
+  const weaponMult = (rollKey) => prefixFactor(state.weaponPrefix, rollKey) * starMult(state.weaponStarred, 'weapon');
   const effFn = (rollKey) => (v) => {
     const m = weaponMult(rollKey);
     return m !== 1 ? round(v * m) : null;
@@ -2436,7 +2554,7 @@ function openArtifactPicker(slot){
       if(!o){
         delete state.artifacts[slot];
       } else {
-        state.artifacts[slot] = { setName: o.setName, pieceName: o.pieceName, icon: o.icon, statsDef: o.stats, special: o.special, weight: o.weight, rolls: {}, specialRoll: undefined, prefix: 'None' };
+        state.artifacts[slot] = { setName: o.setName, pieceName: o.pieceName, icon: o.icon, statsDef: o.stats, special: o.special, weight: o.weight, rolls: {}, specialRoll: undefined, prefix: 'None', starred: 0 };
       }
       if(artifactPickerBtns[slot]) artifactPickerBtns[slot].refresh();
       renderArtifactSlotDetail(slot, options);
@@ -2483,7 +2601,7 @@ function renderArtifactSlotDetail(slot, options){
     head.appendChild(iconImg(current.icon, ARTIFACT_ICON_PATH, current.pieceName));
     const nameWrap = document.createElement('div');
     nameWrap.className = 'slot-head-name';
-    nameWrap.innerHTML = `<div class="name">${current.pieceName}</div><div class="sub">${current.setName}</div>`;
+    nameWrap.innerHTML = `<div class="name">${current.pieceName}${current.starred ? ' ' + starGlyph(current.starred) : ''}</div><div class="sub">${current.setName}</div>`;
     head.appendChild(nameWrap);
     const removeBtn = makeRemoveButton(SLOT_LABELS[slot], ()=>{
       delete state.artifacts[slot];
@@ -2500,11 +2618,17 @@ function renderArtifactSlotDetail(slot, options){
       renderTotals();
     }));
 
+    slotDiv.appendChild(makeStarToggle(current.starred, (val) => {
+      current.starred = val;
+      renderArtifactSlotDetail(slot, options);
+      renderTotals();
+    }, 'artifact'));
+
     Object.entries(current.statsDef).forEach(([statKey, range]) => {
       slotDiv.appendChild(makeSlider(statLabel(statKey), statKey, range, val => {
         current.rolls[statKey] = val; renderTotals();
       }, current.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR') ? '%' : '', (v) => {
-        const m = prefixFactor(current.prefix, statKey);
+        const m = prefixFactor(current.prefix, statKey) * starMult(current.starred, 'artifact');
         return m !== 1 ? round(v * m) : null;
       }));
     });
@@ -2548,6 +2672,7 @@ function artifactBagChips(item){
   if(item.special && item.specialRoll !== undefined){
     chips.push(`${item.special.label} ${item.specialRoll}${item.special.suffix || ''}`);
   }
+  if(item.starred) chips.push(starGlyph(item.starred) + ' Anvil');
   return chips;
 }
 
@@ -2567,6 +2692,7 @@ function saveToBag(slot){
       rolls: {...current.rolls},
       specialRoll: current.specialRoll,
       prefix: current.prefix || 'None',
+      starred: current.starred|0,
       favorite: false
     };
     if(!state.bag[slot]) state.bag[slot] = [];
@@ -2590,7 +2716,8 @@ function equipFromBag(slot, id){
     weight: item.weight,
     rolls: {...item.rolls},
     specialRoll: item.specialRoll,
-    prefix: item.prefix || 'None'
+    prefix: item.prefix || 'None',
+    starred: item.starred|0
   };
   const options = options_for(slot);
   if(artifactPickerBtns[slot]) artifactPickerBtns[slot].refresh();
@@ -2792,7 +2919,7 @@ function computeAndRenderTotals(){
   // Weapon contributions (prefix multiplies the weapon's own rolls)
   const wr = state.weaponRolls;
   const wPfx = state.weaponPrefix || 'None';
-  const wStar = starMult(state.weaponStarred);
+  const wStar = starMult(state.weaponStarred, 'weapon');
   if(wr.atk !== undefined){ const v = wr.atk * prefixFactor(wPfx,'atk') * wStar; totals.atkLow += v; totals.atkHigh += v; }
   if(wr.atkMin !== undefined) totals.atkLow += wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar;
   if(wr.atkMax !== undefined) totals.atkHigh += wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar;
@@ -2808,9 +2935,10 @@ function computeAndRenderTotals(){
     const a = state.artifacts[slot];
     if(!a) return;
     const aPfx = a.prefix || 'None';
+    const aStar = starMult(a.starred, 'artifact');
     Object.entries(a.rolls).forEach(([statKey, val]) => {
       if(val === undefined) return;
-      addStatToTotals(totals, statKey, val * prefixFactor(aPfx, statKey));
+      addStatToTotals(totals, statKey, val * prefixFactor(aPfx, statKey) * aStar);
     });
     if(a.special && a.specialRoll !== undefined){
       specials.push(`${a.setName} (${a.pieceName}): ${a.special.label} — ${a.specialRoll}${a.special.suffix || ''}`);
@@ -3129,7 +3257,7 @@ function buildArtifactBagRow(slot, item, showSlotTag){
   const slotTag = showSlotTag ? `<span class="bag-slot-tag">${SLOT_LABELS[slot] || slot}</span>` : '';
   return buildBagRow({
     icon: item.icon, iconPath: ARTIFACT_ICON_PATH, iconAlt: item.pieceName,
-    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.pieceName}`,
+    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.pieceName}${item.starred ? ' ' + starGlyph(item.starred) : ''}`,
     metaHtml: `${slotTag}${artifactBagMeta(item)}`,
     chips: artifactBagChips(item),
     favorite: !!item.favorite,
@@ -3231,7 +3359,7 @@ function openQuickAddArtifactPicker(slot){
 }
 
 function startQuickAddArtifact(slot, o){
-  quickAdd = { kind:'artifact', slot, def:o, rolls:{}, prefix:'None', specialRoll:undefined, nickname:'' };
+  quickAdd = { kind:'artifact', slot, def:o, rolls:{}, prefix:'None', starred:0, specialRoll:undefined, nickname:'' };
   renderQuickAddEditor();
   quickAddModal.open();
 }
@@ -3262,9 +3390,9 @@ function renderQuickAddEditor(){
     body.appendChild(makeStarToggle(quickAdd.starred, (val) => {
       quickAdd.starred = val;
       renderQuickAddEditor();
-    }));
+    }, 'weapon'));
 
-    const weaponMult = (rollKey) => prefixFactor(quickAdd.prefix, rollKey) * starMult(quickAdd.starred);
+    const weaponMult = (rollKey) => prefixFactor(quickAdd.prefix, rollKey) * starMult(quickAdd.starred, 'weapon');
     const effFn = (rollKey) => (v) => {
       const m = weaponMult(rollKey);
       return m !== 1 ? round(v * m) : null;
@@ -3322,11 +3450,16 @@ function renderQuickAddEditor(){
       renderQuickAddEditor();
     }));
 
+    body.appendChild(makeStarToggle(quickAdd.starred, (val) => {
+      quickAdd.starred = val;
+      renderQuickAddEditor();
+    }, 'artifact'));
+
     Object.entries(o.stats).forEach(([statKey, range]) => {
       body.appendChild(makeSlider(statLabel(statKey), statKey, range, val => {
         quickAdd.rolls[statKey] = val;
       }, quickAdd.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR') ? '%' : '', (v) => {
-        const m = prefixFactor(quickAdd.prefix, statKey);
+        const m = prefixFactor(quickAdd.prefix, statKey) * starMult(quickAdd.starred, 'artifact');
         return m !== 1 ? round(v * m) : null;
       }));
     });
@@ -3405,6 +3538,7 @@ function saveQuickAdd(){
       rolls: {...quickAdd.rolls},
       specialRoll: quickAdd.specialRoll,
       prefix: quickAdd.prefix || 'None',
+      starred: quickAdd.starred|0,
       favorite: false
     };
     if(!state.bag[slot]) state.bag[slot] = [];
@@ -3461,10 +3595,18 @@ function loadBuild(){
   state.weaponStarred = typeof state.weaponStarred === 'number' ? state.weaponStarred : (state.weaponStarred ? 1 : 0);
   if(state.autosave === undefined) state.autosave = true;
   if(state.showRollQuality === undefined) state.showRollQuality = false;
+  if(!['click','dropdown','stepper'].includes(state.starInputMode)) state.starInputMode = 'click';
   if(state.dpsMasteryLevel === undefined){
     state.dpsMasteryLevel = state.dpsMasteryLearned ? 1 : 0;
   }
   delete state.dpsMasteryLearned;
+  // Backfill anvil star field on artifacts/bag items saved before the artifact star system existed.
+  if(state.artifacts){
+    Object.values(state.artifacts).forEach(a => { if(a && a.starred === undefined) a.starred = 0; });
+  }
+  if(state.bag){
+    Object.values(state.bag).forEach(list => (list || []).forEach(item => { if(item.starred === undefined) item.starred = 0; }));
+  }
 }
 
 function resetBuild(){
@@ -3473,7 +3615,7 @@ function resetBuild(){
     weaponStarred: state.weaponStarred, skillChoices: JSON.parse(JSON.stringify(state.skillChoices || {})),
     artifacts: JSON.parse(JSON.stringify(state.artifacts || {})), ar: state.ar, frostTreeLevel: state.frostTreeLevel
   };
-  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:0, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, showRollQuality: state.showRollQuality, bag: state.bag, weaponBag: state.weaponBag };
+  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:0, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, showRollQuality: state.showRollQuality, starInputMode: state.starInputMode, bag: state.bag, weaponBag: state.weaponBag };
   if(weaponPickerBtn) weaponPickerBtn.refresh();
   renderWeaponSlot();
   buildArtifactSlots();
@@ -3532,6 +3674,12 @@ function applyAutosaveUI(){
       ? 'Autosave is on. Use this if you want to save right now anyway.'
       : 'Store your current build in this browser.';
   }
+}
+
+function applyStarInputModeUI(){
+  const select = document.getElementById('starModeSelect');
+  if(select) select.value = state.starInputMode || 'click';
+  if(starModeDropdown) starModeDropdown.sync();
 }
 
 // ---------- DPS panel ----------
@@ -4249,6 +4397,7 @@ async function init(){
   applyDarkMode();
   applyAutosaveUI();
   applyRollQualityUI();
+  applyStarInputModeUI();
   buildWeaponSelect();
   renderWeaponSlot();
   buildArtifactSlots();
@@ -4275,6 +4424,14 @@ async function init(){
     state.showRollQuality = !state.showRollQuality;
     applyRollQualityUI();
     scheduleAutosave();
+  });
+  document.getElementById('starModeSelect').addEventListener('change', (e)=>{
+    state.starInputMode = e.target.value;
+    scheduleAutosave();
+    // Re-render whatever star controls are currently on screen so the new input method shows immediately.
+    renderWeaponSlot();
+    SLOTS.forEach(slot => renderArtifactSlotDetail(slot, findPieceOptions(slot)));
+    if(quickAdd) renderQuickAddEditor();
   });
   document.getElementById('settingsToggleBtn').addEventListener('click', openSettingsModal);
   document.getElementById('dpsOpenBtn').addEventListener('click', openDpsModal);
