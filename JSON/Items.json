@@ -377,5 +377,67 @@
     "name": "Sugar",
     "icon": "Item Sugar.webp",
     "category": "misc"
+  },
+
+  "whopperflower_nectar": {
+    "name": "Whopperflower Nectar",
+    "icon": "Item Whopperflower Nectar.webp",
+    "category": "drops",
+    "tier": 1,
+    "group": "whopperflower"
+  },
+  "shimmering_nectar": {
+    "name": "Shimmering Nectar",
+    "icon": "Item Shimmering Nectar.webp",
+    "category": "drops",
+    "tier": 2,
+    "group": "whopperflower"
+  },
+  "fragile_bone_shard": {
+    "name": "Fragile Bone Shard",
+    "icon": "Item Fragile Bone Shard.webp",
+    "category": "drops",
+    "tier": 1,
+    "group": "vishap"
+  },
+  "sturdy_bone_shard": {
+    "name": "Sturdy Bone Shard",
+    "icon": "Item Sturdy Bone Shard.webp",
+    "category": "drops",
+    "tier": 2,
+    "group": "vishap"
+  },
+  "bloodjade_branch": {
+    "name": "Bloodjade Branch",
+    "icon": "Item Bloodjade Branch.webp",
+    "category": "drops",
+    "group": "boss"
+  },
+  "fractured_bit": {
+    "name": "Fractured Bit",
+    "icon": "Item Fractured Fruit Bit.webp",
+    "category": "drops",
+    "group": "unique"
+  },
+  "silk_flower": {
+    "name": "Silk Flower",
+    "icon": "Item Silk Flower.webp",
+    "category": "misc"
+  },
+  "qingxin": {
+    "name": "Qingxin",
+    "icon": "Item Qingxin.webp",
+    "category": "misc"
+  },
+  "jueyun_chili": {
+    "name": "Jueyun Chili",
+    "icon": "Item Jueyun Chili.webp",
+    "category": "misc"
+  },
+  "cor_lapis": {
+    "name": "Cor Lapis",
+    "icon": "Item Cor Lapis.webp",
+    "category": "misc",
+    "group": "ores"
   }
 }
