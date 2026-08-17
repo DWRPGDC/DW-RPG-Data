@@ -811,6 +811,12 @@
           </label>
           <div class="dps-toggle" id="dpsKatzleinToggle"></div>
         </div>
+        <div class="dps-toggle-row" id="dpsSobpRow" style="display:none;">
+          <label for="dpsSobpToggle">🎶 Song of Broken Pines — this is the 4th attack
+            <span class="dps-term-def">Weapon ability: every 4th attack deals 10x damage. Applies to Basic Attacks and Heavy Attacks alike.</span>
+          </label>
+          <div class="dps-toggle" id="dpsSobpToggle"></div>
+        </div>
 
         <div class="dps-toggle-row" style="display:block;">
           <label for="dpsUniqueSelect" style="display:block; margin-bottom:4px;">🔮 Unique alignment skill (damage-affecting)</label>
@@ -1188,6 +1194,7 @@ let state = {
   dpsGuashua: false,    // DPS panel: Guashua Arts active (Sword) — +5% dmg on non-crit hits
   dpsFavonius: 0,       // DPS panel: Favonius Bladework (Sword) — turns elapsed this battle, +3% dmg each, cumulative
   dpsKatzlein: false,   // DPS panel: Katzlein Style (Sword) — this is the 5th basic attack, +50% dmg
+  dpsSobp: false,       // DPS panel: Song of Broken Pines — this is the 4th attack (Basic/Heavy), 10x damage
   dpsUniqueUltimate: '', // DPS panel: '' / 'kindness' / 'pride' / 'wrath' — Unique alignment skill damage multiplier
   dpsKindnessEnemies: 1, // DPS panel: enemies still alive, used by Kindness (2x damage per enemy alive)
   dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'curseBonus' / 'slash' / 'spell:<id>|<level>'
@@ -3833,6 +3840,21 @@ function renderDpsPanel(){
   }
   if(katzleinToggle) katzleinToggle.classList.toggle('is-active', !!state.dpsKatzlein);
 
+  // Song of Broken Pines: every 4th attack (Basic or Heavy) deals 10x damage.
+  const isSobp = state.weapon === 'Song of Broken Pines';
+  const sobpRow = document.getElementById('dpsSobpRow');
+  const sobpToggle = document.getElementById('dpsSobpToggle');
+  if(sobpRow) sobpRow.style.display = isSobp ? 'flex' : 'none';
+  if(sobpToggle && !sobpToggle.dataset.wired){
+    sobpToggle.dataset.wired = '1';
+    sobpToggle.addEventListener('click', () => {
+      state.dpsSobp = !state.dpsSobp;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+  }
+  if(sobpToggle) sobpToggle.classList.toggle('is-active', !!state.dpsSobp);
+
   // Unique alignment ultimates that affect damage this turn (Kindness / Pride / Wrath).
   const uniqueSelect = document.getElementById('dpsUniqueSelect');
   const kindnessRow = document.getElementById('dpsKindnessRow');
@@ -3988,6 +4010,7 @@ function renderDpsPanel(){
     }
     if(favoniusPct > 0) dmg *= (1 + favoniusPct / 100);
     if(state.dpsKatzlein && equippedWeaponType === 'sword') dmg *= 1.5;
+    if(state.dpsSobp && isSobp) dmg *= 10;
     if(uniqueMult !== 1) dmg *= uniqueMult;
     return dmg;
   }
@@ -4003,6 +4026,9 @@ function renderDpsPanel(){
   }
   if(state.dpsKatzlein && equippedWeaponType === 'sword'){
     notes.push(`Katzlein Style: this is your 5th basic attack — +50% damage.`);
+  }
+  if(state.dpsSobp && isSobp){
+    notes.push(`Song of Broken Pines: this is your 4th attack — 10x damage.`);
   }
   if(uniqueMult !== 1){
     const label = state.dpsUniqueUltimate === 'pride' ? 'Pride: 3x damage (never act first).'
