@@ -1672,11 +1672,11 @@
       "goblet": 0.4,
       "circlet": 0.15
     },
-    "setBonus2pc": "+135 HP, +12% CR, +14% CV",
+    "setBonus2pc": "+68 HP, +12% CR, +14% CV",
     "setBonus2pcStats": [
       {
         "stat": "HP",
-        "value": 135
+        "value": 68
       },
       {
         "stat": "CR",
@@ -1687,11 +1687,11 @@
         "value": 14
       }
     ],
-    "setBonus4pc": "+270 HP, +20% CR, +32% CV",
+    "setBonus4pc": "+135 HP, +20% CR, +32% CV",
     "setBonus4pcStats": [
       {
         "stat": "HP",
-        "value": 270
+        "value": 135
       },
       {
         "stat": "CR",
@@ -1708,8 +1708,8 @@
         "icon": "VV_Flower.webp",
         "stats": {
           "HP": {
-            "min": 210,
-            "max": 285
+            "min": 105,
+            "max": 143
           },
           "ATK": {
             "min": 3,
@@ -1726,8 +1726,8 @@
         "icon": "VV_Plume.webp",
         "stats": {
           "HP": {
-            "min": 195,
-            "max": 270
+            "min": 98,
+            "max": 135
           },
           "ATK": {
             "min": 5,
@@ -1744,8 +1744,8 @@
         "icon": "VV_Sands.webp",
         "stats": {
           "HP": {
-            "min": 180,
-            "max": 255
+            "min": 90,
+            "max": 128
           },
           "CR": {
             "min": 6,
@@ -1762,8 +1762,8 @@
         "icon": "VV_Goblet.webp",
         "stats": {
           "HP": {
-            "min": 225,
-            "max": 300
+            "min": 113,
+            "max": 150
           },
           "ATK": {
             "min": 3,
@@ -1780,8 +1780,8 @@
         "icon": "VV_Circlet.webp",
         "stats": {
           "HP": {
-            "min": 195,
-            "max": 270
+            "min": 98,
+            "max": 135
           },
           "ATK": {
             "min": 3,
@@ -1790,6 +1790,132 @@
           "CR": {
             "min": 12,
             "max": 18
+          }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Archaic Petra",
+    "worldLevel": 6,
+    "crucible": 150,
+    "weights": {
+      "flower": 0.5,
+      "plume": 0.3,
+      "sands": 0.25,
+      "goblet": 0.4,
+      "circlet": 0.15
+    },
+    "setBonus2pc": "+100 HP, +8% DR, +22 DV",
+    "setBonus2pcStats": [
+      {
+        "stat": "HP",
+        "value": 100
+      },
+      {
+        "stat": "DR",
+        "value": 8
+      },
+      {
+        "stat": "DV",
+        "value": 22
+      }
+    ],
+    "setBonus4pc": "+210 HP, +14% DR, +45 DV",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": 210
+      },
+      {
+        "stat": "DR",
+        "value": 14
+      },
+      {
+        "stat": "DV",
+        "value": 45
+      }
+    ],
+    "pieces": {
+      "flower": {
+        "name": "Flower of Creviced Cliff",
+        "icon": "Petra_Flower.webp",
+        "stats": {
+          "HP": {
+            "min": 180,
+            "max": 245
+          },
+          "DV": {
+            "min": 14,
+            "max": 22
+          }
+        }
+      },
+      "plume": {
+        "name": "Feather of Jagged Peaks",
+        "icon": "Petra_Plume.webp",
+        "stats": {
+          "HP": {
+            "min": 165,
+            "max": 230
+          },
+          "DR": {
+            "min": 3,
+            "max": 7
+          },
+          "DV": {
+            "min": 18,
+            "max": 28
+          }
+        }
+      },
+      "sands": {
+        "name": "Sundial of Enduring Jade",
+        "icon": "Petra_Sands.webp",
+        "stats": {
+          "HP": {
+            "min": 155,
+            "max": 220
+          },
+          "DR": {
+            "min": 4,
+            "max": 8
+          },
+          "DV": {
+            "min": 22,
+            "max": 32
+          }
+        }
+      },
+      "goblet": {
+        "name": "Goblet of Chiseled Crag",
+        "icon": "Petra_Goblet.webp",
+        "stats": {
+          "HP": {
+            "min": 195,
+            "max": 260
+          },
+          "DV": {
+            "min": 20,
+            "max": 30
+          }
+        }
+      },
+      "circlet": {
+        "name": "Mask of Solitude Basalt",
+        "icon": "Petra_Circlet.webp",
+        "stats": {
+          "HP": {
+            "min": 165,
+            "max": 230
+          },
+          "DR": {
+            "min": 5,
+            "max": 9
+          },
+          "DV": {
+            "min": 12,
+            "max": 20
           }
         }
       }
