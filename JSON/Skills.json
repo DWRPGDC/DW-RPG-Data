@@ -1,15 +1,15 @@
 {
-  "_note": "Activating a sub-skill branch (a skill with a non-null 'parent') replaces the main skill for as long as it's active. You can switch back to the main skill at any time. You must fully max out a skill before you can learn the branch(es) beneath it.",
+  "_note": "Activating a sub-skill branch (a skill with a non-null 'parent') replaces the main skill for as long as it's active. You can switch back to the main skill at any time. A skill must reach 50% upgrade before you can learn the branch(es) beneath it.",
   "skills": {
     "backstep": {
       "name": "Backstep",
-      "emoji": "\ud83d\udca8",
+      "emoji": "💨",
       "parent": null,
       "unlock": null,
       "levels": [
         {
           "level": 1,
-          "effect": "Dodge enemy attacks 4% of the time.",
+          "effect": "Dodge enemy attacks 6% of the time.",
           "ar": 5,
           "materials": [
             {
@@ -25,7 +25,7 @@
         },
         {
           "level": 2,
-          "effect": "Dodge enemy attacks 8% of the time.",
+          "effect": "Dodge enemy attacks 12% of the time.",
           "ar": 5,
           "materials": [
             {
@@ -41,7 +41,7 @@
         },
         {
           "level": 3,
-          "effect": "Dodge enemy attacks 12% of the time.",
+          "effect": "Dodge enemy attacks 18% of the time.",
           "ar": 10,
           "materials": [
             {
@@ -57,7 +57,7 @@
         },
         {
           "level": 4,
-          "effect": "Dodge enemy attacks 16% of the time.",
+          "effect": "Dodge enemy attacks 24% of the time.",
           "ar": 10,
           "materials": [
             {
@@ -73,7 +73,7 @@
         },
         {
           "level": 5,
-          "effect": "Dodge enemy attacks 20% of the time.",
+          "effect": "Dodge enemy attacks 30% of the time.",
           "ar": 15,
           "materials": [
             {
@@ -91,13 +91,13 @@
     },
     "parry": {
       "name": "Parry",
-      "emoji": "\ud83d\udca8",
+      "emoji": "💨",
       "parent": "backstep",
       "unlock": null,
       "levels": [
         {
           "level": 1,
-          "effect": "Dodge enemy attacks 18% of the time. On dodge, reflect 15% of the avoided damage to the attacker.",
+          "effect": "Dodge enemy attacks 10% of the time. On dodge, reflect 25% of the avoided damage to the attacker.",
           "ar": 15,
           "materials": [
             {
@@ -117,7 +117,7 @@
         },
         {
           "level": 2,
-          "effect": "Dodge enemy attacks 16% of the time. On dodge, reflect 20% of the avoided damage to the attacker.",
+          "effect": "Dodge enemy attacks 12% of the time. On dodge, reflect 35% of the avoided damage to the attacker.",
           "ar": 15,
           "materials": [
             {
@@ -137,21 +137,21 @@
         },
         {
           "level": 3,
-          "effect": null,
+          "effect": "Dodge enemy attacks 15% of the time. On dodge, reflect 45% of the avoided damage to the attacker.",
           "ar": null,
           "materials": null,
           "tbd": true
         },
         {
           "level": 4,
-          "effect": null,
+          "effect": "Dodge enemy attacks 17% of the time. On dodge, reflect 55% of the avoided damage to the attacker.",
           "ar": null,
           "materials": null,
           "tbd": true
         },
         {
           "level": 5,
-          "effect": null,
+          "effect": "Dodge enemy attacks 20% of the time. On dodge, reflect 65% of the avoided damage to the attacker.",
           "ar": null,
           "materials": null,
           "tbd": true
@@ -160,13 +160,13 @@
     },
     "evasion": {
       "name": "Evasion",
-      "emoji": "\ud83d\udca8",
+      "emoji": "💨",
       "parent": "backstep",
       "unlock": null,
       "levels": [
         {
           "level": 1,
-          "effect": "Dodge enemy attacks 18% of the time. On dodge, restore 2% of your max HP.",
+          "effect": "Dodge enemy attacks 10% of the time. On dodge, restore 4% of your max HP.",
           "ar": 20,
           "materials": [
             {
@@ -186,28 +186,28 @@
         },
         {
           "level": 2,
-          "effect": null,
+          "effect": "Dodge enemy attacks 12% of the time. On dodge, restore 5% of your max HP.",
           "ar": null,
           "materials": null,
           "tbd": true
         },
         {
           "level": 3,
-          "effect": null,
+          "effect": "Dodge enemy attacks 15% of the time. On dodge, restore 6% of your max HP.",
           "ar": null,
           "materials": null,
           "tbd": true
         },
         {
           "level": 4,
-          "effect": null,
+          "effect": "Dodge enemy attacks 17% of the time. On dodge, restore 7% of your max HP.",
           "ar": null,
           "materials": null,
           "tbd": true
         },
         {
           "level": 5,
-          "effect": null,
+          "effect": "Dodge enemy attacks 20% of the time. On dodge, restore 8% of your max HP.",
           "ar": null,
           "materials": null,
           "tbd": true
@@ -216,7 +216,7 @@
     },
     "chihayaburu": {
       "name": "Chihayaburu",
-      "emoji": "\ud83c\udf00",
+      "emoji": "🌀",
       "parent": null,
       "unlock": "Unlocked through the Anemo Statue of the Seven.",
       "levels": [
@@ -240,7 +240,7 @@
     },
     "critical_focus": {
       "name": "Critical Focus",
-      "emoji": "\ud83c\udfaf",
+      "emoji": "🎯",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -348,13 +348,13 @@
     },
     "hyperfocus": {
       "name": "Hyperfocus",
-      "emoji": "\ud83c\udfaf",
+      "emoji": "🎯",
       "parent": "critical_focus",
       "unlock": null,
       "levels": [
         {
           "level": 1,
-          "effect": "Adds 10% Crit Rate permanently.",
+          "effect": "Adds 5% Crit Rate permanently.",
           "ar": 15,
           "materials": [
             {
@@ -374,10 +374,23 @@
         },
         {
           "level": 2,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Adds 10% Crit Rate permanently.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "slime_concentrate",
+              "qty": 60
+            },
+            {
+              "item": "ominous_mask",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 3,
@@ -404,7 +417,7 @@
     },
     "critical_mastery": {
       "name": "Critical Mastery",
-      "emoji": "\ud83c\udfaf",
+      "emoji": "🎯",
       "parent": "critical_focus",
       "unlock": null,
       "levels": [
@@ -430,24 +443,63 @@
         },
         {
           "level": 2,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Adds 6% Crit Rate and 20% Crit Value permanently.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "chaos_circuit",
+              "qty": 20
+            },
+            {
+              "item": "sealed_scroll",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 3,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Adds 8% Crit Rate and 30% Crit Value permanently.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "dismal_prism",
+              "qty": 25
+            },
+            {
+              "item": "sealed_scroll",
+              "qty": 60
+            },
+            {
+              "item": "silver",
+              "qty": 3500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 4,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Adds 10% Crit Rate and 40% Crit Value permanently.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "dismal_prism",
+              "qty": 40
+            },
+            {
+              "item": "crystal_prism",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 4500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 5,
@@ -460,13 +512,13 @@
     },
     "curse": {
       "name": "Curse",
-      "emoji": "\ud83d\udfe3",
+      "emoji": "🟣",
       "parent": null,
       "unlock": null,
       "levels": [
         {
           "level": 1,
-          "effect": "Unlocks the Curse action in battle. Instead of attacking, mark an enemy - the next attack on that enemy deals 1.5x damage if it hits. Misses and dodges still consume the curse.",
+          "effect": "Unlocks the Curse action in battle. Instead of attacking, mark an enemy — the next attack on that enemy deals 1.5x damage if it hits. Misses and dodges still consume the curse.",
           "ar": 5,
           "materials": [
             {
@@ -488,9 +540,9 @@
     },
     "discipline": {
       "name": "Discipline",
-      "emoji": "\ud83c\udfdb",
+      "emoji": "🏛",
       "parent": null,
-      "unlock": null,
+      "unlock": "Passive skill.",
       "levels": [
         {
           "level": 1,
@@ -560,9 +612,9 @@
     },
     "effortless_victory": {
       "name": "Effortless Victory",
-      "emoji": "\ud83e\uddd8",
+      "emoji": "🧘",
       "parent": null,
-      "unlock": "Unlocked through Meditation (Quest).",
+      "unlock": "Unlocked through the Meditation quest.",
       "levels": [
         {
           "level": 1,
@@ -616,9 +668,9 @@
     },
     "fast_travels": {
       "name": "Fast Travels",
-      "emoji": "\ud83d\uddfa\ufe0f",
+      "emoji": "🗺️",
       "parent": null,
-      "unlock": null,
+      "unlock": "Passive skill.",
       "levels": [
         {
           "level": 1,
@@ -704,9 +756,9 @@
     },
     "fireball": {
       "name": "Fireball",
-      "emoji": "\ud83d\udd25",
+      "emoji": "🔥",
       "parent": null,
-      "unlock": "Unlocked through Saltflame Rite (Quest).",
+      "unlock": "Unlocked through the Saltflame Rite quest.",
       "levels": [
         {
           "level": 1,
@@ -792,7 +844,7 @@
     },
     "inferno": {
       "name": "Inferno",
-      "emoji": "\ud83d\udd25",
+      "emoji": "🔥",
       "parent": "fireball",
       "unlock": null,
       "levels": [
@@ -858,10 +910,23 @@
         },
         {
           "level": 4,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Deal 90% of your max HP to one enemy when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "chaos_circuit",
+              "qty": 25
+            },
+            {
+              "item": "ominous_mask",
+              "qty": 60
+            },
+            {
+              "item": "silver",
+              "qty": 4500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 5,
@@ -874,7 +939,7 @@
     },
     "hellflare": {
       "name": "Hellflare",
-      "emoji": "\ud83d\udd25",
+      "emoji": "🔥",
       "parent": "inferno",
       "unlock": null,
       "levels": [
@@ -916,7 +981,7 @@
     },
     "meteor": {
       "name": "Meteor",
-      "emoji": "\ud83d\udd25",
+      "emoji": "🔥",
       "parent": "fireball",
       "unlock": null,
       "levels": [
@@ -982,29 +1047,55 @@
         },
         {
           "level": 4,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Deal 34% of your max HP to all enemies when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "dismal_prism",
+              "qty": 40
+            },
+            {
+              "item": "crystal_prism",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 3500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 5,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Deal 38% of your max HP to all enemies when cast. Only activatable with a catalyst equipped.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "crystal_prism",
+              "qty": 40
+            },
+            {
+              "item": "black_bronze_horn",
+              "qty": 15
+            },
+            {
+              "item": "silver",
+              "qty": 6000
+            }
+          ],
+          "tbd": false
         }
       ]
     },
     "fortress": {
       "name": "Fortress",
-      "emoji": "\ud83c\udff0",
+      "emoji": "🏰",
       "parent": null,
       "unlock": "Unlocked through the Geo Statue of the Seven.",
       "levels": [
         {
           "level": 1,
-          "effect": "The first time you would fall in battle, survive at 1 HP instead.",
+          "effect": "The first time you would fall in a battle, there is a 75% chance you survive at 1 HP instead. The charge is spent even if it fails.",
           "ar": 17,
           "materials": [
             {
@@ -1022,7 +1113,7 @@
     },
     "leech": {
       "name": "Leech",
-      "emoji": "\ud83e\ude78",
+      "emoji": "🩸",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1078,7 +1169,7 @@
     },
     "drain": {
       "name": "Drain",
-      "emoji": "\ud83e\ude78",
+      "emoji": "🩸",
       "parent": "leech",
       "unlock": null,
       "levels": [
@@ -1134,13 +1225,13 @@
     },
     "parasite": {
       "name": "Parasite",
-      "emoji": "\ud83e\ude78",
+      "emoji": "🩸",
       "parent": "leech",
       "unlock": null,
       "levels": [
         {
           "level": 1,
-          "effect": "50% chance during your turn to steal 12% of the highest enemy's HP, up to 50 HP, and weaken their next attack by 35%.",
+          "effect": "50% chance during your turn to steal 12% of the highest enemy's HP, up to 50 HP, and weaken their next attack by 15%.",
           "ar": 10,
           "materials": [
             {
@@ -1160,7 +1251,7 @@
         },
         {
           "level": 2,
-          "effect": "50% chance during your turn to steal 10% of the highest enemy's HP, up to 55 HP, and weaken their next attack by 40%.",
+          "effect": "50% chance during your turn to steal 14% of the highest enemy's HP, up to 55 HP, and weaken their next attack by 20%.",
           "ar": 10,
           "materials": [
             {
@@ -1180,7 +1271,7 @@
         },
         {
           "level": 3,
-          "effect": "50% chance during your turn to steal 8% of the highest enemy's HP, up to 60 HP, and weaken their next attack by 45%.",
+          "effect": "50% chance during your turn to steal 16% of the highest enemy's HP, up to 60 HP, and weaken their next attack by 25%.",
           "ar": 10,
           "materials": [
             {
@@ -1200,7 +1291,7 @@
         },
         {
           "level": 4,
-          "effect": "50% chance during your turn to steal 6% of the highest enemy's HP, up to 65 HP, and weaken their next attack by 50%.",
+          "effect": "50% chance during your turn to steal 18% of the highest enemy's HP, up to 65 HP, and weaken their next attack by 30%.",
           "ar": 10,
           "materials": [
             {
@@ -1220,7 +1311,7 @@
         },
         {
           "level": 5,
-          "effect": "50% chance during your turn to steal 4% of the highest enemy's HP, up to 70 HP, and weaken their next attack by 55%.",
+          "effect": "50% chance during your turn to steal 20% of the highest enemy's HP, up to 70 HP, and weaken their next attack by 35%.",
           "ar": 10,
           "materials": [
             {
@@ -1242,7 +1333,7 @@
     },
     "sting": {
       "name": "Sting",
-      "emoji": "\ud83e\ude78",
+      "emoji": "🩸",
       "parent": "parasite",
       "unlock": null,
       "levels": [
@@ -1268,24 +1359,63 @@
         },
         {
           "level": 2,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "50% chance during your turn to steal 14% of the highest enemy's HP, up to 55 HP, and stun them, skipping their next turn.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "chaos_circuit",
+              "qty": 20
+            },
+            {
+              "item": "stained_mask",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 3,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "50% chance during your turn to steal 16% of the highest enemy's HP, up to 60 HP, and stun them, skipping their next turn.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "heavy_horn",
+              "qty": 25
+            },
+            {
+              "item": "ominous_mask",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 3500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 4,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "50% chance during your turn to steal 18% of the highest enemy's HP, up to 65 HP, and stun them, skipping their next turn.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "heavy_horn",
+              "qty": 50
+            },
+            {
+              "item": "ominous_mask",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 4500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 5,
@@ -1298,9 +1428,9 @@
     },
     "lesser_heal": {
       "name": "Lesser Heal",
-      "emoji": "\ud83d\udc9a",
+      "emoji": "💚",
       "parent": null,
-      "unlock": "Unlocked through Valley Remedy (Quest).",
+      "unlock": "Unlocked through the Valley Remedy quest.",
       "levels": [
         {
           "level": 1,
@@ -1386,7 +1516,7 @@
     },
     "prayer": {
       "name": "Prayer",
-      "emoji": "\ud83d\udc9a",
+      "emoji": "💚",
       "parent": "lesser_heal",
       "unlock": null,
       "levels": [
@@ -1442,7 +1572,7 @@
     },
     "resurrect": {
       "name": "Resurrect",
-      "emoji": "\ud83d\udc9a",
+      "emoji": "💚",
       "parent": "prayer",
       "unlock": null,
       "levels": [
@@ -1470,7 +1600,7 @@
     },
     "major_heal": {
       "name": "Major Heal",
-      "emoji": "\ud83d\udc9a",
+      "emoji": "💚",
       "parent": "lesser_heal",
       "unlock": null,
       "levels": [
@@ -1496,10 +1626,23 @@
         },
         {
           "level": 2,
-          "effect": null,
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "effect": "Restore 40% of your max HP when cast. Only activatable with a catalyst equipped.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "sealed_scroll",
+              "qty": 45
+            },
+            {
+              "item": "small_lamp_grass",
+              "qty": 60
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 3,
@@ -1526,7 +1669,7 @@
     },
     "paladin": {
       "name": "Paladin",
-      "emoji": "\ud83d\udee1",
+      "emoji": "🛡",
       "parent": null,
       "unlock": "Unlocked through the Geo Statue of the Seven.",
       "levels": [
@@ -1550,7 +1693,7 @@
     },
     "sage": {
       "name": "Sage",
-      "emoji": "\ud83d\udcdc",
+      "emoji": "📜",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1613,14 +1756,41 @@
             }
           ],
           "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "Deal 8% more damage to all elemental enemies.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "divining_scroll",
+              "qty": 80
+            },
+            {
+              "item": "crystal_chunk",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 5,
+          "effect": null,
+          "ar": null,
+          "materials": null,
+          "tbd": true
         }
       ]
     },
     "scrounge": {
       "name": "Scrounge",
-      "emoji": "\ud83e\ude99",
+      "emoji": "🪙",
       "parent": null,
-      "unlock": "Unlocked through Spare Change (Quest).",
+      "unlock": "Passive skill. Unlocked through the Spare Change quest.",
       "levels": [
         {
           "level": 1,
@@ -1642,7 +1812,7 @@
     },
     "stormeye": {
       "name": "Stormeye",
-      "emoji": "\ud83d\udc41\ufe0f",
+      "emoji": "👁️",
       "parent": null,
       "unlock": "Unlocked through the Anemo Statue of the Seven.",
       "levels": [
@@ -1666,9 +1836,9 @@
     },
     "taunt": {
       "name": "Taunt",
-      "emoji": "\ud83d\udce3",
+      "emoji": "📣",
       "parent": null,
-      "unlock": "Unlocked through Brawny Lesson (Quest).",
+      "unlock": "Unlocked through the Brawny Lesson quest.",
       "levels": [
         {
           "level": 1,
@@ -1690,7 +1860,7 @@
     },
     "vigilance": {
       "name": "Vigilance",
-      "emoji": "\u2694\ufe0f",
+      "emoji": "⚔️",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1758,7 +1928,7 @@
     },
     "first_strike": {
       "name": "First Strike",
-      "emoji": "\u2694\ufe0f",
+      "emoji": "⚔️",
       "parent": "vigilance",
       "unlock": null,
       "levels": [
@@ -1826,7 +1996,7 @@
     },
     "bash": {
       "name": "Bash",
-      "emoji": "\u2694\ufe0f",
+      "emoji": "⚔️",
       "parent": "vigilance",
       "unlock": null,
       "levels": [
@@ -1886,6 +2056,612 @@
             {
               "item": "silver",
               "qty": 500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "bow_mastery": {
+      "name": "Bow Mastery",
+      "emoji": "🏹",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 2% more damage while a Bow is equipped.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "treasure_hoarder_insignia",
+              "qty": 40
+            },
+            {
+              "item": "valberry",
+              "qty": 70
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "catalyst_mastery": {
+      "name": "Catalyst Mastery",
+      "emoji": "🔮",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 2% more damage while a Catalyst is equipped.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "whopperflower_nectar",
+              "qty": 40
+            },
+            {
+              "item": "cecilia",
+              "qty": 70
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "claymore_mastery": {
+      "name": "Claymore Mastery",
+      "emoji": "🪓",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 2% more damage while a Claymore is equipped.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "fragile_bone_shard",
+              "qty": 40
+            },
+            {
+              "item": "wolfhook",
+              "qty": 70
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "polearm_mastery": {
+      "name": "Polearm Mastery",
+      "emoji": "🔱",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 2% more damage while a Polearm is equipped.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "agents_sacrificial_knife",
+              "qty": 40
+            },
+            {
+              "item": "windwheel_aster",
+              "qty": 70
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "sword_mastery": {
+      "name": "Sword Mastery",
+      "emoji": "⚔️",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 2% more damage while a Sword is equipped.",
+          "ar": 5,
+          "materials": [
+            {
+              "item": "hunters_sacrificial_knife",
+              "qty": 40
+            },
+            {
+              "item": "calla_lily",
+              "qty": 70
+            },
+            {
+              "item": "silver",
+              "qty": 200
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Deal 4% more damage while a Sword is equipped.",
+          "ar": 7,
+          "materials": [
+            {
+              "item": "hunters_sacrificial_knife",
+              "qty": 80
+            },
+            {
+              "item": "calla_lily",
+              "qty": 140
+            },
+            {
+              "item": "silver",
+              "qty": 400
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "guashua_arts": {
+      "name": "Guashua Arts",
+      "emoji": "🌫️",
+      "parent": "sword_mastery",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "With a Sword equipped, deal 5% more damage on hits that do not crit.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "ominous_mask",
+              "qty": 25
+            },
+            {
+              "item": "jueyun_chili",
+              "qty": 80
+            },
+            {
+              "item": "tail_of_boreas",
+              "qty": 1
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "favonius_bladework": {
+      "name": "Favonius Bladework",
+      "emoji": "🍃",
+      "parent": "sword_mastery",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "With a Sword equipped, each turn increases your attack by 3% cumulatively for the battle.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "polarizing_prism",
+              "qty": 25
+            },
+            {
+              "item": "silk_flower",
+              "qty": 80
+            },
+            {
+              "item": "tail_of_boreas",
+              "qty": 1
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "katzlein_style": {
+      "name": "Katzlein Style",
+      "emoji": "⚡",
+      "parent": "sword_mastery",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "With a Sword equipped, every 5th basic attack deals 50% more damage.",
+          "ar": 15,
+          "materials": [
+            {
+              "item": "vayuda_turquoise_fragment",
+              "qty": 25
+            },
+            {
+              "item": "qingxin",
+              "qty": 80
+            },
+            {
+              "item": "tail_of_boreas",
+              "qty": 1
+            },
+            {
+              "item": "silver",
+              "qty": 800
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "diligence": {
+      "name": "Diligence",
+      "emoji": "⚡",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "good",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "You have no combat cooldowns, including spells and Heavy attacks.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "charity": {
+      "name": "Charity",
+      "emoji": "🎁",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "good",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "At battle start, each ally gains 25% of your ATK and max HP.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "kindness": {
+      "name": "Kindness",
+      "emoji": "🤝",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "good",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 2x damage for each enemy still alive.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "humility": {
+      "name": "Humility",
+      "emoji": "🕊",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "good",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Upon death, heal all allies back to full HP.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "patience": {
+      "name": "Patience",
+      "emoji": "⏳️",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "good",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Every turn you skip multiplies your ATK by 2x.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "chastity": {
+      "name": "Chastity",
+      "emoji": "🤍",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "good",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Take 90% less damage. This effect ends when you attack.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "temperance": {
+      "name": "Temperance",
+      "emoji": "⚖️",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "good",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "You never land critical hits, but enemies can never land critical hits either.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "sloth": {
+      "name": "Sloth",
+      "emoji": "💤",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "evil",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Start each battle with 50% less ATK. Your ATK increases by 20% every turn.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "greed": {
+      "name": "Greed",
+      "emoji": "🪙",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "evil",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Earn twice as much Silver, Mora, drops, and EXP.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "envy": {
+      "name": "Envy",
+      "emoji": "👁️",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "evil",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Add the highest-damaging enemy's ATK to your own.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "pride": {
+      "name": "Pride",
+      "emoji": "👑",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "evil",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Never act first, but deal 3x damage.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "wrath": {
+      "name": "Wrath",
+      "emoji": "😡",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "evil",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Start each battle with 50% less HP, but deal 2x damage.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "lust": {
+      "name": "Lust",
+      "emoji": "💋",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "evil",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Enemies never act first and become more likely to miss as your HP gets lower.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "gluttony": {
+      "name": "Gluttony",
+      "emoji": "🍽",
+      "parent": null,
+      "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
+      "alignment": "evil",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Dealing the final blow to a monster heals you for that monster's max HP.",
+          "ar": null,
+          "materials": [
+            {
+              "item": "fractured_bit",
+              "qty": 10
+            },
+            {
+              "item": "silver",
+              "qty": 10000
             }
           ],
           "tbd": false
