@@ -643,5 +643,22 @@
     "defValue": "-",
     "type": "Polearm",
     "icon": "Weapon_Favonius_Lance.webp"
+  },
+  {
+    "name": "Song of Broken Pines",
+    "worldLevel": 6,
+    "crucible": 150,
+    "weight": 4,
+    "hp": "-",
+    "atkType": "minMax",
+    "atkRollMin": "550 to 650",
+    "atkRollMax": "650 to 750",
+    "critRate": "-",
+    "critValue": "-",
+    "defRate": "-",
+    "defValue": "-",
+    "type": "Claymore",
+    "icon": "Weapon_Song_of_Broken_Pines.webp",
+    "ability": "Every 4th attack deals 10x damage."
   }
 ]
