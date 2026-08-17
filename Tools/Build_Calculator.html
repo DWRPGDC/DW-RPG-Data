@@ -778,9 +778,6 @@
           <span class="dps-term-def">Sage gives bonus damage on basic attacks when fighting an enemy with an elemental weakness. Pick your Sage level, or "None" if you don't have it.</span>
           <select id="dpsSageSelect">
             <option value="0">— None —</option>
-            <option value="2">Lv1 (+2%)</option>
-            <option value="4">Lv2 (+4%)</option>
-            <option value="6">Lv3 (+6%)</option>
           </select>
         </div>
         <div class="dps-toggle-row">
@@ -791,8 +788,10 @@
         </div>
 
         <div class="dps-toggle-row" id="dpsMasteryRow" style="display:none;">
-          <label for="dpsMasteryToggle" id="dpsMasteryLabel">⚔️ Weapon Mastery learned</label>
-          <div class="dps-toggle" id="dpsMasteryToggle"></div>
+          <label for="dpsMasterySelect" id="dpsMasteryLabel">⚔️ Weapon Mastery</label>
+          <select id="dpsMasterySelect" style="width:auto; min-width:9em; margin-bottom:0;">
+            <option value="0">— None —</option>
+          </select>
         </div>
         <div class="dps-toggle-row" id="dpsGuashuaRow" style="display:none;">
           <label for="dpsGuashuaToggle">🌫️ Guashua Arts active
@@ -1185,7 +1184,7 @@ let state = {
   dpsHomaHpPct: 100,    // DPS panel: current HP % used for Staff of Homa's low-HP multiplier
   dpsSageBonus: 0,      // DPS panel: Sage elemental damage bonus % (0/2/4/6), basic attack only
   dpsCurseStacks: 0,    // DPS panel: existing Curse stacks on the enemy (each = x1.5, multiplicative)
-  dpsMasteryLearned: false, // DPS panel: is the matching Weapon Mastery skill learned? (+2% dmg while that weapon type is equipped)
+  dpsMasteryLevel: 0,   // DPS panel: level of the matching Weapon Mastery skill learned (0 = not learned), pct pulled from skillsData
   dpsGuashua: false,    // DPS panel: Guashua Arts active (Sword) — +5% dmg on non-crit hits
   dpsFavonius: 0,       // DPS panel: Favonius Bladework (Sword) — turns elapsed this battle, +3% dmg each, cumulative
   dpsKatzlein: false,   // DPS panel: Katzlein Style (Sword) — this is the 5th basic attack, +50% dmg
@@ -3455,6 +3454,10 @@ function loadBuild(){
   state.weaponStarred = typeof state.weaponStarred === 'number' ? state.weaponStarred : (state.weaponStarred ? 1 : 0);
   if(state.autosave === undefined) state.autosave = true;
   if(state.showRollQuality === undefined) state.showRollQuality = false;
+  if(state.dpsMasteryLevel === undefined){
+    state.dpsMasteryLevel = state.dpsMasteryLearned ? 1 : 0;
+  }
+  delete state.dpsMasteryLearned;
 }
 
 function resetBuild(){
@@ -3706,6 +3709,21 @@ function renderDpsPanel(){
   }
 
   const sageSelect = document.getElementById('dpsSageSelect');
+  if(sageSelect && !sageSelect.dataset.optionsBuilt){
+    sageSelect.dataset.optionsBuilt = '1';
+    const sageSkill = skillsData['sage'];
+    if(sageSkill && sageSkill.levels){
+      sageSkill.levels.forEach(lvl => {
+        const pct = parseDamagePctFromEffect(lvl.effect);
+        if(pct > 0){
+          const opt = document.createElement('option');
+          opt.value = String(pct);
+          opt.textContent = `Lv${lvl.level} (+${pct}%)`;
+          sageSelect.appendChild(opt);
+        }
+      });
+    }
+  }
   if(sageSelect && !sageSelect.dataset.wired){
     sageSelect.dataset.wired = '1';
     sageSelect.value = String(state.dpsSageBonus || 0);
@@ -3728,24 +3746,51 @@ function renderDpsPanel(){
   }
 
   // Weapon Mastery: matches the equipped weapon's type to its mastery skill (e.g. Sword -> sword_mastery)
-  // and pulls the "X% more damage" figure straight out of skillsData, so it stays in sync if the numbers change.
+  // and pulls each level's "X% more damage" figure straight out of skillsData, so both the option list
+  // and the applied % stay in sync if the numbers (or level count) change.
   const masteryRow = document.getElementById('dpsMasteryRow');
-  const masteryToggle = document.getElementById('dpsMasteryToggle');
+  const masterySelect = document.getElementById('dpsMasterySelect');
   const masteryLabel = document.getElementById('dpsMasteryLabel');
   const masterySkillId = equippedWeaponType ? `${equippedWeaponType}_mastery` : null;
   const masterySkill = masterySkillId ? skillsData[masterySkillId] : null;
-  const masteryPct = masterySkill && masterySkill.levels[0] ? parseDamagePctFromEffect(masterySkill.levels[0].effect) : 0;
   if(masteryRow) masteryRow.style.display = masterySkill ? 'flex' : 'none';
-  if(masteryLabel && masterySkill) masteryLabel.textContent = `⚔️ ${masterySkill.name} learned (+${masteryPct}% dmg)`;
-  if(masteryToggle && !masteryToggle.dataset.wired){
-    masteryToggle.dataset.wired = '1';
-    masteryToggle.addEventListener('click', () => {
-      state.dpsMasteryLearned = !state.dpsMasteryLearned;
+  if(masteryLabel && masterySkill) masteryLabel.textContent = `⚔️ ${masterySkill.name}`;
+  if(masterySelect && masterySkill && masterySelect.dataset.builtFor !== masterySkillId){
+    masterySelect.dataset.builtFor = masterySkillId;
+    masterySelect.innerHTML = '';
+    const noneOpt = document.createElement('option');
+    noneOpt.value = '0';
+    noneOpt.textContent = '— None —';
+    masterySelect.appendChild(noneOpt);
+    (masterySkill.levels || []).forEach(lvl => {
+      const pct = parseDamagePctFromEffect(lvl.effect);
+      if(pct > 0){
+        const opt = document.createElement('option');
+        opt.value = String(lvl.level);
+        opt.textContent = `Lv${lvl.level} (+${pct}%)`;
+        masterySelect.appendChild(opt);
+      }
+    });
+    masterySelect.value = String(state.dpsMasteryLevel || 0);
+    if(masterySelect.selectedIndex === -1){
+      state.dpsMasteryLevel = 0;
+      masterySelect.value = '0';
+    }
+    if(!masterySelect.dataset.enhanced){
+      masterySelect.dataset.enhanced = '1';
+      dpsSelectEnhanced.mastery = enhanceSelectEl(masterySelect);
+    } else if(dpsSelectEnhanced.mastery && dpsSelectEnhanced.mastery.sync){
+      dpsSelectEnhanced.mastery.sync();
+    }
+  }
+  if(masterySelect && !masterySelect.dataset.wired){
+    masterySelect.dataset.wired = '1';
+    masterySelect.addEventListener('change', () => {
+      state.dpsMasteryLevel = parseInt(masterySelect.value, 10) || 0;
       scheduleAutosave();
       renderDpsPanel();
     });
   }
-  if(masteryToggle) masteryToggle.classList.toggle('is-active', !!state.dpsMasteryLearned);
 
   // Sword sub-skills: Guashua Arts / Favonius Bladework / Katzlein Style only apply with a Sword equipped.
   const isSword = equippedWeaponType === 'sword';
@@ -3911,8 +3956,8 @@ function renderDpsPanel(){
   const masterySkillIdCalc = isBow ? 'bow_mastery' : isClaymore ? 'claymore_mastery' : isCatalyst ? 'catalyst_mastery'
     : (equippedWeaponType === 'polearm') ? 'polearm_mastery' : (equippedWeaponType === 'sword') ? 'sword_mastery' : null;
   const masterySkillCalc = masterySkillIdCalc ? skillsData[masterySkillIdCalc] : null;
-  const masteryPctCalc = (state.dpsMasteryLearned && masterySkillCalc && masterySkillCalc.levels[0])
-    ? parseDamagePctFromEffect(masterySkillCalc.levels[0].effect) : 0;
+  const masteryLevelCalc = masterySkillCalc ? (masterySkillCalc.levels || []).find(l => l.level === (state.dpsMasteryLevel || 0)) : null;
+  const masteryPctCalc = masteryLevelCalc ? parseDamagePctFromEffect(masteryLevelCalc.effect) : 0;
 
   // Favonius Bladework: +3%/turn cumulative, Sword only.
   const favoniusPct = (equippedWeaponType === 'sword') ? (state.dpsFavonius || 0) * 3 : 0;
