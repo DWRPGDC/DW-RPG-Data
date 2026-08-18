@@ -26,7 +26,7 @@ body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14p
 .ellipsis-card{text-align:center;color:var(--text3);font-size:20px;letter-spacing:4px;padding:8px 0;user-select:none}
 #collapse-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;flex-shrink:0}
 #collapse-btn.visible{display:inline-flex;align-items:center;gap:4px}
-#branch-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;min-width:0;padding:12px 12px 40px}
+#branch-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;min-width:0;padding:12px 12px 40px;container-type:inline-size}
 #sim-fab{position:fixed;bottom:24px;right:24px;z-index:400;width:68px;height:68px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:background .15s,transform .15s;padding:0}
 #sim-fab:hover{background:#6b5010;transform:scale(1.07)}
 #sim-fab .fab-icon{font-size:22px;line-height:1;color:#fff8ee}
@@ -143,18 +143,18 @@ summary::-webkit-details-marker{display:none}
 .cnote-box:not(.collapsed) .cnote-lbl.no-toggle::before{content:""}
 .cnote-box a{text-decoration:underline}
 .meta-banner{margin-bottom:8px}
-.troot{padding-left:4px;display:table;min-width:100%}
+.troot{padding-left:4px;display:table}
 .troot-imp{display:block;width:100%;box-sizing:border-box}
 .tnode{margin-top:0;display:block}
 .tnode-imp{width:100%;max-width:640px;margin:0 auto 10px;box-sizing:border-box}
 .tnode-imp .tcard,.tnode-imp .tnode-body{width:100%;box-sizing:border-box}
 .tnode-imp .bchoices{width:100%;box-sizing:border-box}
 .tnode-imp .bchoice{box-sizing:border-box}
-.tcard{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px 6px 0 0;cursor:pointer;transition:border-color .12s,box-shadow .15s;scroll-margin-top:10px;width:clamp(220px,78vw,340px);box-sizing:border-box}
+.tcard{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px 6px 0 0;cursor:pointer;transition:border-color .12s,box-shadow .15s;scroll-margin-top:10px;width:clamp(220px,78cqw,340px);box-sizing:border-box}
 .tcard:hover{border-color:var(--gold)}
 .tcard.playing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.2)}
 .ttitle{font-size:13px;font-weight:600;color:var(--gold);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.tnode-body{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-radius:0 0 6px 6px;padding:8px 10px 9px;display:flex;flex-direction:column;gap:6px;width:clamp(220px,78vw,340px);box-sizing:border-box}
+.tnode-body{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-radius:0 0 6px 6px;padding:8px 10px 9px;display:flex;flex-direction:column;gap:6px;width:clamp(220px,78cqw,340px);box-sizing:border-box}
 .tree-collapsed .tnode-body{display:none}
 .tscene-text{font-size:12px;color:var(--text);line-height:1.55;white-space:pre-wrap}
 .tdlgs{display:flex;flex-direction:column;gap:4px}
@@ -176,14 +176,17 @@ summary::-webkit-details-marker{display:none}
 .tchoice{position:relative;padding-top:7px;display:flex;flex-direction:column;box-sizing:border-box}
 .tc-vert{position:absolute;left:0;width:4px;pointer-events:none;border-radius:1px}
 .tc-horiz{position:absolute;left:-12px;top:19px;width:12px;height:2px;pointer-events:none}
-.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:flex;align-items:center;gap:5px;width:clamp(220px,78vw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
+.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:flex;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
 .tchoice-label.tchoice-best{background:#fff0ee;border-color:#e03020}
 .tvisited{font-size:11px;color:var(--text3);font-style:italic;padding:4px 0 4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;display:block}
 .tvisited:hover{color:var(--gold)}
 .tmissing{font-size:11px;color:#b03020;padding:4px;font-style:italic}
 .tchoice-inline{margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;box-sizing:border-box}
-.tchoice-inline>.tchoice-label{display:flex;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;width:clamp(220px,78vw,340px);box-sizing:border-box}
+.tchoice-inline>.tchoice-label{display:flex;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;width:clamp(220px,78cqw,340px);box-sizing:border-box}
 .tchoice-inline>.tchoice-label.tchoice-best{color:var(--text);background:#fff0ee;border-color:#e03020}
+@media(orientation:landscape) and (max-width:900px){
+.tcard,.tnode-body,.tchoice-label,.tchoice-inline>.tchoice-label{width:80vw;max-width:80vw}
+}
 .tchoice-inline>.tnode{margin-top:10px;display:block}
 .tcard-best{border-left:3px solid #e03020!important}
 .tnbody-best{border-left:3px solid #e03020!important}
@@ -750,6 +753,17 @@ function renderTree(){
   }
   requestAnimationFrame(drawTreeLines);
 }
+var _treeResizeT=null;
+window.addEventListener("resize",function(){
+  if(branchMode!=="tree")return;
+  clearTimeout(_treeResizeT);
+  _treeResizeT=setTimeout(function(){requestAnimationFrame(drawTreeLines);},120);
+});
+window.addEventListener("orientationchange",function(){
+  if(branchMode!=="tree")return;
+  clearTimeout(_treeResizeT);
+  _treeResizeT=setTimeout(function(){requestAnimationFrame(drawTreeLines);},250);
+});
 function buildTreeNode(id,isLast,isBestDest){
   var s=scenes[id];
   if(!s)return "<div class=\"tmissing\">(missing: "+eh(id)+")</div>";
