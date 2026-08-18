@@ -2196,7 +2196,7 @@ function renderWeaponSlot(){
   const weaponMult = (rollKey) => prefixFactor(state.weaponPrefix, rollKey) * starMult(state.weaponStarred, 'weapon');
   const effFn = (rollKey) => (v) => {
     const m = weaponMult(rollKey);
-    return m !== 1 ? round(v * m) : null;
+    return m !== 1 ? Math.floor(v * m) : null;
   };
   if(w.atkType === 'flat'){
     const range = parseRange(w.atkRoll);
@@ -2629,7 +2629,7 @@ function renderArtifactSlotDetail(slot, options){
         current.rolls[statKey] = val; renderTotals();
       }, current.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR') ? '%' : '', (v) => {
         const m = prefixFactor(current.prefix, statKey) * starMult(current.starred, 'artifact');
-        return m !== 1 ? round(v * m) : null;
+        return m !== 1 ? Math.floor(v * m) : null;
       }));
     });
 
@@ -2920,14 +2920,14 @@ function computeAndRenderTotals(){
   const wr = state.weaponRolls;
   const wPfx = state.weaponPrefix || 'None';
   const wStar = starMult(state.weaponStarred, 'weapon');
-  if(wr.atk !== undefined){ const v = wr.atk * prefixFactor(wPfx,'atk') * wStar; totals.atkLow += v; totals.atkHigh += v; }
-  if(wr.atkMin !== undefined) totals.atkLow += wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar;
-  if(wr.atkMax !== undefined) totals.atkHigh += wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar;
-  if(wr.hp !== undefined) totals.hp += wr.hp * prefixFactor(wPfx,'hp') * wStar;
-  if(wr.critRate !== undefined) totals.cr += wr.critRate * prefixFactor(wPfx,'critRate') * wStar;
-  if(wr.critValue !== undefined) totals.cv += wr.critValue * prefixFactor(wPfx,'critValue') * wStar;
-  if(wr.defRate !== undefined) totals.dr += wr.defRate * prefixFactor(wPfx,'defRate') * wStar;
-  if(wr.defValue !== undefined) totals.dv += wr.defValue * prefixFactor(wPfx,'defValue') * wStar;
+  if(wr.atk !== undefined){ const v = Math.floor(wr.atk * prefixFactor(wPfx,'atk') * wStar); totals.atkLow += v; totals.atkHigh += v; }
+  if(wr.atkMin !== undefined) totals.atkLow += Math.floor(wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar);
+  if(wr.atkMax !== undefined) totals.atkHigh += Math.floor(wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar);
+  if(wr.hp !== undefined) totals.hp += Math.floor(wr.hp * prefixFactor(wPfx,'hp') * wStar);
+  if(wr.critRate !== undefined) totals.cr += Math.floor(wr.critRate * prefixFactor(wPfx,'critRate') * wStar);
+  if(wr.critValue !== undefined) totals.cv += Math.floor(wr.critValue * prefixFactor(wPfx,'critValue') * wStar);
+  if(wr.defRate !== undefined) totals.dr += Math.floor(wr.defRate * prefixFactor(wPfx,'defRate') * wStar);
+  if(wr.defValue !== undefined) totals.dv += Math.floor(wr.defValue * prefixFactor(wPfx,'defValue') * wStar);
 
   // Artifact piece contributions (prefix multiplies that piece's own rolls)
   const specials = [];
@@ -2938,7 +2938,7 @@ function computeAndRenderTotals(){
     const aStar = starMult(a.starred, 'artifact');
     Object.entries(a.rolls).forEach(([statKey, val]) => {
       if(val === undefined) return;
-      addStatToTotals(totals, statKey, val * prefixFactor(aPfx, statKey) * aStar);
+      addStatToTotals(totals, statKey, Math.floor(val * prefixFactor(aPfx, statKey) * aStar));
     });
     if(a.special && a.specialRoll !== undefined){
       specials.push(`${a.setName} (${a.pieceName}): ${a.special.label} — ${a.specialRoll}${a.special.suffix || ''}`);
@@ -3395,7 +3395,7 @@ function renderQuickAddEditor(){
     const weaponMult = (rollKey) => prefixFactor(quickAdd.prefix, rollKey) * starMult(quickAdd.starred, 'weapon');
     const effFn = (rollKey) => (v) => {
       const m = weaponMult(rollKey);
-      return m !== 1 ? round(v * m) : null;
+      return m !== 1 ? Math.floor(v * m) : null;
     };
     if(w.atkType === 'flat'){
       const range = parseRange(w.atkRoll);
@@ -3460,7 +3460,7 @@ function renderQuickAddEditor(){
         quickAdd.rolls[statKey] = val;
       }, quickAdd.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR') ? '%' : '', (v) => {
         const m = prefixFactor(quickAdd.prefix, statKey) * starMult(quickAdd.starred, 'artifact');
-        return m !== 1 ? round(v * m) : null;
+        return m !== 1 ? Math.floor(v * m) : null;
       }));
     });
 
