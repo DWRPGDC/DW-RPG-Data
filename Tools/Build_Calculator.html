@@ -747,8 +747,7 @@
           <label for="dpsActionSelect" style="display:block; margin-bottom:4px;">🎯 What are you doing this turn?</label>
           <select id="dpsActionSelect">
             <option value="basic">Basic Attack</option>
-            <option value="curseNormal">Cast Curse (uses your whole turn)</option>
-            <option value="curseBonus">Basic Attack + free Curse (uses Vigilance/Bash bonus)</option>
+            <option value="curseNormal">Cast Curse (a spell — uses your whole turn)</option>
           </select>
           <div class="dps-hint" id="dpsActionHint"></div>
         </div>
@@ -1120,9 +1119,9 @@
         <h3>Expected Damage</h3>
         <ul>
           <li>Click <strong>📊 Show Avg DPS</strong> under Final Stats to open the damage calculator.</li>
-          <li><strong>What are you doing this turn?</strong> picks your action: a Basic Attack, casting Curse (costs your whole turn), Basic Attack + free Curse (if you have a Vigilance/Bash tier selected), Slash (Primordial Jade Winged-Spear only — locked on turn 1 unless Vigilance/Bash also procs that turn, and has a 1-turn cooldown; toggle "This is turn 1" to match), Heavy Attack (any Claymore — 1.5x damage, 4-turn cooldown), or a catalyst spell (Chihayaburu, Fireball line, Meteor, Stormeye) — spells only show up here if you have a Catalyst-type weapon equipped.</li>
+          <li><strong>What are you doing this turn?</strong> picks your action: a Basic Attack, casting Curse (a spell — costs your whole turn), Slash (Primordial Jade Winged-Spear only — locked on turn 1 unless Vigilance/Bash also procs that turn, and has a 1-turn cooldown; toggle "This is turn 1" to match), Heavy Attack (any Claymore — 1.5x damage, 4-turn cooldown), or a catalyst spell (Chihayaburu, Fireball line, Meteor, Stormeye, Curse) — spells only show up here if you have a Catalyst-type weapon equipped, except Curse which is always available. Lost Prayer to the Sacred Winds casts a second spell every time you cast one, shown here as double damage on that spell.</li>
           <li><strong>Enemy has an element</strong> (Bows only): Bows deal 20% less damage to enemies with an element, so toggle this on when your target has one — it applies to every damage source below.</li>
-          <li>Spells and Slash replace your basic attack for the turn and never trigger the Vigilance/Bash follow-up.</li>
+          <li>Spells and Slash replace your basic attack for the turn and never trigger the Vigilance/Bash follow-up. Curse is a spell too, so it can't be cast as a "free" Vigilance/Bash bonus action — only Basic Attack triggers the follow-up.</li>
           <li><strong>Vigilance/Bash</strong> — pick your unlocked tier to add its follow-up hit onto a Basic Attack.</li>
           <li><strong>Modifiers:</strong> toggle <strong>Paladin</strong> to swap ATK and DV, set <strong>Current HP %</strong> if Staff of Homa is equipped (its low-HP multiplier applies automatically), pick a <strong>Sage</strong> tier for bonus damage vs elemental enemies (basic attacks only), and enter existing <strong>Curse stacks</strong> on the enemy (each stack multiplies the hit by 1.5x).</li>
           <li>This ignores enemy DR/DV — it's your raw expected output, not damage after enemy defense.</li>
@@ -1305,7 +1304,7 @@ let state = {
   dpsSobp: false,       // DPS panel: Song of Broken Pines — this is the 4th attack (Basic/Heavy), 10x damage
   dpsUniqueUltimate: '', // DPS panel: '' / 'kindness' / 'pride' / 'wrath' — Unique alignment skill damage multiplier
   dpsKindnessEnemies: 1, // DPS panel: enemies still alive, used by Kindness (2x damage per enemy alive)
-  dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'curseBonus' / 'slash' / 'spell:<id>|<level>'
+  dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'slash' / 'spell:<id>|<level>'
   darkMode: false,
   showRollQuality: false,
   starInputMode: 'click', // 'click' (tap to cycle) / 'dropdown' / 'stepper' — how Anvil Star controls change level
@@ -3798,6 +3797,7 @@ function renderDpsPanel(){
   // Populate the action select once: basic attack / curse variants / slash (if PJWS) / heavy attack (if Claymore) / spells.
   const actionSelect = document.getElementById('dpsActionSelect');
   const isPjws = state.weapon === 'Primordial Jade Winged-Spear';
+  const isLostPrayer = state.weapon === 'Lost Prayer to the Sacred Winds';
   const equippedWeapon = weapons.find(w => w.name === state.weapon);
   const equippedWeaponType = (equippedWeapon && equippedWeapon.type || '').toLowerCase();
   const isCatalyst = equippedWeaponType === 'catalyst';
@@ -3812,8 +3812,7 @@ function renderDpsPanel(){
     actionSelect.dataset.builtFor = actionBuiltKey;
     actionSelect.innerHTML = `
       <option value="basic">Basic Attack</option>
-      <option value="curseNormal">Cast Curse (uses your whole turn)</option>
-      <option value="curseBonus">Basic Attack + free Curse (uses Vigilance/Bash bonus)</option>
+      <option value="curseNormal">Cast Curse (a spell — uses your whole turn)</option>
     `;
     if(slashAvailable){
       const o = document.createElement('option');
@@ -3854,13 +3853,12 @@ function renderDpsPanel(){
   if(actionHint){
     const hints = {
       basic: 'Rolls your ATK range and applies crit. Adds the Vigilance/Bash follow-up below if you have one selected.',
-      curseNormal: 'No damage this turn — just marks the enemy. The mark boosts your next basic attack (1.5x per stack).',
-      curseBonus: 'Your basic attack still lands normally. The bonus action marks the enemy instead of hitting again.',
+      curseNormal: 'A spell — no damage this turn, just marks the enemy. The mark boosts your next basic attack (1.5x per stack). Like other spells, it can\'t be cast as a Vigilance/Bash bonus action.',
       slash: 'Hits every enemy for 100% of your ATK and heals 10% of the damage dealt. Doesn\'t trigger the follow-up. Locked on turn 1 unless Vigilance/Bash also procs that turn, and has a 1-turn cooldown after use.',
       heavyAttack: 'Deals 1.5x your normal hit to one enemy. Doesn\'t trigger the follow-up. Has a 4-turn cooldown after use.',
     };
     const action = state.dpsAction || 'basic';
-    actionHint.textContent = hints[action] || (action.startsWith('spell:') ? 'A catalyst spell — doesn\'t use your basic attack and never triggers a follow-up.' : '');
+    actionHint.textContent = hints[action] || (action.startsWith('spell:') ? (isLostPrayer ? 'A catalyst spell — doesn\'t use your basic attack and never triggers a follow-up. Lost Prayer to the Sacred Winds lets you cast a second spell this turn (shown as double damage).' : 'A catalyst spell — doesn\'t use your basic attack and never triggers a follow-up.') : '');
   }
 
   const sageSelect = document.getElementById('dpsSageSelect');
@@ -4201,15 +4199,9 @@ function renderDpsPanel(){
   let hit1 = 0, hit2 = 0, followLabel = null, slashDmg = 0, slashHeal = 0, heavyDmg = 0, spellDmg = null, spellLabel = null;
   const action = state.dpsAction || 'basic';
 
-  if(action === 'basic' || action === 'curseBonus'){
+  if(action === 'basic'){
     hit1 = basicHit();
-    if(action === 'curseBonus'){
-      if(state.dpsFollowUp){
-        notes.push(`Vigilance/Bash bonus action spent casting Curse instead of the follow-up — enemy gets an extra mark, no follow-up damage this turn.`);
-      } else {
-        notes.push(`Casting Curse "for free" requires an unlocked Vigilance/Bash tier selected above.`);
-      }
-    } else if(state.dpsFollowUp){
+    if(state.dpsFollowUp){
       const [skillId, levelStr] = state.dpsFollowUp.split('|');
       const sk = skillsData[skillId];
       const lvl = sk && (sk.levels || []).find(l => l.level === parseInt(levelStr, 10));
@@ -4240,13 +4232,18 @@ function renderDpsPanel(){
       const result = computeSpellDamage(lvl.effect, maxHp, atkAvg);
       spellDmg = result.dmg;
       spellLabel = `${sk.name} (Lv${lvl.level})`;
+      if(isLostPrayer && spellDmg != null){
+        spellDmg *= 2;
+        spellLabel += ' ×2 (Lost Prayer)';
+        notes.push(`Lost Prayer to the Sacred Winds: cast a second spell this turn (shown here as double damage — the second cast can target a different enemy or repeat the same spell).`);
+      }
       notes.push(`Spells don't trigger the basic-attack Vigilance/Bash follow-up.`);
       if(result.note) notes.push(result.note);
     }
   }
 
   const total = hit1 + hit2 + slashDmg + heavyDmg + (spellDmg || 0);
-  const showBasicHit = action === 'basic' || action === 'curseBonus';
+  const showBasicHit = action === 'basic';
 
   resultsDiv.innerHTML = `
     ${showBasicHit ? `<div class="dps-row"><span>Avg hit (w/ crit)</span><span class="dps-val">${round(hit1)}</span></div>` : ''}
