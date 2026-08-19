@@ -228,6 +228,23 @@
     "icon": "Weapon_Halberd.webp"
   },
   {
+    "name": "Lost Prayer to the Sacred Winds",
+    "worldLevel": 3,
+    "crucible": 100,
+    "weight": 1.5,
+    "hp": "-",
+    "atkType": "minMax",
+    "atkRollMin": "20 to 40",
+    "atkRollMax": "20 to 32",
+    "critRate": "16 to 24",
+    "critValue": "88 to 112",
+    "defRate": "-",
+    "defValue": "-",
+    "type": "Catalyst",
+    "icon": "Weapon_Lost_Prayer_to_the_Sacred_Winds.webp",
+    "ability": "After casting a spell, cast one more spell during the same turn. The second cast may repeat the first spell or target a different enemy."
+  },
+  {
     "name": "Pocket Grimoire",
     "worldLevel": 3,
     "crucible": 75,
