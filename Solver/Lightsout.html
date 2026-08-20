@@ -19,13 +19,6 @@
   body{background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size:14px;padding:16px}
   .wrap{max-width:480px;margin:0 auto}
 
-  .intro{
-    font-size:13px; line-height:1.6; color:var(--text2);
-    margin-bottom:14px; padding:10px 12px;
-    background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius);
-  }
-  .intro:empty{display:none}
-
   .panel{
     background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
     padding:16px;
@@ -78,8 +71,6 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="intro" id="intro-text">You can use this solver to help solve the puzzle above. Tap the buttons here to match the current state of the real puzzle, then hit Solve — it'll ring the ones you need to click in green.</div>
-
   <div class="panel">
     <div class="row-label">Tap to match the current state, then Solve</div>
     <div class="grid" id="grid"></div>
@@ -153,7 +144,6 @@ function hideInstructions(){
 // so that every light ends up off.
 function solvePuzzle(){
   const n = COUNT;
-  const idx = i=>i;
   const A = [];
   for(let r=0;r<n;r++){
     const row = new Uint8Array(n+1);
