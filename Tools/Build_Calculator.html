@@ -3686,11 +3686,11 @@ function applyStarInputModeUI(){
 function avgRoll(low, high){ return (low + high) / 2; }
 
 // Expected damage of a single hit given an ATK range and Crit Rate/Value (both in %).
-// On crit, the roll is multiplied by (1 + critValue/100); crit chance is critRate% (clamped 0-100).
+// On crit, the roll is multiplied by (critValue/100); crit chance is critRate% (clamped 0-100).
 function expectedHitDamage(atkLow, atkHigh, cr, cv){
   const base = avgRoll(atkLow, atkHigh);
   const crFrac = Math.max(0, Math.min(100, cr)) / 100;
-  const critMult = 1 + (cv / 100);
+  const critMult = cv / 100;
   return base * (1 - crFrac) + base * critMult * crFrac;
 }
 
