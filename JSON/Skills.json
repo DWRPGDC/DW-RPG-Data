@@ -1087,6 +1087,90 @@
         }
       ]
     },
+    "icicle": {
+      "name": "Icicle",
+      "emoji": "🧊",
+      "parent": null,
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 120% of your ATK to one enemy when cast, with a 10% chance to freeze them.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "fragile_bone_shard",
+              "qty": 20
+            },
+            {
+              "item": "whopperflower_nectar",
+              "qty": 15
+            },
+            {
+              "item": "silver",
+              "qty": 2000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "cold_snap": {
+      "name": "Cold Snap",
+      "emoji": "🧊",
+      "parent": "icicle",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 130% of your ATK to all enemies when cast, with a 5% chance to freeze each one.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "sturdy_bone_shard",
+              "qty": 30
+            },
+            {
+              "item": "shimmering_nectar",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 6000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "frozen_hell": {
+      "name": "Frozen Hell",
+      "emoji": "🧊",
+      "parent": "icicle",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Deal 55% of your ATK to all enemies when cast, with a 55% chance to freeze each one.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "fragile_bone_shard",
+              "qty": 30
+            },
+            {
+              "item": "whopperflower_nectar",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 6000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
     "fortress": {
       "name": "Fortress",
       "emoji": "🏰",
