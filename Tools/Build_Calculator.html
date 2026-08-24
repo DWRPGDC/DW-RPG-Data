@@ -3703,11 +3703,17 @@ function expectedHitDamage(atkLow, atkHigh, cr, cv){
   return base * (1 - crFrac) + base * critMult * crFrac;
 }
 
-// Follow-up % parser, matches e.g. "deals 20% damage" / "hits all enemies for 30% damage".
+// Follow-up % parser, matches e.g. "deals 20% damage" / "hits all enemies for 30% damage"
+// / "hits all enemies for a flat 10% of your ATK" (Bash, post-nerf).
 function parseFollowUpPct(effect){
   if(!effect) return 0;
-  const m = effect.match(/(?:deals|for)\s*([\d.]+)%\s*damage/i);
+  const m = effect.match(/(?:deals|for)\s*(?:a flat\s*)?([\d.]+)%\s*(?:damage|of your (?:flat )?ATK)/i);
   return m ? parseFloat(m[1]) : 0;
+}
+
+// Bash's follow-up (post-nerf) is a flat % of ATK — no crit, no other buffs/debuffs apply.
+function isFlatAtkFollowUp(effect){
+  return !!(effect && /of your (?:flat )?ATK/i.test(effect) && /cannot crit/i.test(effect));
 }
 
 // Walks the Vigilance/Bash tree (any skill whose root is 'vigilance') and returns
@@ -3720,7 +3726,7 @@ function getFollowUpOptions(){
       const pct = parseFollowUpPct(lvl.effect);
       if(pct > 0){
         opts.push({ skillId:id, skillName:sk.name, emoji: sk.emoji || '', level:lvl.level, pct, effect:lvl.effect,
-          allEnemies: /all enemies/i.test(lvl.effect || '') });
+          allEnemies: /all enemies/i.test(lvl.effect || ''), flatAtk: isFlatAtkFollowUp(lvl.effect) });
       }
     });
   });
@@ -3795,7 +3801,7 @@ function renderDpsPanel(){
     getFollowUpOptions().forEach(opt => {
       const o = document.createElement('option');
       o.value = `${opt.skillId}|${opt.level}`;
-      o.textContent = `${opt.emoji ? opt.emoji + ' ' : ''}${opt.skillName} (Lv${opt.level}) — ${opt.pct}%${opt.allEnemies ? ' AoE' : ''}`;
+      o.textContent = `${opt.emoji ? opt.emoji + ' ' : ''}${opt.skillName} (Lv${opt.level}) — ${opt.pct}%${opt.allEnemies ? ' AoE' : ''}${opt.flatAtk ? ' of flat ATK, no crit' : ''}`;
       followSelect.appendChild(o);
     });
     followSelect.value = state.dpsFollowUp || '';
@@ -4245,8 +4251,15 @@ function renderDpsPanel(){
       const lvl = sk && (sk.levels || []).find(l => l.level === parseInt(levelStr, 10));
       if(lvl){
         const pct = parseFollowUpPct(lvl.effect);
-        hit2 = hit1 * (pct / 100);
-        followLabel = `${sk.name} (Lv${lvl.level}, ${pct}%)`;
+        if(isFlatAtkFollowUp(lvl.effect)){
+          // Bash (post-nerf): flat % of ATK, no crit, no other modifiers/effects apply.
+          hit2 = avgRoll(atkLow, atkHigh) * (pct / 100);
+          followLabel = `${sk.name} (Lv${lvl.level}, ${pct}% of flat ATK, no crit)`;
+          notes.push(`${sk.name}: flat ${pct}% of ATK — doesn't crit and ignores Curse/Sage/Homa/Mastery/other bonuses.`);
+        } else {
+          hit2 = hit1 * (pct / 100);
+          followLabel = `${sk.name} (Lv${lvl.level}, ${pct}%)`;
+        }
       }
     }
   } else if(action === 'curseNormal'){
