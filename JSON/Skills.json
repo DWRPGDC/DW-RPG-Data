@@ -3,7 +3,7 @@
   "skills": {
     "backstep": {
       "name": "Backstep",
-      "emoji": "💨",
+      "emoji": "\ud83d\udca8",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -91,7 +91,7 @@
     },
     "parry": {
       "name": "Parry",
-      "emoji": "💨",
+      "emoji": "\ud83d\udca8",
       "parent": "backstep",
       "unlock": null,
       "levels": [
@@ -160,7 +160,7 @@
     },
     "evasion": {
       "name": "Evasion",
-      "emoji": "💨",
+      "emoji": "\ud83d\udca8",
       "parent": "backstep",
       "unlock": null,
       "levels": [
@@ -216,7 +216,7 @@
     },
     "chihayaburu": {
       "name": "Chihayaburu",
-      "emoji": "🌀",
+      "emoji": "\ud83c\udf00",
       "parent": null,
       "unlock": "Unlocked through the Anemo Statue of the Seven.",
       "levels": [
@@ -240,7 +240,7 @@
     },
     "critical_focus": {
       "name": "Critical Focus",
-      "emoji": "🎯",
+      "emoji": "\ud83c\udfaf",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -348,7 +348,7 @@
     },
     "hyperfocus": {
       "name": "Hyperfocus",
-      "emoji": "🎯",
+      "emoji": "\ud83c\udfaf",
       "parent": "critical_focus",
       "unlock": null,
       "levels": [
@@ -417,7 +417,7 @@
     },
     "critical_mastery": {
       "name": "Critical Mastery",
-      "emoji": "🎯",
+      "emoji": "\ud83c\udfaf",
       "parent": "critical_focus",
       "unlock": null,
       "levels": [
@@ -512,13 +512,13 @@
     },
     "curse": {
       "name": "Curse",
-      "emoji": "🟣",
+      "emoji": "\ud83d\udfe3",
       "parent": null,
       "unlock": null,
       "levels": [
         {
           "level": 1,
-          "effect": "Unlocks the Curse action in battle. Instead of attacking, mark an enemy — the next attack on that enemy deals 1.5x damage if it hits. Misses and dodges still consume the curse.",
+          "effect": "Unlocks the Curse action in battle. Instead of attacking, mark an enemy \u2014 the next attack on that enemy deals 1.5x damage if it hits. Misses and dodges still consume the curse.",
           "ar": 5,
           "materials": [
             {
@@ -538,81 +538,9 @@
         }
       ]
     },
-    "discipline": {
-      "name": "Discipline",
-      "emoji": "🏛",
-      "parent": null,
-      "unlock": "Passive skill.",
-      "levels": [
-        {
-          "level": 1,
-          "effect": "Extends your maximum weekly domains from 10 to 11.",
-          "ar": 5,
-          "materials": [
-            {
-              "item": "ominous_mask",
-              "qty": 2
-            },
-            {
-              "item": "silver",
-              "qty": 200
-            }
-          ],
-          "tbd": false
-        },
-        {
-          "level": 2,
-          "effect": "Extends your maximum weekly domains from 11 to 12.",
-          "ar": 10,
-          "materials": [
-            {
-              "item": "ominous_mask",
-              "qty": 5
-            },
-            {
-              "item": "silver",
-              "qty": 500
-            }
-          ],
-          "tbd": false
-        },
-        {
-          "level": 3,
-          "effect": "Extends your maximum weekly domains from 12 to 13.",
-          "ar": 15,
-          "materials": [
-            {
-              "item": "ominous_mask",
-              "qty": 50
-            },
-            {
-              "item": "silver",
-              "qty": 1500
-            }
-          ],
-          "tbd": false
-        },
-        {
-          "level": 4,
-          "effect": "Extends your maximum weekly domains from 13 to 14.",
-          "ar": 20,
-          "materials": [
-            {
-              "item": "ominous_mask",
-              "qty": 100
-            },
-            {
-              "item": "silver",
-              "qty": 3500
-            }
-          ],
-          "tbd": false
-        }
-      ]
-    },
     "effortless_victory": {
       "name": "Effortless Victory",
-      "emoji": "🧘",
+      "emoji": "\ud83e\uddd8",
       "parent": null,
       "unlock": "Unlocked through the Meditation quest.",
       "levels": [
@@ -668,7 +596,7 @@
     },
     "fast_travels": {
       "name": "Fast Travels",
-      "emoji": "🗺️",
+      "emoji": "\ud83d\uddfa\ufe0f",
       "parent": null,
       "unlock": "Passive skill.",
       "levels": [
@@ -756,7 +684,7 @@
     },
     "fireball": {
       "name": "Fireball",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "parent": null,
       "unlock": "Unlocked through the Saltflame Rite quest.",
       "levels": [
@@ -844,7 +772,7 @@
     },
     "inferno": {
       "name": "Inferno",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "parent": "fireball",
       "unlock": null,
       "levels": [
@@ -939,7 +867,7 @@
     },
     "hellflare": {
       "name": "Hellflare",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "parent": "inferno",
       "unlock": null,
       "levels": [
@@ -981,7 +909,7 @@
     },
     "meteor": {
       "name": "Meteor",
-      "emoji": "🔥",
+      "emoji": "\ud83d\udd25",
       "parent": "fireball",
       "unlock": null,
       "levels": [
@@ -1089,7 +1017,7 @@
     },
     "icicle": {
       "name": "Icicle",
-      "emoji": "🧊",
+      "emoji": "\ud83e\uddca",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1117,7 +1045,7 @@
     },
     "cold_snap": {
       "name": "Cold Snap",
-      "emoji": "🧊",
+      "emoji": "\ud83e\uddca",
       "parent": "icicle",
       "unlock": null,
       "levels": [
@@ -1145,7 +1073,7 @@
     },
     "frozen_hell": {
       "name": "Frozen Hell",
-      "emoji": "🧊",
+      "emoji": "\ud83e\uddca",
       "parent": "icicle",
       "unlock": null,
       "levels": [
@@ -1173,7 +1101,7 @@
     },
     "fortress": {
       "name": "Fortress",
-      "emoji": "🏰",
+      "emoji": "\ud83c\udff0",
       "parent": null,
       "unlock": "Unlocked through the Geo Statue of the Seven.",
       "levels": [
@@ -1197,7 +1125,7 @@
     },
     "leech": {
       "name": "Leech",
-      "emoji": "🩸",
+      "emoji": "\ud83e\ude78",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1253,7 +1181,7 @@
     },
     "drain": {
       "name": "Drain",
-      "emoji": "🩸",
+      "emoji": "\ud83e\ude78",
       "parent": "leech",
       "unlock": null,
       "levels": [
@@ -1309,7 +1237,7 @@
     },
     "parasite": {
       "name": "Parasite",
-      "emoji": "🩸",
+      "emoji": "\ud83e\ude78",
       "parent": "leech",
       "unlock": null,
       "levels": [
@@ -1417,7 +1345,7 @@
     },
     "sting": {
       "name": "Sting",
-      "emoji": "🩸",
+      "emoji": "\ud83e\ude78",
       "parent": "parasite",
       "unlock": null,
       "levels": [
@@ -1512,7 +1440,7 @@
     },
     "lesser_heal": {
       "name": "Lesser Heal",
-      "emoji": "💚",
+      "emoji": "\ud83d\udc9a",
       "parent": null,
       "unlock": "Unlocked through the Valley Remedy quest.",
       "levels": [
@@ -1600,7 +1528,7 @@
     },
     "prayer": {
       "name": "Prayer",
-      "emoji": "💚",
+      "emoji": "\ud83d\udc9a",
       "parent": "lesser_heal",
       "unlock": null,
       "levels": [
@@ -1656,7 +1584,7 @@
     },
     "resurrect": {
       "name": "Resurrect",
-      "emoji": "💚",
+      "emoji": "\ud83d\udc9a",
       "parent": "prayer",
       "unlock": null,
       "levels": [
@@ -1684,7 +1612,7 @@
     },
     "major_heal": {
       "name": "Major Heal",
-      "emoji": "💚",
+      "emoji": "\ud83d\udc9a",
       "parent": "lesser_heal",
       "unlock": null,
       "levels": [
@@ -1753,7 +1681,7 @@
     },
     "paladin": {
       "name": "Paladin",
-      "emoji": "🛡",
+      "emoji": "\ud83d\udee1",
       "parent": null,
       "unlock": "Unlocked through the Geo Statue of the Seven.",
       "levels": [
@@ -1777,7 +1705,7 @@
     },
     "sage": {
       "name": "Sage",
-      "emoji": "📜",
+      "emoji": "\ud83d\udcdc",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -1872,7 +1800,7 @@
     },
     "scrounge": {
       "name": "Scrounge",
-      "emoji": "🪙",
+      "emoji": "\ud83e\ude99",
       "parent": null,
       "unlock": "Passive skill. Unlocked through the Spare Change quest.",
       "levels": [
@@ -1896,7 +1824,7 @@
     },
     "stormeye": {
       "name": "Stormeye",
-      "emoji": "👁️",
+      "emoji": "\ud83d\udc41\ufe0f",
       "parent": null,
       "unlock": "Unlocked through the Anemo Statue of the Seven.",
       "levels": [
@@ -1920,7 +1848,7 @@
     },
     "taunt": {
       "name": "Taunt",
-      "emoji": "📣",
+      "emoji": "\ud83d\udce3",
       "parent": null,
       "unlock": "Unlocked through the Brawny Lesson quest.",
       "levels": [
@@ -1944,7 +1872,7 @@
     },
     "vigilance": {
       "name": "Vigilance",
-      "emoji": "⚔️",
+      "emoji": "\u2694\ufe0f",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -2012,7 +1940,7 @@
     },
     "first_strike": {
       "name": "First Strike",
-      "emoji": "⚔️",
+      "emoji": "\u2694\ufe0f",
       "parent": "vigilance",
       "unlock": null,
       "levels": [
@@ -2080,13 +2008,13 @@
     },
     "bash": {
       "name": "Bash",
-      "emoji": "⚔️",
+      "emoji": "\u2694\ufe0f",
       "parent": "vigilance",
       "unlock": null,
       "levels": [
         {
           "level": 1,
-          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for 10% damage.",
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for a flat 10% of your ATK. It cannot crit and triggers no other effects.",
           "ar": 3,
           "materials": [
             {
@@ -2106,7 +2034,7 @@
         },
         {
           "level": 2,
-          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for 20% damage.",
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for a flat 20% of your ATK. It cannot crit and triggers no other effects.",
           "ar": 5,
           "materials": [
             {
@@ -2126,7 +2054,7 @@
         },
         {
           "level": 3,
-          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for 30% damage.",
+          "effect": "After your first attack each battle, immediately get a second attack before the enemy can act. The follow-up strike hits all enemies for a flat 30% of your ATK. It cannot crit and triggers no other effects.",
           "ar": 8,
           "materials": [
             {
@@ -2148,7 +2076,7 @@
     },
     "bow_mastery": {
       "name": "Bow Mastery",
-      "emoji": "🏹",
+      "emoji": "\ud83c\udff9",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -2176,7 +2104,7 @@
     },
     "catalyst_mastery": {
       "name": "Catalyst Mastery",
-      "emoji": "🔮",
+      "emoji": "\ud83d\udd2e",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -2204,7 +2132,7 @@
     },
     "claymore_mastery": {
       "name": "Claymore Mastery",
-      "emoji": "🪓",
+      "emoji": "\ud83e\ude93",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -2232,7 +2160,7 @@
     },
     "polearm_mastery": {
       "name": "Polearm Mastery",
-      "emoji": "🔱",
+      "emoji": "\ud83d\udd31",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -2260,7 +2188,7 @@
     },
     "sword_mastery": {
       "name": "Sword Mastery",
-      "emoji": "⚔️",
+      "emoji": "\u2694\ufe0f",
       "parent": null,
       "unlock": null,
       "levels": [
@@ -2308,7 +2236,7 @@
     },
     "guashua_arts": {
       "name": "Guashua Arts",
-      "emoji": "🌫️",
+      "emoji": "\ud83c\udf2b\ufe0f",
       "parent": "sword_mastery",
       "unlock": null,
       "levels": [
@@ -2340,7 +2268,7 @@
     },
     "favonius_bladework": {
       "name": "Favonius Bladework",
-      "emoji": "🍃",
+      "emoji": "\ud83c\udf43",
       "parent": "sword_mastery",
       "unlock": null,
       "levels": [
@@ -2372,7 +2300,7 @@
     },
     "katzlein_style": {
       "name": "Katzlein Style",
-      "emoji": "⚡",
+      "emoji": "\u26a1",
       "parent": "sword_mastery",
       "unlock": null,
       "levels": [
@@ -2404,7 +2332,7 @@
     },
     "diligence": {
       "name": "Diligence",
-      "emoji": "⚡",
+      "emoji": "\u26a1",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "good",
@@ -2429,7 +2357,7 @@
     },
     "charity": {
       "name": "Charity",
-      "emoji": "🎁",
+      "emoji": "\ud83c\udf81",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "good",
@@ -2454,7 +2382,7 @@
     },
     "kindness": {
       "name": "Kindness",
-      "emoji": "🤝",
+      "emoji": "\ud83e\udd1d",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "good",
@@ -2479,7 +2407,7 @@
     },
     "humility": {
       "name": "Humility",
-      "emoji": "🕊",
+      "emoji": "\ud83d\udd4a",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "good",
@@ -2504,7 +2432,7 @@
     },
     "patience": {
       "name": "Patience",
-      "emoji": "⏳️",
+      "emoji": "\u23f3\ufe0f",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "good",
@@ -2529,7 +2457,7 @@
     },
     "chastity": {
       "name": "Chastity",
-      "emoji": "🤍",
+      "emoji": "\ud83e\udd0d",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "good",
@@ -2554,7 +2482,7 @@
     },
     "temperance": {
       "name": "Temperance",
-      "emoji": "⚖️",
+      "emoji": "\u2696\ufe0f",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Good alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "good",
@@ -2579,7 +2507,7 @@
     },
     "sloth": {
       "name": "Sloth",
-      "emoji": "💤",
+      "emoji": "\ud83d\udca4",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "evil",
@@ -2604,7 +2532,7 @@
     },
     "greed": {
       "name": "Greed",
-      "emoji": "🪙",
+      "emoji": "\ud83e\ude99",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "evil",
@@ -2629,7 +2557,7 @@
     },
     "envy": {
       "name": "Envy",
-      "emoji": "👁️",
+      "emoji": "\ud83d\udc41\ufe0f",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "evil",
@@ -2654,7 +2582,7 @@
     },
     "pride": {
       "name": "Pride",
-      "emoji": "👑",
+      "emoji": "\ud83d\udc51",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "evil",
@@ -2679,7 +2607,7 @@
     },
     "wrath": {
       "name": "Wrath",
-      "emoji": "😡",
+      "emoji": "\ud83d\ude21",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "evil",
@@ -2704,7 +2632,7 @@
     },
     "lust": {
       "name": "Lust",
-      "emoji": "💋",
+      "emoji": "\ud83d\udc8b",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "evil",
@@ -2729,7 +2657,7 @@
     },
     "gluttony": {
       "name": "Gluttony",
-      "emoji": "🍽",
+      "emoji": "\ud83c\udf7d",
       "parent": null,
       "unlock": "Unlocked at World Level 6 by choosing the Evil alignment. Once an alignment is chosen, it cannot be changed.",
       "alignment": "evil",
