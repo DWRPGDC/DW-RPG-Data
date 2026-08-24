@@ -138,9 +138,22 @@
         {
           "level": 3,
           "effect": "Dodge enemy attacks 15% of the time. On dodge, reflect 45% of the avoided damage to the attacker.",
-          "ar": null,
-          "materials": null,
-          "tbd": true
+          "ar": 15,
+          "materials": [
+            {
+              "item": "silver_raven_insignia",
+              "qty": 50
+            },
+            {
+              "item": "windwheel_aster",
+              "qty": 250
+            },
+            {
+              "item": "silver",
+              "qty": 3500
+            }
+          ],
+          "tbd": false
         },
         {
           "level": 4,
