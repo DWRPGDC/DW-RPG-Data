@@ -752,6 +752,14 @@
           <div class="dps-hint" id="dpsActionHint"></div>
         </div>
 
+        <div class="dps-toggle-row" id="dpsLostPrayerRow" style="display:none;">
+          <label for="dpsLostPrayerSelect" style="display:block; margin-bottom:4px;">🌬️ Lost Prayer's extra spell</label>
+          <span class="dps-term-def">Lost Prayer to the Sacred Winds gives you an extra turn right after casting a spell, to cast one more spell (same or different). That bonus cast can't trigger Lost Prayer again. Pick it here, or "None" to skip it.</span>
+          <select id="dpsLostPrayerSelect">
+            <option value="">— None —</option>
+          </select>
+        </div>
+
         <div class="dps-subhead">Vigilance / Bash</div>
         <div class="dps-toggle-row" style="display:block;">
           <label for="dpsVigilanceSelect" style="display:block; margin-bottom:4px;">Your unlocked tier (for the follow-up hit)</label>
@@ -1119,7 +1127,7 @@
         <h3>Expected Damage</h3>
         <ul>
           <li>Click <strong>📊 Show Avg DPS</strong> under Final Stats to open the damage calculator.</li>
-          <li><strong>What are you doing this turn?</strong> picks your action: a Basic Attack, casting Curse (a spell — costs your whole turn), Slash (Primordial Jade Winged-Spear only — locked on turn 1 unless Vigilance/Bash also procs that turn, and has a 1-turn cooldown; toggle "This is turn 1" to match), Heavy Attack (any Claymore — 1.5x damage, 4-turn cooldown), or a catalyst spell (Chihayaburu, Fireball line, Meteor, Stormeye, Curse) — spells only show up here if you have a Catalyst-type weapon equipped, except Curse which is always available. Lost Prayer to the Sacred Winds casts a second spell every time you cast one, shown here as double damage on that spell.</li>
+          <li><strong>What are you doing this turn?</strong> picks your action: a Basic Attack, casting Curse (a spell — costs your whole turn), Slash (Primordial Jade Winged-Spear only — locked on turn 1 unless Vigilance/Bash also procs that turn, and has a 1-turn cooldown; toggle "This is turn 1" to match), Heavy Attack (any Claymore — 1.5x damage, 4-turn cooldown), or a catalyst spell (Chihayaburu, Fireball line, Meteor, Stormeye, Curse) — spells only show up here if you have a Catalyst-type weapon equipped, except Curse which is always available. Lost Prayer to the Sacred Winds gives you an extra turn after casting a spell to cast one more spell (same or different) — that bonus cast can't trigger Lost Prayer again.</li>
           <li><strong>Enemy has an element</strong> (Bows only): Bows deal 20% less damage to enemies with an element, so toggle this on when your target has one — it applies to every damage source below.</li>
           <li>Spells and Slash replace your basic attack for the turn and never trigger the Vigilance/Bash follow-up. Curse is a spell too, so it can't be cast as a "free" Vigilance/Bash bonus action — only Basic Attack triggers the follow-up.</li>
           <li><strong>Vigilance/Bash</strong> — pick your unlocked tier to add its follow-up hit onto a Basic Attack.</li>
@@ -1294,6 +1302,7 @@ let state = {
   dpsSlashTurnOne: false, // DPS panel: is this turn 1? (Slash is locked turn 1 unless Vigilance/Bash also procs)
   dpsBowElement: false, // DPS panel: does the enemy have an element? (Bows deal 20% less damage to elemental enemies)
   dpsFollowUp: '',      // DPS panel: "vigilance|1" / "bash|2" etc, or '' for none
+  dpsLostPrayerSpell: '', // DPS panel: "chihayaburu|1" etc — the bonus spell cast from Lost Prayer's extra turn, or '' for none
   dpsHomaHpPct: 100,    // DPS panel: current HP % used for Staff of Homa's low-HP multiplier
   dpsSageBonus: 0,      // DPS panel: Sage elemental damage bonus % (0/2/4/6), basic attack only
   dpsCurseStacks: 0,    // DPS panel: existing Curse stacks on the enemy (each = x1.5, multiplicative)
@@ -3727,10 +3736,10 @@ function homaMultiplier(currentHp, maxHp){
   return (1 / ratio) * Math.pow(4, Math.log10(0.01 / ratio));
 }
 
-// Spell actions (catalyst-only): Chihayaburu, the Fireball line, Meteor, Stormeye.
+// Spell actions (catalyst-only): Chihayaburu, the Fireball line, Meteor, Stormeye, the Icicle line.
 // These are separate actions that can be cast every turn (Stormeye has its own cooldown)
 // but never trigger the basic-attack Vigilance/Bash follow-up.
-const SPELL_IDS = ['chihayaburu', 'fireball', 'inferno', 'hellflare', 'meteor', 'stormeye'];
+const SPELL_IDS = ['chihayaburu', 'fireball', 'inferno', 'hellflare', 'meteor', 'stormeye', 'icicle', 'cold_snap', 'frozen_hell'];
 function getSpellOptions(){
   const opts = [];
   SPELL_IDS.forEach(id => {
@@ -3750,8 +3759,14 @@ function computeSpellDamage(effect, maxHp, atkAvg){
   if((m = effect.match(/Sacrifice ([\d.]+)% of your max HP to deal ([\d.]+)% of your max HP/i))){
     return { dmg: maxHp * parseFloat(m[2]) / 100, aoe:false, note:`Costs ${m[1]}% of your max HP to cast.` };
   }
+  const freezeAll = effect.match(/with an? ([\d.]+)% chance to freeze each one/i);
+  const freezeOne = effect.match(/with an? ([\d.]+)% chance to freeze them/i);
+  const freezeNote = freezeAll ? `${freezeAll[1]}% chance to freeze each enemy hit.` : (freezeOne ? `${freezeOne[1]}% chance to freeze the target.` : undefined);
   if((m = effect.match(/Deal ([\d.]+)% of your ATK to all enemies/i))){
-    return { dmg: atkAvg * parseFloat(m[1]) / 100, aoe:true };
+    return { dmg: atkAvg * parseFloat(m[1]) / 100, aoe:true, note: freezeNote };
+  }
+  if((m = effect.match(/Deal ([\d.]+)% of your ATK to one enemy/i))){
+    return { dmg: atkAvg * parseFloat(m[1]) / 100, aoe:false, note: freezeNote };
   }
   if((m = effect.match(/Deal ([\d.]+)% of your max HP to all enemies/i))){
     return { dmg: maxHp * parseFloat(m[1]) / 100, aoe:true };
@@ -3858,7 +3873,30 @@ function renderDpsPanel(){
       heavyAttack: 'Deals 1.5x your normal hit to one enemy. Doesn\'t trigger the follow-up. Has a 4-turn cooldown after use.',
     };
     const action = state.dpsAction || 'basic';
-    actionHint.textContent = hints[action] || (action.startsWith('spell:') ? (isLostPrayer ? 'A catalyst spell — doesn\'t use your basic attack and never triggers a follow-up. Lost Prayer to the Sacred Winds lets you cast a second spell this turn (shown as double damage).' : 'A catalyst spell — doesn\'t use your basic attack and never triggers a follow-up.') : '');
+    actionHint.textContent = hints[action] || (action.startsWith('spell:') ? (isLostPrayer ? 'A catalyst spell — doesn\'t use your basic attack and never triggers a follow-up. Lost Prayer to the Sacred Winds gives you an extra turn to cast one more spell after this one (pick it below) — that bonus cast can\'t trigger Lost Prayer again.' : 'A catalyst spell — doesn\'t use your basic attack and never triggers a follow-up.') : '');
+  }
+
+  const lostPrayerRow = document.getElementById('dpsLostPrayerRow');
+  const lostPrayerSelect = document.getElementById('dpsLostPrayerSelect');
+  if(lostPrayerSelect && lostPrayerSelect.childElementCount === 1){
+    getSpellOptions().forEach(opt => {
+      const o = document.createElement('option');
+      o.value = `${opt.skillId}|${opt.level}`;
+      o.textContent = `${opt.emoji ? opt.emoji + ' ' : ''}${opt.skillName} (Lv${opt.level})`;
+      lostPrayerSelect.appendChild(o);
+    });
+    lostPrayerSelect.value = state.dpsLostPrayerSpell || '';
+    lostPrayerSelect.addEventListener('change', () => {
+      state.dpsLostPrayerSpell = lostPrayerSelect.value;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+    dpsSelectEnhanced.lostPrayer = enhanceSelectEl(lostPrayerSelect);
+  } else if(dpsSelectEnhanced.lostPrayer){
+    dpsSelectEnhanced.lostPrayer.sync();
+  }
+  if(lostPrayerRow){
+    lostPrayerRow.style.display = (isLostPrayer && (state.dpsAction || '').startsWith('spell:')) ? '' : 'none';
   }
 
   const sageSelect = document.getElementById('dpsSageSelect');
@@ -4196,7 +4234,7 @@ function renderDpsPanel(){
     notes.push(`Bow: -20% damage vs this elemental enemy (applies no matter what).`);
   }
 
-  let hit1 = 0, hit2 = 0, followLabel = null, slashDmg = 0, slashHeal = 0, heavyDmg = 0, spellDmg = null, spellLabel = null;
+  let hit1 = 0, hit2 = 0, followLabel = null, slashDmg = 0, slashHeal = 0, heavyDmg = 0, spellDmg = null, spellLabel = null, spellDmg2 = null, spellLabel2 = null;
   const action = state.dpsAction || 'basic';
 
   if(action === 'basic'){
@@ -4232,17 +4270,29 @@ function renderDpsPanel(){
       const result = computeSpellDamage(lvl.effect, maxHp, atkAvg);
       spellDmg = result.dmg;
       spellLabel = `${sk.name} (Lv${lvl.level})`;
-      if(isLostPrayer && spellDmg != null){
-        spellDmg *= 2;
-        spellLabel += ' ×2 (Lost Prayer)';
-        notes.push(`Lost Prayer to the Sacred Winds: cast a second spell this turn (shown here as double damage — the second cast can target a different enemy or repeat the same spell).`);
-      }
       notes.push(`Spells don't trigger the basic-attack Vigilance/Bash follow-up.`);
       if(result.note) notes.push(result.note);
+      if(isLostPrayer){
+        const bonus = state.dpsLostPrayerSpell;
+        if(bonus){
+          const [bSkillId, bLevelStr] = bonus.split('|');
+          const bSk = skillsData[bSkillId];
+          const bLvl = bSk && (bSk.levels || []).find(l => l.level === parseInt(bLevelStr, 10));
+          if(bLvl){
+            const bResult = computeSpellDamage(bLvl.effect, maxHp, atkAvg);
+            spellDmg2 = bResult.dmg;
+            spellLabel2 = `${bSk.name} (Lv${bLvl.level}) — Lost Prayer's extra turn`;
+            notes.push(`Lost Prayer to the Sacred Winds: this is a real extra turn to cast one more spell, not double damage on the first spell. That bonus cast can't trigger Lost Prayer again.`);
+            if(bResult.note) notes.push(bResult.note);
+          }
+        } else {
+          notes.push(`Lost Prayer to the Sacred Winds gives you an extra turn to cast one more spell — pick it above to include its damage.`);
+        }
+      }
     }
   }
 
-  const total = hit1 + hit2 + slashDmg + heavyDmg + (spellDmg || 0);
+  const total = hit1 + hit2 + slashDmg + heavyDmg + (spellDmg || 0) + (spellDmg2 || 0);
   const showBasicHit = action === 'basic';
 
   resultsDiv.innerHTML = `
@@ -4252,6 +4302,7 @@ function renderDpsPanel(){
     ${slashDmg ? `<div class="dps-row"><span>Slash heal (10%, single-target basis)</span><span class="dps-val">${round(slashHeal)}</span></div>` : ''}
     ${heavyDmg ? `<div class="dps-row"><span>Heavy Attack (1.5x)</span><span class="dps-val">${round(heavyDmg)}</span></div>` : ''}
     ${spellLabel ? `<div class="dps-row"><span>${spellLabel}</span><span class="dps-val">${spellDmg == null ? '—' : round(spellDmg)}</span></div>` : ''}
+    ${spellLabel2 ? `<div class="dps-row"><span>${spellLabel2}</span><span class="dps-val">${spellDmg2 == null ? '—' : round(spellDmg2)}</span></div>` : ''}
     <div class="dps-row dps-total"><span>Total expected (this turn)</span><span class="dps-val">${total ? round(total) : (spellDmg == null ? '—' : 0)}</span></div>
   `;
   if(notes.length){
