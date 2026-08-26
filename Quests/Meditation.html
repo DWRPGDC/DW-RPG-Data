@@ -45,6 +45,13 @@ body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14p
 #play-body{flex:1;overflow-y:auto;padding:22px 24px 40px;font-family:Georgia,serif;font-size:16px;line-height:1.8;color:var(--text)}
 #scene-title{font-size:11px;font-weight:700;font-family:sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px}
 #scene-text{line-height:1.8;margin-bottom:18px;white-space:pre-wrap}
+#scene-embed{margin-bottom:18px}
+#scene-embed iframe{width:100%;min-height:420px;border:1px solid var(--border2);border-radius:8px;display:block}
+.tembed-wrap{margin:4px 0 8px;border:1px solid var(--border2);border-radius:6px;overflow:hidden}
+.tembed-wrap summary{cursor:pointer;padding:6px 10px;font-size:11px;font-weight:700;background:rgba(0,0,0,.04);list-style:none;user-select:none}
+.tembed-wrap summary::-webkit-details-marker{display:none}
+.tembed-wrap[open] summary{border-bottom:1px solid var(--border2)}
+.tembed-wrap iframe{margin:0!important;border:none!important;border-radius:0!important;display:block}
 #dialogues{margin-bottom:4px}
 .dlg-visible{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:10px;overflow:hidden;padding:10px 14px}
 .dlg-vis-spk{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:6px}
@@ -65,6 +72,10 @@ summary::-webkit-details-marker{display:none}
 .choice-btn.best:hover,.choice-btn.best:active{background:#ffe8e4;border-color:#c02010;color:var(--gold)}
 .choice-btn-label{flex:1}
 .choice-btn-badge{display:inline-flex;align-items:center;gap:3px;background:#e03020;color:#fff8ee;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0;font-family:sans-serif}
+.choice-itemreq{font-size:11px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:4px;padding:3px 8px;margin:-4px 0 2px;display:inline-block;font-family:sans-serif}
+.bchoice-itemreq{font-size:10px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:1px 6px;margin-top:2px;flex-basis:100%;white-space:normal;word-break:break-word;font-family:sans-serif}
+.tchoice-itemreq{font-size:10px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:1px 6px;margin-top:2px;flex-basis:100%;white-space:normal;word-break:break-word;font-family:sans-serif}
+.tchoice-label-text{flex:1 1 auto;min-width:80px;word-break:break-word}
 .ending-msg{text-align:center;padding:24px 0 8px;color:var(--text3);font-family:sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
 #reward-box{background:#f0e8d0;border:1px solid #c8b870;border-radius:6px;padding:11px 16px;margin-top:12px;display:none;flex-direction:column;gap:6px}
 .reward-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7a5a18}
@@ -94,11 +105,11 @@ summary::-webkit-details-marker{display:none}
 .btext{color:var(--text);white-space:pre-wrap;margin-bottom:7px;font-size:12px}
 .bdlg-wrap{margin-bottom:7px}
 .bchoices{display:flex;flex-direction:column;gap:5px;margin-top:5px}
-.bchoice{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:6px 9px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:background .12s,border-color .12s}
+.bchoice{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:6px 9px;display:flex;flex-wrap:wrap;align-items:center;gap:7px;cursor:pointer;transition:background .12s,border-color .12s}
 .bchoice:hover{background:#ddd;border-color:var(--gold)}
 .bchoice.best{background:#fff0ee;border-color:#e03020}
 .bchoice-arrow{color:var(--text3);font-size:11px}
-.bchoice-label{flex:1;color:var(--text);font-size:11px;font-weight:700}
+.bchoice-label{flex:1;min-width:120px;color:var(--text);font-size:11px;font-weight:700;word-break:break-word}
 .bchoice-dest{font-size:10px;color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
 .best-route-badge{display:inline-flex;align-items:center;gap:3px;background:#e03020;color:#fff8ee;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0}
 .choice-btn.best{background:#fff0ee;border-color:#e03020}
@@ -176,16 +187,21 @@ summary::-webkit-details-marker{display:none}
 .tchoice{position:relative;padding-top:7px;display:flex;flex-direction:column;box-sizing:border-box}
 .tc-vert{position:absolute;left:0;width:4px;pointer-events:none;border-radius:1px}
 .tc-horiz{position:absolute;left:-12px;top:19px;width:12px;height:2px;pointer-events:none}
-.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:flex;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
+.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
 .tchoice-label.tchoice-best{background:#fff0ee;border-color:#e03020}
+.tchoice-itemreq{font-size:10px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:1px 6px;margin-top:2px;flex-basis:100%;white-space:normal;word-break:break-word;font-family:sans-serif}
+.tchoice-label-text{flex:1 1 auto;min-width:80px;word-break:break-word}
 .tvisited{font-size:11px;color:var(--text3);font-style:italic;padding:4px 0 4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;display:block}
 .tvisited:hover{color:var(--gold)}
 .tmissing{font-size:11px;color:#b03020;padding:4px;font-style:italic}
 .tchoice-inline{margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;box-sizing:border-box}
-.tchoice-inline>.tchoice-label{display:flex;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;width:clamp(220px,78cqw,340px);box-sizing:border-box}
+.tchoice-inline>.tchoice-label{display:flex;flex-wrap:wrap;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;width:clamp(220px,78cqw,340px);box-sizing:border-box}
 .tchoice-inline>.tchoice-label.tchoice-best{color:var(--text);background:#fff0ee;border-color:#e03020}
 @media(orientation:landscape) and (max-width:900px){
 .tcard,.tnode-body,.tchoice-label,.tchoice-inline>.tchoice-label{width:80vw;max-width:80vw}
+}
+@media(min-width:901px){
+.tcard,.tnode-body,.tchoice-label,.tchoice-inline>.tchoice-label{width:clamp(320px,32vw,620px);max-width:620px}
 }
 .tchoice-inline>.tnode{margin-top:10px;display:block}
 .tcard-best{border-left:3px solid #e03020!important}
@@ -260,6 +276,7 @@ summary::-webkit-details-marker{display:none}
       <div id="scene-loc" class="loc-box" style="display:none"></div>
       <div id="scene-notes" style="display:none"></div>
       <div id="scene-text"></div>
+      <div id="scene-embed" style="display:none"></div>
       <div id="dialogues"></div>
       <div id="subscenes"></div>
       <div id="choices"></div>
@@ -269,7 +286,7 @@ summary::-webkit-details-marker{display:none}
   </div>
 </div>
 <script>
-const scenes={"start":{"id":"start","type":"start","title":"Meditation","text":"''A short way along the shore of Starfell Lake, a man sits cross-legged on a flat stone, eyes closed, palms resting on his knees. He is so still that for a moment you mistake him for part of the rock. His breathing is slow and even. The water laps quietly at his feet and he does not seem to notice.''\n\n''He speaks without opening his eyes.''\n\nWanderer: You have been standing there for a while, traveller. You may as well ask.","dialogues":[],"choices":[{"label":"What are you doing?","next":"whatudoin"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"whatudoin":{"id":"whatudoin","type":"scene","title":"","text":"Wanderer: ''a faint smile'' Meditating. Sitting with myself, you might say. ''He breathes in, lets it go.'' I came here carrying too much. The road has a way of filling a person up with noise. Out here, by the water, I let some of it drain away.","dialogues":[],"choices":[{"label":"Does it actually do anything?","next":"Does_it_actually_do_anything"},{"label":"That sounds like doing nothing","next":"doin_nothn"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Does_it_actually_do_anything":{"id":"Does_it_actually_do_anything","type":"scene","title":"","text":"Wanderer: When you win a battle, your body celebrates, but something underneath stays clenched. Held tight, ready for the next blow. ''He taps his own chest.'' Meditation teaches that part to unclench. To let go the moment the danger passes. A spirit that knows how to rest recovers faster than one that never stops bracing.\n\n''He gestures to the stone beside him.''\n\nWanderer: Sit. I will show you. It costs you nothing but a little quiet.","dialogues":[],"choices":[{"label":"All right. I'll try it","next":"All_right_I_will_try_it"},{"label":"Why offer this to a stranger?","next":"why_offer_stengr"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"All_right_I_will_try_it":{"id":"All_right_I_will_try_it","type":"scene","title":"","text":"''You lower yourself onto the cool stone beside him and fold your legs as he does. He says nothing for a while.''\n\nWanderer: Close your eyes. Do not chase your thoughts. Let them pass like clouds. ''His voice softens to almost nothing.'' Breathe in. Hold. Breathe out. Again.\n\n''You follow his words. The lake fades to a gentle hush. Somewhere in your chest, a knot you did not know you were holding begins, slowly, to loosen.''","dialogues":[],"choices":[{"label":"Keep breathing","next":"keepbreth"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"keepbreth":{"id":"keepbreth","type":"scene","title":"","text":"''You do not know how long you sit there. When you finally open your eyes the light has shifted on the water. You rise, and your body feels strangely light, as though you set down a pack you had forgotten you were carrying.''\n\nWanderer: ''watching you'' There it is. You feel it.\n\nYou: ...I do.\n\nWanderer: Then you have it now. The knack of letting go after the fighting stops. ''He settles back into his stillness.'' Take it to the Cathedral in Mondstadt when you are ready. The instructors there can shape it into something you can call on. Ask them for Effortless Victory. They will understand.","dialogues":[],"choices":[{"label":"Thank you","next":"inner_calm"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"inner_calm":{"id":"inner_calm","type":"ending","title":"Inner Calm Found","text":"Wanderer: ''eyes already closed again'' Do not thank me. Thank the quiet. ''a pause'' And pass it along, some day, to someone all sharp edges and no rest.\n\n''You leave him there on his stone by the water, a little lighter than when you arrived. Whenever you next visit the Cathedral, the path to learning Effortless Victory will be open to you.''","dialogues":[],"choices":[],"rewards":[{"item":"AEXP","qty":50,"icon":""}],"unlocks":"[[Skills#🧘_Effortless_Victory|Effortless Victory]] skill","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"doin_nothn":{"id":"doin_nothn","type":"scene","title":"","text":"Wanderer: ''he chuckles softly'' That is what most think. Doing nothing is harder than it looks. The body knows how to fight, how to run, how to flinch. It rarely learns how to be still. ''He finally opens his eyes and regards you.'' Stillness is its own kind of strength. It heals the inner soul, the part of you that fighting wears thin.","dialogues":[],"choices":[{"label":"Heals the soul how?","next":"Does_it_actually_do_anything"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"why_offer_stengr":{"id":"why_offer_stengr","type":"scene","title":"","text":"Wanderer: ''he shrugs, unbothered'' Because someone once sat me down and did the same, when I was all sharp edges and no rest. ''He looks out at the lake.'' I am only passing it along. The wind gives freely. So do I. Sit, traveller. Or do not. The lake will be here either way.","dialogues":[],"choices":[{"label":"I'll sit","next":"All_right_I_will_try_it"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
+const scenes={"start":{"id":"start","type":"start","title":"Meditation","text":"''A short way along the shore of Starfell Lake, a man sits cross-legged on a flat stone, eyes closed, palms resting on his knees. He is so still that for a moment you mistake him for part of the rock. His breathing is slow and even. The water laps quietly at his feet and he does not seem to notice.''\n\n''He speaks without opening his eyes.''\n\nWanderer: You have been standing there for a while, traveller. You may as well ask.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What are you doing?","next":"whatudoin"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"whatudoin":{"id":"whatudoin","type":"scene","title":"","text":"Wanderer: ''a faint smile'' Meditating. Sitting with myself, you might say. ''He breathes in, lets it go.'' I came here carrying too much. The road has a way of filling a person up with noise. Out here, by the water, I let some of it drain away.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Does it actually do anything?","next":"Does_it_actually_do_anything"},{"label":"That sounds like doing nothing","next":"doin_nothn"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Does_it_actually_do_anything":{"id":"Does_it_actually_do_anything","type":"scene","title":"","text":"Wanderer: When you win a battle, your body celebrates, but something underneath stays clenched. Held tight, ready for the next blow. ''He taps his own chest.'' Meditation teaches that part to unclench. To let go the moment the danger passes. A spirit that knows how to rest recovers faster than one that never stops bracing.\n\n''He gestures to the stone beside him.''\n\nWanderer: Sit. I will show you. It costs you nothing but a little quiet.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"All right. I'll try it","next":"All_right_I_will_try_it"},{"label":"Why offer this to a stranger?","next":"why_offer_stengr"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"All_right_I_will_try_it":{"id":"All_right_I_will_try_it","type":"scene","title":"","text":"''You lower yourself onto the cool stone beside him and fold your legs as he does. He says nothing for a while.''\n\nWanderer: Close your eyes. Do not chase your thoughts. Let them pass like clouds. ''His voice softens to almost nothing.'' Breathe in. Hold. Breathe out. Again.\n\n''You follow his words. The lake fades to a gentle hush. Somewhere in your chest, a knot you did not know you were holding begins, slowly, to loosen.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Keep breathing","next":"keepbreth"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"keepbreth":{"id":"keepbreth","type":"scene","title":"","text":"''You do not know how long you sit there. When you finally open your eyes the light has shifted on the water. You rise, and your body feels strangely light, as though you set down a pack you had forgotten you were carrying.''\n\nWanderer: ''watching you'' There it is. You feel it.\n\nYou: ...I do.\n\nWanderer: Then you have it now. The knack of letting go after the fighting stops. ''He settles back into his stillness.'' Take it to the Cathedral in Mondstadt when you are ready. The instructors there can shape it into something you can call on. Ask them for Effortless Victory. They will understand.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Thank you","next":"inner_calm"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"inner_calm":{"id":"inner_calm","type":"ending","title":"Inner Calm Found","text":"Wanderer: ''eyes already closed again'' Do not thank me. Thank the quiet. ''a pause'' And pass it along, some day, to someone all sharp edges and no rest.\n\n''You leave him there on his stone by the water, a little lighter than when you arrived. Whenever you next visit the Cathedral, the path to learning Effortless Victory will be open to you.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"AEXP","qty":50,"icon":""}],"unlocks":"[[Skills#🧘_Effortless_Victory|Effortless Victory]] skill","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"doin_nothn":{"id":"doin_nothn","type":"scene","title":"","text":"Wanderer: ''he chuckles softly'' That is what most think. Doing nothing is harder than it looks. The body knows how to fight, how to run, how to flinch. It rarely learns how to be still. ''He finally opens his eyes and regards you.'' Stillness is its own kind of strength. It heals the inner soul, the part of you that fighting wears thin.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Heals the soul how?","next":"Does_it_actually_do_anything"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"why_offer_stengr":{"id":"why_offer_stengr","type":"scene","title":"","text":"Wanderer: ''he shrugs, unbothered'' Because someone once sat me down and did the same, when I was all sharp edges and no rest. ''He looks out at the lake.'' I am only passing it along. The wind gives freely. So do I. Sit, traveller. Or do not. The lake will be here either way.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll sit","next":"All_right_I_will_try_it"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
 const questMeta={"requirement":"Explore Starfell Lake (1%+ exploration) to trigger this quest.","locations":["[[Locations#Starfell_Lake|Starfell Lake]]"],"questType":"special","customTabs":[{"id":"cmrr1hela34bb","label":"tip","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.","collapsible":true}],"tabOrder":["loc","req","type","ct_cmrr1hela34bb"]};
 const ICONS_OBJ={};
 var WIKI_BASE="https://dawnwineryrpg.miraheze.org/wiki/";
@@ -416,10 +433,11 @@ function renderPathTree(path){
     html+="<div class=\"tcard"+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
     html+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span><span class=\"ttitle\">"+eh(s.title)+"</span>";
     html+="</div>";
-    var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+    var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
     if(hasBody){
       html+="<div class=\"tnode-body\">";
       if(s.text)html+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";
+      if(s.embedUrl)html+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";
       if(s.dialogues&&s.dialogues.length){
         html+="<div class=\"tdlgs\">";
         s.dialogues.forEach(function(d){
@@ -523,6 +541,8 @@ function go(id){
   var notesEl=document.getElementById("scene-notes");notesEl.style.display="none";
   var _mb=metaBannersHTML("play");if(_mb){notesEl.innerHTML=_mb;notesEl.style.display="block";}
   document.getElementById("scene-text").innerHTML=wl(s.text||"");
+  var embEl=document.getElementById("scene-embed");
+  if(s.embedUrl){embEl.innerHTML="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\"></iframe></details>";embEl.style.display="block";}else{embEl.innerHTML="";embEl.style.display="none";}
   var dEl=document.getElementById("dialogues");dEl.innerHTML="";
   (s.dialogues||[]).forEach(function(d){
     if(d.collapsed){
@@ -548,6 +568,10 @@ function go(id){
     cEl.appendChild(gateMsg);
   } else if(s.choices&&s.choices.length){
     s.choices.forEach(function(c,ci){
+      if(c.itemReq&&c.itemReq.trim()){
+        var ireq=document.createElement("div");ireq.className="choice-itemreq";ireq.innerHTML="\ud83d\udd12 "+wl(c.itemReq);
+        cEl.appendChild(ireq);
+      }
       var btn=document.createElement("button");btn.className="choice-btn"+(c.best?" best":"");
       btn.innerHTML="<span class=\"choice-btn-label\">"+(c.label||"...")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">\u2B50 Best Route</span>":"");
       if(c.next&&scenes[c.next]){btn.onclick=function(){go(c.next);};}
@@ -639,6 +663,7 @@ function openSub(sceneId,i){
   document.getElementById("scene-loc").style.display="none";
   document.getElementById("scene-notes").style.display="none";
   document.getElementById("scene-text").innerHTML=wl(sub.text||"");
+  var embEl2=document.getElementById("scene-embed");embEl2.innerHTML="";embEl2.style.display="none";
   document.getElementById("dialogues").innerHTML="";
   document.getElementById("subscenes").innerHTML="";
   document.getElementById("reward-box").style.display="none";
@@ -679,6 +704,7 @@ function renderCards(){
     var inner="<div class=\"bhead\"><span class=\"bbadge "+bclass+"\">"+blabel+"</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"<button class=\"bplay-btn\" onclick=\"go('"+id+"')\">&#9654;</button></div>";
     inner+="<div class=\"bbody\">";
     if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.embedUrl)inner+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";
     if(s.dialogues&&s.dialogues.length){
       inner+="<div class=\"bdlg-wrap\">";
       s.dialogues.forEach(function(d){if(d.collapsed){inner+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{inner+="<div class=\"dlg-visible\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";}});
@@ -690,9 +716,10 @@ function renderCards(){
       inner+="<div class=\"bchoices\">";
       _vcs.forEach(function(c){
         var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
-        if(dest){inner+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"jumpToCard('"+c.next+"')\">"+"<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+"</div>";}
-        else if(c.responseText){inner+="<div class=\"bchoice\" style=\"opacity:.7;cursor:default;flex-direction:column;align-items:flex-start\"><div style=\"display:flex;align-items:center;gap:6px\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span></div><div style=\"font-size:11px;color:var(--text2);line-height:1.5;padding-left:16px\">"+wl(c.responseText)+"</div></div>";}
-        else{inner+="<div class=\"bchoice\" style=\"opacity:.5;cursor:default\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span></div>";}
+        var itemReqTag=(c.itemReq&&c.itemReq.trim())?"<span class=\"bchoice-itemreq\">\ud83d\udd12 "+wl(c.itemReq)+"</span>":"";
+        if(dest){inner+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"jumpToCard('"+c.next+"')\">"+"<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+itemReqTag+"</div>";}
+        else if(c.responseText){inner+="<div class=\"bchoice\" style=\"opacity:.7;cursor:default;flex-direction:column;align-items:flex-start\"><div style=\"display:flex;flex-wrap:wrap;align-items:center;gap:6px\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+itemReqTag+"</div><div style=\"font-size:11px;color:var(--text2);line-height:1.5;padding-left:16px\">"+wl(c.responseText)+"</div></div>";}
+        else{inner+="<div class=\"bchoice\" style=\"opacity:.5;cursor:default\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+itemReqTag+"</div>";}
         if(c.objectives&&c.objectives.length){c.objectives.forEach(function(obj){if(obj.collapsed){inner+="<details style=\"background:var(--bg2);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>";}else{inner+="<div class=\"dlg-visible\" style=\"margin-top:4px\"><span class=\"dlg-vis-spk\">"+eh(obj.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(obj.text||"")+"</div></div>";}});}
       });
       inner+="</div>";
@@ -724,10 +751,11 @@ function renderTree(){
       _impHtml+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span>";
       _impHtml+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
       _impHtml+="</div>";
-      var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+      var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
       if(hasBody){
         _impHtml+="<div class=\"tnode-body\">";
         if(s.text)_impHtml+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";
+        if(s.embedUrl)_impHtml+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";
         if(s.dialogues&&s.dialogues.length){_impHtml+="<div class=\"tdlgs\">";s.dialogues.forEach(function(d){if(d.collapsed){_impHtml+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{_impHtml+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}});_impHtml+="</div>";}
         if(s.type==="ending"&&s.rewards&&s.rewards.length){_impHtml+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){_impHtml+="<span class=\"treward-item\">"+rewIcon(r,16)+eh(r.item)+rewQty(r)+"</span>";});_impHtml+="</div>";}
         if(s.type==="ending"&&s.unlocks){_impHtml+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
@@ -740,7 +768,7 @@ function renderTree(){
         _vcs.forEach(function(c){
           var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
           _impHtml+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"go('"+c.next+"')\">";
-          _impHtml+="<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"");
+          _impHtml+="<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+((c.itemReq&&c.itemReq.trim())?"<span class=\"bchoice-itemreq\">\ud83d\udd12 "+wl(c.itemReq)+"</span>":"");
           _impHtml+="</div>";
         });
         _impHtml+="</div>";
@@ -780,10 +808,11 @@ function buildTreeNode(id,isLast,isBestDest){
     html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+eh(s.title||id)+"</div>";
     html+="</div>";return html;
   }
-  var hasBody=s.text||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+  var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
   if(hasBody){
     html+="<div class=\"tnode-body"+(isBestDest?" tnbody-best":"")+"\">";
     if(s.text){html+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";}
+    if(s.embedUrl){html+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";}
     if(s.dialogues&&s.dialogues.length){
       html+="<div class=\"tdlgs\">";
       s.dialogues.forEach(function(d){
@@ -803,7 +832,7 @@ function buildTreeNode(id,isLast,isBestDest){
       var c1=visibleChoices[0];
       var c1Objs=(c1.objectives&&c1.objectives.length)?c1.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
       html+="<div class=\"tchoice-inline\">";
-      html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\">"+(c1.label||"...")+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+      html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(c1.label||"...")+"</span>"+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c1.itemReq&&c1.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c1.itemReq)+"</span>":"")+"</div>";
       if(c1Objs)html+="<div style=\"margin:2px 0 4px\">"+c1Objs+"</div>";
       if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best);}
       else if(c1.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c1.responseText)+"</div>";}
@@ -816,7 +845,7 @@ function buildTreeNode(id,isLast,isBestDest){
         var last=i===visibleChoices.length-1;
         var cObjs=(c.objectives&&c.objectives.length)?c.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
         html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">"; 
-        html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\">"+(c.label||"...")+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+        html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(c.label||"...")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c.itemReq&&c.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c.itemReq)+"</span>":"")+"</div>";
         if(cObjs)html+="<div style=\"margin:2px 0 4px\">"+cObjs+"</div>";
         if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best);}
         else if(c.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c.responseText)+"</div>";}

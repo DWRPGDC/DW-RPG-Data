@@ -200,6 +200,9 @@ summary::-webkit-details-marker{display:none}
 @media(orientation:landscape) and (max-width:900px){
 .tcard,.tnode-body,.tchoice-label,.tchoice-inline>.tchoice-label{width:80vw;max-width:80vw}
 }
+@media(min-width:901px){
+.tcard,.tnode-body,.tchoice-label,.tchoice-inline>.tchoice-label{width:clamp(320px,32vw,620px);max-width:620px}
+}
 .tchoice-inline>.tnode{margin-top:10px;display:block}
 .tcard-best{border-left:3px solid #e03020!important}
 .tnbody-best{border-left:3px solid #e03020!important}
