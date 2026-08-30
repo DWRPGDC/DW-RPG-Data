@@ -191,6 +191,10 @@ summary::-webkit-details-marker{display:none}
 .bsub summary::before{content:"▸ ";font-size:9px}
 .bsub[open] summary::before{content:"▾ "}
 .bsub-inner{margin-top:5px}
+.bsub-nodes,.tsub-nodes{display:flex;flex-direction:column;gap:8px}
+.bsub-node{background:#fffaf0;border:1px solid #e3d3a8;border-radius:6px;padding:8px 10px}
+.tsub-node{background:#fffaf0;border:1px solid #e3d3a8;border-radius:6px;padding:7px 9px}
+.bsub-node-name,.tsub-node-name{font-size:10px;font-weight:700;color:#7a5a18;text-transform:uppercase;letter-spacing:.03em;margin-bottom:3px}
 .tsub summary{cursor:pointer;list-style:none}
 .tsub summary::-webkit-details-marker{display:none}
 .tsub summary::before{content:"▸ ";font-size:9px}
@@ -337,9 +341,10 @@ function rewIcon(r,w){var custom=(r.icon||"").trim();if(custom){if(isImgPath(cus
 function rewQty(r){return (r.qty&&Number(r.qty)>0)?" ×"+r.qty:"";}
 function rewardItemsHtml(rewards,imgW){var h="";(rewards||[]).forEach(function(r){h+="<span class=\"reward-it\">"+rewIcon(r,imgW)+eh(r.item)+rewQty(r)+"</span>";});return h;}
 function getSubNodesJs(sub){if(!Array.isArray(sub.nodes)){sub.nodes=[{id:"node_"+Math.random().toString(36).slice(2,8),text:sub.text||"",dialogues:Array.isArray(sub.dialogues)?sub.dialogues:[],choices:Array.isArray(sub.choices)?sub.choices:[]}];}return sub.nodes;}
-function subChoicesHtml(sub,s,nodes,node){if(!node.choices||!node.choices.length)return "";var out="<div class=\"subchoices\">";node.choices.forEach(function(ch){var t=ch.targetType||"scene";if(t==="node"){var ix=-1;nodes.forEach(function(n,nx){if(n.id===ch.target)ix=nx;});out+="<div class=\"subchoice\"><span class=\"subchoice-label\">→ "+eh(ch.label||"...")+"</span><span class=\"subchoice-dest\">"+(ix>=0?"Node "+(ix+1):"(missing node)")+"</span></div>";}else if(t==="sub"){var sib=(s.subScenes||[]).filter(function(x){return x.id===ch.target;})[0];out+="<div class=\"subchoice\"><span class=\"subchoice-label\">→ "+eh(ch.label||"...")+"</span><span class=\"subchoice-dest\">"+eh(sib?(sib.title||sib.id):"(missing sub-scene)")+"</span></div>";}else{var dest=scenes[ch.target];out+="<div class=\"subchoice\">"+"<span class=\"subchoice-label\">→ "+eh(ch.label||"...")+"</span><span class=\"subchoice-dest\">"+eh(dest?(dest.title||ch.target):(ch.target?"(missing)":"(no destination)"))+"</span></div>";}});out+="</div>";return out;}
-function subScenesCardHtml(s){if(!s.subScenes||!s.subScenes.length)return "";var out="<div class=\"bsubs\">";s.subScenes.forEach(function(sub){var nodes=getSubNodesJs(sub);out+="<details class=\"bsub\" onclick=\"event.stopPropagation()\"><summary class=\"bsub-title\">"+eh(sub.title||"Sub-Scene")+"</summary><div class=\"bsub-inner\">";nodes.forEach(function(node,ni){if(nodes.length>1)out+="<div style=\"font-size:10px;font-weight:700;color:#7a5a18;text-transform:uppercase;letter-spacing:.03em;margin:"+(ni>0?"8px":"0")+" 0 3px\">Node "+(ni+1)+"</div>";if(node.text)out+="<div class=\"bsub-text\">"+wl(node.text)+"</div>";(node.dialogues||[]).forEach(function(d){out+="<div class=\"dlg-visible\" style=\"margin-top:3px\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";});out+=subChoicesHtml(sub,s,nodes,node);});out+="</div></details>";});out+="</div>";return out;}
-function subScenesTreeHtml(s){if(!s.subScenes||!s.subScenes.length)return "";var out="";s.subScenes.forEach(function(sub){var nodes=getSubNodesJs(sub);out+="<details class=\"tsub\" onclick=\"event.stopPropagation()\"><summary class=\"tsub-title\">"+eh(sub.title||"Sub-Scene")+"</summary><div class=\"tsub-inner\">";nodes.forEach(function(node,ni){if(nodes.length>1)out+="<div style=\"font-size:10px;font-weight:700;color:#7a5a18;text-transform:uppercase;letter-spacing:.03em;margin:"+(ni>0?"8px":"0")+" 0 3px\">Node "+(ni+1)+"</div>";if(node.text)out+="<div class=\"tsub-text\">"+wl(node.text)+"</div>";(node.dialogues||[]).forEach(function(d){out+="<div class=\"tdlg\" style=\"margin-top:3px\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";});out+=subChoicesHtml(sub,s,nodes,node);});out+="</div></details>";});return out;}
+function subNodeLabelJs(node,ix){return (node.name&&node.name.trim())?node.name:"Node "+(ix+1);}
+function subChoicesHtml(node){if(!node.choices||!node.choices.length)return "";var out="<div class=\"bchoices\" style=\"margin-top:6px\">";node.choices.forEach(function(ch){out+="<div class=\"bchoice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(ch.label)||"...")+"</span></div>";});out+="</div>";return out;}
+function subScenesCardHtml(s){if(!s.subScenes||!s.subScenes.length)return "";var out="<div class=\"bsubs\">";s.subScenes.forEach(function(sub){var nodes=getSubNodesJs(sub);out+="<details class=\"bsub\" onclick=\"event.stopPropagation()\"><summary class=\"bsub-title\">"+eh(sub.title||"Sub-Scene")+"</summary><div class=\"bsub-inner bsub-nodes\">";nodes.forEach(function(node){out+="<div class=\"bsub-node\">";if(node.name&&node.name.trim())out+="<div class=\"bsub-node-name\">"+eh(node.name)+"</div>";if(node.text)out+="<div class=\"bsub-text\">"+wl(node.text)+"</div>";(node.dialogues||[]).forEach(function(d){out+="<div class=\"dlg-visible\" style=\"margin-top:3px\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";});out+="</div>";out+=subChoicesHtml(node);});out+="</div></details>";});out+="</div>";return out;}
+function subScenesTreeHtml(s){if(!s.subScenes||!s.subScenes.length)return "";var out="";s.subScenes.forEach(function(sub){var nodes=getSubNodesJs(sub);out+="<details class=\"tsub\" onclick=\"event.stopPropagation()\"><summary class=\"tsub-title\">"+eh(sub.title||"Sub-Scene")+"</summary><div class=\"tsub-inner tsub-nodes\">";nodes.forEach(function(node){out+="<div class=\"tsub-node\">";if(node.name&&node.name.trim())out+="<div class=\"tsub-node-name\">"+eh(node.name)+"</div>";if(node.text)out+="<div class=\"tsub-text\">"+wl(node.text)+"</div>";(node.dialogues||[]).forEach(function(d){out+="<div class=\"tdlg\" style=\"margin-top:3px\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";});out+="</div>";out+=subChoicesHtml(node);});out+="</div></details>";});return out;}
 function openPlay(){go(currentPlayId);document.getElementById("sim-modal").classList.add("open");}
 function closePlay(){document.getElementById("sim-modal").classList.remove("open");}
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closePlay();});
@@ -446,7 +451,7 @@ function renderPathCards(path){
     inner+=subScenesCardHtml(s);
     if(idx<path.length-1){
       var label=findEdgeLabel(s,path[idx+1]);
-      inner+="<div class=\"bchoices\"><div class=\"bchoice path-choice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(label)+"</span></div></div>";
+      inner+="<div class=\"bchoices\"><div class=\"bchoice path-choice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+wl(label)+"</span></div></div>";
     }
     if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+eh(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
     if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
@@ -486,7 +491,7 @@ function renderPathTree(path){
     }
     if(idx<path.length-1){
       var label=findEdgeLabel(s,path[idx+1]);
-      html+="<div class=\"tchoice-inline\"><div class=\"tchoice-label\">"+eh(label)+"</div></div>";
+      html+="<div class=\"tchoice-inline\"><div class=\"tchoice-label\"><span class=\"tchoice-label-text\">"+wl(label)+"</span></div></div>";
     }
     html+="</div>";
   });
@@ -607,7 +612,7 @@ function go(id){
         cEl.appendChild(ireq);
       }
       var btn=document.createElement("button");btn.className="choice-btn"+(c.best?" best":"");
-      btn.innerHTML="<span class=\"choice-btn-label\">"+(c.label||"...")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">\u2B50 Best Route</span>":"");
+      btn.innerHTML="<span class=\"choice-btn-label\">"+(wl(c.label)||"...")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">\u2B50 Best Route</span>":"");
       if(c.next&&scenes[c.next]){btn.onclick=function(){go(c.next);};}
       else if(c.responseText){
         (function(b,rt){b.onclick=function(){
@@ -725,21 +730,21 @@ function openSub(sceneId,i,nodeId){
     if(t==="node"){
       var targetNode=nodes.filter(function(n){return n.id===ch.target;})[0];
       if(targetNode){
-        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(ch.label||"...")+"</span>";
+        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span>";
         chBtn.onclick=function(){openSub(sceneId,i,targetNode.id);};
       } else {
-        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(ch.label||"...")+"</span> <span style=\"font-size:11px\">(missing node)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
+        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span> <span style=\"font-size:11px\">(missing node)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
       }
     } else if(t==="sub"){
       var sIdx=-1;(s.subScenes||[]).forEach(function(x,xi){if(x.id===ch.target)sIdx=xi;});
       if(sIdx>=0){
-        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(ch.label||"...")+"</span>";
+        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span>";
         chBtn.onclick=function(){openSub(sceneId,sIdx);};
       } else {
-        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(ch.label||"...")+"</span> <span style=\"font-size:11px\">(missing sub-scene)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
+        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span> <span style=\"font-size:11px\">(missing sub-scene)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
       }
     } else if(ch.target&&scenes[ch.target]){
-      chBtn.innerHTML="<span class=\"choice-btn-label\">"+(ch.label||"...")+"</span>";
+      chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span>";
       chBtn.onclick=function(){
         if(!subVisited[sceneId])subVisited[sceneId]={};
         subVisited[sceneId][sub.id]=true;
@@ -747,7 +752,7 @@ function openSub(sceneId,i,nodeId){
         go(ch.target);
       };
     } else {
-      chBtn.innerHTML="<span class=\"choice-btn-label\">"+(ch.label||"...")+"</span> <span style=\"font-size:11px\">(no destination)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
+      chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span> <span style=\"font-size:11px\">(no destination)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
     }
     cEl.appendChild(chBtn);
   });
@@ -800,9 +805,9 @@ function renderCards(){
       _vcs.forEach(function(c){
         var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
         var itemReqTag=(c.itemReq&&c.itemReq.trim())?"<span class=\"bchoice-itemreq\">\ud83d\udd12 "+wl(c.itemReq)+"</span>":"";
-        if(dest){inner+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"jumpToCard('"+c.next+"')\">"+"<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+itemReqTag+"</div>";}
-        else if(c.responseText){inner+="<div class=\"bchoice\" style=\"opacity:.7;cursor:default;flex-direction:column;align-items:flex-start\"><div style=\"display:flex;flex-wrap:wrap;align-items:center;gap:6px\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+itemReqTag+"</div><div style=\"font-size:11px;color:var(--text2);line-height:1.5;padding-left:16px\">"+wl(c.responseText)+"</div></div>";}
-        else{inner+="<div class=\"bchoice\" style=\"opacity:.5;cursor:default\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+itemReqTag+"</div>";}
+        if(dest){inner+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"jumpToCard('"+c.next+"')\">"+"<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(c.label)||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+itemReqTag+"</div>";}
+        else if(c.responseText){inner+="<div class=\"bchoice\" style=\"opacity:.7;cursor:default;flex-direction:column;align-items:flex-start\"><div style=\"display:flex;flex-wrap:wrap;align-items:center;gap:6px\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(c.label)||"...")+"</span>"+itemReqTag+"</div><div style=\"font-size:11px;color:var(--text2);line-height:1.5;padding-left:16px\">"+wl(c.responseText)+"</div></div>";}
+        else{inner+="<div class=\"bchoice\" style=\"opacity:.5;cursor:default\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(c.label)||"...")+"</span>"+itemReqTag+"</div>";}
         if(c.objectives&&c.objectives.length){c.objectives.forEach(function(obj){if(obj.collapsed){inner+="<details style=\"background:var(--bg2);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>";}else{inner+="<div class=\"dlg-visible\" style=\"margin-top:4px\"><span class=\"dlg-vis-spk\">"+eh(obj.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(obj.text||"")+"</div></div>";}});}
       });
       inner+="</div>";
@@ -852,7 +857,7 @@ function renderTree(){
         _vcs.forEach(function(c){
           var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
           _impHtml+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"go('"+c.next+"')\">";
-          _impHtml+="<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+eh(c.label||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+((c.itemReq&&c.itemReq.trim())?"<span class=\"bchoice-itemreq\">\ud83d\udd12 "+wl(c.itemReq)+"</span>":"");
+          _impHtml+="<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(c.label)||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+((c.itemReq&&c.itemReq.trim())?"<span class=\"bchoice-itemreq\">\ud83d\udd12 "+wl(c.itemReq)+"</span>":"");
           _impHtml+="</div>";
         });
         _impHtml+="</div>";
@@ -917,7 +922,7 @@ function buildTreeNode(id,isLast,isBestDest){
       var c1=visibleChoices[0];
       var c1Objs=(c1.objectives&&c1.objectives.length)?c1.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
       html+="<div class=\"tchoice-inline\">";
-      html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(c1.label||"...")+"</span>"+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c1.itemReq&&c1.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c1.itemReq)+"</span>":"")+"</div>";
+      html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c1.label)||"...")+"</span>"+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c1.itemReq&&c1.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c1.itemReq)+"</span>":"")+"</div>";
       if(c1Objs)html+="<div style=\"margin:2px 0 4px\">"+c1Objs+"</div>";
       if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best);}
       else if(c1.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c1.responseText)+"</div>";}
@@ -930,7 +935,7 @@ function buildTreeNode(id,isLast,isBestDest){
         var last=i===visibleChoices.length-1;
         var cObjs=(c.objectives&&c.objectives.length)?c.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
         html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">"; 
-        html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(c.label||"...")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c.itemReq&&c.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c.itemReq)+"</span>":"")+"</div>";
+        html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c.label)||"...")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c.itemReq&&c.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c.itemReq)+"</span>":"")+"</div>";
         if(cObjs)html+="<div style=\"margin:2px 0 4px\">"+cObjs+"</div>";
         if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best);}
         else if(c.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c.responseText)+"</div>";}
