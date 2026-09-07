@@ -320,8 +320,8 @@ summary::-webkit-details-marker{display:none}
   </div>
 </div>
 <script>
-const scenes={"start":{"id":"start","type":"start","title":"Twin Reflections","text":"''Deeper in Starglow Cavern, the ice throws light in wrong directions. Two shapes stand ahead where the tunnel widens, still as glass.''\n\n''Hydro shimmer pools at their feet. When you take another step, both heads turn at once.''\n\n''Mirror Maidens. A matched pair. Neither one looks surprised to see you.''","dialogues":[],"choices":[{"label":"Draw your weapon","next":"Draw_your_weapon","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"Draw_your_weapon":{"id":"Draw_your_weapon","type":"scene","title":"","text":"''The nearer Maiden raises her hand. A mirror-plane blooms between you, then another beside it. Her twin steps wide, already moving to cut the angle.''\n\n''Two reflections. One cavern. Nowhere left to walk around them.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Defeat the two Mirror Maidens in Starglow Cavern","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"____Twin_Reflections__Mirror_Maidens_Defeated","label":"Do /rpg again and then click on Fight the Mirror Maidens. Defeat 2 [[Mirror Maiden]]s"}],"subScenes":[],"gateSubScenes":false},"____Twin_Reflections__Mirror_Maidens_Defeated":{"id":"____Twin_Reflections__Mirror_Maidens_Defeated","type":"ending","title":"Mirror Maidens Defeated","text":"''The last Maiden collapses into scattered Hydro light. The cavern goes quiet again, save for meltwater ticking off the ice.''\n\n''Among the frost where they stood, a small purse of Silver catches the glow.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":250,"icon":""},{"item":"AEXP","qty":150,"icon":""}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
-const questMeta={"requirement":"Explore Starglow Cavern (5%+ exploration) to trigger this quest.","locations":["[[Locations#Starglow_Cavern|Starglow Cavern]]"],"questType":"normal","customTabs":[{"id":"tip1","label":"TIP","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."}],"tabOrder":["loc","req","type","ct_tip1"]};
+const scenes={"start":{"id":"start","type":"start","title":"Twin Reflections","text":"''Deeper in Starglow Cavern, the ice throws light in wrong directions. Two shapes stand ahead where the tunnel widens, still as glass.''\n\n''Hydro shimmer pools at their feet. When you take another step, both heads turn at once.''\n\n''Mirror Maidens. A matched pair. Neither one looks surprised to see you.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Draw your weapon","next":"Draw_your_weapon"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Draw_your_weapon":{"id":"Draw_your_weapon","type":"scene","title":"","text":"''The nearer Maiden raises her hand. A mirror-plane blooms between you, then another beside it. Her twin steps wide, already moving to cut the angle.''\n\n''Two reflections. One cavern. Nowhere left to walk around them.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Defeat the two Mirror Maidens in Starglow Cavern","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"____Twin_Reflections__Mirror_Maidens_Defeated","label":"Do /rpg again and then click on Fight the Mirror Maidens. Defeat 2 [[Mirror Maiden]]s","best":false}],"subScenes":[],"gateSubScenes":false},"____Twin_Reflections__Mirror_Maidens_Defeated":{"id":"____Twin_Reflections__Mirror_Maidens_Defeated","type":"ending","title":"Mirror Maidens Defeated","text":"''The last Maiden collapses into scattered Hydro light. The cavern goes quiet again, save for meltwater ticking off the ice.''\n\n''Among the frost where they stood, a small purse of Silver catches the glow.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":250,"icon":""},{"item":"AEXP","qty":150,"icon":""}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
+const questMeta={"requirement":"Explore Starglow Cavern (5%+ exploration) to trigger this quest.","locations":["[[Locations#Starglow_Cavern|Starglow Cavern]]"],"questType":"normal","customTabs":[{"id":"tip1","label":"TIP","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.","collapsible":true}],"tabOrder":[]};
 const ICONS_OBJ={};
 var WIKI_BASE="https://dawnwineryrpg.miraheze.org/wiki/";
 var WIKI_MODE=true;
@@ -335,6 +335,7 @@ let openSubId=null;
 let openSubNodeId=null;
 let branchMode="tree";
 let treeVisited={};
+let treeFirstLabel={};
 function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
 function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\[size:((?:[\\d.]+(?:em|px|%)?)|sm|small|xs|lg|large|xl|xxl)\\|([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+wlInline(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+wlInline(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+wlInline(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var rawSz=m[12].trim();var szMap={sm:"0.8em",small:"0.8em",xs:"0.65em",lg:"1.25em",large:"1.25em",xl:"1.5em",xxl:"1.8em"};var szv=szMap[rawSz.toLowerCase()]||rawSz;result+='<span style="font-size:'+e(szv)+'">'+wlInline(m[13])+'</span>';}      else if(m[14]!==undefined){var clr=WCLR[m[14]]||m[14];result+='<span style="color:'+clr+'">'+wlInline(m[15])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  var out="",inList=false,paraBuf=[];  function flushPara(){if(paraBuf.length){out+=wlInline(paraBuf.join("\n")).replace(/\n/g,"<br>");paraBuf=[];}}  for(var li=0;li<lines.length;li++){    var line=lines[li];    var bm=line.match(/^\s*[*\-]\s+(.+)$/);    if(bm){      flushPara();      if(!inList){out+="<ul class=\"wiki-list\">";inList=true;}      out+="<li>"+wlInline(bm[1])+"</li>";      continue;    }    if(inList){out+="</ul>";inList=false;}    var headM=line.match(/^==(.+?)==\s*$/);    if(headM){flushPara();out+="<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";continue;}    paraBuf.push(line);  }  flushPara();  if(inList)out+="</ul>";  return out;}
 function metaBannersHTML(variant){  var order=(questMeta.tabOrder||[]).slice();  var validKeys=["loc","req","type"].concat((questMeta.customTabs||[]).map(function(t){return "ct_"+t.id;}));  order=order.filter(function(k){return validKeys.indexOf(k)!==-1;});  validKeys.forEach(function(k){if(order.indexOf(k)===-1)order.push(k);});  var locClass=variant==="t"?"tloc":(variant==="play"?"loc-box":"bloc");  var locLblClass=variant==="t"?"tloc-lbl":(variant==="play"?"loc-lbl":"bloc-lbl");  var reqClass=variant==="t"?"treq":(variant==="play"?"req-box":"breq");  var reqLblClass=variant==="t"?"treq-lbl":(variant==="play"?"req-lbl":"breq-lbl");  var out="";  order.forEach(function(key){    if(key==="loc"){      var locs=(questMeta.locations||[]).filter(function(l){return l.trim();});      if(locs.length)out+="<div class=\""+locClass+"\"><span class=\""+locLblClass+"\">📍 Locations</span>"+locs.map(function(l){return wl(l);}).join("<br>")+"</div>";    } else if(key==="req"){      if(questMeta.requirement)out+="<div class=\""+reqClass+"\"><span class=\""+reqLblClass+"\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";    } else if(key.indexOf("ct_")===0){      var t=(questMeta.customTabs||[]).filter(function(ct){return "ct_"+ct.id===key;})[0];      if(t&&t.content&&t.content.trim()){        var c=t.color||"#7a5c10";        var collapsible=t.collapsible!==false;        var boxClass=collapsible?"cnote-box collapsed":"cnote-box";        var lblClass=collapsible?"cnote-lbl":"cnote-lbl no-toggle";        var onclk=collapsible?" onclick=\"this.parentElement.classList.toggle('collapsed')\"":"";        out+="<div class=\""+boxClass+"\" style=\"border-color:"+eh(c)+";background:"+eh(c)+"1a\"><span class=\""+lblClass+"\" style=\"color:"+eh(c)+"\""+onclk+">"+eh(t.label||"Note")+"</span><div class=\"cnote-content\">"+wl(t.content)+"</div></div>";      }    }  });  return out;}
@@ -865,6 +866,7 @@ function renderCards(){
 function jumpToCard(id){var el=document.getElementById("bscene-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
 function renderTree(){
   treeVisited={};
+  treeFirstLabel={};
   var bv=document.getElementById("branch-body");
   var _th="";
   if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)||( questMeta.customTabs&&questMeta.customTabs.some(function(t){return t.content&&t.content.trim();}))){
@@ -925,12 +927,13 @@ window.addEventListener("orientationchange",function(){
   clearTimeout(_treeResizeT);
   _treeResizeT=setTimeout(function(){requestAnimationFrame(drawTreeLines);},250);
 });
-function buildTreeNode(id,isLast,isBestDest){
+function buildTreeNode(id,isLast,isBestDest,incomingLabel){
   var s=scenes[id];
   if(!s)return "<div class=\"tmissing\">(missing: "+eh(id)+")</div>";
   var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
   var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
   var alreadyVisited=treeVisited[id];
+  if(!alreadyVisited)treeFirstLabel[id]=incomingLabel||"";
   treeVisited[id]=true;
   var html="<div class=\"tnode\">";
   html+="<div class=\"tcard"+(isBestDest?" tcard-best":"")+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
@@ -938,7 +941,8 @@ function buildTreeNode(id,isLast,isBestDest){
   html+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
   html+="</div>";
   if(alreadyVisited){
-    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+eh(s.title||id)+"</div>";
+    var sameLabel=treeFirstLabel[id]?wl(treeFirstLabel[id]):eh(s.title||id);
+    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+sameLabel+"</div>";
     html+="</div>";return html;
   }
   var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.subScenes&&s.subScenes.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
@@ -968,7 +972,7 @@ function buildTreeNode(id,isLast,isBestDest){
       html+="<div class=\"tchoice-inline\">";
       html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c1.label)||"...")+"</span>"+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c1.itemReq&&c1.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c1.itemReq)+"</span>":"")+"</div>";
       if(c1Objs)html+="<div style=\"margin:2px 0 4px\">"+c1Objs+"</div>";
-      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best);}
+      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best,c1.label);}
       else if(c1.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c1.responseText)+"</div>";}
       else{html+="<div class=\"tmissing\">(no destination)</div>";}
       html+="</div>";
@@ -981,7 +985,7 @@ function buildTreeNode(id,isLast,isBestDest){
         html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">"; 
         html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c.label)||"...")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c.itemReq&&c.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c.itemReq)+"</span>":"")+"</div>";
         if(cObjs)html+="<div style=\"margin:2px 0 4px\">"+cObjs+"</div>";
-        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best);}
+        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best,c.label);}
         else if(c.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c.responseText)+"</div>";}
         else{html+="<div class=\"tmissing\">(no destination)</div>";}
         html+="</div>";
@@ -1000,13 +1004,13 @@ function buildTreeNode(id,isLast,isBestDest){
       var last=ci===_conts.length-1;
       html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">";
       html+="<div class=\"tcontinue-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tcontinue-label-text\">"+(c.label?wl(c.label):"Continues to")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
-      html+=buildTreeNode(c.next,last,isBestDest||c.best);
+      html+=buildTreeNode(c.next,last,isBestDest||c.best,c.label);
       html+="</div>";
     });
     html+="</div>";
   } else {
     _conts.forEach(function(c){
-      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>"+buildTreeNode(c.next,true,isBestDest||c.best)+"</div>";
+      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>"+buildTreeNode(c.next,true,isBestDest||c.best,c.label)+"</div>";
     });
   }
   html+="</div>";return html;

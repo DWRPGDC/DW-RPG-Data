@@ -53,6 +53,8 @@ body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14p
 #scene-embed iframe{width:100%;min-height:420px;border:1px solid var(--border2);border-radius:8px;display:block}
 .tembed-wrap{margin:4px 0 8px;border:1px solid var(--border2);border-radius:6px;overflow:hidden}
 .tembed-wrap summary{cursor:pointer;padding:6px 10px;font-size:11px;font-weight:700;background:rgba(0,0,0,.04);list-style:none;user-select:none}
+.wiki-list{margin:6px 0;padding-left:22px}
+.wiki-list li{margin-bottom:3px;line-height:1.6}
 .tembed-wrap summary::-webkit-details-marker{display:none}
 .tembed-wrap[open] summary{border-bottom:1px solid var(--border2)}
 .tembed-wrap iframe{margin:0!important;border:none!important;border-radius:0!important;display:block}
@@ -219,6 +221,7 @@ summary::-webkit-details-marker{display:none}
 .tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
 .tchoice-label.tchoice-best{background:#fff0ee;border-color:#e03020}
 .tcontinue-label{font-size:12px;font-weight:600;font-style:italic;color:#123f62;background:transparent;border:1px dashed #1a5a8a;border-radius:4px;padding:4px 11px;margin-bottom:3px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
+.tcontinue-label.tchoice-best{background:#fff0ee;border-color:#e03020;color:var(--text)}
 .tcontinue-label-text::before{content:"↓ ";font-style:normal}
 .tchoice-itemreq{font-size:10px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:1px 6px;margin-top:2px;flex-basis:100%;white-space:normal;word-break:break-word;font-family:sans-serif}
 .tchoice-label-text{flex:1 1 auto;min-width:80px;word-break:break-word}
@@ -317,7 +320,7 @@ summary::-webkit-details-marker{display:none}
   </div>
 </div>
 <script>
-const scenes={"start":{"id":"start","type":"start","title":"The Ridge Wreath","text":"''The wind up here is thin and honest. White petals cling to a ledge where the scrub breaks, Cecilia turning slowly in a jar that should not have made this climb.''\n\n''A woman sits with her back to a rock, gloves off, wrists red from the cold. She is counting blooms the way someone counts favors already spent.''\n\nMarta: ''without looking up'' If you have come to tell me I am too high for a florist, save your breath. I have been telling myself the same thing for an hour.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Need a hand with those?","next":"Need_a_hand_with_those"},{"label":"You climbed all this for Cecilia?","next":"Need_a_hand_with_those"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Need_a_hand_with_those":{"id":"Need_a_hand_with_those","type":"scene","title":"","text":"Marta: ''glances at you, then at the jar'' Summit Cecilia. The city stalls sell pale copies. This is the real white. Stubborn. Clean. ''a dry breath'' My sister loved them. She used to say white flowers were the only ones that looked honest in a storm.\n\n''She caps the jar carefully.''\n\nMarta: I am making a wreath for her. Not a funeral. She has been gone two winters. This is for the place she liked to stand when the wind came in from Windrise. I need the other flowers that belonged with her story. I cannot fetch them alone today.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What else do you need?","next":"What_else_do_you_need"},{"label":"I can gather them","next":"What_else_do_you_need"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"What_else_do_you_need":{"id":"What_else_do_you_need","type":"scene","title":"","text":"Marta: Six Cecilia. I have a few, not enough. Five Windwheel Aster from Windrise, for the color she would have insisted on. Five Small Lamp Grass from the Whispering Woods. She walked home through those trees after dusk. The lamps should catch.\n\n''She meets your eyes properly.''\n\nMarta: Bring them here. I will weave on this ledge. When it is finished, I want the oak at Windrise to see it before evening. If you are willing to meet me there after, I would... appreciate not placing it alone.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Six, five, and five. I'll bring them","next":"Six__five__and_five__I_will_bring_them"},{"label":"I'll gather them. Then Windrise","next":"Six__five__and_five__I_will_bring_them"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Six__five__and_five__I_will_bring_them":{"id":"Six__five__and_five__I_will_bring_them","type":"scene","title":"","text":"Marta: ''nods once'' Good. I will stay on this ledge and finish the base. Travel the way she would have. Careful with bruised petals. The ridge already did enough bruising for one day.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring Marta 6 Cecilia, 5 Windwheel Aster, and 5 Small Lamp Grass at Stormbearer Mountains","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"le_mart","label":"Do /rpg again and click on Deliver Flowers to Marta"}],"subScenes":[],"gateSubScenes":false},"le_mart":{"id":"le_mart","type":"scene","title":"","text":"''Marta has cleared a flat patch of stone and laid out twine, wire, and a half-built ring of green stems. The jar of Cecilia sits in shade under her coat.''\n\nMarta: ''straightens'' Back. Tell me the mountain cooperated.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Here. 6 Cecilia, 5 Windwheel Aster, 5 Small Lamp Grass","next":"submit_flowers","best":true,"itemReq":"Need 6x[img:../Textures/Items/Cecilia_icon.webp]'''Cecilia''', 5x[img:../Textures/Items/Windwheel%20Aster_icon.png]'''Windwheel Aster''', 5x[img:../Textures/Items/Small%20Lamp%20Grass_icon.png]'''Small Lamp Grass'''"},{"label":"Still gathering","next":"still_gathering"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"still_gathering":{"id":"still_gathering","type":"scene","title":"","text":"Marta: ''returns to the wire without impatience'' Then I will keep the ring honest until you do. Cecilia keeps on the high cold. Aster turns with the meadow wind. Lamp Grass waits for dusk. If you already knew, forgive the reminder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring Marta 6 Cecilia, 5 Windwheel Aster, and 5 Small Lamp Grass at Stormbearer Mountains","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"submit_flowers":{"id":"submit_flowers","type":"scene","title":"","text":"''Marta takes each bundle in turn. Cecilia she weighs like coin. Windwheel Aster she holds to the light for color. Small Lamp Grass she cups briefly against the shade of her sleeve, imagining night.''\n\nMarta: ''quietly'' These will hold.\n\n''Her hands move fast then, weaving white and gold and soft green into the ring until the ledge smells like a summer the mountain does not keep.''\n\nMarta: Windrise. Under the great oak, west side of the trunk. I will go down the main trail. If you beat me there, wait. If I beat you, I will wait. ''almost a smile'' We finish this together.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"6x [img:../Textures/Items/Cecilia_icon.webp]'''Cecilia'''\n5x [img:../Textures/Items/Windwheel%20Aster_icon.png]'''Windwheel Aster'''\n5x [img:../Textures/Items/Small%20Lamp%20Grass_icon.png]'''Small Lamp Grass'''","collapsed":false}],"choices":[{"label":"I'll meet you at Windrise","next":"meet_u_at_wind","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"meet_u_at_wind":{"id":"meet_u_at_wind","type":"scene","title":"","text":"''She lifts the finished wreath with both hands, careful of the Cecilia at the crest, and starts downslope without looking back. The wind catches a Lamp Grass stem and sets it faintly glowing even in daylight.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Meet Marta at Windrise to place the ridge wreath","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"wreath_placed","label":"Go to Windrise (Mondstadt), do /rpg and click on Place the Wreath with Marta"}],"subScenes":[],"gateSubScenes":false},"wreath_placed":{"id":"wreath_placed","type":"ending","title":"Wreath Placed","text":"''Marta is already at the oak, wreath braced against the west bark where the wind moves freely. She has cleared a spot of grass with her boot and is fussing a Windwheel Aster half a finger to the left.''\n\nMarta: ''softly'' You came. Good.\n\n''Together you set the wreath into place. For a moment the three kinds look like they have always belonged to this trunk: high white, meadow gold, dusk-soft green.''\n\nMarta: ''brushing dirt from her gloves'' She would have laughed at me for climbing that ridge alone. Then she would have demanded better Aster. ''a real smile this time'' You found the better Aster.\n\n''She presses a folded purse into your palm.''\n\nMarta: For the walking. And for waiting with me. That part mattered more than the wire.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":250,"icon":""},{"item":"AEXP","qty":150,"icon":""}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
+const scenes={"start":{"id":"start","type":"start","title":"The Ridge Wreath","text":"''The wind up here is thin and honest. White petals cling to a ledge where the scrub breaks, Cecilia turning slowly in a jar that should not have made this climb.''\n\n''A woman sits with her back to a rock, gloves off, wrists red from the cold. She is counting blooms the way someone counts favors already spent.''\n\nMarta: ''without looking up'' If you have come to tell me I am too high for a florist, save your breath. I have been telling myself the same thing for an hour.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Need a hand with those?","next":"Need_a_hand_with_those"},{"label":"You climbed all this for Cecilia?","next":"Need_a_hand_with_those"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Need_a_hand_with_those":{"id":"Need_a_hand_with_those","type":"scene","title":"","text":"Marta: ''glances at you, then at the jar'' Summit Cecilia. The city stalls sell pale copies. This is the real white. Stubborn. Clean. ''a dry breath'' My sister loved them. She used to say white flowers were the only ones that looked honest in a storm.\n\n''She caps the jar carefully.''\n\nMarta: I am making a wreath for her. Not a funeral. She has been gone two winters. This is for the place she liked to stand when the wind came in from Windrise. I need the other flowers that belonged with her story. I cannot fetch them alone today.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What else do you need?","next":"What_else_do_you_need"},{"label":"I can gather them","next":"What_else_do_you_need"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"What_else_do_you_need":{"id":"What_else_do_you_need","type":"scene","title":"","text":"Marta: Six Cecilia. I have a few, not enough. Five Windwheel Aster from Windrise, for the color she would have insisted on. Five Small Lamp Grass from the Whispering Woods. She walked home through those trees after dusk. The lamps should catch.\n\n''She meets your eyes properly.''\n\nMarta: Bring them here. I will weave on this ledge. When it is finished, I want the oak at Windrise to see it before evening. If you are willing to meet me there after, I would... appreciate not placing it alone.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Six, five, and five. I'll bring them","next":"Six__five__and_five__I_will_bring_them"},{"label":"I'll gather them. Then Windrise","next":"Six__five__and_five__I_will_bring_them"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Six__five__and_five__I_will_bring_them":{"id":"Six__five__and_five__I_will_bring_them","type":"scene","title":"","text":"Marta: ''nods once'' Good. I will stay on this ledge and finish the base. Travel the way she would have. Careful with bruised petals. The ridge already did enough bruising for one day.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring Marta 6 Cecilia, 5 Windwheel Aster, and 5 Small Lamp Grass at Stormbearer Mountains","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"le_mart","label":"Do /rpg again and click on Deliver Flowers to Marta","best":false}],"subScenes":[],"gateSubScenes":false},"le_mart":{"id":"le_mart","type":"scene","title":"","text":"''Marta has cleared a flat patch of stone and laid out twine, wire, and a half-built ring of green stems. The jar of Cecilia sits in shade under her coat.''\n\nMarta: ''straightens'' Back. Tell me the mountain cooperated.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Here. 6 Cecilia, 5 Windwheel Aster, 5 Small Lamp Grass","next":"submit_flowers","best":true,"itemReq":"Need 6x[img:../Textures/Items/Cecilia_icon.webp]'''Cecilia''', 5x[img:../Textures/Items/Windwheel%20Aster_icon.png]'''Windwheel Aster''', 5x[img:../Textures/Items/Small%20Lamp%20Grass_icon.png]'''Small Lamp Grass'''"},{"label":"Still gathering","next":"still_gathering"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"still_gathering":{"id":"still_gathering","type":"scene","title":"","text":"Marta: ''returns to the wire without impatience'' Then I will keep the ring honest until you do. Cecilia keeps on the high cold. Aster turns with the meadow wind. Lamp Grass waits for dusk. If you already knew, forgive the reminder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring Marta 6 Cecilia, 5 Windwheel Aster, and 5 Small Lamp Grass at Stormbearer Mountains","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"submit_flowers":{"id":"submit_flowers","type":"scene","title":"","text":"''Marta takes each bundle in turn. Cecilia she weighs like coin. Windwheel Aster she holds to the light for color. Small Lamp Grass she cups briefly against the shade of her sleeve, imagining night.''\n\nMarta: ''quietly'' These will hold.\n\n''Her hands move fast then, weaving white and gold and soft green into the ring until the ledge smells like a summer the mountain does not keep.''\n\nMarta: Windrise. Under the great oak, west side of the trunk. I will go down the main trail. If you beat me there, wait. If I beat you, I will wait. ''almost a smile'' We finish this together.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"6x [img:../Textures/Items/Cecilia_icon.webp]'''Cecilia'''\n5x [img:../Textures/Items/Windwheel%20Aster_icon.png]'''Windwheel Aster'''\n5x [img:../Textures/Items/Small%20Lamp%20Grass_icon.png]'''Small Lamp Grass'''","collapsed":false}],"choices":[{"label":"I'll meet you at Windrise","next":"meet_u_at_wind","best":true}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"meet_u_at_wind":{"id":"meet_u_at_wind","type":"scene","title":"","text":"''She lifts the finished wreath with both hands, careful of the Cecilia at the crest, and starts downslope without looking back. The wind catches a Lamp Grass stem and sets it faintly glowing even in daylight.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Meet Marta at Windrise to place the ridge wreath","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"wreath_placed","label":"Go to Windrise (Mondstadt), do /rpg and click on Place the Wreath with Marta","best":false}],"subScenes":[],"gateSubScenes":false},"wreath_placed":{"id":"wreath_placed","type":"ending","title":"Wreath Placed","text":"''Marta is already at the oak, wreath braced against the west bark where the wind moves freely. She has cleared a spot of grass with her boot and is fussing a Windwheel Aster half a finger to the left.''\n\nMarta: ''softly'' You came. Good.\n\n''Together you set the wreath into place. For a moment the three kinds look like they have always belonged to this trunk: high white, meadow gold, dusk-soft green.''\n\nMarta: ''brushing dirt from her gloves'' She would have laughed at me for climbing that ridge alone. Then she would have demanded better Aster. ''a real smile this time'' You found the better Aster.\n\n''She presses a folded purse into your palm.''\n\nMarta: For the walking. And for waiting with me. That part mattered more than the wire.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":250,"icon":""},{"item":"AEXP","qty":150,"icon":""}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
 const questMeta={"requirement":"Explore Stormbearer Mountains (10%+ exploration) to trigger this quest.","locations":["[[Locations#Stormbearer_Mountains|Stormbearer Mountains]]"],"questType":"normal","customTabs":[{"id":"tip1","label":"TIP","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.","collapsible":true}],"tabOrder":[]};
 const ICONS_OBJ={};
 var WIKI_BASE="https://dawnwineryrpg.miraheze.org/wiki/";
@@ -332,14 +335,15 @@ let openSubId=null;
 let openSubNodeId=null;
 let branchMode="tree";
 let treeVisited={};
+let treeFirstLabel={};
 function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
-function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\[size:((?:[\\d.]+(?:em|px|%)?)|sm|small|xs|lg|large|xl|xxl)\\|([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+wlInline(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+wlInline(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+wlInline(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var rawSz=m[12].trim();var szMap={sm:"0.8em",small:"0.8em",xs:"0.65em",lg:"1.25em",large:"1.25em",xl:"1.5em",xxl:"1.8em"};var szv=szMap[rawSz.toLowerCase()]||rawSz;result+='<span style="font-size:'+e(szv)+'">'+wlInline(m[13])+'</span>';}      else if(m[14]!==undefined){var clr=WCLR[m[14]]||m[14];result+='<span style="color:'+clr+'">'+wlInline(m[15])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  return lines.map(function(line){    var headM=line.match(/^==(.+?)==\s*$/);    if(headM)return "<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";    return wlInline(line);  }).join("<br>");}
+function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\[size:((?:[\\d.]+(?:em|px|%)?)|sm|small|xs|lg|large|xl|xxl)\\|([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+wlInline(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+wlInline(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+wlInline(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var rawSz=m[12].trim();var szMap={sm:"0.8em",small:"0.8em",xs:"0.65em",lg:"1.25em",large:"1.25em",xl:"1.5em",xxl:"1.8em"};var szv=szMap[rawSz.toLowerCase()]||rawSz;result+='<span style="font-size:'+e(szv)+'">'+wlInline(m[13])+'</span>';}      else if(m[14]!==undefined){var clr=WCLR[m[14]]||m[14];result+='<span style="color:'+clr+'">'+wlInline(m[15])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  var out="",inList=false,paraBuf=[];  function flushPara(){if(paraBuf.length){out+=wlInline(paraBuf.join("\n")).replace(/\n/g,"<br>");paraBuf=[];}}  for(var li=0;li<lines.length;li++){    var line=lines[li];    var bm=line.match(/^\s*[*\-]\s+(.+)$/);    if(bm){      flushPara();      if(!inList){out+="<ul class=\"wiki-list\">";inList=true;}      out+="<li>"+wlInline(bm[1])+"</li>";      continue;    }    if(inList){out+="</ul>";inList=false;}    var headM=line.match(/^==(.+?)==\s*$/);    if(headM){flushPara();out+="<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";continue;}    paraBuf.push(line);  }  flushPara();  if(inList)out+="</ul>";  return out;}
 function metaBannersHTML(variant){  var order=(questMeta.tabOrder||[]).slice();  var validKeys=["loc","req","type"].concat((questMeta.customTabs||[]).map(function(t){return "ct_"+t.id;}));  order=order.filter(function(k){return validKeys.indexOf(k)!==-1;});  validKeys.forEach(function(k){if(order.indexOf(k)===-1)order.push(k);});  var locClass=variant==="t"?"tloc":(variant==="play"?"loc-box":"bloc");  var locLblClass=variant==="t"?"tloc-lbl":(variant==="play"?"loc-lbl":"bloc-lbl");  var reqClass=variant==="t"?"treq":(variant==="play"?"req-box":"breq");  var reqLblClass=variant==="t"?"treq-lbl":(variant==="play"?"req-lbl":"breq-lbl");  var out="";  order.forEach(function(key){    if(key==="loc"){      var locs=(questMeta.locations||[]).filter(function(l){return l.trim();});      if(locs.length)out+="<div class=\""+locClass+"\"><span class=\""+locLblClass+"\">📍 Locations</span>"+locs.map(function(l){return wl(l);}).join("<br>")+"</div>";    } else if(key==="req"){      if(questMeta.requirement)out+="<div class=\""+reqClass+"\"><span class=\""+reqLblClass+"\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";    } else if(key.indexOf("ct_")===0){      var t=(questMeta.customTabs||[]).filter(function(ct){return "ct_"+ct.id===key;})[0];      if(t&&t.content&&t.content.trim()){        var c=t.color||"#7a5c10";        var collapsible=t.collapsible!==false;        var boxClass=collapsible?"cnote-box collapsed":"cnote-box";        var lblClass=collapsible?"cnote-lbl":"cnote-lbl no-toggle";        var onclk=collapsible?" onclick=\"this.parentElement.classList.toggle('collapsed')\"":"";        out+="<div class=\""+boxClass+"\" style=\"border-color:"+eh(c)+";background:"+eh(c)+"1a\"><span class=\""+lblClass+"\" style=\"color:"+eh(c)+"\""+onclk+">"+eh(t.label||"Note")+"</span><div class=\"cnote-content\">"+wl(t.content)+"</div></div>";      }    }  });  return out;}
 var ICONS={Silver:"../Textures/silver.png",AEXP:"../Textures/aexp.png",Mora:"../Textures/mora.png"};
 function isImgPath(v){return /^(https?:)?\/\//i.test(v)||v.indexOf("/")>-1||/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(v);}
 function rewIcon(r,w){var custom=(r.icon||"").trim();if(custom){if(isImgPath(custom)){return "<img src=\""+eh(custom)+"\" alt=\""+eh(r.item||"")+"\" width=\""+w+"\" height=\""+w+"\" style=\"object-fit:contain;image-rendering:pixelated\" onerror=\"this.style.display='none'\">";}return "<span class=\"reward-icon-emoji\" style=\"font-size:"+Math.round(w*0.7)+"px\">"+eh(custom)+"</span>";}if(ICONS[r.item]){return "<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item||"")+"\" width=\""+w+"\" height=\""+w+"\" style=\"object-fit:contain;image-rendering:pixelated\">";}return "";}
 function rewQty(r){return (r.qty&&Number(r.qty)>0)?" ×"+r.qty:"";}
-function rewardItemsHtml(rewards,imgW){var h="";(rewards||[]).forEach(function(r){h+="<span class=\"reward-it\">"+rewIcon(r,imgW)+eh(r.item)+rewQty(r)+"</span>";});return h;}
+function rewardItemsHtml(rewards,imgW){var h="";(rewards||[]).forEach(function(r){h+="<span class=\"reward-it\">"+rewIcon(r,imgW)+wl(r.item)+rewQty(r)+"</span>";});return h;}
 function getSubNodesJs(sub){if(!Array.isArray(sub.nodes)){sub.nodes=[{id:"node_"+Math.random().toString(36).slice(2,8),text:sub.text||"",dialogues:Array.isArray(sub.dialogues)?sub.dialogues:[],choices:Array.isArray(sub.choices)?sub.choices:[]}];}return sub.nodes;}
 function subNodeLabelJs(node,ix){return (node.name&&node.name.trim())?node.name:"Node "+(ix+1);}
 function subChoicesHtml(node){var out="";if(node.choices&&node.choices.length){out+="<div class=\"bchoices\" style=\"margin-top:6px\">";node.choices.forEach(function(ch){out+="<div class=\"bchoice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(ch.label)||"...")+"</span></div>";});out+="</div>";}if(node.continues&&node.continues.length){out+="<div class=\"bchoices\" style=\"margin-top:6px\">";node.continues.forEach(function(cn){out+="<div class=\"bchoice\" style=\"opacity:.8;border-style:dashed\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(cn.label)||"Continue")+"</span></div>";});out+="</div>";}return out;}
@@ -414,7 +418,7 @@ function renderEndingsList(){
     var inner="<div class=\"bhead\"><span class=\"bbadge b-ending\">Ending</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"</div>";
     inner+="<div class=\"bbody\">";
     if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
-    if(s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+eh(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+wl(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
     if(s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
     inner+="</div>";
     el.innerHTML=inner;wrap.appendChild(el);
@@ -453,7 +457,7 @@ function renderPathCards(path){
       var label=findEdgeLabel(s,path[idx+1]);
       inner+="<div class=\"bchoices\"><div class=\"bchoice path-choice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+wl(label)+"</span></div></div>";
     }
-    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+eh(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+wl(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
     if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
     inner+="</div>";
     el.innerHTML=inner;bv.appendChild(el);
@@ -485,7 +489,7 @@ function renderPathTree(path){
         html+="</div>";
       }
       html+=subScenesTreeHtml(s);
-      if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){html+="<span class=\"treward-item\">"+rewIcon(r,16)+eh(r.item)+rewQty(r)+"</span>";});html+="</div>";}
+      if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){html+="<span class=\"treward-item\">"+rewIcon(r,16)+wl(r.item)+rewQty(r)+"</span>";});html+="</div>";}
       if(s.type==="ending"&&s.unlocks){html+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
       html+="</div>";
     }
@@ -512,7 +516,9 @@ function getBestRouteIds(){
     } else {
       (s.choices||[]).forEach(function(c){if(c.next)walk(c.next);});
     }
-    (s.continues||[]).forEach(function(c){if(c.next)walk(c.next);});
+    var conts=(s.continues||[]);
+    var bestConts=conts.filter(function(c){return c.best;});
+    (bestConts.length>0?bestConts:conts).forEach(function(c){if(c.next)walk(c.next);});
   }
   walk("start");
   return ids;
@@ -521,7 +527,7 @@ function getImportantOnlyOrder(){
   var bestIds=getBestRouteIds();
   var fullOrder=["start"].concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="scene"&&k!=="start";})).concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="ending";}));
   var triggerIds={};
-  fullOrder.forEach(function(id){if(scenes[id]&&(scenes[id].choices||[]).some(function(c){return c.best;}))triggerIds[id]=true;});
+  fullOrder.forEach(function(id){if(scenes[id]&&((scenes[id].choices||[]).some(function(c){return c.best;})||(scenes[id].continues||[]).some(function(c){return c.best;})))triggerIds[id]=true;});
   var postTriggerIds={};
   function walkBest(id,afterTrigger,visited){
     visited=visited||{};
@@ -533,7 +539,9 @@ function getImportantOnlyOrder(){
     var nowAfter=afterTrigger||!!triggerIds[id];
     if(bc.length>0){bc.forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
     else{(s.choices||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
-    (s.continues||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});
+    var conts=(s.continues||[]);
+    var bestConts=conts.filter(function(c){return c.best;});
+    (bestConts.length>0?bestConts:conts).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});
   }
   walkBest("start",false);
   var importantSet={};
@@ -642,26 +650,34 @@ function go(id){
         });
       }
     });
-    (s.continues||[]).forEach(function(c){
-      if(!c.next||!scenes[c.next])return;
-      var cntBtn=document.createElement("button");cntBtn.className="choice-btn";cntBtn.style.cssText="background:#f0f0f0;border-style:dashed";
-      cntBtn.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>";
-      cntBtn.onclick=function(){go(c.next);};
-      cEl.appendChild(cntBtn);
-    });
+    (function(){
+      var contsAll=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+      var contsBest=contsAll.filter(function(c){return c.best;});
+      var contsVis=(bestRouteMode>0)&&contsBest.length>0?contsBest:contsAll;
+      contsVis.forEach(function(c){
+        var cntBtn=document.createElement("button");cntBtn.className="choice-btn"+(c.best?" best":"");cntBtn.style.cssText=c.best?"border-style:dashed":"background:#f0f0f0;border-style:dashed";
+        cntBtn.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">⭐ Best Route</span>":"");
+        cntBtn.onclick=function(){go(c.next);};
+        cEl.appendChild(cntBtn);
+      });
+    })();
   } else if((s.continues||[]).some(function(c){return c.next&&scenes[c.next];})){
-    s.continues.forEach(function(c){
-      if(!c.next||!scenes[c.next])return;
-      var cntBtn2=document.createElement("button");cntBtn2.className="choice-btn";
-      cntBtn2.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>";
-      cntBtn2.onclick=function(){go(c.next);};
-      cEl.appendChild(cntBtn2);
-    });
+    (function(){
+      var contsAll2=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+      var contsBest2=contsAll2.filter(function(c){return c.best;});
+      var contsVis2=(bestRouteMode>0)&&contsBest2.length>0?contsBest2:contsAll2;
+      contsVis2.forEach(function(c){
+        var cntBtn2=document.createElement("button");cntBtn2.className="choice-btn"+(c.best?" best":"");
+        cntBtn2.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">⭐ Best Route</span>":"");
+        cntBtn2.onclick=function(){go(c.next);};
+        cEl.appendChild(cntBtn2);
+      });
+    })();
   } else {
     if(s.rewards&&s.rewards.length){
       var rEl=document.getElementById("reward-box");
       var ri="<div class=\"reward-items\">";
-      s.rewards.forEach(function(r){ri+="<div class=\"reward-item\">"+rewIcon(r,20)+"<span class=\"reward-item-name\">"+eh(r.item)+"</span><span class=\"reward-item-qty\">"+rewQty(r)+"</span></div>";});
+      s.rewards.forEach(function(r){ri+="<div class=\"reward-item\">"+rewIcon(r,20)+"<span class=\"reward-item-name\">"+wl(r.item)+"</span><span class=\"reward-item-qty\">"+rewQty(r)+"</span></div>";});
       ri+="</div>";
       rEl.innerHTML="<span class=\"reward-label\">🎁 Rewards</span>"+ri;
       rEl.style.display="flex";
@@ -841,7 +857,7 @@ function renderCards(){
       });
       inner+="</div>";
     }
-    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+eh(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+wl(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
     if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
     inner+="</div>";
     el.innerHTML=inner;bv.appendChild(el);
@@ -850,6 +866,7 @@ function renderCards(){
 function jumpToCard(id){var el=document.getElementById("bscene-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
 function renderTree(){
   treeVisited={};
+  treeFirstLabel={};
   var bv=document.getElementById("branch-body");
   var _th="";
   if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)||( questMeta.customTabs&&questMeta.customTabs.some(function(t){return t.content&&t.content.trim();}))){
@@ -875,7 +892,7 @@ function renderTree(){
         if(s.embedUrl)_impHtml+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";
         if(s.dialogues&&s.dialogues.length){_impHtml+="<div class=\"tdlgs\">";s.dialogues.forEach(function(d){if(d.collapsed){_impHtml+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{_impHtml+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}});_impHtml+="</div>";}
         _impHtml+=subScenesTreeHtml(s);
-        if(s.type==="ending"&&s.rewards&&s.rewards.length){_impHtml+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){_impHtml+="<span class=\"treward-item\">"+rewIcon(r,16)+eh(r.item)+rewQty(r)+"</span>";});_impHtml+="</div>";}
+        if(s.type==="ending"&&s.rewards&&s.rewards.length){_impHtml+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){_impHtml+="<span class=\"treward-item\">"+rewIcon(r,16)+wl(r.item)+rewQty(r)+"</span>";});_impHtml+="</div>";}
         if(s.type==="ending"&&s.unlocks){_impHtml+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
         _impHtml+="</div>";
       }
@@ -910,12 +927,13 @@ window.addEventListener("orientationchange",function(){
   clearTimeout(_treeResizeT);
   _treeResizeT=setTimeout(function(){requestAnimationFrame(drawTreeLines);},250);
 });
-function buildTreeNode(id,isLast,isBestDest){
+function buildTreeNode(id,isLast,isBestDest,incomingLabel){
   var s=scenes[id];
   if(!s)return "<div class=\"tmissing\">(missing: "+eh(id)+")</div>";
   var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
   var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
   var alreadyVisited=treeVisited[id];
+  if(!alreadyVisited)treeFirstLabel[id]=incomingLabel||"";
   treeVisited[id]=true;
   var html="<div class=\"tnode\">";
   html+="<div class=\"tcard"+(isBestDest?" tcard-best":"")+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
@@ -923,7 +941,8 @@ function buildTreeNode(id,isLast,isBestDest){
   html+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
   html+="</div>";
   if(alreadyVisited){
-    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+eh(s.title||id)+"</div>";
+    var sameLabel=treeFirstLabel[id]?wl(treeFirstLabel[id]):eh(s.title||id);
+    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+sameLabel+"</div>";
     html+="</div>";return html;
   }
   var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.subScenes&&s.subScenes.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
@@ -940,7 +959,7 @@ function buildTreeNode(id,isLast,isBestDest){
       html+="</div>";
     }
     html+=subScenesTreeHtml(s);
-    if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){html+="<span class=\"treward-item\">"+rewIcon(r,16)+eh(r.item)+rewQty(r)+"</span>";});html+="</div>";}
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){html+="<span class=\"treward-item\">"+rewIcon(r,16)+wl(r.item)+rewQty(r)+"</span>";});html+="</div>";}
     if(s.type==="ending"&&s.unlocks){html+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
     html+="</div>";
   }
@@ -953,7 +972,7 @@ function buildTreeNode(id,isLast,isBestDest){
       html+="<div class=\"tchoice-inline\">";
       html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c1.label)||"...")+"</span>"+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c1.itemReq&&c1.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c1.itemReq)+"</span>":"")+"</div>";
       if(c1Objs)html+="<div style=\"margin:2px 0 4px\">"+c1Objs+"</div>";
-      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best);}
+      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best,c1.label);}
       else if(c1.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c1.responseText)+"</div>";}
       else{html+="<div class=\"tmissing\">(no destination)</div>";}
       html+="</div>";
@@ -966,7 +985,7 @@ function buildTreeNode(id,isLast,isBestDest){
         html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">"; 
         html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c.label)||"...")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c.itemReq&&c.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c.itemReq)+"</span>":"")+"</div>";
         if(cObjs)html+="<div style=\"margin:2px 0 4px\">"+cObjs+"</div>";
-        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best);}
+        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best,c.label);}
         else if(c.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c.responseText)+"</div>";}
         else{html+="<div class=\"tmissing\">(no destination)</div>";}
         html+="</div>";
@@ -976,20 +995,22 @@ function buildTreeNode(id,isLast,isBestDest){
   }
   var _bestC=s.choices?(s.choices.filter(function(c){return c.best;})):[]; 
   var _visLen=(s.choices&&s.choices.length)?(bestRouteMode>0&&_bestC.length>0?_bestC.length:s.choices.length):0;
-  var _conts=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+  var _contsAll=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+  var _contsBest=_contsAll.filter(function(c){return c.best;});
+  var _conts=(bestRouteMode>0)&&_contsBest.length>0?_contsBest:_contsAll;
   if(_conts.length>1){
     html+="<div class=\"tchoices tcontinues\" style=\"margin-top:8px\">";
     _conts.forEach(function(c,ci){
       var last=ci===_conts.length-1;
-      html+="<div class=\"tchoice"+(last?" tchoice-last":"")+"\">";
-      html+="<div class=\"tcontinue-label\"><span class=\"tcontinue-label-text\">"+(c.label?wl(c.label):"Continues to")+"</span></div>";
-      html+=buildTreeNode(c.next,last,isBestDest);
+      html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">";
+      html+="<div class=\"tcontinue-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tcontinue-label-text\">"+(c.label?wl(c.label):"Continues to")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+      html+=buildTreeNode(c.next,last,isBestDest||c.best,c.label);
       html+="</div>";
     });
     html+="</div>";
   } else {
     _conts.forEach(function(c){
-      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+"</div>"+buildTreeNode(c.next,true,isBestDest)+"</div>";
+      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>"+buildTreeNode(c.next,true,isBestDest||c.best,c.label)+"</div>";
     });
   }
   html+="</div>";return html;
@@ -1012,8 +1033,8 @@ function drawTreeLines(){
     choices.forEach(function(ch,i){
       var chRect=ch.getBoundingClientRect();
       var stubY=chRect.top-groupRect.top+19;
-      var vertColor=isDashed?BLUE:((bestIdx>=0&&i<=bestIdx)?RED:GREY);
-      var horizColor=isDashed?BLUE:((i===bestIdx)?RED:GREY);
+      var vertColor=isDashed?((bestIdx>=0&&i<=bestIdx)?RED:BLUE):((bestIdx>=0&&i<=bestIdx)?RED:GREY);
+      var horizColor=isDashed?((i===bestIdx)?RED:BLUE):((i===bestIdx)?RED:GREY);
       var horizH=(i===bestIdx&&!isDashed)?4:2;
       var vert=document.createElement("div");
       vert.className="tc-vert";

@@ -221,6 +221,7 @@ summary::-webkit-details-marker{display:none}
 .tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
 .tchoice-label.tchoice-best{background:#fff0ee;border-color:#e03020}
 .tcontinue-label{font-size:12px;font-weight:600;font-style:italic;color:#123f62;background:transparent;border:1px dashed #1a5a8a;border-radius:4px;padding:4px 11px;margin-bottom:3px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
+.tcontinue-label.tchoice-best{background:#fff0ee;border-color:#e03020;color:var(--text)}
 .tcontinue-label-text::before{content:"↓ ";font-style:normal}
 .tchoice-itemreq{font-size:10px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:1px 6px;margin-top:2px;flex-basis:100%;white-space:normal;word-break:break-word;font-family:sans-serif}
 .tchoice-label-text{flex:1 1 auto;min-width:80px;word-break:break-word}
@@ -319,8 +320,8 @@ summary::-webkit-details-marker{display:none}
   </div>
 </div>
 <script>
-const scenes={"start":{"id":"start","type":"start","title":"Somewhere We Met","text":"''You're picking your way through Starglow Cavern when movement flashes ahead. Two figures stumble under the ice-glow, already hemmed in by staff-wielding Cryo Samachurls.''","dialogues":[],"choices":[{"label":"Jump in to help!","next":"Jump_in_to_help_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[]},"Jump_in_to_help_":{"id":"Jump_in_to_help_","type":"scene","title":"","text":"''The cavern rings with chanting. Two Cryo Samachurls raise their staves, frost gathering at the tips. The figures behind them are down and barely moving.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Defeat the Cryo Samachurls attacking the travelers in Starglow Cavern","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Fight_the_Cryo_Samachurls","label":"Do /rpg again and then click on Fight the Cryo Samachurls. Defeat 2 [[Cryo Samachurl]]s"}],"subScenes":[],"gateSubScenes":false},"Fight_the_Cryo_Samachurls":{"id":"Fight_the_Cryo_Samachurls","type":"scene","title":"","text":"''The last Samachurl crumples into the frost. You turn to the wounded travelers, and your stomach drops.''\n\n''It's Marla. Beside her lies a man in travel leathers you don't recognize. Both are pale, bleeding, and cannot stand.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Are you alright?","next":"Are_you_alright_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Are_you_alright_":{"id":"Are_you_alright_","type":"scene","title":"","text":"Marla: ''voice thin'' Traveller... please. We can't... we can't move.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Stay with them","next":"Stay_with_them","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Stay_with_them":{"id":"Stay_with_them","type":"scene","title":"","text":"Devin: ''coughing hard'' There's a camp in Wyrmrest Valley. Adventurers. Medicine. Go. Now.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What about you two?","next":"What_about_you_two_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"What_about_you_two_":{"id":"What_about_you_two_","type":"scene","title":"","text":"Marla: Please. Hurry.\n\n''Neither of them can stand. Waiting here will not save them.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Ask for aid at the adventurer camp in Wyrmrest Valley","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Ask_for_Aid_at_the_Camp","label":"Go to Wyrmrest Valley (Dragonspine), do /rpg and click on Ask for Aid at the Camp"}],"subScenes":[],"gateSubScenes":false},"Ask_for_Aid_at_the_Camp":{"id":"Ask_for_Aid_at_the_Camp","type":"scene","title":"","text":"''An adventurer at the Wyrmrest Valley camp digs through a satchel and presses a single vial into your hands.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Is this all you have?","next":"Is_this_all_you_have","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Is_this_all_you_have":{"id":"Is_this_all_you_have","type":"scene","title":"","text":"Adventurer: This is all I can spare in this weather. One dose. Make it count.\n\n''The vial is warm against your palm. Not enough for two.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Return to Marla and Devin in Starglow Cavern with the medicine","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Return_to_Marla_and_Devin","label":"Go to Starglow Cavern (Dragonspine), do /rpg and click on Return to Marla and Devin"}],"subScenes":[],"gateSubScenes":false},"Return_to_Marla_and_Devin":{"id":"Return_to_Marla_and_Devin","type":"scene","title":"","text":"''You kneel between them in Starglow Cavern and tell them the truth. One vial. One life.''\n\n''Silence. Then the air turns sharp.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"...","next":"first_fucking_dot","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"first_fucking_dot":{"id":"first_fucking_dot","type":"scene","title":"","text":"Devin: Give it to me. I'm the one who can still make it matter.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Listen","next":"listen_1","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"listen_1":{"id":"listen_1","type":"scene","title":"","text":"Marla: Give it to me. I own a store. I can give you a discount on everything. Forever.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Listen","next":"listen_2","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"listen_2":{"id":"listen_2","type":"scene","title":"","text":"Devin: A discount? I have connections with the Adventurers' Guild. Real benefits. Rank. Work. Protection.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Listen","next":"listen_3","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"listen_3":{"id":"listen_3","type":"scene","title":"","text":"Marla: ''interjecting'' My husband was well known. I can introduce you to people who matter.\n\n''They look at you. Waiting.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Save Devin","next":"Save_Devin","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Save Marla","next":"Save_Marla","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Save_Marla":{"id":"Save_Marla","type":"scene","title":"","text":"''You tip the vial to Marla's lips. She gasps, then manages a thin, grateful smile.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"...","next":"dot_marla","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"dot_marla":{"id":"dot_marla","type":"scene","title":"","text":"Devin: ''bitter laugh'' Of course. Store discounts. Introductions. Naturally.\n\nMarla: ''quiet'' Well. Obviously they would choose me.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Look at Devin","next":"____Somewhere_We_Met__Saved_Marla","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"____Somewhere_We_Met__Saved_Marla":{"id":"____Somewhere_We_Met__Saved_Marla","type":"ending","title":"Saved Marla","text":"''Devin's hand goes slack against the ice. He does not speak again.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":175,"icon":""},{"item":"AEXP","qty":125,"icon":""}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Save_Devin":{"id":"Save_Devin","type":"scene","title":"","text":"''You tip the vial to Devin's lips. Color returns to his face almost at once.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"...","next":"dot_devin","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"dot_devin":{"id":"dot_devin","type":"scene","title":"","text":"Marla: ''staring'' Of course. Of course you'd choose him.\n\nDevin: ''breathing harder, steadier'' Well. Obviously they would choose me. I told you.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Look at Marla","next":"____Somewhere_We_Met__Saved_Devin","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"____Somewhere_We_Met__Saved_Devin":{"id":"____Somewhere_We_Met__Saved_Devin","type":"ending","title":"Saved Devin","text":"''Marla's breathing slows. By the time you look back, she is gone.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":175,"icon":""},{"item":"AEXP","qty":125,"icon":""}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
-const questMeta={"requirement":"- Explore Starglow Cavern (1%+ exploration) to trigger this quest.\n- Marla alive (from the [[Flowers for Marla|https://dwrpgdc.github.io/DW-RPG-Data/Quests/Flowers_for_Marla]] quest)","locations":["[[Locations#Starglow_Cavern|Starglow Cavern]]"],"questType":"normal","customTabs":[{"id":"tip1","label":"TIP","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."}],"tabOrder":["loc","req","type","ct_tip1"]};
+const scenes={"start":{"id":"start","type":"start","title":"Somewhere We Met","text":"''You're picking your way through Starglow Cavern when movement flashes ahead. Two figures stumble under the ice-glow, already hemmed in by staff-wielding Cryo Samachurls.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Jump in to help!","next":"Jump_in_to_help_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Jump_in_to_help_":{"id":"Jump_in_to_help_","type":"scene","title":"","text":"''The cavern rings with chanting. Two Cryo Samachurls raise their staves, frost gathering at the tips. The figures behind them are down and barely moving.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Defeat the Cryo Samachurls attacking the travelers in Starglow Cavern","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Fight_the_Cryo_Samachurls","label":"Do /rpg again and then click on Fight the Cryo Samachurls. Defeat 2 [[Cryo Samachurl]]s","best":false}],"subScenes":[],"gateSubScenes":false},"Fight_the_Cryo_Samachurls":{"id":"Fight_the_Cryo_Samachurls","type":"scene","title":"","text":"''The last Samachurl crumples into the frost. You turn to the wounded travelers, and your stomach drops.''\n\n''It's Marla. Beside her lies a man in travel leathers you don't recognize. Both are pale, bleeding, and cannot stand.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Are you alright?","next":"Are_you_alright_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Are_you_alright_":{"id":"Are_you_alright_","type":"scene","title":"","text":"Marla: ''voice thin'' Traveller... please. We can't... we can't move.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Stay with them","next":"Stay_with_them"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Stay_with_them":{"id":"Stay_with_them","type":"scene","title":"","text":"Devin: ''coughing hard'' There's a camp in Wyrmrest Valley. Adventurers. Medicine. Go. Now.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What about you two?","next":"What_about_you_two_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"What_about_you_two_":{"id":"What_about_you_two_","type":"scene","title":"","text":"Marla: Please. Hurry.\n\n''Neither of them can stand. Waiting here will not save them.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Ask for aid at the adventurer camp in Wyrmrest Valley","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Ask_for_Aid_at_the_Camp","label":"Go to Wyrmrest Valley (Dragonspine), do /rpg and click on Ask for Aid at the Camp","best":false}],"subScenes":[],"gateSubScenes":false},"Ask_for_Aid_at_the_Camp":{"id":"Ask_for_Aid_at_the_Camp","type":"scene","title":"","text":"''An adventurer at the Wyrmrest Valley camp digs through a satchel and presses a single vial into your hands.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Is this all you have?","next":"Is_this_all_you_have"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Is_this_all_you_have":{"id":"Is_this_all_you_have","type":"scene","title":"","text":"Adventurer: This is all I can spare in this weather. One dose. Make it count.\n\n''The vial is warm against your palm. Not enough for two.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Return to Marla and Devin in Starglow Cavern with the medicine","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Return_to_Marla_and_Devin","label":"Go to Starglow Cavern (Dragonspine), do /rpg and click on Return to Marla and Devin","best":false}],"subScenes":[],"gateSubScenes":false},"Return_to_Marla_and_Devin":{"id":"Return_to_Marla_and_Devin","type":"scene","title":"","text":"''You kneel between them in Starglow Cavern and tell them the truth. One vial. One life.''\n\n''Silence. Then the air turns sharp.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"...","next":"first_fucking_dot"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"first_fucking_dot":{"id":"first_fucking_dot","type":"scene","title":"","text":"Devin: Give it to me. I'm the one who can still make it matter.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Listen","next":"listen_1"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"listen_1":{"id":"listen_1","type":"scene","title":"","text":"Marla: Give it to me. I own a store. I can give you a discount on everything. Forever.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Listen","next":"listen_2"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"listen_2":{"id":"listen_2","type":"scene","title":"","text":"Devin: A discount? I have connections with the Adventurers' Guild. Real benefits. Rank. Work. Protection.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Listen","next":"listen_3"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"listen_3":{"id":"listen_3","type":"scene","title":"","text":"Marla: ''interjecting'' My husband was well known. I can introduce you to people who matter.\n\n''They look at you. Waiting.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Save Devin","next":"Save_Devin"},{"label":"Save Marla","next":"Save_Marla"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Save_Marla":{"id":"Save_Marla","type":"scene","title":"","text":"''You tip the vial to Marla's lips. She gasps, then manages a thin, grateful smile.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"...","next":"dot_marla"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"dot_marla":{"id":"dot_marla","type":"scene","title":"","text":"Devin: ''bitter laugh'' Of course. Store discounts. Introductions. Naturally.\n\nMarla: ''quiet'' Well. Obviously they would choose me.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Look at Devin","next":"____Somewhere_We_Met__Saved_Marla"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"____Somewhere_We_Met__Saved_Marla":{"id":"____Somewhere_We_Met__Saved_Marla","type":"ending","title":"Saved Marla","text":"''Devin's hand goes slack against the ice. He does not speak again.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":175,"icon":""},{"item":"AEXP","qty":125,"icon":""}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Save_Devin":{"id":"Save_Devin","type":"scene","title":"","text":"''You tip the vial to Devin's lips. Color returns to his face almost at once.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"...","next":"dot_devin"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"dot_devin":{"id":"dot_devin","type":"scene","title":"","text":"Marla: ''staring'' Of course. Of course you'd choose him.\n\nDevin: ''breathing harder, steadier'' Well. Obviously they would choose me. I told you.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Look at Marla","next":"____Somewhere_We_Met__Saved_Devin"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"____Somewhere_We_Met__Saved_Devin":{"id":"____Somewhere_We_Met__Saved_Devin","type":"ending","title":"Saved Devin","text":"''Marla's breathing slows. By the time you look back, she is gone.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":175,"icon":""},{"item":"AEXP","qty":125,"icon":""}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
+const questMeta={"requirement":"- Explore Starglow Cavern (1%+ exploration) to trigger this quest.\n- Marla alive (from the [[Flowers for Marla|https://dwrpgdc.github.io/DW-RPG-Data/Quests/Flowers_for_Marla]] quest)","locations":["[[Locations#Starglow_Cavern|Starglow Cavern]]"],"questType":"normal","customTabs":[{"id":"tip1","label":"TIP","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.","collapsible":true}],"tabOrder":[]};
 const ICONS_OBJ={};
 var WIKI_BASE="https://dawnwineryrpg.miraheze.org/wiki/";
 var WIKI_MODE=true;
@@ -334,6 +335,7 @@ let openSubId=null;
 let openSubNodeId=null;
 let branchMode="tree";
 let treeVisited={};
+let treeFirstLabel={};
 function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
 function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\[size:((?:[\\d.]+(?:em|px|%)?)|sm|small|xs|lg|large|xl|xxl)\\|([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+wlInline(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+wlInline(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+wlInline(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var rawSz=m[12].trim();var szMap={sm:"0.8em",small:"0.8em",xs:"0.65em",lg:"1.25em",large:"1.25em",xl:"1.5em",xxl:"1.8em"};var szv=szMap[rawSz.toLowerCase()]||rawSz;result+='<span style="font-size:'+e(szv)+'">'+wlInline(m[13])+'</span>';}      else if(m[14]!==undefined){var clr=WCLR[m[14]]||m[14];result+='<span style="color:'+clr+'">'+wlInline(m[15])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  var out="",inList=false,paraBuf=[];  function flushPara(){if(paraBuf.length){out+=wlInline(paraBuf.join("\n")).replace(/\n/g,"<br>");paraBuf=[];}}  for(var li=0;li<lines.length;li++){    var line=lines[li];    var bm=line.match(/^\s*[*\-]\s+(.+)$/);    if(bm){      flushPara();      if(!inList){out+="<ul class=\"wiki-list\">";inList=true;}      out+="<li>"+wlInline(bm[1])+"</li>";      continue;    }    if(inList){out+="</ul>";inList=false;}    var headM=line.match(/^==(.+?)==\s*$/);    if(headM){flushPara();out+="<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";continue;}    paraBuf.push(line);  }  flushPara();  if(inList)out+="</ul>";  return out;}
 function metaBannersHTML(variant){  var order=(questMeta.tabOrder||[]).slice();  var validKeys=["loc","req","type"].concat((questMeta.customTabs||[]).map(function(t){return "ct_"+t.id;}));  order=order.filter(function(k){return validKeys.indexOf(k)!==-1;});  validKeys.forEach(function(k){if(order.indexOf(k)===-1)order.push(k);});  var locClass=variant==="t"?"tloc":(variant==="play"?"loc-box":"bloc");  var locLblClass=variant==="t"?"tloc-lbl":(variant==="play"?"loc-lbl":"bloc-lbl");  var reqClass=variant==="t"?"treq":(variant==="play"?"req-box":"breq");  var reqLblClass=variant==="t"?"treq-lbl":(variant==="play"?"req-lbl":"breq-lbl");  var out="";  order.forEach(function(key){    if(key==="loc"){      var locs=(questMeta.locations||[]).filter(function(l){return l.trim();});      if(locs.length)out+="<div class=\""+locClass+"\"><span class=\""+locLblClass+"\">📍 Locations</span>"+locs.map(function(l){return wl(l);}).join("<br>")+"</div>";    } else if(key==="req"){      if(questMeta.requirement)out+="<div class=\""+reqClass+"\"><span class=\""+reqLblClass+"\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";    } else if(key.indexOf("ct_")===0){      var t=(questMeta.customTabs||[]).filter(function(ct){return "ct_"+ct.id===key;})[0];      if(t&&t.content&&t.content.trim()){        var c=t.color||"#7a5c10";        var collapsible=t.collapsible!==false;        var boxClass=collapsible?"cnote-box collapsed":"cnote-box";        var lblClass=collapsible?"cnote-lbl":"cnote-lbl no-toggle";        var onclk=collapsible?" onclick=\"this.parentElement.classList.toggle('collapsed')\"":"";        out+="<div class=\""+boxClass+"\" style=\"border-color:"+eh(c)+";background:"+eh(c)+"1a\"><span class=\""+lblClass+"\" style=\"color:"+eh(c)+"\""+onclk+">"+eh(t.label||"Note")+"</span><div class=\"cnote-content\">"+wl(t.content)+"</div></div>";      }    }  });  return out;}
@@ -514,7 +516,9 @@ function getBestRouteIds(){
     } else {
       (s.choices||[]).forEach(function(c){if(c.next)walk(c.next);});
     }
-    (s.continues||[]).forEach(function(c){if(c.next)walk(c.next);});
+    var conts=(s.continues||[]);
+    var bestConts=conts.filter(function(c){return c.best;});
+    (bestConts.length>0?bestConts:conts).forEach(function(c){if(c.next)walk(c.next);});
   }
   walk("start");
   return ids;
@@ -523,7 +527,7 @@ function getImportantOnlyOrder(){
   var bestIds=getBestRouteIds();
   var fullOrder=["start"].concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="scene"&&k!=="start";})).concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="ending";}));
   var triggerIds={};
-  fullOrder.forEach(function(id){if(scenes[id]&&(scenes[id].choices||[]).some(function(c){return c.best;}))triggerIds[id]=true;});
+  fullOrder.forEach(function(id){if(scenes[id]&&((scenes[id].choices||[]).some(function(c){return c.best;})||(scenes[id].continues||[]).some(function(c){return c.best;})))triggerIds[id]=true;});
   var postTriggerIds={};
   function walkBest(id,afterTrigger,visited){
     visited=visited||{};
@@ -535,7 +539,9 @@ function getImportantOnlyOrder(){
     var nowAfter=afterTrigger||!!triggerIds[id];
     if(bc.length>0){bc.forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
     else{(s.choices||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
-    (s.continues||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});
+    var conts=(s.continues||[]);
+    var bestConts=conts.filter(function(c){return c.best;});
+    (bestConts.length>0?bestConts:conts).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});
   }
   walkBest("start",false);
   var importantSet={};
@@ -644,21 +650,29 @@ function go(id){
         });
       }
     });
-    (s.continues||[]).forEach(function(c){
-      if(!c.next||!scenes[c.next])return;
-      var cntBtn=document.createElement("button");cntBtn.className="choice-btn";cntBtn.style.cssText="background:#f0f0f0;border-style:dashed";
-      cntBtn.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>";
-      cntBtn.onclick=function(){go(c.next);};
-      cEl.appendChild(cntBtn);
-    });
+    (function(){
+      var contsAll=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+      var contsBest=contsAll.filter(function(c){return c.best;});
+      var contsVis=(bestRouteMode>0)&&contsBest.length>0?contsBest:contsAll;
+      contsVis.forEach(function(c){
+        var cntBtn=document.createElement("button");cntBtn.className="choice-btn"+(c.best?" best":"");cntBtn.style.cssText=c.best?"border-style:dashed":"background:#f0f0f0;border-style:dashed";
+        cntBtn.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">⭐ Best Route</span>":"");
+        cntBtn.onclick=function(){go(c.next);};
+        cEl.appendChild(cntBtn);
+      });
+    })();
   } else if((s.continues||[]).some(function(c){return c.next&&scenes[c.next];})){
-    s.continues.forEach(function(c){
-      if(!c.next||!scenes[c.next])return;
-      var cntBtn2=document.createElement("button");cntBtn2.className="choice-btn";
-      cntBtn2.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>";
-      cntBtn2.onclick=function(){go(c.next);};
-      cEl.appendChild(cntBtn2);
-    });
+    (function(){
+      var contsAll2=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+      var contsBest2=contsAll2.filter(function(c){return c.best;});
+      var contsVis2=(bestRouteMode>0)&&contsBest2.length>0?contsBest2:contsAll2;
+      contsVis2.forEach(function(c){
+        var cntBtn2=document.createElement("button");cntBtn2.className="choice-btn"+(c.best?" best":"");
+        cntBtn2.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">⭐ Best Route</span>":"");
+        cntBtn2.onclick=function(){go(c.next);};
+        cEl.appendChild(cntBtn2);
+      });
+    })();
   } else {
     if(s.rewards&&s.rewards.length){
       var rEl=document.getElementById("reward-box");
@@ -852,6 +866,7 @@ function renderCards(){
 function jumpToCard(id){var el=document.getElementById("bscene-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
 function renderTree(){
   treeVisited={};
+  treeFirstLabel={};
   var bv=document.getElementById("branch-body");
   var _th="";
   if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)||( questMeta.customTabs&&questMeta.customTabs.some(function(t){return t.content&&t.content.trim();}))){
@@ -912,12 +927,13 @@ window.addEventListener("orientationchange",function(){
   clearTimeout(_treeResizeT);
   _treeResizeT=setTimeout(function(){requestAnimationFrame(drawTreeLines);},250);
 });
-function buildTreeNode(id,isLast,isBestDest){
+function buildTreeNode(id,isLast,isBestDest,incomingLabel){
   var s=scenes[id];
   if(!s)return "<div class=\"tmissing\">(missing: "+eh(id)+")</div>";
   var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
   var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
   var alreadyVisited=treeVisited[id];
+  if(!alreadyVisited)treeFirstLabel[id]=incomingLabel||"";
   treeVisited[id]=true;
   var html="<div class=\"tnode\">";
   html+="<div class=\"tcard"+(isBestDest?" tcard-best":"")+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
@@ -925,7 +941,8 @@ function buildTreeNode(id,isLast,isBestDest){
   html+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
   html+="</div>";
   if(alreadyVisited){
-    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+eh(s.title||id)+"</div>";
+    var sameLabel=treeFirstLabel[id]?wl(treeFirstLabel[id]):eh(s.title||id);
+    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+sameLabel+"</div>";
     html+="</div>";return html;
   }
   var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.subScenes&&s.subScenes.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
@@ -955,7 +972,7 @@ function buildTreeNode(id,isLast,isBestDest){
       html+="<div class=\"tchoice-inline\">";
       html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c1.label)||"...")+"</span>"+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c1.itemReq&&c1.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c1.itemReq)+"</span>":"")+"</div>";
       if(c1Objs)html+="<div style=\"margin:2px 0 4px\">"+c1Objs+"</div>";
-      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best);}
+      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best,c1.label);}
       else if(c1.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c1.responseText)+"</div>";}
       else{html+="<div class=\"tmissing\">(no destination)</div>";}
       html+="</div>";
@@ -968,7 +985,7 @@ function buildTreeNode(id,isLast,isBestDest){
         html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">"; 
         html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c.label)||"...")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c.itemReq&&c.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c.itemReq)+"</span>":"")+"</div>";
         if(cObjs)html+="<div style=\"margin:2px 0 4px\">"+cObjs+"</div>";
-        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best);}
+        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best,c.label);}
         else if(c.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c.responseText)+"</div>";}
         else{html+="<div class=\"tmissing\">(no destination)</div>";}
         html+="</div>";
@@ -978,20 +995,22 @@ function buildTreeNode(id,isLast,isBestDest){
   }
   var _bestC=s.choices?(s.choices.filter(function(c){return c.best;})):[]; 
   var _visLen=(s.choices&&s.choices.length)?(bestRouteMode>0&&_bestC.length>0?_bestC.length:s.choices.length):0;
-  var _conts=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+  var _contsAll=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+  var _contsBest=_contsAll.filter(function(c){return c.best;});
+  var _conts=(bestRouteMode>0)&&_contsBest.length>0?_contsBest:_contsAll;
   if(_conts.length>1){
     html+="<div class=\"tchoices tcontinues\" style=\"margin-top:8px\">";
     _conts.forEach(function(c,ci){
       var last=ci===_conts.length-1;
-      html+="<div class=\"tchoice"+(last?" tchoice-last":"")+"\">";
-      html+="<div class=\"tcontinue-label\"><span class=\"tcontinue-label-text\">"+(c.label?wl(c.label):"Continues to")+"</span></div>";
-      html+=buildTreeNode(c.next,last,isBestDest);
+      html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">";
+      html+="<div class=\"tcontinue-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tcontinue-label-text\">"+(c.label?wl(c.label):"Continues to")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+      html+=buildTreeNode(c.next,last,isBestDest||c.best,c.label);
       html+="</div>";
     });
     html+="</div>";
   } else {
     _conts.forEach(function(c){
-      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+"</div>"+buildTreeNode(c.next,true,isBestDest)+"</div>";
+      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>"+buildTreeNode(c.next,true,isBestDest||c.best,c.label)+"</div>";
     });
   }
   html+="</div>";return html;
@@ -1014,8 +1033,8 @@ function drawTreeLines(){
     choices.forEach(function(ch,i){
       var chRect=ch.getBoundingClientRect();
       var stubY=chRect.top-groupRect.top+19;
-      var vertColor=isDashed?BLUE:((bestIdx>=0&&i<=bestIdx)?RED:GREY);
-      var horizColor=isDashed?BLUE:((i===bestIdx)?RED:GREY);
+      var vertColor=isDashed?((bestIdx>=0&&i<=bestIdx)?RED:BLUE):((bestIdx>=0&&i<=bestIdx)?RED:GREY);
+      var horizColor=isDashed?((i===bestIdx)?RED:BLUE):((i===bestIdx)?RED:GREY);
       var horizH=(i===bestIdx&&!isDashed)?4:2;
       var vert=document.createElement("div");
       vert.className="tc-vert";
