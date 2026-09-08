@@ -399,9 +399,31 @@
   .bag-tabs button{ font-size:.68rem; padding:6px 9px; }
   .bag-tabs button.active-tab{ background:var(--gold); color:var(--bg); border-color:var(--gold); }
   .bag-controls-row .picker-view-toggle{ flex:0 0 auto; }
-  .bag-quickadd-row{ padding:10px 16px 0; flex-shrink:0; }
-  .bag-quickadd-row button{ width:100%; }
+  .bag-quickadd-row{ padding:10px 16px 0; flex-shrink:0; display:flex; gap:8px; }
+  .bag-quickadd-row button{ flex:1; }
   .bag-search-row{ padding:12px 16px 0; flex-shrink:0; }
+  /* ---------- Bulk paste (bag) — modal ---------- */
+  #bulkPasteOverlay .picker-modal{ max-width:460px; width:100%; }
+  .bulk-paste-body{ padding:14px 16px 18px; }
+  .bulk-paste-hint{ font-size:.72rem; color:var(--ink-dim); margin-bottom:10px; line-height:1.55; }
+  .bulk-paste-hint code{ background:var(--bg-alt); padding:1px 4px; border-radius:4px; font-family:'JetBrains Mono', monospace; }
+  #bagBulkPasteInput{
+    width:100%; font-family:'JetBrains Mono', monospace; font-size:.78rem; background:var(--bg-alt);
+    color:var(--ink); border:1.5px solid var(--line); border-radius:6px; padding:9px; resize:vertical; margin-bottom:10px;
+  }
+  #bagBulkPasteInput:focus{ outline:1.5px solid var(--gold-dim); border-color:var(--gold-dim); }
+  .bulk-paste-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .bulk-paste-result{ font-size:.72rem; color:var(--ink-dim); line-height:1.5; flex-basis:100%; }
+  .bulk-paste-result.has-issues{ color:#c0392b; }
+  @media(max-width:640px){
+    #bulkPasteOverlay{ padding:16px; align-items:center; }
+    #bulkPasteOverlay .picker-modal{ max-width:360px; max-height:80vh; height:auto; border-radius:var(--radius); }
+  }
+  .inline-link-btn{
+    background:none; border:none; color:var(--gold-dim); text-decoration:underline;
+    cursor:pointer; padding:5px 2px; font-family:'JetBrains Mono', monospace; font-size:.68rem;
+  }
+  .inline-link-btn:hover{ color:var(--gold); }
   .bag-sidebar-content{ flex:1; overflow-y:auto; padding:14px 16px; }
   .bag-sidebar-content .bag-item{ margin-bottom:10px; }
   .bag-sidebar-content.is-grid{
@@ -860,6 +882,12 @@
         </div>
 
         <div class="dps-results" id="dpsResults"></div>
+
+        <div class="dps-subhead">Bag Optimizer</div>
+        <button type="button" id="dpsOptimizeBtn" class="primary" style="width:100%;">🏆 Best DPS Build (from Bag)</button>
+        <div class="dps-hint">Tries every weapon/artifact combo currently in your Bag (plus what's equipped) against the settings above, and equips whichever scores the highest average hit.</div>
+        <div id="dpsOptimizeResult"></div>
+
         <div class="dps-note">Assumes a non-crit roll averages the ATK range midpoint; crit rolls apply Crit Value as a bonus multiplier on top of the roll. Ignores enemy DR/DV (raw output).</div>
         <div class="dps-note dps-term-def">In plain terms: this ignores the enemy's defense stats and just shows the raw damage your hit would deal before their armor reduces it.</div>
       </div>
@@ -909,8 +937,29 @@
   <div class="bag-quickadd-row" id="bagQuickAddRow">
     <button type="button" class="primary" id="bagQuickAddBtn">➕ Add New</button>
   </div>
+  <div class="bag-quickadd-row" id="bagBulkPasteRow">
+    <button type="button" id="bagBulkPasteOpenBtn">📋 Paste from Text</button>
+  </div>
   <div class="bag-sidebar-content" id="bagSidebarContent"></div>
 </aside>
+
+<div id="bulkPasteOverlay" class="picker-overlay">
+  <div class="picker-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title">📋 Paste Weapons/Artifacts</div>
+      <button class="picker-close" id="bulkPasteCloseBtn">✕</button>
+    </div>
+    <div class="bulk-paste-body">
+      <div class="bulk-paste-hint">One per line — weapon or artifact piece names, any mix. Recognized names are added straight to the Bag, and rolled stats in a <code>( +48 ATK, -8% CR )</code> style block — including <code>( +189 to +241 ATK )</code> ranges — are read in automatically. e.g. <code>Primordial Jade Winged-Spear</code> or <code>Gladiator's Nostalgia</code>. Optional <code>x3</code> adds multiple copies. Discord-style <code>**bold**</code>, emoji tags, and bracketed weight notes are stripped automatically — the emoji tag itself is used to identify the item, so a renamed/nicknamed item (e.g. <code>&lt;:Weapon_Sacrificial_Jade:...&gt; Spicy big balls</code>) is still recognized, with the leftover text kept as its nickname. A leading known Prefix word (e.g. <code>Spicy</code>) is read as the item's Prefix, <code>⭐</code> marks it Favorite, and trailing <code>✪</code>/<code>✪✪</code>/<code>✪✪✪</code> sets its Anvil Star level.</div>
+      <textarea id="bagBulkPasteInput" rows="8" placeholder="Primordial Jade Winged-Spear&#10;Gladiator's Nostalgia&#10;Moment of Cessation ( +48 ATK, -8% CR ) [0.25kg]"></textarea>
+      <div class="bulk-paste-actions">
+        <button type="button" class="primary" id="bagBulkPasteApplyBtn">Apply</button>
+        <button type="button" class="inline-link-btn" id="bagBulkPasteClearBtn">Clear</button>
+        <span class="bulk-paste-result" id="bagBulkPasteResult"></span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="pickerOverlay" class="picker-overlay">
   <div class="picker-modal">
@@ -1024,6 +1073,13 @@
       </div>
       <div class="settings-row">
         <div class="settings-row-text">
+          <div class="settings-row-title">Clear Bag</div>
+          <div class="settings-row-desc">Remove every weapon and artifact piece saved in your Bag.</div>
+        </div>
+        <button type="button" id="clearBagBtn">🗑️ Clear</button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-text">
           <div class="settings-row-title">Anvil Star Control</div>
           <div class="settings-row-desc">Choose how tapping the Anvil Star control changes its level.</div>
         </div>
@@ -1082,10 +1138,11 @@
       <div class="howto-section">
         <h3>Using the Bag</h3>
         <ul>
-          <li>Click <strong>🎒 Save to Bag</strong> under a weapon or artifact panel to store it for later.</li>
+          <li>Click <strong>🎒 Save to Bag</strong> under a weapon or artifact panel to store it for later — you'll be asked for an optional nickname first (leave it blank to just use the item's real name).</li>
           <li>Open <strong>🎒 Bag</strong> in the top bar to view saved items, sorted into tabs — including an <strong>All</strong> tab showing everything at once.</li>
           <li>From the Bag, click <strong>☆</strong> to favorite an item (favorites float to the top of their tab), <strong>Equip</strong> to put it back on your character, <strong>⧉</strong> to duplicate it, or ✕ to remove it.</li>
           <li>To add an item straight to the Bag without equipping it first, switch to a specific tab (Weapon, Flower, Plume, Sands, Goblet, or Circlet) and click <strong>➕ Add New</strong>. Pick the item, set its stats, and click <strong>🎒 Save to Bag</strong>.</li>
+          <li>Click <strong>📋 Paste from Text</strong> in the Bag to add several items at once — paste one item per line (e.g. copied from a Discord inventory bot) and click <strong>Apply</strong>. It reads rolled stats from a <code>( +48 ATK, -8% CR )</code> style block (including <code>X to Y</code> roll ranges), an emoji tag to identify the item even if it's been renamed, a leading known Prefix word, <code>⭐</code> for Favorite, and trailing <code>✪</code>/<code>✪✪</code>/<code>✪✪✪</code> for Anvil Star — lines it can't recognize are listed as skipped.</li>
           <li>Use the <strong>🔍 Search bag</strong> box at the top of the Bag to find an item by name across every tab at once.</li>
         </ul>
       </div>
@@ -1120,6 +1177,7 @@
           <li><strong>Anvil Star Control</strong> picks how the Anvil Star buttons on weapons/artifacts respond to input — Tap to Cycle, Dropdown, or + / − Buttons.</li>
           <li><strong>Save Build</strong> stores your current build in this browser, so it's there next time you visit.</li>
           <li><strong>Reset</strong> clears your current build back to empty — this does not touch anything saved in your Bag.</li>
+          <li><strong>Clear Bag</strong> removes everything saved in your Bag (weapons and artifact pieces) in one go — your equipped build isn't touched, and it can be undone right after via the Undo toast.</li>
           <li><strong>Backup</strong> lets you <strong>Export</strong> your Bag and Build Slots to a file, or <strong>Import</strong> one back in — handy for switching devices or keeping a backup.</li>
         </ul>
       </div>
@@ -1210,7 +1268,7 @@ function makePrefixSelect(currentValue, onChange){
 }
 // Anvil star enhancement multipliers (level 0 = off). Weapons and artifacts scale differently.
 const STAR_MULTS = {
-  weapon:   [1, 2, 4, 8],
+  weapon:   [1, 1.5, 2, 2.5],
   artifact: [1, 1.5, 2, 2.5]
 };
 function starGlyph(level){
@@ -2750,6 +2808,32 @@ function deleteFromBag(slot, id){
   });
 }
 
+// Empties both the weapon and artifact bags at once (Settings -> Clear Bag).
+// Snapshots everything first so the whole wipe can be undone in one tap.
+function clearBag(){
+  const totalCount = (state.weaponBag || []).length + SLOTS.reduce((n, slot) => n + (state.bag[slot] || []).length, 0);
+  if(!totalCount){ setStatus('Bag is already empty.'); return; }
+
+  const savedBag = JSON.parse(JSON.stringify(state.bag));
+  const savedWeaponBag = JSON.parse(JSON.stringify(state.weaponBag || []));
+
+  state.bag = {};
+  state.weaponBag = [];
+  saveBagToStorage();
+  saveWeaponBagToStorage();
+  SLOTS.forEach(slot => renderArtifactSlotDetail(slot, options_for(slot)));
+  refreshBagUI();
+
+  offerUndo(`Bag cleared (${totalCount} item${totalCount === 1 ? '' : 's'}).`, () => {
+    state.bag = savedBag;
+    state.weaponBag = savedWeaponBag;
+    saveBagToStorage();
+    saveWeaponBagToStorage();
+    SLOTS.forEach(slot => renderArtifactSlotDetail(slot, options_for(slot)));
+    refreshBagUI();
+  });
+}
+
 function duplicateArtifactBagItem(slot, id){
   const item = (state.bag[slot] || []).find(b => b.id === id);
   if(!item) return;
@@ -3560,6 +3644,322 @@ function saveQuickAdd(){
   setStatus('Added to bag.');
 }
 
+// ---------- Bulk paste (weapons/artifacts -> Bag) ----------
+// Builds a name -> match index once per parse call (cheap; lists are small).
+// Weapons key off their exact name; artifact pieces key off their piece name
+// (usually unique on its own) as well as "SetName PieceName" for pieces whose
+// short name collides across sets.
+function buildBulkPasteIndex(){
+  const weaponIndex = {};
+  weapons.forEach(w => { weaponIndex[w.name.toLowerCase()] = w; });
+
+  const pieceIndex = {};
+  SLOTS.forEach(slot => {
+    findPieceOptions(slot).forEach(o => {
+      const entry = { slot, setName: o.setName, pieceName: o.pieceName, icon: o.icon, stats: o.stats, special: o.special, weight: o.weight };
+      pieceIndex[o.pieceName.toLowerCase()] = entry;
+      pieceIndex[`${o.setName} ${o.pieceName}`.toLowerCase()] = entry;
+      pieceIndex[`${o.setName} — ${o.pieceName}`.toLowerCase()] = entry;
+    });
+  });
+  return { weaponIndex, pieceIndex };
+}
+
+// Parses lines like "Weapon Name", "Piece Name x2", "Set Name — Piece Name", or
+// Discord-style "**Item Name** × 1 [1.5kg]" and matches them against known
+// weapons/artifact pieces (exact name, then unique substring). Discord custom
+// emoji tags, markdown bold, and bracketed weight notes are stripped first.
+// Maps a substat abbreviation (as it appears in a Discord "( +48 ATK, -8% CR )"
+// style stat block) to the roll key the app uses for it.
+const BULK_PASTE_ARTIFACT_STAT_KEYS = { HP:'HP', ATK:'ATK', CR:'CR', CV:'CV', DR:'DR', DV:'DV' };
+const BULK_PASTE_WEAPON_STAT_KEYS = { HP:'hp', CR:'critRate', CV:'critValue', DR:'defRate', DV:'defValue' };
+// Lowercase lookup for the game's Prefix system (see PREFIXES) so a leading
+// word like "Spicy Big Balls" is recognized as the "Spicy" prefix plus a
+// custom nickname, instead of failing to match as an item name.
+const BULK_PASTE_PREFIX_LOOKUP = {};
+PREFIX_NAMES.forEach(n => { if(n !== 'None') BULK_PASTE_PREFIX_LOOKUP[n.toLowerCase()] = n; });
+
+// Reads a stat-block entry (see parseBulkPasteStatBlock) as a single number,
+// averaging a {min,max} roll range when one was given instead of one value.
+function bulkPasteStatValue(entry){
+  if(entry == null) return undefined;
+  return typeof entry === 'object' ? Math.round((entry.min + entry.max) / 2) : entry;
+}
+
+// Parses a "( +48 ATK, -8% CR )" or "( +189 to +241 ATK, +39% CR )" style
+// block into {ABBR: value} pairs, where value is a number, or a {min,max}
+// pair for an "X to Y" roll range. Sign included.
+function parseBulkPasteStatBlock(statText){
+  const out = {};
+  if(!statText) return out;
+
+  // Range form first, e.g. "+189 to +241 ATK" — has to run before the
+  // single-value regex below, or "189" and the word "to" would each get
+  // misread as their own (bogus) stat entry.
+  const rangeRe = /([+-]?\s*\d+(?:\.\d+)?)\s*to\s*([+-]?\s*\d+(?:\.\d+)?)\s*%?\s*([A-Za-z]+)/gi;
+  let consumed = statText;
+  let m;
+  while((m = rangeRe.exec(statText))){
+    const lo = parseFloat(m[1].replace(/\s+/g, ''));
+    const hi = parseFloat(m[2].replace(/\s+/g, ''));
+    const abbr = m[3].toUpperCase();
+    if(!isNaN(lo) && !isNaN(hi)){
+      out[abbr] = { min: Math.min(lo, hi), max: Math.max(lo, hi) };
+      consumed = consumed.replace(m[0], ' ');
+    }
+  }
+
+  const singleRe = /([+-]?\s*\d+(?:\.\d+)?)\s*%?\s*([A-Za-z]+)/g;
+  while((m = singleRe.exec(consumed))){
+    const value = parseFloat(m[1].replace(/\s+/g, ''));
+    const abbr = m[2].toUpperCase();
+    if(out[abbr] !== undefined || abbr === 'TO') continue; // already captured as a range, or a leftover "to"
+    if(!isNaN(value)) out[abbr] = value;
+  }
+  return out;
+}
+
+// Splits a known Prefix word off the front of a name/nickname line, e.g.
+// "Spicy Big Balls" -> { prefixName:'Spicy', rest:'Big Balls' }. Only fires
+// when text is left over afterward, so a one-word name is never eaten.
+function extractBulkPastePrefix(nameLine){
+  const spaceIdx = nameLine.indexOf(' ');
+  if(spaceIdx === -1) return { prefixName: null, rest: nameLine };
+  const firstWord = nameLine.slice(0, spaceIdx);
+  const rest = nameLine.slice(spaceIdx + 1).trim();
+  const known = BULK_PASTE_PREFIX_LOOKUP[firstWord.toLowerCase()];
+  return known && rest ? { prefixName: known, rest } : { prefixName: null, rest: nameLine };
+}
+
+// Turns a Discord custom-emoji tag's internal name (e.g.
+// "Weapon_Sacrificial_Jade") into a readable candidate item name
+// ("Sacrificial Jade") that can be looked up directly — independent of
+// whatever nickname the player wrote after it in the message.
+function bulkPasteEmojiCandidate(rawLine){
+  const m = rawLine.match(/<a?:(\w+):\d+>/);
+  if(!m) return null;
+  return m[1]
+    .replace(/^(Weapon|Item|Artifact|Piece|Set|Icon)_/i, '')
+    .replace(/_/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseBulkPasteBagText(text){
+  const { weaponIndex, pieceIndex } = buildBulkPasteIndex();
+  const weaponNames = Object.keys(weaponIndex);
+  const pieceNames = Object.keys(pieceIndex);
+
+  const matchedWeapons = [], matchedPieces = [], unmatched = [], ambiguous = [];
+
+  text.split(/\r?\n/).forEach(rawLine => {
+    const line = rawLine.trim();
+    if(!line) return;
+
+    // The emoji tag identifies the item regardless of what nickname text
+    // follows it — grab it before the tag itself gets stripped below.
+    const emojiCandidate = bulkPasteEmojiCandidate(line);
+
+    let cleanLine = line
+      .replace(/<a?:\w+:\d+>/g, '')   // Discord custom emoji tags
+      .replace(/`/g, '')              // inline code / emoji-label backticks
+      .replace(/\*\*/g, '')           // markdown bold
+      .replace(/\s+/g, ' ')
+      .trim();
+    if(!cleanLine){ unmatched.push(line); return; }
+
+    // ⭐ marks the item Favorite; trailing ✪ (1-3 of them) is its Anvil Star
+    // level. Both are status icons, not part of the name — pull them out.
+    const favorite = /⭐/.test(cleanLine);
+    const starred = Math.min(3, (cleanLine.match(/✪/g) || []).length);
+    cleanLine = cleanLine.replace(/[⭐✪]/g, '').replace(/\s+/g, ' ').trim();
+    if(!cleanLine){ unmatched.push(line); return; }
+
+    // Pull out a "( +48 ATK, -8% CR )" style stat block before stripping it —
+    // it's not part of the name, but it tells us the actual rolled values.
+    const parenMatch = cleanLine.match(/\(([^)]*)\)/);
+    const statBlock = parenMatch ? parseBulkPasteStatBlock(parenMatch[1]) : null;
+
+    let nameLine = cleanLine
+      .replace(/\([^)]*\)/g, '')      // stat block, e.g. ( +48 ATK, -8% CR )
+      .replace(/\[[^\]]*\]/g, '')     // bracketed notes like [0.25kg]
+      .replace(/\s+/g, ' ')
+      .trim();
+    if(!nameLine){ unmatched.push(line); return; }
+
+    // A leading known Prefix word ("Spicy Big Balls") is the item's rolled
+    // Prefix, not part of its name/nickname — split it off before matching.
+    const prefixSplit = extractBulkPastePrefix(nameLine);
+    const prefixName = prefixSplit.prefixName;
+    nameLine = prefixSplit.rest;
+
+    // Optional trailing quantity: "Name x3", "Name: 3", "Name × 3". Default to 1.
+    let qty = 1;
+    const qtyMatch = nameLine.match(/^(.*?)[\s:xX×]+(\d+)\s*$/);
+    let namePart = nameLine;
+    if(qtyMatch && qtyMatch[1].trim()){
+      namePart = qtyMatch[1].replace(/[:\-]+$/, '').trim();
+      qty = parseInt(qtyMatch[2], 10) || 1;
+    }
+
+    // Resolve identity: try the emoji-derived name first (a player can
+    // rename the visible text to anything), then fall back to the visible
+    // name/nickname text if there's no tag or it doesn't match anything.
+    const candidates = [];
+    if(emojiCandidate) candidates.push(emojiCandidate);
+    if(namePart) candidates.push(namePart);
+
+    let hit = null;
+    for(const cand of candidates){
+      const key = cand.toLowerCase();
+      if(weaponIndex[key]){ hit = { kind:'weapon', data: weaponIndex[key] }; break; }
+      if(pieceIndex[key]){ hit = { kind:'piece', data: pieceIndex[key] }; break; }
+    }
+
+    if(!hit){
+      const wSeen = new Set(), pSeen = new Set();
+      candidates.forEach(cand => {
+        const key = cand.toLowerCase();
+        weaponNames.filter(n => n.indexOf(key) !== -1).forEach(n => wSeen.add(n));
+        pieceNames.filter(n => n.indexOf(key) !== -1).forEach(n => pSeen.add(n));
+      });
+      const wCandidates = Array.from(wSeen), pCandidates = Array.from(pSeen);
+      const total = wCandidates.length + pCandidates.length;
+      if(total === 1){
+        hit = wCandidates.length ? { kind:'weapon', data: weaponIndex[wCandidates[0]] } : { kind:'piece', data: pieceIndex[pCandidates[0]] };
+      } else if(total > 1){
+        const options = wCandidates.map(n => weaponIndex[n].name).concat(pCandidates.map(n => pieceIndex[n].pieceName));
+        ambiguous.push({ line, options: Array.from(new Set(options)) });
+        return;
+      }
+    }
+
+    if(!hit){ unmatched.push(line); return; }
+
+    // If the visible name/nickname text doesn't match the resolved item's
+    // real name, keep it as a nickname instead of discarding it.
+    const canonicalName = (hit.kind === 'weapon' ? hit.data.name : hit.data.pieceName).toLowerCase();
+    const nickname = (namePart && namePart.toLowerCase() !== canonicalName) ? namePart : '';
+
+    // Translate the parsed stat block (if any) into roll keys the app understands,
+    // only keeping stats the matched item actually rolls.
+    let rolls = {};
+    if(statBlock){
+      if(hit.kind === 'piece'){
+        Object.keys(hit.data.stats || {}).forEach(statKey => {
+          const abbr = Object.keys(BULK_PASTE_ARTIFACT_STAT_KEYS).find(a => BULK_PASTE_ARTIFACT_STAT_KEYS[a] === statKey);
+          if(abbr && statBlock[abbr] !== undefined) rolls[statKey] = bulkPasteStatValue(statBlock[abbr]);
+        });
+      } else {
+        const w = hit.data;
+        if(statBlock.ATK !== undefined){
+          if(w.atkType === 'minMax'){
+            const atkEntry = statBlock.ATK;
+            if(typeof atkEntry === 'object'){ rolls.atkMin = atkEntry.min; rolls.atkMax = atkEntry.max; }
+            else { rolls.atkMin = atkEntry; rolls.atkMax = atkEntry; }
+          } else if(w.atkType === 'flat'){
+            rolls.atk = bulkPasteStatValue(statBlock.ATK);
+          }
+        }
+        Object.entries(BULK_PASTE_WEAPON_STAT_KEYS).forEach(([abbr, rollKey]) => {
+          if(statBlock[abbr] !== undefined) rolls[rollKey] = bulkPasteStatValue(statBlock[abbr]);
+        });
+      }
+    }
+
+    const meta = { qty, rolls, nickname, prefixName: prefixName || 'None', starred, favorite };
+    if(hit.kind === 'weapon') matchedWeapons.push({ weapon: hit.data, ...meta });
+    else matchedPieces.push({ piece: hit.data, ...meta });
+  });
+
+  return { matchedWeapons, matchedPieces, unmatched, ambiguous };
+}
+
+function applyBulkPasteBag(parsed){
+  let weaponCount = 0, pieceCount = 0;
+
+  parsed.matchedWeapons.forEach(({ weapon: w, qty, rolls, nickname, prefixName, starred, favorite }) => {
+    for(let i = 0; i < qty; i++){
+      state.weaponBag.push({
+        id: 'w' + Date.now() + Math.random().toString(36).slice(2, 7),
+        nickname: nickname || '', weaponName: w.name, icon: w.icon, type: w.type, worldLevel: w.worldLevel,
+        crucible: w.crucible, weight: w.weight, ability: w.ability, rolls: {...(rolls||{})}, prefix: prefixName || 'None', starred: starred || 0, favorite: !!favorite
+      });
+      weaponCount++;
+    }
+  });
+  if(weaponCount) saveWeaponBagToStorage();
+
+  parsed.matchedPieces.forEach(({ piece: o, qty, rolls, nickname, prefixName, starred, favorite }) => {
+    if(!state.bag[o.slot]) state.bag[o.slot] = [];
+    for(let i = 0; i < qty; i++){
+      state.bag[o.slot].push({
+        id: 'b' + Date.now() + Math.random().toString(36).slice(2, 7),
+        nickname: nickname || '', setName: o.setName, pieceName: o.pieceName, icon: o.icon, statsDef: o.stats,
+        special: o.special, weight: o.weight, rolls: {...(rolls||{})}, specialRoll: undefined, prefix: prefixName || 'None', starred: starred || 0, favorite: !!favorite
+      });
+      pieceCount++;
+    }
+  });
+  if(pieceCount) saveBagToStorage();
+
+  return { weaponCount, pieceCount };
+}
+
+let bulkPasteModal = null;
+function initBagBulkPaste(){
+  bulkPasteModal = bindSimpleOverlay('bulkPasteOverlay', 'bulkPasteCloseBtn');
+  const openBtn = document.getElementById('bagBulkPasteOpenBtn');
+  const applyBtn = document.getElementById('bagBulkPasteApplyBtn');
+  const clearBtn = document.getElementById('bagBulkPasteClearBtn');
+  const textarea = document.getElementById('bagBulkPasteInput');
+  const resultEl = document.getElementById('bagBulkPasteResult');
+  if(!openBtn || !applyBtn || !clearBtn || !textarea || !resultEl) return;
+
+  openBtn.addEventListener('click', () => {
+    resultEl.textContent = '';
+    resultEl.classList.remove('has-issues');
+    bulkPasteModal.open();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    textarea.value = '';
+    resultEl.textContent = '';
+    resultEl.classList.remove('has-issues');
+  });
+
+  applyBtn.addEventListener('click', () => {
+    const text = textarea.value;
+    if(!text.trim()){
+      resultEl.textContent = 'Paste some lines first.';
+      resultEl.classList.add('has-issues');
+      return;
+    }
+    const parsed = parseBulkPasteBagText(text);
+    const { weaponCount, pieceCount } = applyBulkPasteBag(parsed);
+    const addedTotal = weaponCount + pieceCount;
+
+    if(addedTotal){
+      refreshBagUI();
+      renderTotals();
+      setStatus('Added to bag.');
+    }
+
+    const parts = [];
+    if(weaponCount) parts.push(`${weaponCount} weapon${weaponCount === 1 ? '' : 's'}`);
+    if(pieceCount) parts.push(`${pieceCount} artifact${pieceCount === 1 ? '' : 's'}`);
+    let msg = parts.length ? `Added ${parts.join(' and ')}.` : 'Nothing matched.';
+    const skippedCount = parsed.unmatched.length + parsed.ambiguous.length;
+    if(skippedCount){
+      msg += ` Skipped ${skippedCount} line${skippedCount === 1 ? '' : 's'} that didn't match a known weapon or artifact.`;
+      resultEl.classList.add('has-issues');
+    } else {
+      resultEl.classList.remove('has-issues');
+    }
+    resultEl.textContent = msg;
+  });
+}
+
 // ---------- Persistence ----------
 let hasUnsavedChanges = false;
 
@@ -4324,6 +4724,233 @@ function renderDpsPanel(){
 }
 
 
+// ---------- Best-DPS-from-Bag optimizer ----------
+// Pure version of the stat-totals half of computeAndRenderTotals — takes a candidate
+// weapon+artifact loadout instead of reading it off `state`, and does no DOM work.
+function computeTotalsForLoadout(weaponRolls, weaponPrefix, weaponStarred, artifactsObj){
+  const totals = { hp: BASE_STATS.hp, atkLow: BASE_STATS.atkLow, atkHigh: BASE_STATS.atkHigh,
+                    cr: BASE_STATS.cr, cv: BASE_STATS.cv, dr: BASE_STATS.dr, dv: BASE_STATS.dv };
+
+  const arLevels = Math.max(0, (state.ar || 1) - 1);
+  totals.hp += arLevels * 5;
+  totals.atkLow += arLevels;
+  totals.atkHigh += arLevels;
+  if(frostTreeUnlocked()) totals.hp += frostTreeBonusHP(state.frostTreeLevel || 0);
+
+  const wr = weaponRolls || {};
+  const wPfx = weaponPrefix || 'None';
+  const wStar = starMult(weaponStarred, 'weapon');
+  if(wr.atk !== undefined){ const v = Math.floor(wr.atk * prefixFactor(wPfx,'atk') * wStar); totals.atkLow += v; totals.atkHigh += v; }
+  if(wr.atkMin !== undefined) totals.atkLow += Math.floor(wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar);
+  if(wr.atkMax !== undefined) totals.atkHigh += Math.floor(wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar);
+  if(wr.hp !== undefined) totals.hp += Math.floor(wr.hp * prefixFactor(wPfx,'hp') * wStar);
+  if(wr.critRate !== undefined) totals.cr += Math.floor(wr.critRate * prefixFactor(wPfx,'critRate') * wStar);
+  if(wr.critValue !== undefined) totals.cv += Math.floor(wr.critValue * prefixFactor(wPfx,'critValue') * wStar);
+  if(wr.defRate !== undefined) totals.dr += Math.floor(wr.defRate * prefixFactor(wPfx,'defRate') * wStar);
+  if(wr.defValue !== undefined) totals.dv += Math.floor(wr.defValue * prefixFactor(wPfx,'defValue') * wStar);
+
+  SLOTS.forEach(slot => {
+    const a = artifactsObj[slot];
+    if(!a) return;
+    const aPfx = a.prefix || 'None';
+    const aStar = starMult(a.starred, 'artifact');
+    Object.entries(a.rolls || {}).forEach(([statKey, val]) => {
+      if(val === undefined) return;
+      addStatToTotals(totals, statKey, Math.floor(val * prefixFactor(aPfx, statKey) * aStar));
+    });
+  });
+
+  const setCounts = {};
+  SLOTS.forEach(slot => { const a = artifactsObj[slot]; if(a) setCounts[a.setName] = (setCounts[a.setName]||0)+1; });
+  Object.entries(setCounts).forEach(([setName, count]) => {
+    const setDef = artifactSets.find(s => s.setName === setName);
+    if(!setDef) return;
+    if(count >= 4 && setDef.setBonus4pcStats) setDef.setBonus4pcStats.forEach(b => addStatToTotals(totals, b.stat, b.value));
+    else if(count >= 2 && setDef.setBonus2pcStats) setDef.setBonus2pcStats.forEach(b => addStatToTotals(totals, b.stat, b.value));
+  });
+
+  activeSkillCritBonuses().forEach(b => { totals.cr += b.cr; totals.cv += b.cv; });
+  return totals;
+}
+
+// Pure version of the "basic attack (+follow-up)" damage math from renderDpsPanel's tail —
+// used to score candidate loadouts without touching the DOM. Deliberately scores the
+// basic-attack / follow-up case (what "Show Avg DPS" defaults to and what most of the
+// panel's toggles apply to) rather than re-deriving every action type per candidate weapon.
+function computeDpsForLoadout(weaponName, totals){
+  const equippedWeapon = weapons.find(w => w.name === weaponName);
+  const equippedWeaponType = (equippedWeapon && equippedWeapon.type || '').toLowerCase();
+  const isCatalyst = equippedWeaponType === 'catalyst';
+  const isClaymore = equippedWeaponType === 'claymore';
+  const isBow = equippedWeaponType === 'bow';
+  const isSword = equippedWeaponType === 'sword';
+  const isHoma = weaponName === 'Staff of Homa';
+  const isSobp = weaponName === 'Song of Broken Pines';
+
+  let { atkLow, atkHigh, cr, cv, dv } = totals;
+  if(state.dpsPaladin){
+    const newDv = atkLow;
+    atkLow = dv; atkHigh = dv;
+    dv = newDv;
+  }
+
+  const curseStacks = state.dpsCurseStacks || 0;
+  const curseMult = Math.pow(1.5, curseStacks);
+  const sageBonus = state.dpsSageBonus || 0;
+
+  const masterySkillId = isBow ? 'bow_mastery' : isClaymore ? 'claymore_mastery' : isCatalyst ? 'catalyst_mastery'
+    : (equippedWeaponType === 'polearm') ? 'polearm_mastery' : isSword ? 'sword_mastery' : null;
+  const masterySkill = masterySkillId ? skillsData[masterySkillId] : null;
+  const masteryLevel = masterySkill ? (masterySkill.levels || []).find(l => l.level === (state.dpsMasteryLevel || 0)) : null;
+  const masteryPct = masteryLevel ? parseDamagePctFromEffect(masteryLevel.effect) : 0;
+
+  const favoniusPct = isSword ? (state.dpsFavonius || 0) * 3 : 0;
+  const uniqueMult = state.dpsUniqueUltimate === 'pride' ? 3
+    : state.dpsUniqueUltimate === 'wrath' ? 2
+    : state.dpsUniqueUltimate === 'kindness' ? Math.pow(2, Math.max(1, state.dpsKindnessEnemies || 1))
+    : 1;
+
+  function basicHit(){
+    let dmg = expectedHitDamage(atkLow, atkHigh, cr, cv);
+    if(curseStacks > 0) dmg *= curseMult;
+    if(sageBonus > 0) dmg *= (1 + sageBonus / 100);
+    if(isHoma){
+      const hpPct = state.dpsHomaHpPct != null ? state.dpsHomaHpPct : 100;
+      dmg *= homaMultiplier(hpPct, 100);
+    }
+    if(isBow && state.dpsBowElement) dmg *= 0.8;
+    if(masteryPct > 0) dmg *= (1 + masteryPct / 100);
+    if(state.dpsGuashua && isSword){
+      const critChance = Math.max(0, Math.min(1, (cr||0)/100));
+      dmg *= (1 + 0.05 * (1 - critChance));
+    }
+    if(favoniusPct > 0) dmg *= (1 + favoniusPct / 100);
+    if(state.dpsKatzlein && isSword) dmg *= 1.5;
+    if(state.dpsSobp && isSobp) dmg *= 10;
+    if(uniqueMult !== 1) dmg *= uniqueMult;
+    return dmg;
+  }
+
+  let hit1 = basicHit(), hit2 = 0;
+  if(state.dpsFollowUp){
+    const [skillId, levelStr] = state.dpsFollowUp.split('|');
+    const sk = skillsData[skillId];
+    const lvl = sk && (sk.levels || []).find(l => l.level === parseInt(levelStr, 10));
+    if(lvl){
+      const pct = parseFollowUpPct(lvl.effect);
+      if(isFlatAtkFollowUp(lvl.effect)){
+        hit2 = avgRoll(atkLow, atkHigh) * (pct / 100);
+      } else {
+        hit2 = hit1 * (pct / 100);
+      }
+    }
+  }
+  return hit1 + hit2;
+}
+
+function gatherWeaponCandidates(){
+  const list = [];
+  if(state.weapon){
+    list.push({ label: 'Equipped', weaponName: state.weapon, rolls: {...state.weaponRolls}, prefix: state.weaponPrefix || 'None', starred: state.weaponStarred|0 });
+  }
+  (state.weaponBag || []).forEach(item => {
+    list.push({ label: item.nickname || item.weaponName, weaponName: item.weaponName, rolls: {...item.rolls}, prefix: item.prefix || 'None', starred: item.starred|0 });
+  });
+  return list;
+}
+
+function gatherArtifactCandidates(slot){
+  const list = [null]; // null = leave the slot empty
+  if(state.artifacts[slot]) list.push(state.artifacts[slot]);
+  (state.bag[slot] || []).forEach(item => list.push(item));
+  return list;
+}
+
+const DPS_OPTIMIZE_COMBO_CAP = 400000;
+
+// Brute-forces every weapon x artifact-per-slot combination available (Bag + currently
+// equipped), scores each with computeDpsForLoadout, and returns the best one found.
+function findBestDpsBuild(){
+  const weaponCandidates = gatherWeaponCandidates();
+  if(weaponCandidates.length === 0) return { error: 'No weapon equipped or in your Bag to build around.' };
+
+  const slotCandidates = {};
+  let comboCount = weaponCandidates.length;
+  SLOTS.forEach(slot => {
+    slotCandidates[slot] = gatherArtifactCandidates(slot);
+    comboCount *= slotCandidates[slot].length;
+  });
+  if(comboCount > DPS_OPTIMIZE_COMBO_CAP){
+    return { error: `That's ${comboCount.toLocaleString()} combinations — too many to check at once. Trim some Bag items and try again.` };
+  }
+
+  let best = null;
+  weaponCandidates.forEach(wc => {
+    const picks = {};
+    (function recurse(i){
+      if(i === SLOTS.length){
+        const artifactsObj = {};
+        SLOTS.forEach(s => { if(picks[s]) artifactsObj[s] = picks[s]; });
+        const totals = computeTotalsForLoadout(wc.rolls, wc.prefix, wc.starred, artifactsObj);
+        const dps = computeDpsForLoadout(wc.weaponName, totals);
+        if(!best || dps > best.dps) best = { dps, weapon: wc, artifacts: artifactsObj };
+        return;
+      }
+      const slot = SLOTS[i];
+      slotCandidates[slot].forEach(cand => { picks[slot] = cand; recurse(i + 1); });
+    })(0);
+  });
+  return best ? { best, comboCount } : { error: 'Nothing to compare — add some weapons/artifacts to your Bag first.' };
+}
+
+function applyBestDpsBuild(result){
+  const { weapon, artifacts } = result;
+  state.weapon = weapon.weaponName;
+  state.weaponRolls = { ...weapon.rolls };
+  state.weaponPrefix = weapon.prefix;
+  state.weaponStarred = weapon.starred;
+  SLOTS.forEach(slot => {
+    const a = artifacts[slot];
+    if(a){
+      state.artifacts[slot] = {
+        setName: a.setName, pieceName: a.pieceName, icon: a.icon, statsDef: a.statsDef,
+        special: a.special, weight: a.weight, rolls: { ...a.rolls }, specialRoll: a.specialRoll,
+        prefix: a.prefix || 'None', starred: a.starred|0
+      };
+    } else {
+      delete state.artifacts[slot];
+    }
+  });
+  if(weaponPickerBtn) weaponPickerBtn.refresh();
+  renderWeaponSlot();
+  buildArtifactSlots();
+  renderTotals();
+  scheduleAutosave();
+}
+
+function runDpsOptimizer(){
+  const resultDiv = document.getElementById('dpsOptimizeResult');
+  const btn = document.getElementById('dpsOptimizeBtn');
+  if(btn) btn.disabled = true;
+  if(resultDiv) resultDiv.innerHTML = '<div class="dps-hint">Crunching combinations…</div>';
+  // Let the "crunching" message paint before the (synchronous) search runs.
+  setTimeout(() => {
+    const outcome = findBestDpsBuild();
+    if(btn) btn.disabled = false;
+    if(outcome.error){
+      if(resultDiv) resultDiv.innerHTML = `<div class="dps-hint">${outcome.error}</div>`;
+      return;
+    }
+    applyBestDpsBuild(outcome.best);
+    renderDpsPanel();
+    const pieces = SLOTS.filter(s => outcome.best.artifacts[s]).length;
+    if(resultDiv){
+      resultDiv.innerHTML = `<div class="dps-hint">✅ Equipped best build: <strong>${outcome.best.weapon.weaponName}</strong> + ${pieces}/5 artifact piece(s) — avg hit <strong>${round(outcome.best.dps)}</strong> (checked ${outcome.comboCount.toLocaleString()} combo${outcome.comboCount===1?'':'s'}).</div>`;
+    }
+    setStatus('Best DPS build equipped.');
+  }, 10);
+}
+
 // ---------- Skills panel ----------
 // Parses a skill level's effect text for permanent Crit Rate / Crit Value bonuses.
 // Parses a skill level's effect text for a flat "X% more/increases damage" style bonus,
@@ -4452,6 +5079,7 @@ async function init(){
   initHowToUseModal();
   initQuickAddModal();
   initBuildsModal();
+  initBagBulkPaste();
   initArInput();
   initFrostTreeInput();
   await loadData();
@@ -4470,6 +5098,9 @@ async function init(){
   document.getElementById('saveBtn').addEventListener('click', saveBuild);
   document.getElementById('resetBtn').addEventListener('click', ()=>{
     openConfirmModal('Reset build?', 'Clear the weapon, artifacts, and skills currently equipped? Your Bag is not affected.', 'Reset', resetBuild);
+  });
+  document.getElementById('clearBagBtn').addEventListener('click', ()=>{
+    openConfirmModal('Clear Bag?', 'Remove every weapon and artifact piece saved in your Bag? Your current build stays equipped, and this can be undone right after.', 'Clear Bag', clearBag);
   });
   document.getElementById('darkToggle').addEventListener('click', ()=>{
     state.darkMode = !state.darkMode;
@@ -4496,6 +5127,7 @@ async function init(){
   });
   document.getElementById('settingsToggleBtn').addEventListener('click', openSettingsModal);
   document.getElementById('dpsOpenBtn').addEventListener('click', openDpsModal);
+  document.getElementById('dpsOptimizeBtn').addEventListener('click', runDpsOptimizer);
   document.getElementById('howToUseBtn').addEventListener('click', ()=>{
     closeSettingsModal();
     openHowToUseModal();
