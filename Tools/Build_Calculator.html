@@ -5127,10 +5127,14 @@ function computeDpsFast(weaponCtx, totals, dpsConst){
 // Rate works (a % chance for a mitigation proc) and Def Value as that proc's size
 // (like Crit Value), giving an expected-mitigation multiplier on top of raw HP:
 // survivability = hp * (1 + (defRate/100) * (defValue/100)).
+// Mirrors computeDpsFast's Paladin swap: when Paladin is active, ATK and DV trade
+// roles for combat purposes, so the stat actually defending the character is the
+// original ATK (its low roll), not the raw DV total — same swap has to apply here
+// or Paladin builds would get scored on a defense value they aren't really using.
 function computeSurvivabilityScore(totals){
   const dr = Math.max(0, totals.dr || 0);
-  const dv = Math.max(0, totals.dv || 0);
-  return Math.max(1, totals.hp) * (1 + (dr / 100) * (dv / 100));
+  const effectiveDv = state.dpsPaladin ? Math.max(0, totals.atkLow || 0) : Math.max(0, totals.dv || 0);
+  return Math.max(1, totals.hp) * (1 + (dr / 100) * (effectiveDv / 100));
 }
 
 // Blends raw damage against survivability for the Bag Optimizer's non-'dps' goals.
