@@ -4866,13 +4866,19 @@ function gatherArtifactCandidates(slot){
   return list;
 }
 
-const DPS_OPTIMIZE_COMBO_CAP = 400000;
+// Combos beyond this trigger a warning modal (with risk info) instead of an outright
+// refusal — the user can still choose to run it. There is no hard upper limit anymore.
+const DPS_OPTIMIZE_WARN_THRESHOLD = 5000000;
+// How many combos to score per batch before yielding back to the browser, so the
+// tab stays responsive (and can repaint a progress message) during a big search.
+const DPS_OPTIMIZE_BATCH_SIZE = 25000;
 
-// Brute-forces every weapon x artifact-per-slot combination available (Bag + currently
-// equipped), scores each with computeDpsForLoadout, and returns the best one found.
-function findBestDpsBuild(){
+// Gathers candidates and computes the total combo count up front, without running the
+// search — used both to decide whether to show the size-warning modal, and as the
+// input to findBestDpsBuild itself (so the counting logic only lives in one place).
+function getDpsComboInfo(){
   const weaponCandidates = gatherWeaponCandidates();
-  if(weaponCandidates.length === 0) return { error: 'No weapon equipped or in your Bag to build around.' };
+  if(weaponCandidates.length === 0){ return { error: 'No weapon equipped or in your Bag to build around.' }; }
 
   const slotCandidates = {};
   let comboCount = weaponCandidates.length;
@@ -4880,27 +4886,55 @@ function findBestDpsBuild(){
     slotCandidates[slot] = gatherArtifactCandidates(slot);
     comboCount *= slotCandidates[slot].length;
   });
-  if(comboCount > DPS_OPTIMIZE_COMBO_CAP){
-    return { error: `That's ${comboCount.toLocaleString()} combinations — too many to check at once. Trim some Bag items and try again.` };
-  }
+  if(comboCount === 0){ return { error: 'Nothing to compare — add some weapons/artifacts to your Bag first.' }; }
 
+  return { weaponCandidates, slotCandidates, comboCount };
+}
+
+// Brute-forces every weapon x artifact-per-slot combination available (Bag + currently
+// equipped), scores each with computeDpsForLoadout, and returns the best one found.
+// Runs in chunks via setTimeout so large searches don't block/freeze the page;
+// onProgress(processed, total) fires after each batch, onDone(outcome) fires once at the end.
+// `info` is the result of getDpsComboInfo() (already validated, no error).
+function findBestDpsBuild(info, onProgress, onDone){
+  const { weaponCandidates, slotCandidates, comboCount } = info;
+
+  // Mixed-radix counter over [weapon, flower, plume, sands, goblet, circlet] indices,
+  // so the whole search can be walked in fixed-size batches instead of one big
+  // recursive pass — the rightmost (last) slot advances fastest, like an odometer.
+  const dims = [weaponCandidates.length, ...SLOTS.map(s => slotCandidates[s].length)];
+  const total = comboCount;
+  const idx = new Array(dims.length).fill(0);
+  let processed = 0;
   let best = null;
-  weaponCandidates.forEach(wc => {
-    const picks = {};
-    (function recurse(i){
-      if(i === SLOTS.length){
-        const artifactsObj = {};
-        SLOTS.forEach(s => { if(picks[s]) artifactsObj[s] = picks[s]; });
-        const totals = computeTotalsForLoadout(wc.rolls, wc.prefix, wc.starred, artifactsObj);
-        const dps = computeDpsForLoadout(wc.weaponName, totals);
-        if(!best || dps > best.dps) best = { dps, weapon: wc, artifacts: artifactsObj };
-        return;
+
+  function stepBatch(){
+    const batchEnd = Math.min(processed + DPS_OPTIMIZE_BATCH_SIZE, total);
+    for(; processed < batchEnd; processed++){
+      const wc = weaponCandidates[idx[0]];
+      const artifactsObj = {};
+      SLOTS.forEach((slot, i) => {
+        const cand = slotCandidates[slot][idx[i + 1]];
+        if(cand) artifactsObj[slot] = cand;
+      });
+      const totals = computeTotalsForLoadout(wc.rolls, wc.prefix, wc.starred, artifactsObj);
+      const dps = computeDpsForLoadout(wc.weaponName, totals);
+      if(!best || dps > best.dps) best = { dps, weapon: wc, artifacts: artifactsObj };
+
+      for(let d = dims.length - 1; d >= 0; d--){
+        idx[d]++;
+        if(idx[d] < dims[d]) break;
+        idx[d] = 0;
       }
-      const slot = SLOTS[i];
-      slotCandidates[slot].forEach(cand => { picks[slot] = cand; recurse(i + 1); });
-    })(0);
-  });
-  return best ? { best, comboCount } : { error: 'Nothing to compare — add some weapons/artifacts to your Bag first.' };
+    }
+    if(onProgress) onProgress(processed, total);
+    if(processed < total){
+      setTimeout(stepBatch, 0);
+    } else {
+      onDone(best ? { best, comboCount: total } : { error: 'Nothing to compare — add some weapons/artifacts to your Bag first.' });
+    }
+  }
+  stepBatch();
 }
 
 function applyBestDpsBuild(result){
@@ -4930,25 +4964,51 @@ function applyBestDpsBuild(result){
 
 function runDpsOptimizer(){
   const resultDiv = document.getElementById('dpsOptimizeResult');
+  const info = getDpsComboInfo();
+
+  if(info.error){
+    if(resultDiv) resultDiv.innerHTML = `<div class="dps-hint">${info.error}</div>`;
+    return;
+  }
+
+  if(info.comboCount > DPS_OPTIMIZE_WARN_THRESHOLD){
+    openConfirmModal(
+      '⚠️ Large search ahead',
+      `This will check ${info.comboCount.toLocaleString()} combinations. That's a lot — it may take a long time (possibly minutes to hours depending on your device), keep your CPU busy and battery draining the whole time, and use a growing amount of memory the longer it runs. The tab will stay responsive, but things may feel sluggish, and closing or reloading the page will stop the search with no way to resume it. Trimming your Bag first will make this much faster. Continue anyway?`,
+      'Continue Anyway',
+      () => startDpsOptimizerRun(info)
+    );
+    return;
+  }
+
+  startDpsOptimizerRun(info);
+}
+
+function startDpsOptimizerRun(info){
+  const resultDiv = document.getElementById('dpsOptimizeResult');
   const btn = document.getElementById('dpsOptimizeBtn');
   if(btn) btn.disabled = true;
   if(resultDiv) resultDiv.innerHTML = '<div class="dps-hint">Crunching combinations…</div>';
-  // Let the "crunching" message paint before the (synchronous) search runs.
-  setTimeout(() => {
-    const outcome = findBestDpsBuild();
-    if(btn) btn.disabled = false;
-    if(outcome.error){
-      if(resultDiv) resultDiv.innerHTML = `<div class="dps-hint">${outcome.error}</div>`;
-      return;
+  findBestDpsBuild(
+    info,
+    (processed, total) => {
+      if(resultDiv) resultDiv.innerHTML = `<div class="dps-hint">Crunching combinations… ${processed.toLocaleString()} / ${total.toLocaleString()}</div>`;
+    },
+    (outcome) => {
+      if(btn) btn.disabled = false;
+      if(outcome.error){
+        if(resultDiv) resultDiv.innerHTML = `<div class="dps-hint">${outcome.error}</div>`;
+        return;
+      }
+      applyBestDpsBuild(outcome.best);
+      renderDpsPanel();
+      const pieces = SLOTS.filter(s => outcome.best.artifacts[s]).length;
+      if(resultDiv){
+        resultDiv.innerHTML = `<div class="dps-hint">✅ Equipped best build: <strong>${outcome.best.weapon.weaponName}</strong> + ${pieces}/5 artifact piece(s) — avg hit <strong>${round(outcome.best.dps)}</strong> (checked ${outcome.comboCount.toLocaleString()} combo${outcome.comboCount===1?'':'s'}).</div>`;
+      }
+      setStatus('Best DPS build equipped.');
     }
-    applyBestDpsBuild(outcome.best);
-    renderDpsPanel();
-    const pieces = SLOTS.filter(s => outcome.best.artifacts[s]).length;
-    if(resultDiv){
-      resultDiv.innerHTML = `<div class="dps-hint">✅ Equipped best build: <strong>${outcome.best.weapon.weaponName}</strong> + ${pieces}/5 artifact piece(s) — avg hit <strong>${round(outcome.best.dps)}</strong> (checked ${outcome.comboCount.toLocaleString()} combo${outcome.comboCount===1?'':'s'}).</div>`;
-    }
-    setStatus('Best DPS build equipped.');
-  }, 10);
+  );
 }
 
 // ---------- Skills panel ----------
