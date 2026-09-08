@@ -884,8 +884,24 @@
         <div class="dps-results" id="dpsResults"></div>
 
         <div class="dps-subhead">Bag Optimizer</div>
-        <button type="button" id="dpsOptimizeBtn" class="primary" style="width:100%;">🏆 Best DPS Build (from Bag)</button>
-        <div class="dps-hint">Tries every weapon/artifact combo currently in your Bag (plus what's equipped) against the settings above, and equips whichever scores the highest average hit.</div>
+        <div class="dps-toggle-row" style="display:block;">
+          <label for="dpsOptimizeGoalSelect" style="display:block; margin-bottom:4px;">🎯 Optimize for</label>
+          <select id="dpsOptimizeGoalSelect">
+            <option value="dps">🏆 Max DPS (ignores HP/DEF entirely)</option>
+            <option value="balanced">⚖️ Balanced — HP + ATK/Crit</option>
+            <option value="tanky">🛡️ Survivability — HP + Def Rate/Value</option>
+            <option value="custom">🎚️ Custom weighting</option>
+          </select>
+          <span class="dps-term-def" id="dpsOptimizeGoalDef">Picks the highest-average-hit combo only — a build can come out squishy since HP is never considered.</span>
+        </div>
+        <div class="dps-toggle-row" id="dpsOptimizeWeightRow" style="display:none; block-size:auto;">
+          <label for="dpsOptimizeWeightInput">Damage priority — <span id="dpsOptimizeWeightVal">50</span>% damage / <span id="dpsOptimizeWeightValInv">50</span>% survivability
+            <span class="dps-term-def">Slide toward 100% for a pure-damage pick, toward 0% for a pure-survivability pick (HP + Def Rate/Value). The optimizer scores every combo by blending both, weighted by this slider.</span>
+          </label>
+          <input type="range" id="dpsOptimizeWeightInput" min="0" max="100" step="5" value="50" style="width:100%;">
+        </div>
+        <button type="button" id="dpsOptimizeBtn" class="primary" style="width:100%;">🏆 Best Build (from Bag)</button>
+        <div class="dps-hint">Tries every weapon/artifact combo currently in your Bag (plus what's equipped) against the settings above, and equips whichever scores best for the goal picked above.</div>
         <div id="dpsOptimizeResult"></div>
 
         <div class="dps-note">Assumes a non-crit roll averages the ATK range midpoint; crit rolls apply Crit Value as a bonus multiplier on top of the roll. Ignores enemy DR/DV (raw output).</div>
@@ -1371,6 +1387,8 @@ let state = {
   dpsSobp: false,       // DPS panel: Song of Broken Pines — this is the 4th attack (Basic/Heavy), 10x damage
   dpsUniqueUltimate: '', // DPS panel: '' / 'kindness' / 'pride' / 'wrath' — Unique alignment skill damage multiplier
   dpsKindnessEnemies: 1, // DPS panel: enemies still alive, used by Kindness (2x damage per enemy alive)
+  dpsOptimizeGoal: 'dps', // Bag Optimizer: 'dps' / 'balanced' / 'tanky' / 'custom' — what the optimizer scores builds on
+  dpsOptimizeWeight: 50,  // Bag Optimizer: 0-100 damage-vs-survivability slider, used when goal is 'custom' (also shown/edited for 'balanced' and 'tanky' presets)
   dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'slash' / 'spell:<id>|<level>'
   darkMode: false,
   showRollQuality: false,
@@ -3843,26 +3861,45 @@ function parseBulkPasteBagText(text){
 
     // Translate the parsed stat block (if any) into roll keys the app understands,
     // only keeping stats the matched item actually rolls.
+    //
+    // IMPORTANT: the numbers in a pasted stat block (e.g. "+39% CR, +138% CV")
+    // are the item's FINAL displayed stats — i.e. already multiplied by its
+    // Prefix and Anvil Star level. `rolls` is meant to hold the item's BASE
+    // (pre-multiplier) values, since prefixFactor()/starMult() get applied on
+    // top of `rolls` again everywhere the item's totals are computed. So we
+    // divide out those multipliers here — otherwise the prefix/star bonus
+    // gets baked in twice, and re-editing the Prefix/Anvil Star afterward
+    // compounds the stats further.
+    const unmultiply = (rollKey, value) => {
+      const factor = prefixFactor(prefixName || 'None', rollKey) * starMult(starred, hit.kind === 'piece' ? 'artifact' : 'weapon');
+      return factor ? Math.round(value / factor) : value;
+    };
+
     let rolls = {};
     if(statBlock){
       if(hit.kind === 'piece'){
         Object.keys(hit.data.stats || {}).forEach(statKey => {
           const abbr = Object.keys(BULK_PASTE_ARTIFACT_STAT_KEYS).find(a => BULK_PASTE_ARTIFACT_STAT_KEYS[a] === statKey);
-          if(abbr && statBlock[abbr] !== undefined) rolls[statKey] = bulkPasteStatValue(statBlock[abbr]);
+          if(abbr && statBlock[abbr] !== undefined) rolls[statKey] = unmultiply(statKey, bulkPasteStatValue(statBlock[abbr]));
         });
       } else {
         const w = hit.data;
         if(statBlock.ATK !== undefined){
           if(w.atkType === 'minMax'){
             const atkEntry = statBlock.ATK;
-            if(typeof atkEntry === 'object'){ rolls.atkMin = atkEntry.min; rolls.atkMax = atkEntry.max; }
-            else { rolls.atkMin = atkEntry; rolls.atkMax = atkEntry; }
+            if(typeof atkEntry === 'object'){
+              rolls.atkMin = unmultiply('atkMin', atkEntry.min);
+              rolls.atkMax = unmultiply('atkMax', atkEntry.max);
+            } else {
+              rolls.atkMin = unmultiply('atkMin', atkEntry);
+              rolls.atkMax = unmultiply('atkMax', atkEntry);
+            }
           } else if(w.atkType === 'flat'){
-            rolls.atk = bulkPasteStatValue(statBlock.ATK);
+            rolls.atk = unmultiply('atk', bulkPasteStatValue(statBlock.ATK));
           }
         }
         Object.entries(BULK_PASTE_WEAPON_STAT_KEYS).forEach(([abbr, rollKey]) => {
-          if(statBlock[abbr] !== undefined) rolls[rollKey] = bulkPasteStatValue(statBlock[abbr]);
+          if(statBlock[abbr] !== undefined) rolls[rollKey] = unmultiply(rollKey, bulkPasteStatValue(statBlock[abbr]));
         });
       }
     }
@@ -4470,6 +4507,48 @@ function renderDpsPanel(){
     });
   }
 
+  // Bag Optimizer goal (what the "Best Build" button scores combos on).
+  const goalSelect = document.getElementById('dpsOptimizeGoalSelect');
+  const goalDef = document.getElementById('dpsOptimizeGoalDef');
+  const weightRow = document.getElementById('dpsOptimizeWeightRow');
+  const weightInput = document.getElementById('dpsOptimizeWeightInput');
+  const weightVal = document.getElementById('dpsOptimizeWeightVal');
+  const weightValInv = document.getElementById('dpsOptimizeWeightValInv');
+  const GOAL_DEFS = {
+    dps: 'Picks the highest-average-hit combo only — a build can come out squishy since HP is never considered.',
+    balanced: 'Weighs raw damage output against HP, so it won\'t hand you a glass cannon — use the slider below to tip the balance.',
+    tanky: 'Weighs HP and Def Rate/Value against damage, favoring survivability over pure hit size — use the slider below to tip the balance.',
+    custom: 'Blends damage against HP + Def Rate/Value at whatever ratio you set below.'
+  };
+  if(goalSelect && !goalSelect.dataset.wired){
+    goalSelect.dataset.wired = '1';
+    goalSelect.value = state.dpsOptimizeGoal || 'dps';
+    goalSelect.addEventListener('change', () => {
+      state.dpsOptimizeGoal = goalSelect.value;
+      // Presets nudge the slider to a sensible default; custom leaves it as-is.
+      if(state.dpsOptimizeGoal === 'balanced') state.dpsOptimizeWeight = 65;
+      else if(state.dpsOptimizeGoal === 'tanky') state.dpsOptimizeWeight = 30;
+      scheduleAutosave();
+      renderDpsPanel();
+    });
+    dpsSelectEnhanced.optimizeGoal = enhanceSelectEl(goalSelect);
+  }
+  if(goalDef) goalDef.textContent = GOAL_DEFS[state.dpsOptimizeGoal || 'dps'] || GOAL_DEFS.dps;
+  if(weightRow) weightRow.style.display = (state.dpsOptimizeGoal && state.dpsOptimizeGoal !== 'dps') ? 'block' : 'none';
+  if(weightInput && !weightInput.dataset.wired){
+    weightInput.dataset.wired = '1';
+    weightInput.value = state.dpsOptimizeWeight != null ? state.dpsOptimizeWeight : 50;
+    weightInput.addEventListener('input', () => {
+      state.dpsOptimizeWeight = Math.max(0, Math.min(100, parseInt(weightInput.value, 10) || 0));
+      if(weightVal) weightVal.textContent = state.dpsOptimizeWeight;
+      if(weightValInv) weightValInv.textContent = 100 - state.dpsOptimizeWeight;
+      scheduleAutosave();
+    });
+  }
+  if(weightInput) weightInput.value = state.dpsOptimizeWeight != null ? state.dpsOptimizeWeight : 50;
+  if(weightVal) weightVal.textContent = state.dpsOptimizeWeight != null ? state.dpsOptimizeWeight : 50;
+  if(weightValInv) weightValInv.textContent = 100 - (state.dpsOptimizeWeight != null ? state.dpsOptimizeWeight : 50);
+
   const paladinToggle = document.getElementById('dpsPaladinToggle');
   if(paladinToggle && !paladinToggle.dataset.wired){
     paladinToggle.dataset.wired = '1';
@@ -4893,6 +4972,180 @@ function getDpsComboInfo(){
 
 // Brute-forces every weapon x artifact-per-slot combination available (Bag + currently
 // equipped), scores each with computeDpsForLoadout, and returns the best one found.
+// ---- Fast-path helpers for the search loop below. --------------------------------
+// computeTotalsForLoadout / computeDpsForLoadout (above) recompute everything —
+// every weapon-roll multiply, every artifact-roll multiply, every skill/weapon-type
+// lookup — from scratch on every call. That's fine for a single lookup (e.g. the DPS
+// panel), but the optimizer calls it once per combo, and the overwhelming majority of
+// that work is identical across combos (same weapon roll math whenever the weapon
+// candidate repeats, same artifact roll math whenever that artifact candidate repeats,
+// same weapon-type/skill lookups for the whole search). Hoisting that invariant work
+// out of the loop and reusing it produces the exact same numbers — same floors, same
+// multiplies, same summation order for every integer stat involved — just without
+// redoing it millions of times. Nothing about which build is chosen, how ties are
+// broken, or what score is reported changes.
+
+// The portion of computeTotalsForLoadout that doesn't depend on the weapon/artifact
+// candidates at all (base stats, AR, Frost tree, skill crit bonuses) — identical for
+// every combo in a given search, so it only needs to run once.
+function computeStaticBaseTotals(){
+  const totals = { hp: BASE_STATS.hp, atkLow: BASE_STATS.atkLow, atkHigh: BASE_STATS.atkHigh,
+                    cr: BASE_STATS.cr, cv: BASE_STATS.cv, dr: BASE_STATS.dr, dv: BASE_STATS.dv };
+  const arLevels = Math.max(0, (state.ar || 1) - 1);
+  totals.hp += arLevels * 5;
+  totals.atkLow += arLevels;
+  totals.atkHigh += arLevels;
+  if(frostTreeUnlocked()) totals.hp += frostTreeBonusHP(state.frostTreeLevel || 0);
+  activeSkillCritBonuses().forEach(b => { totals.cr += b.cr; totals.cv += b.cv; });
+  return totals;
+}
+
+// Same weapon-roll math as computeTotalsForLoadout, but as a standalone additive
+// delta — computed once per weapon candidate instead of once per combo.
+function precomputeWeaponDelta(wc){
+  const delta = { hp:0, atkLow:0, atkHigh:0, cr:0, cv:0, dr:0, dv:0 };
+  const wr = wc.rolls || {};
+  const wPfx = wc.prefix || 'None';
+  const wStar = starMult(wc.starred, 'weapon');
+  if(wr.atk !== undefined){ const v = Math.floor(wr.atk * prefixFactor(wPfx,'atk') * wStar); delta.atkLow += v; delta.atkHigh += v; }
+  if(wr.atkMin !== undefined) delta.atkLow += Math.floor(wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar);
+  if(wr.atkMax !== undefined) delta.atkHigh += Math.floor(wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar);
+  if(wr.hp !== undefined) delta.hp += Math.floor(wr.hp * prefixFactor(wPfx,'hp') * wStar);
+  if(wr.critRate !== undefined) delta.cr += Math.floor(wr.critRate * prefixFactor(wPfx,'critRate') * wStar);
+  if(wr.critValue !== undefined) delta.cv += Math.floor(wr.critValue * prefixFactor(wPfx,'critValue') * wStar);
+  if(wr.defRate !== undefined) delta.dr += Math.floor(wr.defRate * prefixFactor(wPfx,'defRate') * wStar);
+  if(wr.defValue !== undefined) delta.dv += Math.floor(wr.defValue * prefixFactor(wPfx,'defValue') * wStar);
+  return delta;
+}
+
+// Same artifact-roll math as computeTotalsForLoadout's per-slot loop, but as a
+// standalone additive delta — computed once per distinct artifact candidate object
+// (shared across every combo that includes it) instead of once per combo.
+function precomputeArtifactDelta(a){
+  if(!a) return null;
+  const delta = { hp:0, atkLow:0, atkHigh:0, cr:0, cv:0, dr:0, dv:0 };
+  const aPfx = a.prefix || 'None';
+  const aStar = starMult(a.starred, 'artifact');
+  Object.entries(a.rolls || {}).forEach(([statKey, val]) => {
+    if(val === undefined) return;
+    addStatToTotals(delta, statKey, Math.floor(val * prefixFactor(aPfx, statKey) * aStar));
+  });
+  return delta;
+}
+
+function addDeltaInPlace(totals, delta){
+  if(!delta) return;
+  totals.hp += delta.hp; totals.atkLow += delta.atkLow; totals.atkHigh += delta.atkHigh;
+  totals.cr += delta.cr; totals.cv += delta.cv; totals.dr += delta.dr; totals.dv += delta.dv;
+}
+
+// Everything computeDpsForLoadout works out from the weapon *name* alone (type flags,
+// mastery skill/level, Favonius%) — constant for a given weapon candidate across the
+// whole search, so it's computed once per weapon instead of once per combo.
+function precomputeWeaponDpsContext(weaponName, weaponsByName){
+  const equippedWeapon = weaponsByName.get(weaponName);
+  const equippedWeaponType = (equippedWeapon && equippedWeapon.type || '').toLowerCase();
+  const isCatalyst = equippedWeaponType === 'catalyst';
+  const isClaymore = equippedWeaponType === 'claymore';
+  const isBow = equippedWeaponType === 'bow';
+  const isSword = equippedWeaponType === 'sword';
+  const isHoma = weaponName === 'Staff of Homa';
+  const isSobp = weaponName === 'Song of Broken Pines';
+
+  const masterySkillId = isBow ? 'bow_mastery' : isClaymore ? 'claymore_mastery' : isCatalyst ? 'catalyst_mastery'
+    : (equippedWeaponType === 'polearm') ? 'polearm_mastery' : isSword ? 'sword_mastery' : null;
+  const masterySkill = masterySkillId ? skillsData[masterySkillId] : null;
+  const masteryLevel = masterySkill ? (masterySkill.levels || []).find(l => l.level === (state.dpsMasteryLevel || 0)) : null;
+  const masteryPct = masteryLevel ? parseDamagePctFromEffect(masteryLevel.effect) : 0;
+  const favoniusPct = isSword ? (state.dpsFavonius || 0) * 3 : 0;
+
+  return { isCatalyst, isClaymore, isBow, isSword, isHoma, isSobp, masteryPct, favoniusPct };
+}
+
+// Everything computeDpsForLoadout works out from `state` alone, independent of both
+// weapon and artifacts — constant for the whole search, so it's computed once total.
+function precomputeDpsSearchConstants(){
+  const curseStacks = state.dpsCurseStacks || 0;
+  const curseMult = Math.pow(1.5, curseStacks);
+  const sageBonus = state.dpsSageBonus || 0;
+  const uniqueMult = state.dpsUniqueUltimate === 'pride' ? 3
+    : state.dpsUniqueUltimate === 'wrath' ? 2
+    : state.dpsUniqueUltimate === 'kindness' ? Math.pow(2, Math.max(1, state.dpsKindnessEnemies || 1))
+    : 1;
+
+  let followUp = null;
+  if(state.dpsFollowUp){
+    const [skillId, levelStr] = state.dpsFollowUp.split('|');
+    const sk = skillsData[skillId];
+    const lvl = sk && (sk.levels || []).find(l => l.level === parseInt(levelStr, 10));
+    if(lvl){
+      followUp = { pct: parseFollowUpPct(lvl.effect), flatAtk: isFlatAtkFollowUp(lvl.effect) };
+    }
+  }
+  return { curseStacks, curseMult, sageBonus, uniqueMult, followUp };
+}
+
+// Same per-combo math as computeDpsForLoadout's basicHit()+follow-up tail, just fed
+// from the precomputed weapon context / search constants instead of re-deriving them.
+function computeDpsFast(weaponCtx, totals, dpsConst){
+  let { atkLow, atkHigh, cr, cv, dv } = totals;
+  if(state.dpsPaladin){
+    const newDv = atkLow;
+    atkLow = dv; atkHigh = dv;
+    dv = newDv;
+  }
+
+  let dmg = expectedHitDamage(atkLow, atkHigh, cr, cv);
+  if(dpsConst.curseStacks > 0) dmg *= dpsConst.curseMult;
+  if(dpsConst.sageBonus > 0) dmg *= (1 + dpsConst.sageBonus / 100);
+  if(weaponCtx.isHoma){
+    const hpPct = state.dpsHomaHpPct != null ? state.dpsHomaHpPct : 100;
+    dmg *= homaMultiplier(hpPct, 100);
+  }
+  if(weaponCtx.isBow && state.dpsBowElement) dmg *= 0.8;
+  if(weaponCtx.masteryPct > 0) dmg *= (1 + weaponCtx.masteryPct / 100);
+  if(state.dpsGuashua && weaponCtx.isSword){
+    const critChance = Math.max(0, Math.min(1, (cr||0)/100));
+    dmg *= (1 + 0.05 * (1 - critChance));
+  }
+  if(weaponCtx.favoniusPct > 0) dmg *= (1 + weaponCtx.favoniusPct / 100);
+  if(state.dpsKatzlein && weaponCtx.isSword) dmg *= 1.5;
+  if(state.dpsSobp && weaponCtx.isSobp) dmg *= 10;
+  if(dpsConst.uniqueMult !== 1) dmg *= dpsConst.uniqueMult;
+
+  let hit1 = dmg, hit2 = 0;
+  if(dpsConst.followUp){
+    hit2 = dpsConst.followUp.flatAtk
+      ? avgRoll(atkLow, atkHigh) * (dpsConst.followUp.pct / 100)
+      : hit1 * (dpsConst.followUp.pct / 100);
+  }
+  return hit1 + hit2;
+}
+
+// Rough "how hard is this build to kill" figure, used only by the Bag Optimizer's
+// non-DPS goals — not shown as an in-combat guarantee. Treats Def Rate the way Crit
+// Rate works (a % chance for a mitigation proc) and Def Value as that proc's size
+// (like Crit Value), giving an expected-mitigation multiplier on top of raw HP:
+// survivability = hp * (1 + (defRate/100) * (defValue/100)).
+function computeSurvivabilityScore(totals){
+  const dr = Math.max(0, totals.dr || 0);
+  const dv = Math.max(0, totals.dv || 0);
+  return Math.max(1, totals.hp) * (1 + (dr / 100) * (dv / 100));
+}
+
+// Blends raw damage against survivability for the Bag Optimizer's non-'dps' goals.
+// weightPct is 0-100 (100 = pure damage, 0 = pure survivability); a weighted geometric
+// mean keeps the two axes' very different scales from letting one dominate the other
+// the way a plain weighted sum would.
+function computeOptimizerScore(goal, dps, survivability){
+  if(goal === 'dps' || !goal) return dps;
+  const weightPct = Math.max(0, Math.min(100, (state.dpsOptimizeWeight != null ? state.dpsOptimizeWeight : 50)));
+  // Clamp away from the exact ends so the unweighted axis never collapses to a flat
+  // zero-power (which would make that axis stop mattering at all).
+  const w = Math.max(0.02, Math.min(0.98, weightPct / 100));
+  return Math.pow(dps, w) * Math.pow(survivability, 1 - w);
+}
+
 // Runs in chunks via setTimeout so large searches don't block/freeze the page;
 // onProgress(processed, total) fires after each batch, onDone(outcome) fires once at the end.
 // `info` is the result of getDpsComboInfo() (already validated, no error).
@@ -4907,19 +5160,55 @@ function findBestDpsBuild(info, onProgress, onDone){
   const idx = new Array(dims.length).fill(0);
   let processed = 0;
   let best = null;
+  const optimizeGoal = state.dpsOptimizeGoal || 'dps';
+
+  // Hoist every piece of per-combo work that doesn't actually vary between combos.
+  // See the block of functions above this one for why each is safe to reuse as-is.
+  const staticBaseTotals = computeStaticBaseTotals();
+  const weaponsByName = new Map(weapons.map(w => [w.name, w]));
+  const weaponDeltas = weaponCandidates.map(precomputeWeaponDelta);
+  const weaponDpsContexts = weaponCandidates.map(wc => precomputeWeaponDpsContext(wc.weaponName, weaponsByName));
+  const artifactSetMap = new Map(artifactSets.map(s => [s.setName, s]));
+  const dpsConst = precomputeDpsSearchConstants();
+  // Every distinct artifact candidate object (across all 5 slots) gets its stat delta
+  // computed exactly once, however many combos reuse it.
+  const artifactDeltaCache = new Map();
+  SLOTS.forEach(slot => {
+    slotCandidates[slot].forEach(cand => {
+      if(!artifactDeltaCache.has(cand)) artifactDeltaCache.set(cand, precomputeArtifactDelta(cand));
+    });
+  });
 
   function stepBatch(){
     const batchEnd = Math.min(processed + DPS_OPTIMIZE_BATCH_SIZE, total);
     for(; processed < batchEnd; processed++){
-      const wc = weaponCandidates[idx[0]];
+      const wIdx = idx[0];
+      const wc = weaponCandidates[wIdx];
+
+      const totals = { ...staticBaseTotals };
+      addDeltaInPlace(totals, weaponDeltas[wIdx]);
+
       const artifactsObj = {};
+      const setCounts = {};
       SLOTS.forEach((slot, i) => {
         const cand = slotCandidates[slot][idx[i + 1]];
-        if(cand) artifactsObj[slot] = cand;
+        if(cand){
+          artifactsObj[slot] = cand;
+          addDeltaInPlace(totals, artifactDeltaCache.get(cand));
+          setCounts[cand.setName] = (setCounts[cand.setName] || 0) + 1;
+        }
       });
-      const totals = computeTotalsForLoadout(wc.rolls, wc.prefix, wc.starred, artifactsObj);
-      const dps = computeDpsForLoadout(wc.weaponName, totals);
-      if(!best || dps > best.dps) best = { dps, weapon: wc, artifacts: artifactsObj };
+      Object.entries(setCounts).forEach(([setName, count]) => {
+        const setDef = artifactSetMap.get(setName);
+        if(!setDef) return;
+        if(count >= 4 && setDef.setBonus4pcStats) setDef.setBonus4pcStats.forEach(b => addStatToTotals(totals, b.stat, b.value));
+        else if(count >= 2 && setDef.setBonus2pcStats) setDef.setBonus2pcStats.forEach(b => addStatToTotals(totals, b.stat, b.value));
+      });
+
+      const dps = computeDpsFast(weaponDpsContexts[wIdx], totals, dpsConst);
+      const survivability = optimizeGoal === 'dps' ? 0 : computeSurvivabilityScore(totals);
+      const score = computeOptimizerScore(optimizeGoal, dps, survivability);
+      if(!best || score > best.score) best = { score, dps, hp: totals.hp, survivability, weapon: wc, artifacts: artifactsObj };
 
       for(let d = dims.length - 1; d >= 0; d--){
         idx[d]++;
@@ -5003,10 +5292,12 @@ function startDpsOptimizerRun(info){
       applyBestDpsBuild(outcome.best);
       renderDpsPanel();
       const pieces = SLOTS.filter(s => outcome.best.artifacts[s]).length;
+      const goal = state.dpsOptimizeGoal || 'dps';
+      const hpBit = goal !== 'dps' ? ` · <strong>${Math.round(outcome.best.hp)}</strong> HP` : '';
       if(resultDiv){
-        resultDiv.innerHTML = `<div class="dps-hint">✅ Equipped best build: <strong>${outcome.best.weapon.weaponName}</strong> + ${pieces}/5 artifact piece(s) — avg hit <strong>${round(outcome.best.dps)}</strong> (checked ${outcome.comboCount.toLocaleString()} combo${outcome.comboCount===1?'':'s'}).</div>`;
+        resultDiv.innerHTML = `<div class="dps-hint">✅ Equipped best build: <strong>${outcome.best.weapon.weaponName}</strong> + ${pieces}/5 artifact piece(s) — avg hit <strong>${round(outcome.best.dps)}</strong>${hpBit} (checked ${outcome.comboCount.toLocaleString()} combo${outcome.comboCount===1?'':'s'}).</div>`;
       }
-      setStatus('Best DPS build equipped.');
+      setStatus(goal === 'dps' ? 'Best DPS build equipped.' : 'Best build equipped.');
     }
   );
 }
