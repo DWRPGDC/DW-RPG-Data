@@ -53,6 +53,36 @@
     padding:36px 20px 100px;
   }
 
+  /* ---------- Custom dropdown (replaces plain <select> where used) ---------- */
+  .custom-select{ position:relative; display:inline-block; }
+  .custom-select.full-width{ display:block; width:100%; }
+  .custom-select-native{ display:none; }
+  .custom-select-trigger{
+    display:inline-flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:9px 10px; border:1.5px solid var(--line); border-radius:8px;
+    font-family:'Inter', sans-serif; font-size:.85rem; background:var(--bg-alt); color:var(--ink);
+    cursor:pointer; white-space:nowrap; margin-bottom:8px;
+  }
+  .custom-select.full-width .custom-select-trigger{ width:100%; white-space:normal; text-align:left; }
+  .custom-select-trigger:hover{ border-color:var(--ink-dim); }
+  .custom-select-trigger.is-open{ border-color:var(--ink-dim); }
+  .custom-select-trigger svg{ flex:0 0 auto; color:var(--ink-dim); transition:transform .15s ease; }
+  .custom-select-trigger.is-open svg{ transform:rotate(180deg); }
+  .custom-select-menu{
+    display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:100%;
+    background:var(--panel); border:1.5px solid var(--line); border-radius:8px;
+    max-height:280px; overflow-y:auto; z-index:30; box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  }
+  .custom-select.full-width .custom-select-menu{ width:100%; }
+  .custom-select-menu.is-open{ display:block; }
+  .custom-select-option{ padding:9px 12px; font-size:.85rem; cursor:pointer; white-space:normal; color:var(--ink); }
+  .custom-select-option:not(:last-child){ border-bottom:1px solid var(--panel-2); }
+  .custom-select-option:hover, .custom-select-option.is-selected{ background:var(--bg-alt); }
+  .custom-select-option.is-selected{ font-weight:600; }
+
+  .prefix-row{ margin-top:10px; }
+  .prefix-row-label{ display:block; font-size:12px; color:var(--ink-dim); margin-bottom:4px; }
+
   header.hero{
     margin-bottom:26px;
   }
@@ -334,6 +364,25 @@
     margin-top:12px;
     line-height:1.5;
   }
+
+  .star-toggle-row{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    margin-top:12px; padding:8px 10px;
+    border:1px solid var(--line); border-radius:8px;
+  }
+  .star-toggle-label{ font-size:12px; color:var(--ink-dim); }
+  .star-toggle-group{ display:flex; gap:4px; }
+  .star-toggle-btn{
+    font-size:12px; font-weight:600; padding:4px 9px;
+    border:1px solid var(--line); border-radius:6px;
+    background:var(--card); color:var(--ink);
+    cursor:pointer;
+  }
+  .star-toggle-btn.is-active{
+    background:var(--gold); border-color:var(--gold);
+    color:var(--bg);
+  }
+
   .artifact-set-effects div{ margin-bottom:2px; }
   .artifact-set-effects div:last-child{ margin-bottom:0; }
   .artifact-set-effects b{ color:var(--ink); }
@@ -1258,6 +1307,24 @@
             <option value="crucible-desc">Crucible (high-low)</option>
           </select>
         </div>
+        <div class="sort-group">
+          <label for="statSortSelect">Stat:</label>
+          <select id="statSortSelect">
+            <option value="">— None —</option>
+            <option value="hp-desc">HP (high-low)</option>
+            <option value="hp-asc">HP (low-high)</option>
+            <option value="atk-desc">ATK (high-low)</option>
+            <option value="atk-asc">ATK (low-high)</option>
+            <option value="critRate-desc">Crit Rate (high-low)</option>
+            <option value="critRate-asc">Crit Rate (low-high)</option>
+            <option value="critValue-desc">Crit Value (high-low)</option>
+            <option value="critValue-asc">Crit Value (low-high)</option>
+            <option value="defRate-desc">DEF Rate (high-low)</option>
+            <option value="defRate-asc">DEF Rate (low-high)</option>
+            <option value="defValue-desc">DEF Value (high-low)</option>
+            <option value="defValue-asc">DEF Value (low-high)</option>
+          </select>
+        </div>
       </div>
 
       <div class="result-count" id="resultCount"></div>
@@ -1353,6 +1420,24 @@
             <option value="name-asc">Name (A-Z)</option>
             <option value="crucible-asc">Crucible (low-high)</option>
             <option value="crucible-desc">Crucible (high-low)</option>
+          </select>
+        </div>
+        <div class="sort-group">
+          <label for="artifactStatSortSelect">Stat:</label>
+          <select id="artifactStatSortSelect">
+            <option value="">— None —</option>
+            <option value="hp-desc">HP (high-low)</option>
+            <option value="hp-asc">HP (low-high)</option>
+            <option value="atk-desc">ATK (high-low)</option>
+            <option value="atk-asc">ATK (low-high)</option>
+            <option value="critRate-desc">Crit Rate (high-low)</option>
+            <option value="critRate-asc">Crit Rate (low-high)</option>
+            <option value="critValue-desc">Crit Value (high-low)</option>
+            <option value="critValue-asc">Crit Value (low-high)</option>
+            <option value="defRate-desc">DEF Rate (high-low)</option>
+            <option value="defRate-asc">DEF Rate (low-high)</option>
+            <option value="defValue-desc">DEF Value (high-low)</option>
+            <option value="defValue-asc">DEF Value (low-high)</option>
           </select>
         </div>
       </div>
@@ -1479,6 +1564,193 @@
   var DATA_URL  = "../JSON/Weapons.json";
 
   var weapons = [];
+
+  // Kept as separate tables (not shared) since Weapon anvil stars are expected to get
+  // rebalanced independently of Artifact ones later.
+  var STAR_MULTS = {
+    weapon:   [1, 1.5, 2, 2.5],
+    artifact: [1, 1.5, 2, 2.5]
+  };
+
+  // Same Prefix system as Build Calculator — multiplies specific stats on a piece
+  // of gear. Kept in sync manually; update both files if the game's prefix list changes.
+  var PREFIXES = {
+    'None':     {},
+    'Rusted':   { ATK:0.5 },
+    'Godly':    { ATK:1.5 },
+    'Strong':   { DV:1.5 },
+    'Hearty':   { HP:1.5 },
+    'Broken':   { ATK:0.8, HP:0.5 },
+    'Old':      { CR:0.5, CV:0.5 },
+    'Sharp':    { ATK:1.5, CV:1.5 },
+    'Tainted':  { CV:2 },
+    'Sinful':   { ATK:2, HP:0.5 },
+    'Jaded':    { DV:1.5, HP:1.2 },
+    'Scornful': { ATK:2, CV:0.5 },
+    'Spicy':    { CR:2, CV:2 },
+    'Cursed':   { ATK:-1, HP:-1, CR:-1, CV:-1, DR:-1, DV:-1 },
+    'Gilded':   { CR:1.5, DV:-2 },
+    'Revered':  { HP:2, CR:-1.5 },
+    'Salty':    { ATK:2, HP:-1.5 },
+    'Strange':  { CR:2, CV:-1.5 },
+    'Ancient':  { ATK:2.5, HP:2.5, CR:2.5, CV:2.5, DR:2.5, DV:2.5 }
+  };
+  var PREFIX_NAMES = Object.keys(PREFIXES);
+  // Maps a weapon's raw field name to the canonical stat key PREFIXES is keyed by.
+  var WEAPON_FIELD_TO_STATKEY = {
+    hp: "HP", atkRoll: "ATK", atkRollMin: "ATK", atkRollMax: "ATK",
+    critRate: "CR", critValue: "CV", defRate: "DR", defValue: "DV"
+  };
+  function prefixFactor(prefixName, statKey){
+    var p = PREFIXES[prefixName || "None"] || {};
+    return p[statKey] !== undefined ? p[statKey] : 1;
+  }
+
+  // Builds the <option> list for a Prefix <select>, matching Build Calculator's
+  // "Name (STAT x#, STAT x#)" labeling so the two tools read the same way.
+  function prefixOptionsHtml(activePrefix){
+    return PREFIX_NAMES.map(function(name){
+      var stats = PREFIXES[name];
+      var statStr = Object.keys(stats).map(function(k){ return k + " x" + stats[k]; }).join(", ");
+      var label = statStr ? (name + " (" + statStr + ")") : name;
+      var sel = (activePrefix || "None") === name ? " selected" : "";
+      return '<option value="' + name + '"' + sel + '>' + label + '</option>';
+    }).join("");
+  }
+  function prefixRowHtml(activePrefix, idPrefix){
+    return '<div class="prefix-row">' +
+      '<label class="prefix-row-label" for="' + idPrefix + 'PrefixSelect">Prefix preview:</label>' +
+      '<select id="' + idPrefix + 'PrefixSelect">' + prefixOptionsHtml(activePrefix) + '</select>' +
+    '</div>';
+  }
+
+  // Turns a plain <select> into the app's custom dropdown UI (styled trigger +
+  // floating option list) while keeping the underlying <select> as the real source
+  // of truth — `.value` and native `change` events still work normally, so any
+  // existing wiring on the select itself keeps working unchanged.
+  function enhanceSelectEl(select){
+    if(!select) return null;
+
+    var wrap = document.createElement("div");
+    wrap.className = "custom-select";
+    select.parentNode.insertBefore(wrap, select);
+    wrap.appendChild(select);
+    select.classList.add("custom-select-native");
+
+    var trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "custom-select-trigger";
+    trigger.innerHTML =
+      '<span class="custom-select-trigger-label"></span>' +
+      '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+    wrap.appendChild(trigger);
+
+    var menu = document.createElement("div");
+    menu.className = "custom-select-menu";
+    wrap.appendChild(menu);
+
+    var labelEl = trigger.querySelector(".custom-select-trigger-label");
+
+    function buildMenu(){
+      menu.innerHTML = "";
+      Array.prototype.forEach.call(select.options, function(opt){
+        var item = document.createElement("div");
+        item.className = "custom-select-option" + (opt.value === select.value ? " is-selected" : "");
+        item.textContent = opt.textContent;
+        item.dataset.value = opt.value;
+        item.addEventListener("click", function(){
+          if(select.value !== opt.value){
+            select.value = opt.value;
+            select.dispatchEvent(new Event("change", { bubbles: true }));
+          }
+          sync();
+          closeMenu();
+        });
+        menu.appendChild(item);
+      });
+    }
+
+    function sync(){
+      buildMenu();
+      var opt = select.options[select.selectedIndex];
+      labelEl.textContent = opt ? opt.textContent : "";
+    }
+
+    function openMenu(){
+      buildMenu();
+      menu.classList.add("is-open");
+      trigger.classList.add("is-open");
+    }
+    function closeMenu(){
+      menu.classList.remove("is-open");
+      trigger.classList.remove("is-open");
+    }
+
+    trigger.addEventListener("click", function(e){
+      e.stopPropagation();
+      if(select.disabled) return;
+      if(menu.classList.contains("is-open")) closeMenu(); else openMenu();
+    });
+    document.addEventListener("click", function(e){
+      if(!wrap.contains(e.target)) closeMenu();
+    });
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape") closeMenu();
+    });
+
+    sync();
+    return { sync: sync, wrap: wrap };
+  }
+
+  // Multiplies a single displayed stat value by an Anvil star multiplier, without
+  // disturbing "-" placeholders (stats a weapon/piece just doesn't roll) or any other
+  // non-numeric text.
+  function scaleStatValue(val, mult){
+    if(val === undefined || val === null) return val;
+    if(typeof val === "number") return roundStat(val * mult);
+    var str = String(val).trim();
+    if(str === "-" || str === "") return val;
+    // Some weapon roll fields (hp, critRate, critValue, defRate, defValue, and even
+    // the ATK roll fields themselves) can be stored as an "X to Y" range string
+    // instead of a single number — same format parseRange() already handles
+    // elsewhere in this file. Scale both ends if so.
+    var rangeMatch = str.match(/^(-?\d+(?:\.\d+)?)\s*to\s*(-?\d+(?:\.\d+)?)$/i);
+    if(rangeMatch){
+      var lo = roundStat(parseFloat(rangeMatch[1]) * mult);
+      var hi = roundStat(parseFloat(rangeMatch[2]) * mult);
+      return lo + " to " + hi;
+    }
+    // Allow an optional leading "+" (e.g. "+5") as well as plain "5" / "-5" —
+    // some weapon roll fields are stored with an explicit sign.
+    if(!/^[+-]?\d+(\.\d+)?$/.test(str)) return val;
+    var n = parseFloat(str);
+    if(isNaN(n)) return val;
+    return roundStat(n * mult);
+  }
+  // Matches how the game itself applies Anvil star multipliers — floored, not
+  // rounded, so a modal preview never shows a value the game couldn't actually produce.
+  function roundStat(n){
+    return Math.floor(n);
+  }
+
+  // Returns a shallow-scaled copy of a weapon for MODAL DISPLAY ONLY — every rolled
+  // stat (ATK, HP, Crit Rate/Value, Def Rate/Value) multiplied by the given Anvil
+  // star level AND the given Prefix's multiplier for that specific stat, mirroring
+  // exactly how Build Calculator scales a starred + prefixed weapon. The underlying
+  // `weapons` array (list/compare/diff) is never touched by this — only the modal's
+  // own preview uses it.
+  function scaleWeapon(w, starMult, prefixName){
+    if(starMult === 1 && (!prefixName || prefixName === "None")) return w;
+    var out = Object.assign({}, w);
+    Object.keys(WEAPON_FIELD_TO_STATKEY).forEach(function(key){
+      if(out[key] !== undefined){
+        var canon = WEAPON_FIELD_TO_STATKEY[key];
+        var mult = starMult * prefixFactor(prefixName, canon);
+        out[key] = scaleStatValue(out[key], mult);
+      }
+    });
+    return out;
+  }
 
   function buildIconPath(base, filename){
     return base + encodeURIComponent(filename).replace(/%2F/g, "/");
@@ -2206,6 +2478,7 @@
   var elTypeFilter = document.getElementById("typeFilter");
   var elWlFilter = document.getElementById("wlFilter");
   var elSortSelect = document.getElementById("sortSelect");
+  var elStatSortSelect = document.getElementById("statSortSelect");
   var elResultCount = document.getElementById("resultCount");
   var elWeaponGrid = document.getElementById("weaponGrid");
 
@@ -2213,8 +2486,10 @@
   var wlFilterDropdown = enhanceSelect("wlFilter");
   var artifactWlFilterDropdown = enhanceSelect("artifactWlFilter");
   var sortSelectDropdown = enhanceSelect("sortSelect");
+  var statSortSelectDropdown = enhanceSelect("statSortSelect");
   var compareSortDropdown = enhanceSelect("compareSortSelect");
   var artifactSortSelectDropdown = enhanceSelect("artifactSortSelect");
+  var artifactStatSortSelectDropdown = enhanceSelect("artifactStatSortSelect");
   var artifactCompareSortDropdown = enhanceSelect("artifactCompareSortSelect");
 
   compareSortSelectEl.addEventListener("change", function(){
@@ -2339,8 +2614,25 @@
     return true;
   }
 
-  function sortWeapons(list, sortKey){
+  function sortWeapons(list, sortKey, statSortKey){
     var sorted = list.slice();
+    if(statSortKey){
+      switch(statSortKey){
+        case "hp-asc": sorted.sort(function(a,b){ return compareSortValue(a,"hp") - compareSortValue(b,"hp"); }); break;
+        case "hp-desc": sorted.sort(function(a,b){ return compareSortValue(b,"hp") - compareSortValue(a,"hp"); }); break;
+        case "atk-asc": sorted.sort(function(a,b){ return compareSortValue(a,"atk") - compareSortValue(b,"atk"); }); break;
+        case "atk-desc": sorted.sort(function(a,b){ return compareSortValue(b,"atk") - compareSortValue(a,"atk"); }); break;
+        case "critRate-asc": sorted.sort(function(a,b){ return compareSortValue(a,"critRate") - compareSortValue(b,"critRate"); }); break;
+        case "critRate-desc": sorted.sort(function(a,b){ return compareSortValue(b,"critRate") - compareSortValue(a,"critRate"); }); break;
+        case "critValue-asc": sorted.sort(function(a,b){ return compareSortValue(a,"critValue") - compareSortValue(b,"critValue"); }); break;
+        case "critValue-desc": sorted.sort(function(a,b){ return compareSortValue(b,"critValue") - compareSortValue(a,"critValue"); }); break;
+        case "defRate-asc": sorted.sort(function(a,b){ return compareSortValue(a,"defRate") - compareSortValue(b,"defRate"); }); break;
+        case "defRate-desc": sorted.sort(function(a,b){ return compareSortValue(b,"defRate") - compareSortValue(a,"defRate"); }); break;
+        case "defValue-asc": sorted.sort(function(a,b){ return compareSortValue(a,"defValue") - compareSortValue(b,"defValue"); }); break;
+        case "defValue-desc": sorted.sort(function(a,b){ return compareSortValue(b,"defValue") - compareSortValue(a,"defValue"); }); break;
+      }
+      return sorted;
+    }
     switch(sortKey){
       case "wl-asc": sorted.sort(function(a,b){ return a.worldLevel - b.worldLevel; }); break;
       case "wl-desc": sorted.sort(function(a,b){ return b.worldLevel - a.worldLevel; }); break;
@@ -2356,9 +2648,10 @@
     var type = elTypeFilter.value;
     var wl = elWlFilter.value;
     var sortKey = elSortSelect.value;
+    var statSortKey = elStatSortSelect.value;
 
     var filtered = weapons.filter(function(w){ return matchesFilters(w, query, type, wl); });
-    filtered = sortWeapons(filtered, sortKey);
+    filtered = sortWeapons(filtered, sortKey, statSortKey);
 
     var countEl = elResultCount;
     countEl.textContent = filtered.length + " weapon" + (filtered.length === 1 ? "" : "s") + " found";
@@ -2427,7 +2720,24 @@
     renderCardDiffStates();
   }
 
-  function openModal(w){
+  function starToggleHtml(activeLevel, idPrefix){
+    var labels = ["Off", "✪", "✪✪", "✪✪✪"];
+    var buttons = labels.map(function(label, lvl){
+      return '<button type="button" class="star-toggle-btn' + (lvl === activeLevel ? ' is-active' : '') +
+        '" data-star-level="' + lvl + '">' + label + '</button>';
+    }).join("");
+    return '<div class="star-toggle-row" id="' + idPrefix + 'StarToggle">' +
+      '<span class="star-toggle-label">Anvil Star preview:</span>' +
+      '<div class="star-toggle-group">' + buttons + '</div>' +
+    '</div>';
+  }
+
+  function renderWeaponModal(w, starLevel, prefixName){
+    starLevel = Math.max(0, Math.min(3, starLevel || 0));
+    prefixName = prefixName || "None";
+    var starMult = STAR_MULTS.weapon[starLevel];
+    var d = scaleWeapon(w, starMult, prefixName); // display copy — original `w` (and the `weapons` array) never mutated
+
     var modal = document.getElementById("modalContent");
     modal.innerHTML =
       '<button class="modal-close" id="modalCloseBtn">&times;</button>' +
@@ -2438,19 +2748,21 @@
           '<span class="type-badge">' + w.type + '</span>' +
         '</div>' +
       '</div>' +
+      starToggleHtml(starLevel, "weapon") +
+      prefixRowHtml(prefixName, "weapon") +
       '<table class="modal-table">' +
         '<tr><td>World Level</td><td>' + w.worldLevel + '</td></tr>' +
         '<tr><td>Crucible</td><td>' + w.crucible + '</td></tr>' +
         '<tr><td>Weight</td><td>' + w.weight + ' kg</td></tr>' +
-        '<tr><td>HP</td><td>' + w.hp + '</td></tr>' +
+        '<tr><td>HP</td><td>' + d.hp + '</td></tr>' +
         (w.atkType === "flat"
-          ? '<tr><td>ATK (roll)</td><td>' + w.atkRoll + '</td></tr>'
-          : '<tr><td>ATK (min roll)</td><td>' + w.atkRollMin + '</td></tr>' +
-            '<tr><td>ATK (max roll)</td><td>' + w.atkRollMax + '</td></tr>') +
-        '<tr><td>Crit Rate</td><td>' + w.critRate + (w.critRate !== "-" ? "%" : "") + '</td></tr>' +
-        '<tr><td>Crit Value</td><td>' + w.critValue + (w.critValue !== "-" ? "%" : "") + '</td></tr>' +
-        '<tr><td>DEF Rate</td><td>' + w.defRate + (w.defRate !== "-" ? "%" : "") + '</td></tr>' +
-        '<tr><td>DEF Value</td><td>' + w.defValue + '</td></tr>' +
+          ? '<tr><td>ATK (roll)</td><td>' + d.atkRoll + '</td></tr>'
+          : '<tr><td>ATK (min roll)</td><td>' + d.atkRollMin + '</td></tr>' +
+            '<tr><td>ATK (max roll)</td><td>' + d.atkRollMax + '</td></tr>') +
+        '<tr><td>Crit Rate</td><td>' + d.critRate + (d.critRate !== "-" ? "%" : "") + '</td></tr>' +
+        '<tr><td>Crit Value</td><td>' + d.critValue + (d.critValue !== "-" ? "%" : "") + '</td></tr>' +
+        '<tr><td>DEF Rate</td><td>' + d.defRate + (d.defRate !== "-" ? "%" : "") + '</td></tr>' +
+        '<tr><td>DEF Value</td><td>' + d.defValue + '</td></tr>' +
       '</table>' +
       (w.atkType === "minMax"
         ? '<div class="modal-note">This weapon rolls two separate values: one added to your minimum ATK, another added to your maximum ATK.</div>'
@@ -2461,6 +2773,20 @@
 
     document.getElementById("modalOverlay").classList.add("is-open");
     document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+    modal.querySelectorAll("#weaponStarToggle .star-toggle-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        renderWeaponModal(w, parseInt(btn.dataset.starLevel, 10), prefixName);
+      });
+    });
+    var prefixSelect = document.getElementById("weaponPrefixSelect");
+    enhanceSelectEl(prefixSelect);
+    prefixSelect.addEventListener("change", function(){
+      renderWeaponModal(w, starLevel, prefixSelect.value);
+    });
+  }
+
+  function openModal(w){
+    renderWeaponModal(w, 0, "None");
   }
 
   function closeModal(){
@@ -2481,6 +2807,7 @@
   document.getElementById("typeFilter").addEventListener("change", render);
   document.getElementById("wlFilter").addEventListener("change", render);
   document.getElementById("sortSelect").addEventListener("change", render);
+  document.getElementById("statSortSelect").addEventListener("change", render);
 
   /* ---------- Differentiator ---------- */
   function parseRange(val){
@@ -2796,6 +3123,46 @@
   var STAT_ORDER = ["HP", "ATK", "CR", "CV", "DR", "DV"];
   var PCT_STATS = { CR: true, CV: true, DR: true };
 
+  // Returns a deep-scaled copy of an artifact set for MODAL DISPLAY ONLY — every
+  // piece's main/sub stat range multiplied by the given Anvil star level AND the
+  // given Prefix's multiplier for that specific stat (HP/ATK/CR/CV/DR/DV). A piece's
+  // "special" roll (if any) isn't one of Prefix's six canonical stats, so it only
+  // scales with the star level, same as before. The underlying `artifactSets` array
+  // (grid/compare/diff) is never touched by this — only the modal's own preview uses it.
+  function scaleArtifactSet(s, starMult, prefixName){
+    if(starMult === 1 && (!prefixName || prefixName === "None")) return s;
+    var out = Object.assign({}, s);
+    if(s.pieces){
+      var pieces = {};
+      Object.keys(s.pieces).forEach(function(slot){
+        var p = s.pieces[slot];
+        var newP = Object.assign({}, p);
+        if(p.stats){
+          var stats = {};
+          Object.keys(p.stats).forEach(function(statKey){
+            var range = p.stats[statKey];
+            if(range && typeof range.min === "number" && typeof range.max === "number"){
+              var mult = starMult * prefixFactor(prefixName, statKey);
+              stats[statKey] = { min: roundStat(range.min * mult), max: roundStat(range.max * mult) };
+            } else {
+              stats[statKey] = range;
+            }
+          });
+          newP.stats = stats;
+        }
+        if(p.special && typeof p.special.min === "number" && typeof p.special.max === "number"){
+          newP.special = Object.assign({}, p.special, {
+            min: roundStat(p.special.min * starMult),
+            max: roundStat(p.special.max * starMult)
+          });
+        }
+        pieces[slot] = newP;
+      });
+      out.pieces = pieces;
+    }
+    return out;
+  }
+
   function artifactPrimaryPiece(s){
     if(!s || !s.pieces) return null;
     for(var i = 0; i < PIECE_ORDER.length; i++){
@@ -2880,8 +3247,41 @@
     });
   }
 
-  function sortArtifactSets(list, sortKey){
+  // Sums the average roll of a given stat (HP/ATK/CR/CV/DR/DV) across every piece
+  // in the set that rolls it, so sets can be sorted by total stat potential.
+  function artifactStatValue(setObj, statKey){
+    if(!setObj.pieces) return -Infinity;
+    var total = 0, found = false;
+    Object.keys(setObj.pieces).forEach(function(slot){
+      var piece = setObj.pieces[slot];
+      var stat = piece.stats && piece.stats[statKey];
+      if(stat && typeof stat.min === "number" && typeof stat.max === "number"){
+        total += (stat.min + stat.max) / 2;
+        found = true;
+      }
+    });
+    return found ? total : -Infinity;
+  }
+
+  function sortArtifactSets(list, sortKey, statSortKey){
     var sorted = list.slice();
+    if(statSortKey){
+      switch(statSortKey){
+        case "hp-asc": sorted.sort(function(a,b){ return artifactStatValue(a,"HP") - artifactStatValue(b,"HP"); }); break;
+        case "hp-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"HP") - artifactStatValue(a,"HP"); }); break;
+        case "atk-asc": sorted.sort(function(a,b){ return artifactStatValue(a,"ATK") - artifactStatValue(b,"ATK"); }); break;
+        case "atk-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"ATK") - artifactStatValue(a,"ATK"); }); break;
+        case "critRate-asc": sorted.sort(function(a,b){ return artifactStatValue(a,"CR") - artifactStatValue(b,"CR"); }); break;
+        case "critRate-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"CR") - artifactStatValue(a,"CR"); }); break;
+        case "critValue-asc": sorted.sort(function(a,b){ return artifactStatValue(a,"CV") - artifactStatValue(b,"CV"); }); break;
+        case "critValue-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"CV") - artifactStatValue(a,"CV"); }); break;
+        case "defRate-asc": sorted.sort(function(a,b){ return artifactStatValue(a,"DR") - artifactStatValue(b,"DR"); }); break;
+        case "defRate-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"DR") - artifactStatValue(a,"DR"); }); break;
+        case "defValue-asc": sorted.sort(function(a,b){ return artifactStatValue(a,"DV") - artifactStatValue(b,"DV"); }); break;
+        case "defValue-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"DV") - artifactStatValue(a,"DV"); }); break;
+      }
+      return sorted;
+    }
     switch(sortKey){
       case "wl-asc": sorted.sort(function(a,b){ return (a.worldLevel||0) - (b.worldLevel||0); }); break;
       case "wl-desc": sorted.sort(function(a,b){ return (b.worldLevel||0) - (a.worldLevel||0); }); break;
@@ -2895,6 +3295,7 @@
   var elArtifactSearchInput = document.getElementById("artifactSearchInput");
   var elArtifactWlFilter = document.getElementById("artifactWlFilter");
   var elArtifactSortSelect = document.getElementById("artifactSortSelect");
+  var elArtifactStatSortSelect = document.getElementById("artifactStatSortSelect");
   var elArtifactGrid = document.getElementById("artifactGrid");
   var elArtifactResultCount = document.getElementById("artifactResultCount");
 
@@ -2902,13 +3303,14 @@
     var query = (elArtifactSearchInput.value || "").trim().toLowerCase();
     var wl = elArtifactWlFilter.value;
     var sortKey = elArtifactSortSelect.value;
+    var statSortKey = elArtifactStatSortSelect.value;
     var grid = elArtifactGrid;
     var countEl = elArtifactResultCount;
     var matches = artifactSets.filter(function(s){
       if(wl && String(s.worldLevel) !== wl) return false;
       return !query || s.setName.toLowerCase().indexOf(query) !== -1;
     });
-    matches = sortArtifactSets(matches, sortKey);
+    matches = sortArtifactSets(matches, sortKey, statSortKey);
 
     countEl.textContent = artifactSets.length ? (matches.length + " set" + (matches.length === 1 ? "" : "s")) : "";
 
@@ -2974,8 +3376,17 @@
   document.getElementById("artifactSearchInput").addEventListener("input", renderArtifactGrid);
   document.getElementById("artifactWlFilter").addEventListener("change", renderArtifactGrid);
   document.getElementById("artifactSortSelect").addEventListener("change", renderArtifactGrid);
+  document.getElementById("artifactStatSortSelect").addEventListener("change", renderArtifactGrid);
 
   function openArtifactModal(s){
+    renderArtifactModal(s, 0, "None", {});
+  }
+
+  function renderArtifactModal(s, starLevel, prefixName, openPieces){
+    starLevel = Math.max(0, Math.min(3, starLevel || 0));
+    prefixName = prefixName || "None";
+    var starMult = STAR_MULTS.artifact[starLevel];
+    var d = scaleArtifactSet(s, starMult, prefixName); // display copy — original `s` (and `artifactSets`) never mutated
     var modal = document.getElementById("modalContent");
 
     var meta = [];
@@ -2987,7 +3398,7 @@
     if(s.setBonus4pc) effects.push('<div><b>4pc:</b> ' + escapeHtml(s.setBonus4pc) + '</div>');
 
     var pieceRows = PIECE_ORDER.map(function(key, i){
-      var p = s.pieces && s.pieces[key];
+      var p = d.pieces && d.pieces[key];
       if(!p) return "";
       var statLines = STAT_ORDER
         .filter(function(stat){ return p.stats && p.stats[stat]; })
@@ -3000,7 +3411,7 @@
       if(!statLines) statLines = '<div class="artifact-stat-line"><span>-</span></div>';
 
       return (
-        '<div class="artifact-piece" data-piece="' + key + '">' +
+        '<div class="artifact-piece' + (openPieces[key] ? ' is-open' : '') + '" data-piece="' + key + '">' +
           '<button type="button" class="artifact-piece-head">' +
             '<img class="artifact-piece-icon" src="' + artifactIconPath(p.icon) + '" alt="" onerror="this.style.display=\'none\'">' +
             '<span class="artifact-piece-titles">' +
@@ -3022,16 +3433,31 @@
       '</div>' +
       (meta.length ? '<div class="modal-note">' + meta.join(" &middot; ") + '</div>' : '') +
       (effects.length ? '<div class="modal-note artifact-set-effects">' + effects.join("") + '</div>' : '') +
+      starToggleHtml(starLevel, "artifact") +
+      prefixRowHtml(prefixName, "artifact") +
       '<div class="artifact-piece-list">' + pieceRows + '</div>';
 
     modal.querySelectorAll(".artifact-piece-head").forEach(function(head){
       head.addEventListener("click", function(){
-        head.closest(".artifact-piece").classList.toggle("is-open");
+        var pieceEl = head.closest(".artifact-piece");
+        var key = pieceEl.dataset.piece;
+        openPieces[key] = !openPieces[key];
+        pieceEl.classList.toggle("is-open");
       });
     });
 
     document.getElementById("modalOverlay").classList.add("is-open");
     document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+    modal.querySelectorAll("#artifactStarToggle .star-toggle-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        renderArtifactModal(s, parseInt(btn.dataset.starLevel, 10), prefixName, openPieces);
+      });
+    });
+    var prefixSelect = document.getElementById("artifactPrefixSelect");
+    enhanceSelectEl(prefixSelect);
+    prefixSelect.addEventListener("change", function(){
+      renderArtifactModal(s, starLevel, prefixSelect.value, openPieces);
+    });
   }
 
   // ---------- Artifact Compare ----------

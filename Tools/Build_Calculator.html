@@ -180,6 +180,28 @@
     border-top:1px solid var(--divider);
   }
   .dps-hint{ font-size:.7rem; color:var(--ink-dim); margin-top:5px; line-height:1.45; }
+  .dps-subhead.dps-collapse-trigger{
+    display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+    user-select:none;
+  }
+  .dps-subhead.dps-collapse-trigger:hover{ color:var(--ink); }
+  .dps-collapse-caret{
+    display:inline-block; transition:transform .15s ease; font-size:.7rem; margin-left:8px;
+  }
+  .dps-collapse-trigger.is-open .dps-collapse-caret{ transform:rotate(90deg); }
+  .dps-collapse-body{ display:none; }
+  .dps-collapse-body.is-open{ display:block; }
+  .dps-upgrade-row{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:7px 0; border-bottom:1px dashed var(--divider);
+  }
+  .dps-upgrade-row:last-child{ border-bottom:none; }
+  .dps-upgrade-row .dps-upgrade-label{ flex:1; min-width:0; }
+  .dps-upgrade-row .dps-upgrade-current{ font-size:.68rem; color:var(--ink-dim); display:block; margin-top:1px; }
+  .dps-upgrade-row .dps-upgrade-checks{ display:flex; gap:10px; flex-shrink:0; }
+  .dps-upgrade-check{ display:flex; align-items:center; gap:4px; font-size:.72rem; color:var(--ink-dim); cursor:pointer; }
+  .dps-upgrade-check input{ margin:0; }
+  .dps-upgrade-check.is-checked{ color:var(--ink); }
   .dps-term{
     text-decoration:underline dotted; text-underline-offset:2px; cursor:help;
   }
@@ -883,7 +905,11 @@
 
         <div class="dps-results" id="dpsResults"></div>
 
-        <div class="dps-subhead">Bag Optimizer</div>
+        <div class="dps-subhead dps-collapse-trigger" id="dpsOptimizeToggle" role="button" tabindex="0" aria-expanded="false" aria-controls="dpsOptimizeBody">
+          <span>Bag Optimizer</span>
+          <span class="dps-collapse-caret">▶</span>
+        </div>
+        <div id="dpsOptimizeBody" class="dps-collapse-body">
         <div class="dps-toggle-row" style="display:block;">
           <label for="dpsOptimizePresetSelect" style="display:block; margin-bottom:4px;">💾 Presets</label>
           <select id="dpsOptimizePresetSelect"><option value="">— Select a saved preset —</option></select>
@@ -900,6 +926,7 @@
             <option value="tanky">🛡️ Survivability — HP + Def Rate/Value</option>
             <option value="custom">🎚️ Custom weighting (damage vs survivability)</option>
             <option value="stats">🧮 Custom stat weights (per-stat)</option>
+            <option value="upgrade">🔺 Upgrade from Current (lock/improve per-stat)</option>
           </select>
           <span class="dps-term-def" id="dpsOptimizeGoalDef">Picks the highest-average-hit combo only — a build can come out squishy since HP is never considered.</span>
         </div>
@@ -913,9 +940,14 @@
           <div class="dps-term-def" style="margin-bottom:8px;">Each stat is normalized 0-1 across everything in your Bag (the worst combo for that stat scores 0, the best scores 1), then multiplied by its slider and summed. Positive weight rewards a stat, negative weight <strong>penalizes</strong> it, 0 ignores it entirely. This scan takes roughly 2x as long since it has to look at your whole Bag once first to know the range.</div>
           <div id="dpsOptimizeStatWeightsBody"></div>
         </div>
+        <div id="dpsOptimizeUpgradeWrap" style="display:none;">
+          <div class="dps-term-def" style="margin-bottom:8px;">Compares every combo against your <strong>currently equipped</strong> gear. Check <strong>📈 Improve</strong> on the stat(s) you want pushed higher (only combos that beat your current value on all of them are considered, ranked by how much they improve). Check <strong>🔒 Lock</strong> on stat(s) that must not drop below your current value, without them driving the ranking. Leave a stat unchecked to let it move freely either way.</div>
+          <div id="dpsOptimizeUpgradeBody"></div>
+        </div>
         <button type="button" id="dpsOptimizeBtn" class="primary" style="width:100%;">🏆 Best Build (from Bag)</button>
         <div class="dps-hint">Tries every weapon/artifact combo currently in your Bag (plus what's equipped) against the settings above, and equips whichever scores best for the goal picked above.</div>
         <div id="dpsOptimizeResult"></div>
+        </div>
 
         <div class="dps-note">Assumes a non-crit roll averages the ATK range midpoint; crit rolls apply Crit Value as a bonus multiplier on top of the roll. Ignores enemy DR/DV (raw output).</div>
         <div class="dps-note dps-term-def">In plain terms: this ignores the enemy's defense stats and just shows the raw damage your hit would deal before their armor reduces it.</div>
@@ -1400,10 +1432,14 @@ let state = {
   dpsSobp: false,       // DPS panel: Song of Broken Pines — this is the 4th attack (Basic/Heavy), 10x damage
   dpsUniqueUltimate: '', // DPS panel: '' / 'kindness' / 'pride' / 'wrath' — Unique alignment skill damage multiplier
   dpsKindnessEnemies: 1, // DPS panel: enemies still alive, used by Kindness (2x damage per enemy alive)
-  dpsOptimizeGoal: 'dps', // Bag Optimizer: 'dps' / 'balanced' / 'tanky' / 'custom' / 'stats' — what the optimizer scores builds on
+  dpsOptimizeGoal: 'dps', // Bag Optimizer: 'dps' / 'balanced' / 'tanky' / 'custom' / 'stats' / 'upgrade' — what the optimizer scores builds on
   dpsOptimizeWeight: 50,  // Bag Optimizer: 0-100 damage-vs-survivability slider, used when goal is 'balanced'/'tanky'/'custom'
   dpsOptimizeStatWeights: { hp:50, atk:50, cr:50, cv:50, dr:0, dv:0 }, // Bag Optimizer: per-stat 0-100 weights, used when goal is 'stats'
-  dpsOptimizePresets: [], // Bag Optimizer: saved {id, name, goal, weight, statWeights} presets
+  dpsOptimizeUpgradeStats: { // Bag Optimizer 'upgrade' goal: per-stat "improve" (must beat current equipped, drives ranking) and "lock" (must not fall below current equipped, doesn't drive ranking) toggles
+    hp:{improve:false, lock:false}, atk:{improve:false, lock:false}, cr:{improve:false, lock:false},
+    cv:{improve:false, lock:false}, dr:{improve:false, lock:false}, dv:{improve:false, lock:false}
+  },
+  dpsOptimizePresets: [], // Bag Optimizer: saved {id, name, goal, weight, statWeights, upgradeStats} presets
   dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'slash' / 'spell:<id>|<level>'
   darkMode: false,
   showRollQuality: false,
@@ -4071,6 +4107,10 @@ function loadBuild(){
   if(state.dpsOptimizeWeight === undefined) state.dpsOptimizeWeight = 50;
   if(!state.dpsOptimizeStatWeights) state.dpsOptimizeStatWeights = { hp:50, atk:50, cr:50, cv:50, dr:0, dv:0 };
   ['hp','atk','cr','cv','dr','dv'].forEach(k => { if(state.dpsOptimizeStatWeights[k] === undefined) state.dpsOptimizeStatWeights[k] = 0; });
+  if(!state.dpsOptimizeUpgradeStats) state.dpsOptimizeUpgradeStats = {};
+  ['hp','atk','cr','cv','dr','dv'].forEach(k => {
+    if(!state.dpsOptimizeUpgradeStats[k]) state.dpsOptimizeUpgradeStats[k] = { improve:false, lock:false };
+  });
   if(!Array.isArray(state.dpsOptimizePresets)) state.dpsOptimizePresets = [];
 }
 
@@ -4536,12 +4576,15 @@ function renderDpsPanel(){
   const weightValInv = document.getElementById('dpsOptimizeWeightValInv');
   const statWeightsWrap = document.getElementById('dpsOptimizeStatWeightsWrap');
   const statWeightsBody = document.getElementById('dpsOptimizeStatWeightsBody');
+  const upgradeWrap = document.getElementById('dpsOptimizeUpgradeWrap');
+  const upgradeBody = document.getElementById('dpsOptimizeUpgradeBody');
   const GOAL_DEFS = {
     dps: 'Picks the highest-average-hit combo only — a build can come out squishy since HP is never considered.',
     balanced: 'Weighs raw damage output against HP, so it won\'t hand you a glass cannon — use the slider below to tip the balance.',
     tanky: 'Weighs HP and Def Rate/Value against damage, favoring survivability over pure hit size — use the slider below to tip the balance.',
     custom: 'Blends damage against HP + Def Rate/Value at whatever ratio you set below.',
-    stats: 'Scores HP, ATK, Crit Rate, Crit Value, Def Rate, and Def Value separately — set how much each one matters below.'
+    stats: 'Scores HP, ATK, Crit Rate, Crit Value, Def Rate, and Def Value separately — set how much each one matters below.',
+    upgrade: 'Compares every combo against what you have equipped right now — only surfaces builds that beat or match it on the stats you pick below.'
   };
   if(goalSelect && !goalSelect.dataset.wired){
     goalSelect.dataset.wired = '1';
@@ -4558,8 +4601,10 @@ function renderDpsPanel(){
   }
   if(goalDef) goalDef.textContent = GOAL_DEFS[state.dpsOptimizeGoal || 'dps'] || GOAL_DEFS.dps;
   const isStatsGoal = state.dpsOptimizeGoal === 'stats';
-  if(weightRow) weightRow.style.display = (state.dpsOptimizeGoal && state.dpsOptimizeGoal !== 'dps' && !isStatsGoal) ? 'block' : 'none';
+  const isUpgradeGoal = state.dpsOptimizeGoal === 'upgrade';
+  if(weightRow) weightRow.style.display = (state.dpsOptimizeGoal && state.dpsOptimizeGoal !== 'dps' && !isStatsGoal && !isUpgradeGoal) ? 'block' : 'none';
   if(statWeightsWrap) statWeightsWrap.style.display = isStatsGoal ? 'block' : 'none';
+  if(upgradeWrap) upgradeWrap.style.display = isUpgradeGoal ? 'block' : 'none';
   if(weightInput && !weightInput.dataset.wired){
     weightInput.dataset.wired = '1';
     weightInput.value = state.dpsOptimizeWeight != null ? state.dpsOptimizeWeight : 50;
@@ -4614,6 +4659,67 @@ function renderDpsPanel(){
     });
   }
 
+  // Per-stat "Improve" / "Lock" checkboxes for the 'upgrade' goal — built once, then
+  // kept in sync with state (and the live currently-equipped value) on every render.
+  if(upgradeBody){
+    const baselineTerms = isUpgradeGoal ? computeCurrentEquippedStatTerms() : null;
+    const fmtCurrent = (key, val) => {
+      if(val == null) return '';
+      const isPct = key === 'cr' || key === 'cv' || key === 'dr' || key === 'dv';
+      return `now: ${isPct ? round(val) + '%' : Math.round(val)}`;
+    };
+    if(!upgradeBody.dataset.built){
+      upgradeBody.dataset.built = '1';
+      STAT_WEIGHT_DEFS.forEach(({key, label}) => {
+        if(!state.dpsOptimizeUpgradeStats[key]) state.dpsOptimizeUpgradeStats[key] = { improve:false, lock:false };
+        const cfg = state.dpsOptimizeUpgradeStats[key];
+        const row = document.createElement('div');
+        row.className = 'dps-upgrade-row';
+        row.innerHTML = `
+          <span class="dps-upgrade-label">${label}<span class="dps-upgrade-current" id="dpsUpgradeCurrent_${key}"></span></span>
+          <span class="dps-upgrade-checks">
+            <label class="dps-upgrade-check" id="dpsUpgradeImproveLabel_${key}"><input type="checkbox" id="dpsUpgradeImprove_${key}"> 📈 Improve</label>
+            <label class="dps-upgrade-check" id="dpsUpgradeLockLabel_${key}"><input type="checkbox" id="dpsUpgradeLock_${key}"> 🔒 Lock</label>
+          </span>`;
+        upgradeBody.appendChild(row);
+        const improveInput = row.querySelector('#dpsUpgradeImprove_' + key);
+        const lockInput = row.querySelector('#dpsUpgradeLock_' + key);
+        improveInput.checked = !!cfg.improve;
+        lockInput.checked = !!cfg.lock;
+        improveInput.addEventListener('change', () => {
+          state.dpsOptimizeUpgradeStats[key].improve = improveInput.checked;
+          document.getElementById('dpsUpgradeImproveLabel_' + key).classList.toggle('is-checked', improveInput.checked);
+          scheduleAutosave();
+        });
+        lockInput.addEventListener('change', () => {
+          state.dpsOptimizeUpgradeStats[key].lock = lockInput.checked;
+          document.getElementById('dpsUpgradeLockLabel_' + key).classList.toggle('is-checked', lockInput.checked);
+          scheduleAutosave();
+        });
+        row.querySelector('#dpsUpgradeImproveLabel_' + key).classList.toggle('is-checked', improveInput.checked);
+        row.querySelector('#dpsUpgradeLockLabel_' + key).classList.toggle('is-checked', lockInput.checked);
+      });
+    } else {
+      STAT_WEIGHT_DEFS.forEach(({key}) => {
+        const cfg = state.dpsOptimizeUpgradeStats[key] || { improve:false, lock:false };
+        const improveInput = document.getElementById('dpsUpgradeImprove_' + key);
+        const lockInput = document.getElementById('dpsUpgradeLock_' + key);
+        if(improveInput) improveInput.checked = !!cfg.improve;
+        if(lockInput) lockInput.checked = !!cfg.lock;
+        const improveLabel = document.getElementById('dpsUpgradeImproveLabel_' + key);
+        const lockLabel = document.getElementById('dpsUpgradeLockLabel_' + key);
+        if(improveLabel) improveLabel.classList.toggle('is-checked', !!cfg.improve);
+        if(lockLabel) lockLabel.classList.toggle('is-checked', !!cfg.lock);
+      });
+    }
+    if(baselineTerms){
+      STAT_WEIGHT_DEFS.forEach(({key}) => {
+        const cur = document.getElementById('dpsUpgradeCurrent_' + key);
+        if(cur) cur.textContent = fmtCurrent(key, baselineTerms[key]);
+      });
+    }
+  }
+
   // Presets — bundles goal + weight slider + all six stat sliders under a name so
   // you don't have to re-drag everything each time you want to switch scoring styles.
   const presetSelect = document.getElementById('dpsOptimizePresetSelect');
@@ -4634,6 +4740,9 @@ function renderDpsPanel(){
       state.dpsOptimizeGoal = preset.goal;
       state.dpsOptimizeWeight = preset.weight;
       state.dpsOptimizeStatWeights = { ...preset.statWeights };
+      state.dpsOptimizeUpgradeStats = preset.upgradeStats
+        ? Object.fromEntries(Object.entries(preset.upgradeStats).map(([k, v]) => [k, { ...v }]))
+        : { hp:{improve:false,lock:false}, atk:{improve:false,lock:false}, cr:{improve:false,lock:false}, cv:{improve:false,lock:false}, dr:{improve:false,lock:false}, dv:{improve:false,lock:false} };
       if(goalSelect) goalSelect.value = preset.goal;
       scheduleAutosave();
       renderDpsPanel();
@@ -4651,7 +4760,8 @@ function renderDpsPanel(){
           name,
           goal: state.dpsOptimizeGoal || 'dps',
           weight: state.dpsOptimizeWeight != null ? state.dpsOptimizeWeight : 50,
-          statWeights: { ...state.dpsOptimizeStatWeights }
+          statWeights: { ...state.dpsOptimizeStatWeights },
+          upgradeStats: Object.fromEntries(Object.entries(state.dpsOptimizeUpgradeStats || {}).map(([k, v]) => [k, { ...v }]))
         });
         scheduleAutosave();
         renderDpsPanel();
@@ -5264,6 +5374,13 @@ function computeSurvivabilityScore(totals){
   return Math.max(1, totals.hp) / (1 - mitigation);
 }
 
+// Stat terms for whatever is currently equipped (not a search candidate) — the
+// baseline the 'upgrade' goal compares every combo against.
+function computeCurrentEquippedStatTerms(){
+  const totals = computeTotalsForLoadout(state.weaponRolls, state.weaponPrefix, state.weaponStarred, state.artifacts || {});
+  return statTermsFor(totals);
+}
+
 // Extracts the six raw stat terms the 'stats' goal scores on, applying the same
 // Paladin ATK<->DV swap as computeSurvivabilityScore so "ATK" and "DV" always mean
 // whatever's actually being used in combat.
@@ -5303,6 +5420,38 @@ function computeStatWeightScoreNormalized(totals, ranges){
   return score;
 }
 
+// 'upgrade' goal: a combo only qualifies if every stat marked "improve" or "lock" is
+// at least as good as the currently-equipped baseline — this is the hard floor that
+// keeps e.g. a 100%-Crit-Rate build from quietly losing Crit Rate while chasing HP.
+function passesUpgradeFilter(terms, baseline){
+  if(!baseline) return true;
+  const cfg = state.dpsOptimizeUpgradeStats || {};
+  const EPS = 1e-6;
+  return Object.keys(cfg).every(key => {
+    const c = cfg[key];
+    if(!c || (!c.improve && !c.lock)) return true;
+    return (terms[key] || 0) >= (baseline[key] || 0) - EPS;
+  });
+}
+
+// 'upgrade' goal score: only stats marked "improve" drive ranking (normalized 0-1
+// across the search space, same scheme as computeStatWeightScoreNormalized, then
+// summed) — "lock"-only stats already got their floor enforced by passesUpgradeFilter
+// and don't need to compete for rank. If no stat is marked "improve", fall back to
+// ranking by DPS among whatever already passed the lock filter.
+function computeUpgradeScore(terms, ranges, dps){
+  const cfg = state.dpsOptimizeUpgradeStats || {};
+  const improveKeys = Object.keys(cfg).filter(k => cfg[k] && cfg[k].improve);
+  if(!improveKeys.length) return dps;
+  let score = 0;
+  improveKeys.forEach(key => {
+    const range = ranges && ranges[key];
+    const norm = (range && range[1] > range[0]) ? (terms[key] - range[0]) / (range[1] - range[0]) : 0;
+    score += norm;
+  });
+  return score;
+}
+
 // Blends raw damage against survivability for the Bag Optimizer's 'balanced'/'tanky'/
 // 'custom' goals ('stats' is scored separately by computeStatWeightScoreNormalized,
 // since it needs the two-pass normalization ranges). weightPct is 0-100 (100 = pure
@@ -5331,6 +5480,12 @@ function findBestDpsBuild(info, onProgress, onDone){
   const dims = [weaponCandidates.length, ...SLOTS.map(s => slotCandidates[s].length)];
   const total = comboCount;
   const optimizeGoal = state.dpsOptimizeGoal || 'dps';
+  // 'upgrade' goal: what's currently equipped is the floor every locked/improve stat
+  // must clear, and improveKeys is what actually drives ranking among survivors.
+  const upgradeBaseline = optimizeGoal === 'upgrade' ? computeCurrentEquippedStatTerms() : null;
+  const upgradeCfg = state.dpsOptimizeUpgradeStats || {};
+  const upgradeImproveKeys = optimizeGoal === 'upgrade' ? Object.keys(upgradeCfg).filter(k => upgradeCfg[k] && upgradeCfg[k].improve) : [];
+  const needsScanPass = optimizeGoal === 'stats' || (optimizeGoal === 'upgrade' && upgradeImproveKeys.length > 0);
 
   // Hoist every piece of per-combo work that doesn't actually vary between combos.
   const staticBaseTotals = computeStaticBaseTotals();
@@ -5378,9 +5533,10 @@ function findBestDpsBuild(info, onProgress, onDone){
     }
   }
 
-  // Pass 1 ('stats' goal only): find the min/max of each raw stat term across the
-  // whole search space, so the sliders compare on a fair, this-Bag-relative 0-1
-  // scale instead of guessing what "high" means for each stat ahead of time.
+  // Pass 1 ('stats' goal, and 'upgrade' goal when a stat is marked "improve"): find
+  // the min/max of each raw stat term across the whole search space, so the sliders
+  // (or the 'upgrade' goal's improvement ranking) compare on a fair, this-Bag-relative
+  // 0-1 scale instead of guessing what "high" means for each stat ahead of time.
   function runScanPass(onScanDone){
     const idx = new Array(dims.length).fill(0);
     let processed = 0;
@@ -5403,8 +5559,9 @@ function findBestDpsBuild(info, onProgress, onDone){
     step();
   }
 
-  // Pass 2 (or the only pass for non-'stats' goals): scores every combo and keeps
-  // the top 3 by score.
+  // Pass 2 (or the only pass for goals that don't need a scan pass): scores every
+  // combo and keeps the top 3 by score. For 'upgrade', combos that fail the lock/
+  // improve floor against the current-equipped baseline are skipped entirely.
   function runScorePass(ranges){
     const idx = new Array(dims.length).fill(0);
     let processed = 0;
@@ -5415,13 +5572,17 @@ function findBestDpsBuild(info, onProgress, onDone){
         const wIdx = idx[0];
         const wc = weaponCandidates[wIdx];
         const { totals, artifactsObj } = buildTotals(wIdx, idx);
+        const terms = statTermsFor(totals);
+        if(optimizeGoal === 'upgrade' && !passesUpgradeFilter(terms, upgradeBaseline)){
+          advanceIdx(idx);
+          continue;
+        }
         const dps = computeDpsFast(weaponDpsContexts[wIdx], totals, dpsConst);
-        const survivability = (optimizeGoal === 'dps' || optimizeGoal === 'stats') ? 0 : computeSurvivabilityScore(totals);
-        const score = optimizeGoal === 'stats'
-          ? computeStatWeightScoreNormalized(totals, ranges)
+        const survivability = (optimizeGoal === 'dps' || optimizeGoal === 'stats' || optimizeGoal === 'upgrade') ? 0 : computeSurvivabilityScore(totals);
+        const score = optimizeGoal === 'stats' ? computeStatWeightScoreNormalized(totals, ranges)
+          : optimizeGoal === 'upgrade' ? computeUpgradeScore(terms, ranges, dps)
           : computeOptimizerScore(optimizeGoal, dps, survivability, totals);
         if(top.length < 3 || score > top[top.length - 1].score){
-          const terms = statTermsFor(totals);
           const entry = {
             score, dps, hp: totals.hp, cr: totals.cr, cv: totals.cv, dr: totals.dr,
             atk: terms.atk, dv: terms.dv, survivability,
@@ -5437,17 +5598,20 @@ function findBestDpsBuild(info, onProgress, onDone){
         }
         advanceIdx(idx);
       }
-      if(onProgress) onProgress(processed, total, optimizeGoal === 'stats' ? 2 : 1);
+      if(onProgress) onProgress(processed, total, needsScanPass ? 2 : 1);
       if(processed < total){
         setTimeout(step, 0);
       } else {
-        onDone(top.length ? { top, best: top[0], comboCount: total } : { error: 'Nothing to compare — add some weapons/artifacts to your Bag first.' });
+        const errorMsg = optimizeGoal === 'upgrade'
+          ? 'No combo in your Bag clears your currently-equipped gear on every locked/improve stat you picked — try unchecking a lock, or add more gear to your Bag.'
+          : 'Nothing to compare — add some weapons/artifacts to your Bag first.';
+        onDone(top.length ? { top, best: top[0], comboCount: total } : { error: errorMsg });
       }
     }
     step();
   }
 
-  if(optimizeGoal === 'stats'){
+  if(needsScanPass){
     runScanPass(ranges => runScorePass(ranges));
   } else {
     runScorePass(null);
@@ -5509,7 +5673,9 @@ function startDpsOptimizerRun(info){
   findBestDpsBuild(
     info,
     (processed, total, pass) => {
-      const passBit = pass === 1 && (state.dpsOptimizeGoal === 'stats') ? ' (pass 1/2: scanning stat ranges)' :
+      const upgradeScans = state.dpsOptimizeGoal === 'upgrade' && Object.values(state.dpsOptimizeUpgradeStats || {}).some(c => c && c.improve);
+      const isTwoPass = state.dpsOptimizeGoal === 'stats' || upgradeScans;
+      const passBit = pass === 1 && isTwoPass ? ' (pass 1/2: scanning stat ranges)' :
         pass === 2 ? ' (pass 2/2: scoring)' : '';
       if(resultDiv) resultDiv.innerHTML = `<div class="dps-hint">Crunching combinations${passBit}… ${processed.toLocaleString()} / ${total.toLocaleString()}</div>`;
     },
@@ -5747,6 +5913,23 @@ async function init(){
   document.getElementById('settingsToggleBtn').addEventListener('click', openSettingsModal);
   document.getElementById('dpsOpenBtn').addEventListener('click', openDpsModal);
   document.getElementById('dpsOptimizeBtn').addEventListener('click', runDpsOptimizer);
+  (function(){
+    const trigger = document.getElementById('dpsOptimizeToggle');
+    const body = document.getElementById('dpsOptimizeBody');
+    const toggle = () => {
+      const open = !body.classList.contains('is-open');
+      body.classList.toggle('is-open', open);
+      trigger.classList.toggle('is-open', open);
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    trigger.addEventListener('click', toggle);
+    trigger.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        toggle();
+      }
+    });
+  })();
   document.getElementById('howToUseBtn').addEventListener('click', ()=>{
     closeSettingsModal();
     openHowToUseModal();
