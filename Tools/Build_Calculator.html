@@ -202,6 +202,13 @@
   .dps-upgrade-check{ display:flex; align-items:center; gap:4px; font-size:.72rem; color:var(--ink-dim); cursor:pointer; }
   .dps-upgrade-check input{ margin:0; }
   .dps-upgrade-check.is-checked{ color:var(--ink); }
+  .dps-upgrade-target-row{
+    display:none; align-items:center; gap:8px; padding:0 0 7px 0; margin-top:-3px;
+  }
+  .dps-upgrade-target-row label{ font-size:.7rem; color:var(--ink-dim); }
+  .dps-upgrade-target-row input[type="number"]{
+    width:90px; font-size:.75rem; padding:3px 6px;
+  }
   .dps-term{
     text-decoration:underline dotted; text-underline-offset:2px; cursor:help;
   }
@@ -941,7 +948,7 @@
           <div id="dpsOptimizeStatWeightsBody"></div>
         </div>
         <div id="dpsOptimizeUpgradeWrap" style="display:none;">
-          <div class="dps-term-def" style="margin-bottom:8px;">Compares every combo against your <strong>currently equipped</strong> gear. Check <strong>📈 Improve</strong> on the stat(s) you want pushed higher (only combos that beat your current value on all of them are considered, ranked by how much they improve). Check <strong>🔒 Lock</strong> on stat(s) that must not drop below your current value, without them driving the ranking. Leave a stat unchecked to let it move freely either way.</div>
+          <div class="dps-term-def" style="margin-bottom:8px;">Compares every combo against your <strong>currently equipped</strong> gear. Check <strong>📈 Improve</strong> on the stat(s) you want pushed higher (only combos that clear the floor on all of them are considered, ranked by how much they improve). Check <strong>🔒 Lock</strong> on stat(s) that must not drop below the floor, without them driving the ranking. By default the floor is your current value — but if a stat is checked, a "Floor ≥" box appears where you can type your own number instead. That's the fix for an overcapped stat: if you're sitting at 130% Crit Rate, locking it as-is would require every candidate to also hit 130%, which may be impossible — set the floor to 100 instead and it only requires 100%+, freeing up the rest to move. Leave a stat unchecked to let it move freely either way.</div>
           <div id="dpsOptimizeUpgradeBody"></div>
         </div>
         <button type="button" id="dpsOptimizeBtn" class="primary" style="width:100%;">🏆 Best Build (from Bag)</button>
@@ -1435,9 +1442,9 @@ let state = {
   dpsOptimizeGoal: 'dps', // Bag Optimizer: 'dps' / 'balanced' / 'tanky' / 'custom' / 'stats' / 'upgrade' — what the optimizer scores builds on
   dpsOptimizeWeight: 50,  // Bag Optimizer: 0-100 damage-vs-survivability slider, used when goal is 'balanced'/'tanky'/'custom'
   dpsOptimizeStatWeights: { hp:50, atk:50, cr:50, cv:50, dr:0, dv:0 }, // Bag Optimizer: per-stat 0-100 weights, used when goal is 'stats'
-  dpsOptimizeUpgradeStats: { // Bag Optimizer 'upgrade' goal: per-stat "improve" (must beat current equipped, drives ranking) and "lock" (must not fall below current equipped, doesn't drive ranking) toggles
-    hp:{improve:false, lock:false}, atk:{improve:false, lock:false}, cr:{improve:false, lock:false},
-    cv:{improve:false, lock:false}, dr:{improve:false, lock:false}, dv:{improve:false, lock:false}
+  dpsOptimizeUpgradeStats: { // Bag Optimizer 'upgrade' goal: per-stat "improve" (must beat the floor, drives ranking), "lock" (must not fall below the floor, doesn't drive ranking), and "target" (custom floor value — null means use the current-equipped value instead)
+    hp:{improve:false, lock:false, target:null}, atk:{improve:false, lock:false, target:null}, cr:{improve:false, lock:false, target:null},
+    cv:{improve:false, lock:false, target:null}, dr:{improve:false, lock:false, target:null}, dv:{improve:false, lock:false, target:null}
   },
   dpsOptimizePresets: [], // Bag Optimizer: saved {id, name, goal, weight, statWeights, upgradeStats} presets
   dpsAction: 'basic',   // DPS panel: 'basic' / 'curseNormal' / 'slash' / 'spell:<id>|<level>'
@@ -4109,7 +4116,8 @@ function loadBuild(){
   ['hp','atk','cr','cv','dr','dv'].forEach(k => { if(state.dpsOptimizeStatWeights[k] === undefined) state.dpsOptimizeStatWeights[k] = 0; });
   if(!state.dpsOptimizeUpgradeStats) state.dpsOptimizeUpgradeStats = {};
   ['hp','atk','cr','cv','dr','dv'].forEach(k => {
-    if(!state.dpsOptimizeUpgradeStats[k]) state.dpsOptimizeUpgradeStats[k] = { improve:false, lock:false };
+    if(!state.dpsOptimizeUpgradeStats[k]) state.dpsOptimizeUpgradeStats[k] = { improve:false, lock:false, target:null };
+    if(state.dpsOptimizeUpgradeStats[k].target === undefined) state.dpsOptimizeUpgradeStats[k].target = null;
   });
   if(!Array.isArray(state.dpsOptimizePresets)) state.dpsOptimizePresets = [];
 }
@@ -4659,19 +4667,22 @@ function renderDpsPanel(){
     });
   }
 
-  // Per-stat "Improve" / "Lock" checkboxes for the 'upgrade' goal — built once, then
-  // kept in sync with state (and the live currently-equipped value) on every render.
+  // Per-stat "Improve" / "Lock" checkboxes (+ optional custom target floor) for the
+  // 'upgrade' goal — built once, then kept in sync with state (and the live
+  // currently-equipped value) on every render.
   if(upgradeBody){
     const baselineTerms = isUpgradeGoal ? computeCurrentEquippedStatTerms() : null;
-    const fmtCurrent = (key, val) => {
-      if(val == null) return '';
-      const isPct = key === 'cr' || key === 'cv' || key === 'dr' || key === 'dv';
-      return `now: ${isPct ? round(val) + '%' : Math.round(val)}`;
+    const isPctKey = key => key === 'cr' || key === 'cv' || key === 'dr' || key === 'dv';
+    const fmtStat = (key, val) => val == null ? '' : (isPctKey(key) ? round(val) : Math.round(val));
+    const fmtCurrent = (key, val) => val == null ? '' : `now: ${fmtStat(key, val)}${isPctKey(key) ? '%' : ''}`;
+    const syncTargetRowVisibility = (key, cfg) => {
+      const row = document.getElementById('dpsUpgradeTargetRow_' + key);
+      if(row) row.style.display = (cfg.improve || cfg.lock) ? 'flex' : 'none';
     };
     if(!upgradeBody.dataset.built){
       upgradeBody.dataset.built = '1';
       STAT_WEIGHT_DEFS.forEach(({key, label}) => {
-        if(!state.dpsOptimizeUpgradeStats[key]) state.dpsOptimizeUpgradeStats[key] = { improve:false, lock:false };
+        if(!state.dpsOptimizeUpgradeStats[key]) state.dpsOptimizeUpgradeStats[key] = { improve:false, lock:false, target:null };
         const cfg = state.dpsOptimizeUpgradeStats[key];
         const row = document.createElement('div');
         row.className = 'dps-upgrade-row';
@@ -4682,40 +4693,62 @@ function renderDpsPanel(){
             <label class="dps-upgrade-check" id="dpsUpgradeLockLabel_${key}"><input type="checkbox" id="dpsUpgradeLock_${key}"> 🔒 Lock</label>
           </span>`;
         upgradeBody.appendChild(row);
+        const targetRow = document.createElement('div');
+        targetRow.className = 'dps-upgrade-target-row';
+        targetRow.id = 'dpsUpgradeTargetRow_' + key;
+        targetRow.innerHTML = `
+          <label for="dpsUpgradeTarget_${key}">Floor ≥</label>
+          <input type="number" id="dpsUpgradeTarget_${key}" step="${isPctKey(key) ? '0.1' : '1'}" placeholder="current">`;
+        upgradeBody.appendChild(targetRow);
         const improveInput = row.querySelector('#dpsUpgradeImprove_' + key);
         const lockInput = row.querySelector('#dpsUpgradeLock_' + key);
+        const targetInput = targetRow.querySelector('#dpsUpgradeTarget_' + key);
         improveInput.checked = !!cfg.improve;
         lockInput.checked = !!cfg.lock;
+        targetInput.value = cfg.target != null ? cfg.target : '';
         improveInput.addEventListener('change', () => {
           state.dpsOptimizeUpgradeStats[key].improve = improveInput.checked;
           document.getElementById('dpsUpgradeImproveLabel_' + key).classList.toggle('is-checked', improveInput.checked);
+          syncTargetRowVisibility(key, state.dpsOptimizeUpgradeStats[key]);
           scheduleAutosave();
         });
         lockInput.addEventListener('change', () => {
           state.dpsOptimizeUpgradeStats[key].lock = lockInput.checked;
           document.getElementById('dpsUpgradeLockLabel_' + key).classList.toggle('is-checked', lockInput.checked);
+          syncTargetRowVisibility(key, state.dpsOptimizeUpgradeStats[key]);
+          scheduleAutosave();
+        });
+        targetInput.addEventListener('input', () => {
+          const raw = targetInput.value.trim();
+          state.dpsOptimizeUpgradeStats[key].target = raw === '' ? null : Number(raw);
           scheduleAutosave();
         });
         row.querySelector('#dpsUpgradeImproveLabel_' + key).classList.toggle('is-checked', improveInput.checked);
         row.querySelector('#dpsUpgradeLockLabel_' + key).classList.toggle('is-checked', lockInput.checked);
+        syncTargetRowVisibility(key, cfg);
       });
     } else {
       STAT_WEIGHT_DEFS.forEach(({key}) => {
-        const cfg = state.dpsOptimizeUpgradeStats[key] || { improve:false, lock:false };
+        const cfg = state.dpsOptimizeUpgradeStats[key] || { improve:false, lock:false, target:null };
         const improveInput = document.getElementById('dpsUpgradeImprove_' + key);
         const lockInput = document.getElementById('dpsUpgradeLock_' + key);
+        const targetInput = document.getElementById('dpsUpgradeTarget_' + key);
         if(improveInput) improveInput.checked = !!cfg.improve;
         if(lockInput) lockInput.checked = !!cfg.lock;
+        if(targetInput && document.activeElement !== targetInput) targetInput.value = cfg.target != null ? cfg.target : '';
         const improveLabel = document.getElementById('dpsUpgradeImproveLabel_' + key);
         const lockLabel = document.getElementById('dpsUpgradeLockLabel_' + key);
         if(improveLabel) improveLabel.classList.toggle('is-checked', !!cfg.improve);
         if(lockLabel) lockLabel.classList.toggle('is-checked', !!cfg.lock);
+        syncTargetRowVisibility(key, cfg);
       });
     }
     if(baselineTerms){
       STAT_WEIGHT_DEFS.forEach(({key}) => {
         const cur = document.getElementById('dpsUpgradeCurrent_' + key);
         if(cur) cur.textContent = fmtCurrent(key, baselineTerms[key]);
+        const targetInput = document.getElementById('dpsUpgradeTarget_' + key);
+        if(targetInput) targetInput.placeholder = baselineTerms[key] != null ? String(fmtStat(key, baselineTerms[key])) : 'current';
       });
     }
   }
@@ -5420,9 +5453,18 @@ function computeStatWeightScoreNormalized(totals, ranges){
   return score;
 }
 
-// 'upgrade' goal: a combo only qualifies if every stat marked "improve" or "lock" is
-// at least as good as the currently-equipped baseline — this is the hard floor that
-// keeps e.g. a 100%-Crit-Rate build from quietly losing Crit Rate while chasing HP.
+// 'upgrade' goal: a combo only qualifies if every stat marked "improve" or "lock"
+// clears its floor — that floor is the stat's custom "target" if the person set one,
+// otherwise the currently-equipped value. A custom target is what saves this from
+// being useless on an overcapped stat (e.g. 130% Crit Rate): lock Crit Rate but set
+// its target to 100 instead of matching the overcapped 130, and it stops requiring
+// the impossible.
+function upgradeFloorFor(key, cfg, baseline){
+  const c = cfg && cfg[key];
+  if(c && c.target != null && c.target !== '' && !Number.isNaN(c.target)) return Number(c.target);
+  return baseline ? (baseline[key] || 0) : 0;
+}
+
 function passesUpgradeFilter(terms, baseline){
   if(!baseline) return true;
   const cfg = state.dpsOptimizeUpgradeStats || {};
@@ -5430,7 +5472,7 @@ function passesUpgradeFilter(terms, baseline){
   return Object.keys(cfg).every(key => {
     const c = cfg[key];
     if(!c || (!c.improve && !c.lock)) return true;
-    return (terms[key] || 0) >= (baseline[key] || 0) - EPS;
+    return (terms[key] || 0) >= upgradeFloorFor(key, cfg, baseline) - EPS;
   });
 }
 

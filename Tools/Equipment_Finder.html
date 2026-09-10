@@ -82,6 +82,8 @@
 
   .prefix-row{ margin-top:10px; }
   .prefix-row-label{ display:block; font-size:12px; color:var(--ink-dim); margin-bottom:4px; }
+  .star-prefix-bar{ margin-top:10px; max-width:420px; }
+  .star-prefix-bar:empty{ display:none; }
 
   header.hero{
     margin-bottom:26px;
@@ -1359,6 +1361,7 @@
           <span class="compare-hint" id="compareHint"></span>
           <button type="button" class="clear-all-btn" id="compareClearAllBtn">Clear all</button>
         </div>
+        <div class="star-prefix-bar" id="compareStarPrefixBar"></div>
       </div>
 
       <div class="empty-state" id="compareEmpty">Add weapons above to compare their stats side by side.</div>
@@ -1369,6 +1372,7 @@
       <div class="diff-actions">
         <button type="button" class="clear-all-btn" id="diffClearAllBtn">Clear all</button>
       </div>
+      <div class="star-prefix-bar" id="diffStarPrefixBar"></div>
       <div class="diff-pickers">
         <div class="diff-picker">
           <label class="diff-picker-label" for="diffSearchInputA">Weapon 1</label>
@@ -1465,6 +1469,7 @@
           <span class="compare-hint" id="artifactCompareHint"></span>
           <button type="button" class="clear-all-btn" id="artifactCompareClearAllBtn">Clear all</button>
         </div>
+        <div class="star-prefix-bar" id="artifactCompareStarPrefixBar"></div>
       </div>
 
       <div class="empty-state" id="artifactCompareEmpty">Add artifact sets above to compare their pieces side by side.</div>
@@ -1475,6 +1480,7 @@
       <div class="diff-actions">
         <button type="button" class="clear-all-btn" id="artifactDiffClearAllBtn">Clear all</button>
       </div>
+      <div class="star-prefix-bar" id="artifactDiffStarPrefixBar"></div>
       <div class="diff-pickers">
         <div class="diff-picker">
           <label class="diff-picker-label" for="artifactDiffSearchInputA">Set 1</label>
@@ -1701,6 +1707,37 @@
     sync();
     return { sync: sync, wrap: wrap };
   }
+
+  // Generic star+prefix control bar, reused for the weapon/artifact Compare and
+  // Diff views (the modal builds its own separately since it also needs to track
+  // which artifact piece rows are expanded). `state` is a plain {star, prefix}
+  // object the caller owns; `onChange` is the view's own render function, called
+  // after every toggle/select change so the view picks up the new scaled data.
+  function renderStarPrefixBar(containerId, idPrefix, state, onChange){
+    var container = document.getElementById(containerId);
+    if(!container) return;
+    container.innerHTML = starToggleHtml(state.star, idPrefix) + prefixRowHtml(state.prefix, idPrefix);
+    container.querySelectorAll("#" + idPrefix + "StarToggle .star-toggle-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        state.star = parseInt(btn.dataset.starLevel, 10);
+        renderStarPrefixBar(containerId, idPrefix, state, onChange);
+        onChange();
+      });
+    });
+    var sel = document.getElementById(idPrefix + "PrefixSelect");
+    enhanceSelectEl(sel);
+    sel.addEventListener("change", function(){
+      state.prefix = sel.value;
+      onChange();
+    });
+  }
+
+  // One independent {star, prefix} state per view — Compare and Diff (and weapon
+  // vs artifact) can each preview a different level at the same time.
+  var compareWeaponStarPrefix   = { star: 0, prefix: "None" };
+  var diffWeaponStarPrefix      = { star: 0, prefix: "None" };
+  var compareArtifactStarPrefix = { star: 0, prefix: "None" };
+  var diffArtifactStarPrefix    = { star: 0, prefix: "None" };
 
   // Multiplies a single displayed stat value by an Anvil star multiplier, without
   // disturbing "-" placeholders (stats a weapon/piece just doesn't roll) or any other
@@ -2122,7 +2159,7 @@
     }
 
     scrollWrap.innerHTML = compareList.map(function(idx){
-      var w = weapons[idx];
+      var w = scaleWeapon(weapons[idx], STAR_MULTS.weapon[compareWeaponStarPrefix.star], compareWeaponStarPrefix.prefix);
       return (
         '<div class="compare-card" data-idx="' + idx + '">' +
           '<div class="compare-card-top">' +
@@ -2156,6 +2193,8 @@
 
   // Delegated click handler for Remove buttons: attached once to the
   // scroll wrap instead of re-attached to every card on every render.
+  renderStarPrefixBar("compareStarPrefixBar", "compareWeapon", compareWeaponStarPrefix, renderCompare);
+
   document.getElementById("compareScroll").addEventListener("click", function(e){
     var btn = e.target.closest(".compare-remove");
     if(!btn) return;
@@ -2748,8 +2787,8 @@
           '<span class="type-badge">' + w.type + '</span>' +
         '</div>' +
       '</div>' +
-      starToggleHtml(starLevel, "weapon") +
-      prefixRowHtml(prefixName, "weapon") +
+      starToggleHtml(starLevel, "weaponModal") +
+      prefixRowHtml(prefixName, "weaponModal") +
       '<table class="modal-table">' +
         '<tr><td>World Level</td><td>' + w.worldLevel + '</td></tr>' +
         '<tr><td>Crucible</td><td>' + w.crucible + '</td></tr>' +
@@ -2773,12 +2812,12 @@
 
     document.getElementById("modalOverlay").classList.add("is-open");
     document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
-    modal.querySelectorAll("#weaponStarToggle .star-toggle-btn").forEach(function(btn){
+    modal.querySelectorAll("#weaponModalStarToggle .star-toggle-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
         renderWeaponModal(w, parseInt(btn.dataset.starLevel, 10), prefixName);
       });
     });
-    var prefixSelect = document.getElementById("weaponPrefixSelect");
+    var prefixSelect = document.getElementById("weaponModalPrefixSelect");
     enhanceSelectEl(prefixSelect);
     prefixSelect.addEventListener("change", function(){
       renderWeaponModal(w, starLevel, prefixSelect.value);
@@ -3064,8 +3103,8 @@
     }
     emptyEl.style.display = "none";
 
-    var a = weapons[idxA];
-    var b = weapons[idxB];
+    var a = scaleWeapon(weapons[idxA], STAR_MULTS.weapon[diffWeaponStarPrefix.star], diffWeaponStarPrefix.prefix);
+    var b = scaleWeapon(weapons[idxB], STAR_MULTS.weapon[diffWeaponStarPrefix.star], diffWeaponStarPrefix.prefix);
 
     var rows = [
       buildDiffRow("World Level", a.worldLevel, b.worldLevel, { neutral:true }),
@@ -3093,6 +3132,8 @@
         rows.join("") +
       '</div>';
   }
+
+  renderStarPrefixBar("diffStarPrefixBar", "diffWeapon", diffWeaponStarPrefix, renderDiff);
 
   var currentView = "finder";
 
@@ -3433,8 +3474,8 @@
       '</div>' +
       (meta.length ? '<div class="modal-note">' + meta.join(" &middot; ") + '</div>' : '') +
       (effects.length ? '<div class="modal-note artifact-set-effects">' + effects.join("") + '</div>' : '') +
-      starToggleHtml(starLevel, "artifact") +
-      prefixRowHtml(prefixName, "artifact") +
+      starToggleHtml(starLevel, "artifactModal") +
+      prefixRowHtml(prefixName, "artifactModal") +
       '<div class="artifact-piece-list">' + pieceRows + '</div>';
 
     modal.querySelectorAll(".artifact-piece-head").forEach(function(head){
@@ -3448,12 +3489,12 @@
 
     document.getElementById("modalOverlay").classList.add("is-open");
     document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
-    modal.querySelectorAll("#artifactStarToggle .star-toggle-btn").forEach(function(btn){
+    modal.querySelectorAll("#artifactModalStarToggle .star-toggle-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
         renderArtifactModal(s, parseInt(btn.dataset.starLevel, 10), prefixName, openPieces);
       });
     });
-    var prefixSelect = document.getElementById("artifactPrefixSelect");
+    var prefixSelect = document.getElementById("artifactModalPrefixSelect");
     enhanceSelectEl(prefixSelect);
     prefixSelect.addEventListener("change", function(){
       renderArtifactModal(s, starLevel, prefixSelect.value, openPieces);
@@ -3577,7 +3618,9 @@
 
     sortArtifactCompareList();
 
-    var items = artifactCompareList.map(function(idx){ return { idx: idx, s: artifactSets[idx] }; });
+    var items = artifactCompareList.map(function(idx){
+      return { idx: idx, s: scaleArtifactSet(artifactSets[idx], STAR_MULTS.artifact[compareArtifactStarPrefix.star], compareArtifactStarPrefix.prefix) };
+    });
     var cols = items.length;
 
     function cell(html, cls, colIdx){
@@ -3673,6 +3716,8 @@
 
     wireArtifactCompareDrag(scrollWrap, cols);
   }
+
+  renderStarPrefixBar("artifactCompareStarPrefixBar", "artifactCompare", compareArtifactStarPrefix, renderArtifactCompare);
 
   // ---------- Artifact Compare: drag-to-reorder (column-based, since the
   // table is a CSS-grid of row-major cells rather than discrete cards) ----------
@@ -4057,7 +4102,8 @@
     }
     emptyEl.style.display = "none";
 
-    var a = artifactSets[idxA], b = artifactSets[idxB];
+    var a = scaleArtifactSet(artifactSets[idxA], STAR_MULTS.artifact[diffArtifactStarPrefix.star], diffArtifactStarPrefix.prefix);
+    var b = scaleArtifactSet(artifactSets[idxB], STAR_MULTS.artifact[diffArtifactStarPrefix.star], diffArtifactStarPrefix.prefix);
 
     var header =
       '<div class="diff-header">' +
@@ -4136,6 +4182,8 @@
       });
     });
   }
+
+  renderStarPrefixBar("artifactDiffStarPrefixBar", "artifactDiff", diffArtifactStarPrefix, renderArtifactDiff);
 
   document.getElementById("artifactDiffSwapBtn").addEventListener("click", function(){
     if(artifactDiffSelectedIdx.A === null && artifactDiffSelectedIdx.B === null) return;
