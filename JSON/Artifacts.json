@@ -642,11 +642,15 @@
       "goblet": 0.4,
       "circlet": 0.15
     },
-    "setBonus2pc": "-15 HP, +12% CR, +10% CV",
+    "setBonus2pc": "-10 HP, +4 ATK, +12% CR, +14% CV",
     "setBonus2pcStats": [
       {
         "stat": "HP",
-        "value": -15
+        "value": -10
+      },
+      {
+        "stat": "ATK",
+        "value": 4
       },
       {
         "stat": "CR",
@@ -654,18 +658,18 @@
       },
       {
         "stat": "CV",
-        "value": 10
+        "value": 14
       }
     ],
-    "setBonus4pc": "-40 HP, +6 ATK, +18% CR, +28% CV",
+    "setBonus4pc": "-30 HP, +12 ATK, +18% CR, +34% CV",
     "setBonus4pcStats": [
       {
         "stat": "HP",
-        "value": -40
+        "value": -30
       },
       {
         "stat": "ATK",
-        "value": 6
+        "value": 12
       },
       {
         "stat": "CR",
@@ -673,7 +677,7 @@
       },
       {
         "stat": "CV",
-        "value": 28
+        "value": 34
       }
     ],
     "pieces": {
@@ -988,30 +992,34 @@
       "goblet": 0.4,
       "circlet": 0.15
     },
-    "setBonus2pc": "+6 ATK, +10 DV",
+    "setBonus2pc": "+9 ATK, +14 DV, +3% Dodge",
     "setBonus2pcStats": [
-      {
-        "stat": "ATK",
-        "value": 6
-      },
-      {
-        "stat": "DV",
-        "value": 10
-      }
-    ],
-    "setBonus4pc": "+9 ATK, +4% DR, +18 DV",
-    "setBonus4pcStats": [
       {
         "stat": "ATK",
         "value": 9
       },
       {
-        "stat": "DR",
-        "value": 4
+        "stat": "DV",
+        "value": 14
+      },
+      {
+        "stat": "Dodge",
+        "value": 3
+      }
+    ],
+    "setBonus4pc": "+15 ATK, +26 DV, +6% Dodge",
+    "setBonus4pcStats": [
+      {
+        "stat": "ATK",
+        "value": 15
       },
       {
         "stat": "DV",
-        "value": 18
+        "value": 26
+      },
+      {
+        "stat": "Dodge",
+        "value": 6
       }
     ],
     "pieces": {
@@ -1026,6 +1034,10 @@
           "DV": {
             "min": 8,
             "max": 14
+          },
+          "Dodge": {
+            "min": 1,
+            "max": 2
           }
         }
       },
@@ -1040,6 +1052,10 @@
           "DV": {
             "min": 5,
             "max": 10
+          },
+          "Dodge": {
+            "min": 1,
+            "max": 2
           }
         }
       },
@@ -1051,13 +1067,13 @@
             "min": 6,
             "max": 12
           },
-          "DR": {
-            "min": 3,
-            "max": 6
-          },
           "DV": {
             "min": 10,
             "max": 15
+          },
+          "Dodge": {
+            "min": 1,
+            "max": 2
           }
         }
       },
@@ -1072,6 +1088,10 @@
           "DV": {
             "min": 12,
             "max": 18
+          },
+          "Dodge": {
+            "min": 1,
+            "max": 2
           }
         }
       },
@@ -1083,13 +1103,13 @@
             "min": 6,
             "max": 12
           },
-          "DR": {
-            "min": 4,
-            "max": 7
-          },
           "DV": {
             "min": 8,
             "max": 14
+          },
+          "Dodge": {
+            "min": 1,
+            "max": 2
           }
         }
       }
@@ -1106,30 +1126,30 @@
       "goblet": 0.4,
       "circlet": 0.15
     },
-    "setBonus2pc": "+14% CR, +14% CV",
+    "setBonus2pc": "+13% CR, +13% CV",
     "setBonus2pcStats": [
       {
         "stat": "CR",
-        "value": 14
+        "value": 13
       },
       {
         "stat": "CV",
-        "value": 14
+        "value": 13
       }
     ],
-    "setBonus4pc": "+6 ATK, +22% CR, +32% CV",
+    "setBonus4pc": "+6 ATK, +20% CR, +29% CV",
     "setBonus4pcStats": [
+      {
+        "stat": "CR",
+        "value": 20
+      },
+      {
+        "stat": "CV",
+        "value": 29
+      },
       {
         "stat": "ATK",
         "value": 6
-      },
-      {
-        "stat": "CR",
-        "value": 22
-      },
-      {
-        "stat": "CV",
-        "value": 32
       }
     ],
     "pieces": {
@@ -1408,46 +1428,18 @@
       "goblet": 0.4,
       "circlet": 0.15
     },
-    "setBonus2pc": "+35 HP, +8% CR, +10% CV, +12 DV",
+    "setBonus2pc": "+8% Dodge",
     "setBonus2pcStats": [
       {
-        "stat": "HP",
-        "value": 35
-      },
-      {
-        "stat": "CR",
+        "stat": "Dodge",
         "value": 8
-      },
-      {
-        "stat": "CV",
-        "value": 10
-      },
-      {
-        "stat": "DV",
-        "value": 12
       }
     ],
-    "setBonus4pc": "+70 HP, +14% CR, +18% CV, +12% DR, +38 DV",
+    "setBonus4pc": "+16% Dodge",
     "setBonus4pcStats": [
       {
-        "stat": "HP",
-        "value": 70
-      },
-      {
-        "stat": "CR",
-        "value": 14
-      },
-      {
-        "stat": "CV",
-        "value": 18
-      },
-      {
-        "stat": "DR",
-        "value": 12
-      },
-      {
-        "stat": "DV",
-        "value": 38
+        "stat": "Dodge",
+        "value": 16
       }
     ],
     "pieces": {
@@ -1455,17 +1447,9 @@
         "name": "Snowswept Memory",
         "icon": "Blizzard_Flower.webp",
         "stats": {
-          "HP": {
-            "min": 40,
-            "max": 54
-          },
-          "CR": {
-            "min": 4,
-            "max": 8
-          },
-          "DV": {
-            "min": 6,
-            "max": 12
+          "Dodge": {
+            "min": 2,
+            "max": 4
           }
         }
       },
@@ -1473,17 +1457,9 @@
         "name": "Icebreaker's Resolve",
         "icon": "Blizzard_Plume.webp",
         "stats": {
-          "HP": {
-            "min": 34,
-            "max": 48
-          },
-          "DR": {
-            "min": 5,
-            "max": 10
-          },
-          "DV": {
-            "min": 9,
-            "max": 15
+          "Dodge": {
+            "min": 2,
+            "max": 4
           }
         }
       },
@@ -1491,17 +1467,9 @@
         "name": "Frozen Homeland's Demise",
         "icon": "Blizzard_Sands.webp",
         "stats": {
-          "HP": {
-            "min": 26,
-            "max": 38
-          },
-          "DR": {
-            "min": 4,
-            "max": 8
-          },
-          "DV": {
-            "min": 15,
-            "max": 23
+          "Dodge": {
+            "min": 2,
+            "max": 4
           }
         }
       },
@@ -1509,17 +1477,9 @@
         "name": "Frost-Weaved Dignity",
         "icon": "Blizzard_Goblet.webp",
         "stats": {
-          "HP": {
-            "min": 38,
-            "max": 52
-          },
-          "CV": {
-            "min": 8,
-            "max": 14
-          },
-          "DV": {
-            "min": 12,
-            "max": 20
+          "Dodge": {
+            "min": 2,
+            "max": 4
           }
         }
       },
@@ -1527,17 +1487,9 @@
         "name": "Broken Rime's Echo",
         "icon": "Blizzard_Circlet.webp",
         "stats": {
-          "HP": {
-            "min": 30,
-            "max": 44
-          },
-          "CR": {
+          "Dodge": {
             "min": 10,
-            "max": 16
-          },
-          "DR": {
-            "min": 5,
-            "max": 9
+            "max": 20
           }
         }
       }
@@ -1554,34 +1506,34 @@
       "goblet": 0.4,
       "circlet": 0.15
     },
-    "setBonus2pc": "+38 ATK, -10% CR, -12% CV",
+    "setBonus2pc": "+50 ATK, -8% CR, -10% CV",
     "setBonus2pcStats": [
       {
         "stat": "ATK",
-        "value": 38
+        "value": 50
       },
       {
         "stat": "CR",
-        "value": -10
+        "value": -8
       },
       {
         "stat": "CV",
-        "value": -12
+        "value": -10
       }
     ],
-    "setBonus4pc": "+83 ATK, -22% CR, -28% CV",
+    "setBonus4pc": "+110 ATK, -16% CR, -20% CV",
     "setBonus4pcStats": [
       {
         "stat": "ATK",
-        "value": 83
+        "value": 110
       },
       {
         "stat": "CR",
-        "value": -22
+        "value": -16
       },
       {
         "stat": "CV",
-        "value": -28
+        "value": -20
       }
     ],
     "pieces": {
@@ -1672,34 +1624,34 @@
       "goblet": 0.4,
       "circlet": 0.15
     },
-    "setBonus2pc": "+68 HP, +12% CR, +14% CV",
+    "setBonus2pc": "+60 HP, +10% CR, +12% CV",
     "setBonus2pcStats": [
       {
         "stat": "HP",
-        "value": 68
+        "value": 60
       },
       {
         "stat": "CR",
-        "value": 12
+        "value": 10
       },
       {
         "stat": "CV",
-        "value": 14
+        "value": 12
       }
     ],
-    "setBonus4pc": "+135 HP, +20% CR, +32% CV",
+    "setBonus4pc": "+120 HP, +18% CR, +28% CV",
     "setBonus4pcStats": [
       {
         "stat": "HP",
-        "value": 135
+        "value": 120
       },
       {
         "stat": "CR",
-        "value": 20
+        "value": 18
       },
       {
         "stat": "CV",
-        "value": 32
+        "value": 28
       }
     ],
     "pieces": {
@@ -2032,6 +1984,152 @@
           "min": 1,
           "max": 100,
           "suffix": "%"
+        }
+      }
+    }
+  },
+  {
+    "setName": "Thundering Fury",
+    "worldLevel": 7,
+    "setBonus2pc": "-50 HP, +60 ATK",
+    "setBonus2pcStats": [
+      {
+        "stat": "HP",
+        "value": -50
+      },
+      {
+        "stat": "ATK",
+        "value": 60
+      }
+    ],
+    "setBonus4pc": "-120 HP, +135 ATK",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": -120
+      },
+      {
+        "stat": "ATK",
+        "value": 135
+      }
+    ],
+    "pieces": {
+      "flower": {
+        "name": "Thunderbird's Mercy",
+        "icon": "Item_Thunderbird's_Mercy.webp",
+        "stats": {
+          "ATK": {
+            "min": 180,
+            "max": 225
+          },
+          "HP": {
+            "min": -110,
+            "max": -60
+          }
+        }
+      },
+      "plume": {
+        "name": "Survivor of Catastrophe",
+        "icon": "Item_Survivor_of_Catastrophe.webp",
+        "stats": {
+          "ATK": {
+            "min": 190,
+            "max": 235
+          },
+          "HP": {
+            "min": -100,
+            "max": -60
+          }
+        }
+      },
+      "goblet": {
+        "name": "Omen of Thunderstorm",
+        "icon": "Item_Omen_of_Thunderstorm.webp",
+        "stats": {
+          "ATK": {
+            "min": 170,
+            "max": 220
+          },
+          "HP": {
+            "min": -120,
+            "max": -70
+          }
+        }
+      }
+    }
+  },
+  {
+    "setName": "Shimenawa's Reminiscence",
+    "worldLevel": 7,
+    "setBonus2pc": "+70 HP, -18 ATK, -8% CR",
+    "setBonus2pcStats": [
+      {
+        "stat": "HP",
+        "value": 70
+      },
+      {
+        "stat": "ATK",
+        "value": -18
+      },
+      {
+        "stat": "CR",
+        "value": -8
+      }
+    ],
+    "setBonus4pc": "+150 HP, -40 ATK, -16% CR, -20% CV",
+    "setBonus4pcStats": [
+      {
+        "stat": "HP",
+        "value": 150
+      },
+      {
+        "stat": "ATK",
+        "value": -40
+      },
+      {
+        "stat": "CR",
+        "value": -16
+      },
+      {
+        "stat": "CV",
+        "value": -20
+      }
+    ],
+    "pieces": {
+      "sands": {
+        "name": "Morning Dew's Moment",
+        "icon": "Item_Morning_Dew's_Moment.webp",
+        "stats": {
+          "HP": {
+            "min": 245,
+            "max": 325
+          },
+          "ATK": {
+            "min": -35,
+            "max": -20
+          },
+          "CR": {
+            "min": -10,
+            "max": -5
+          }
+        }
+      },
+      "circlet": {
+        "name": "Capricious Visage",
+        "icon": "Item_Capricious_Visage.webp",
+        "stats": {
+          "HP": {
+            "min": 235,
+            "max": 315
+          },
+          "ATK": {
+            "min": -40,
+            "max": -20
+          },
+          "CV": {
+            "min": -14,
+            "max": -8
+          }
         }
       }
     }
