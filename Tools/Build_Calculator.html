@@ -433,6 +433,26 @@
   .bag-search-row{ padding:12px 16px 0; flex-shrink:0; }
   /* ---------- Bulk paste (bag) — modal ---------- */
   #bulkPasteOverlay .picker-modal{ max-width:460px; width:100%; }
+  /* Catalog (browse every weapon/artifact and tick what you own) */
+  #catalogOverlay .picker-modal{ max-width:560px; width:100%; }
+  .catalog-controls{ display:flex; gap:8px; padding:10px 16px; flex-wrap:wrap; border-bottom:1px solid var(--panel-2); }
+  .catalog-controls input, .catalog-controls select{
+    flex:1 1 140px; min-width:0; padding:8px 10px; border:1.5px solid var(--line); border-radius:8px;
+    background:var(--bg-alt); color:var(--ink); font-family:'Inter', sans-serif; font-size:.82rem;
+  }
+  .catalog-list{ flex:1; overflow-y:auto; min-height:0; }
+  .catalog-group{ padding:6px 16px; font-family:'JetBrains Mono', monospace; font-size:.68rem; color:var(--ink-dim);
+    background:var(--bg-alt); position:sticky; top:0; z-index:1; border-bottom:1px solid var(--panel-2); }
+  .catalog-item{ display:flex; align-items:center; gap:10px; padding:8px 16px; cursor:pointer; border-bottom:1px solid var(--panel-2); user-select:none; }
+  .catalog-item:hover{ background:var(--bg-alt); }
+  .catalog-item.is-selected{ background:rgba(212,175,55,.12); }
+  .catalog-check{ width:18px; height:18px; flex:0 0 auto; border:1.5px solid var(--line); border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:.75rem; }
+  .catalog-item.is-selected .catalog-check{ border-color:#d4af37; background:#d4af37; color:#000; }
+  .catalog-qty{ display:flex; align-items:center; gap:4px; flex:0 0 auto; }
+  .catalog-qty button{ width:24px; height:24px; padding:0; line-height:1; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--ink); cursor:pointer; }
+  .catalog-qty span{ min-width:20px; text-align:center; font-size:.78rem; }
+  .catalog-footer{ display:flex; align-items:center; gap:8px; padding:10px 16px; border-top:1px solid var(--panel-2); flex-shrink:0; }
+  .catalog-footer .catalog-count{ flex:1; font-size:.78rem; color:var(--ink-dim); }
   .bulk-paste-body{ padding:14px 16px 18px; }
   .bulk-paste-hint{ font-size:.72rem; color:var(--ink-dim); margin-bottom:10px; line-height:1.55; }
   .bulk-paste-hint code{ background:var(--bg-alt); padding:1px 4px; border-radius:4px; font-family:'JetBrains Mono', monospace; }
@@ -1008,6 +1028,9 @@
   <div class="bag-quickadd-row" id="bagBulkPasteRow">
     <button type="button" id="bagBulkPasteOpenBtn">📋 Paste from Text</button>
   </div>
+  <div class="bag-quickadd-row" id="bagCatalogRow">
+    <button type="button" id="bagCatalogBtn">📚 Browse All &amp; Add</button>
+  </div>
   <div class="bag-sidebar-content" id="bagSidebarContent"></div>
 </aside>
 
@@ -1025,6 +1048,25 @@
         <button type="button" class="inline-link-btn" id="bagBulkPasteClearBtn">Clear</button>
         <span class="bulk-paste-result" id="bagBulkPasteResult"></span>
       </div>
+    </div>
+  </div>
+</div>
+
+<div id="catalogOverlay" class="picker-overlay">
+  <div class="picker-modal">
+    <div class="picker-modal-head">
+      <div class="picker-modal-title">📚 Browse &amp; Add to Bag</div>
+      <button class="picker-close" id="catalogCloseBtn">✕</button>
+    </div>
+    <div class="catalog-controls">
+      <input type="text" id="catalogSearch" placeholder="Search weapons &amp; artifacts...">
+      <select id="catalogCategory"></select>
+    </div>
+    <div class="catalog-list" id="catalogList"></div>
+    <div class="catalog-footer">
+      <span class="catalog-count" id="catalogCount">Tap items to select</span>
+      <button type="button" class="inline-link-btn" id="catalogClearBtn">Clear</button>
+      <button type="button" class="primary" id="catalogAddBtn">Add to Bag</button>
     </div>
   </div>
 </div>
@@ -1210,6 +1252,7 @@
           <li>Open <strong>🎒 Bag</strong> in the top bar to view saved items, sorted into tabs — including an <strong>All</strong> tab showing everything at once.</li>
           <li>From the Bag, click <strong>☆</strong> to favorite an item (favorites float to the top of their tab), <strong>Equip</strong> to put it back on your character, <strong>⧉</strong> to duplicate it, or ✕ to remove it.</li>
           <li>To add an item straight to the Bag without equipping it first, switch to a specific tab (Weapon, Flower, Plume, Sands, Goblet, or Circlet) and click <strong>➕ Add New</strong>. Pick the item, set its stats, and click <strong>🎒 Save to Bag</strong>.</li>
+          <li>Click <strong>📚 Browse All &amp; Add</strong> in the Bag to see every weapon and artifact piece in one list — search or filter by category, tap the ones you own (use + / − for copies), then click <strong>Add to Bag</strong>. They're added with no rolls set.</li>
           <li>Click <strong>📋 Paste from Text</strong> in the Bag to add several items at once — paste one item per line (e.g. copied from a Discord inventory bot) and click <strong>Apply</strong>. It reads rolled stats from a <code>( +48 ATK, -8% CR )</code> style block (including <code>X to Y</code> roll ranges), an emoji tag to identify the item even if it's been renamed, a leading known Prefix word, <code>⭐</code> for Favorite, and trailing <code>✪</code>/<code>✪✪</code>/<code>✪✪✪</code> for Anvil Star — lines it can't recognize are listed as skipped.</li>
           <li>Use the <strong>🔍 Search bag</strong> box at the top of the Bag to find an item by name across every tab at once.</li>
         </ul>
@@ -1232,7 +1275,8 @@
         <h3>Prefixes & Anvil Star</h3>
         <ul>
           <li><strong>Prefix</strong> multiplies that specific weapon or artifact piece's own rolled stats — pick one from the dropdown on its detail panel. Hover/read the option text to see exactly which stats it affects and by how much.</li>
-          <li><strong>Anvil Star</strong> is a separate multiplier stacked on top of the prefix, also applied to that piece's own rolls. It has 4 levels: OFF, ✪, ✪✪, and ✪✪✪ — weapons scale 2x / 4x / 8x per star, artifacts scale 1.5x / 2x / 2.5x per star.</li>
+          <li><strong>Anvil Star</strong> is a separate multiplier stacked on top of the prefix, also applied to that piece's own rolls. It has 4 levels: OFF, ✪, ✪✪, and ✪✪✪ — weapons scale 1.5x / 2.25x / 3.375x (1.5x per star), artifacts scale 1.5x / 2x / 2.5x per star.</li>
+          <li><strong>Evolve</strong> (every weapon and artifact piece) is separate from the Anvil Star and stacks with it. It has 3 levels — ✦ 2x, ✦✦ 4x, ✦✦✦ 8x — so an item can have, say, 2 Anvil Stars and be evolved twice.</li>
           <li>Change how you set the Anvil Star level in <strong>Settings → Anvil Star Control</strong>: <strong>Tap to Cycle</strong> (tap through OFF → ✪ → ✪✪ → ✪✪✪ → back to OFF), <strong>Dropdown</strong> (pick a level directly), or <strong>+ / − Buttons</strong> (step one level at a time).</li>
         </ul>
       </div>
@@ -1265,6 +1309,8 @@
   </div>
 </div>
 
+<script type="application/json" id="embeddedWeaponsData">[{"name":"Apprentice's Notes","worldLevel":1,"crucible":20,"weight":1.5,"hp":"-","atkType":"flat","atkRoll":"2 to 16","critRate":"1 to 5","critValue":"1 to 5","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Apprentice's_Notes.webp"},{"name":"Beginner's Protector","worldLevel":1,"crucible":20,"weight":3,"hp":"-20 to -5","atkType":"flat","atkRoll":"5 to 10","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Polearm","icon":"Weapon_Beginner's_Protector.webp"},{"name":"Dull Blade","worldLevel":1,"crucible":20,"weight":2,"hp":"-","atkType":"flat","atkRoll":"3 to 6","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Sword","icon":"Weapon_Dull_Blade.webp"},{"name":"Waster Greatsword","worldLevel":1,"crucible":20,"weight":3,"hp":"2 to 8","atkType":"flat","atkRoll":"2 to 4","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Claymore","icon":"Weapon_Waster_Greatsword.webp"},{"name":"Old Merc's Pal","worldLevel":2,"crucible":50,"weight":4,"hp":"20 to 30","atkType":"flat","atkRoll":"5 to 9","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Claymore","icon":"Weapon_Old_Merc's_Pal.webp"},{"name":"Otherworldly Story","worldLevel":2,"crucible":50,"weight":1.5,"hp":"12 to 22","atkType":"minMax","atkRollMin":"4 to 10","atkRollMax":"14 to 24","critRate":"4 to 8","critValue":"8 to 14","defRate":"4 to 10","defValue":"4 to 8","type":"Catalyst","icon":"Weapon_Otherworldly_Story.webp"},{"name":"Seasoned Hunter's Bow","worldLevel":2,"crucible":50,"weight":1.5,"hp":"-","atkType":"flat","atkRoll":"1 to 20","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Bow","icon":"Weapon_Seasoned_Hunter's_Bow.webp"},{"name":"Silver Sword","worldLevel":2,"crucible":50,"weight":2,"hp":"-","atkType":"flat","atkRoll":"7 to 11","critRate":"5","critValue":"5","defRate":"-","defValue":"-","type":"Sword","icon":"Weapon_Silver_Sword.webp"},{"name":"Bloodstained Greatsword","worldLevel":3,"crucible":75,"weight":4,"hp":"-","atkType":"flat","atkRoll":"14 to 22","critRate":"10 to 20","critValue":"20 to 40","defRate":"-","defValue":"-","type":"Claymore","icon":"Weapon_Bloodtainted_Greatsword.webp"},{"name":"Dark Iron Sword","worldLevel":3,"crucible":75,"weight":2,"hp":"40 to 60","atkType":"minMax","atkRollMin":"5 to 9","atkRollMax":"12 to 18","critRate":"-","critValue":"-","defRate":"16 to 28","defValue":"12 to 22","type":"Sword","icon":"Weapon_Dark_Iron_Sword.webp"},{"name":"Deathmatch","worldLevel":3,"crucible":75,"weight":3,"hp":"-","atkType":"flat","atkRoll":"10 to 16","critRate":"16 to 26","critValue":"35 to 55","defRate":"-","defValue":"-","type":"Polearm","icon":"Weapon_Deathmatch.webp"},{"name":"Emerald Orb","worldLevel":3,"crucible":75,"weight":2,"hp":"20 to 40","atkType":"minMax","atkRollMin":"16 to 28","atkRollMax":"36 to 52","critRate":"-","critValue":"-","defRate":"18 to 35","defValue":"10 to 20","type":"Catalyst","icon":"Weapon_Emerald_Orb.webp"},{"name":"Ferrous Shadow","worldLevel":3,"crucible":75,"weight":4,"hp":"20 to 40","atkType":"flat","atkRoll":"10 to 15","critRate":"-","critValue":"-","defRate":"5 to 20","defValue":"10 to 20","type":"Claymore","icon":"Weapon_Ferrous_Shadow.webp"},{"name":"Fillet Blade","worldLevel":3,"crucible":75,"weight":2,"hp":"10 to 20","atkType":"flat","atkRoll":"20 to 35","critRate":"5 to 10","critValue":"-","defRate":"-","defValue":"-","type":"Sword","icon":"Weapon_Fillet_Blade.webp"},{"name":"Halberd","worldLevel":3,"crucible":75,"weight":3,"hp":"-","atkType":"flat","atkRoll":"16 to 26","critRate":"14 to 22","critValue":"38 to 52","defRate":"-18 to -10","defValue":"-14 to -8","type":"Polearm","icon":"Weapon_Halberd.webp"},{"name":"Lost Prayer to the Sacred Winds","worldLevel":3,"crucible":100,"weight":1.5,"hp":"-","atkType":"minMax","atkRollMin":"20 to 40","atkRollMax":"20 to 32","critRate":"16 to 24","critValue":"88 to 112","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Lost_Prayer_to_the_Sacred_Winds.webp","ability":"After casting a spell, cast one more spell during the same turn. The second cast may repeat the first spell or target a different enemy."},{"name":"Pocket Grimoire","worldLevel":3,"crucible":75,"weight":1.5,"hp":"35 to 50","atkType":"minMax","atkRollMin":"12 to 20","atkRollMax":"28 to 44","critRate":"14 to 20","critValue":"40 to 55","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Pocket_Grimoire.webp"},{"name":"White Tassel","worldLevel":3,"crucible":75,"weight":3,"hp":"55 to 85","atkType":"flat","atkRoll":"6 to 12","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Polearm","icon":"Weapon_White_Tassel.webp"},{"name":"Wilderness Rod","worldLevel":3,"crucible":5,"weight":1,"hp":"-5 to -1","atkType":"flat","atkRoll":"0 to 1","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Polearm","icon":"Item_Wilderness_Rod.webp"},{"name":"Akuoumaru","worldLevel":4,"crucible":100,"weight":4,"hp":"-","atkType":"flat","atkRoll":"15 to 20","critRate":"15 to 30","critValue":"-","defRate":"-","defValue":"30 to 70","type":"Claymore","icon":"Weapon_Akuoumaru.webp"},{"name":"Alley Hunter","worldLevel":4,"crucible":100,"weight":1.5,"hp":"55 to 80","atkType":"minMax","atkRollMin":"1","atkRollMax":"150","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Bow","icon":"Weapon_Alley_Hunter.webp"},{"name":"Amenoma Kageuchi","worldLevel":4,"crucible":100,"weight":2,"hp":"55 to 75","atkType":"flat","atkRoll":"24 to 34","critRate":"10 to 18","critValue":"22 to 32","defRate":"8 to 15","defValue":"8 to 14","type":"Sword","icon":"Weapon_Amenoma_Kageuchi.webp"},{"name":"Cool Steel","worldLevel":4,"crucible":100,"weight":2,"hp":"80","atkType":"flat","atkRoll":"30","critRate":"20","critValue":"25","defRate":"-","defValue":"-","type":"Sword","icon":"Weapon_Cool_Steel.webp"},{"name":"Debate Club","worldLevel":4,"crucible":100,"weight":4,"hp":"62 to 78","atkType":"minMax","atkRollMin":"1 to 4","atkRollMax":"5 to 11","critRate":"10 to 18","critValue":"22 to 38","defRate":"-","defValue":"-18 to -10","type":"Claymore","icon":"Weapon_Debate_Club.webp"},{"name":"Messenger","worldLevel":4,"crucible":100,"weight":1.5,"hp":"-","atkType":"flat","atkRoll":"28 to 42","critRate":"-15 to -8","critValue":"-","defRate":"16 to 28","defValue":"12 to 20","type":"Bow","icon":"Weapon_Messenger.webp"},{"name":"Prototype Starglitter","worldLevel":4,"crucible":100,"weight":3,"hp":"-","atkType":"flat","atkRoll":"24 to 36","critRate":"-","critValue":"-","defRate":"18 to 32","defValue":"14 to 24","type":"Polearm","icon":"Weapon_Prototype_Starglitter.webp"},{"name":"Staff of Homa","worldLevel":4,"crucible":100,"weight":3,"hp":"30 to 50","atkType":"flat","atkRoll":"30 to 50","critRate":"-","critValue":"20 to 30","defRate":"-","defValue":"-","type":"Polearm","icon":"Weapon_Staff_of_Homa.webp","ability":"Deal more damage the lower your HP is."},{"name":"The Bell","worldLevel":4,"crucible":100,"weight":4,"hp":"180 to 220","atkType":"flat","atkRoll":"-30 to 1","critRate":"-55 to -45","critValue":"-","defRate":"-","defValue":"-","type":"Claymore","icon":"Weapon_The_Bell.webp"},{"name":"Twin Nephrite","worldLevel":4,"crucible":100,"weight":1.5,"hp":"-","atkType":"minMax","atkRollMin":"6 to 14","atkRollMax":"20 to 32","critRate":"16 to 24","critValue":"88 to 112","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Twin_Nephrite.webp"},{"name":"Wine and Song","worldLevel":4,"crucible":100,"weight":1.5,"hp":"100","atkType":"minMax","atkRollMin":"64","atkRollMax":"100","critRate":"22","critValue":"55","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Wine_and_Song.webp"},{"name":"Blackcliff Agate","worldLevel":5,"crucible":125,"weight":2,"hp":"160 to 210","atkType":"minMax","atkRollMin":"44 to 64","atkRollMax":"80 to 110","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Blackcliff_Agate.webp"},{"name":"Compound Bow","worldLevel":5,"crucible":125,"weight":1.5,"hp":"30 to 40","atkType":"flat","atkRoll":"120 to 180","critRate":"-55 to -45","critValue":"-110 to -90","defRate":"-","defValue":"-","type":"Bow","icon":"Weapon_Compound_Bow.webp"},{"name":"Dawning Frost","worldLevel":5,"crucible":125,"weight":2,"hp":"-","atkType":"minMax","atkRollMin":"12 to 24","atkRollMax":"28 to 44","critRate":"24 to 34","critValue":"120 to 155","defRate":"-28 to -18","defValue":"-22 to -12","type":"Catalyst","icon":"Weapon_Dawning_Frost.webp"},{"name":"Dragon's Bane","worldLevel":5,"crucible":125,"weight":3,"hp":"200 to 300","atkType":"minMax","atkRollMin":"80 to 100","atkRollMax":"120 to 150","critRate":"-60 to -30","critValue":"-","defRate":"20 to 30","defValue":"-","type":"Polearm","icon":"Weapon_Dragon's_Bane.webp"},{"name":"Primordial Jade Winged-Spear","worldLevel":5,"crucible":125,"weight":3,"hp":"130 to 180","atkType":"flat","atkRoll":"50 to 200","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Polearm","icon":"Weapon_Primordial_Jade_Winged-Spear.webp","ability":"Unlock the Slash action. Deal 100% of your attack to all enemies (1 turn cooldown). Heal for 10% of the total damage dealt."},{"name":"Sacrificial Jade","worldLevel":5,"crucible":125,"weight":2,"hp":"-","atkType":"minMax","atkRollMin":"120 to 140","atkRollMax":"155 to 175","critRate":"11 to 16","critValue":"36 to 51","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Sacrificial_Jade.webp"},{"name":"The Alley Flash","worldLevel":5,"crucible":125,"weight":2,"hp":"-400 to -300","atkType":"minMax","atkRollMin":"40 to 90","atkRollMax":"120 to 200","critRate":"-","critValue":"20 to 30","defRate":"-","defValue":"-","type":"Sword","icon":"Weapon_The_Alley_Flash.webp"},{"name":"Blackcliff Slasher","worldLevel":4,"crucible":100,"weight":4,"hp":"-","atkType":"minMax","atkRollMin":"40","atkRollMax":"80","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Claymore","icon":"Weapon_Blackcliff_Slasher.webp"},{"name":"Earth Shaker","worldLevel":5,"crucible":125,"weight":4,"hp":"-","atkType":"flat","atkRoll":"-50","critRate":"-","critValue":"-","defRate":"-","defValue":"300","type":"Claymore","icon":"Weapon_Earth_Shaker.webp"},{"name":"Blackcliff Longsword","worldLevel":6,"crucible":150,"weight":2,"hp":"100 to 300","atkType":"flat","atkRoll":"200 to 300","critRate":"-","critValue":"10","defRate":"-","defValue":"-","type":"Sword","icon":"Weapon_Blackcliff_Longsword.webp"},{"name":"Cinnabar Spindle","worldLevel":6,"crucible":150,"weight":2,"hp":"50 to 100","atkType":"flat","atkRoll":"100 to 200","critRate":"-","critValue":"-","defRate":"-","defValue":"100 to 200","type":"Sword","icon":"Weapon_Cinnabar_Spindle.webp"},{"name":"Iron Sting","worldLevel":6,"crucible":150,"weight":2,"hp":"-","atkType":"flat","atkRoll":"150 to 250","critRate":"-100 to -50","critValue":"-","defRate":"20 to 30","defValue":"20 to 50","type":"Sword","icon":"Weapon_Iron_Sting.webp"},{"name":"Favonius Lance","worldLevel":6,"crucible":150,"weight":3,"hp":"100 to 200","atkType":"flat","atkRoll":"50 to 150","critRate":"-","critValue":"50 to 100","defRate":"-","defValue":"-","type":"Polearm","icon":"Weapon_Favonius_Lance.webp"},{"name":"Song of Broken Pines","worldLevel":6,"crucible":150,"weight":4,"hp":"-","atkType":"minMax","atkRollMin":"550 to 650","atkRollMax":"650 to 750","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Claymore","icon":"Weapon_Song_of_Broken_Pines.webp","ability":"Every 4th attack deals 10x damage."},{"name":"Dodoco Tales","worldLevel":5,"crucible":250,"weight":2,"hp":"320 to 420","atkType":"minMax","atkRollMin":"240 to 280","atkRollMax":"310 to 350","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Dodoco_Tales.webp"},{"name":"Blackcliff Warbow","worldLevel":5,"crucible":250,"weight":1.5,"hp":"160 to 200","atkType":"minMax","atkRollMin":"240 to 280","atkRollMax":"320 to 360","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Bow","icon":"Weapon_Blackcliff_Warbow.webp"},{"name":"Skyrider Greatsword","worldLevel":6,"crucible":300,"weight":4,"hp":"-","atkType":"flat","atkRoll":"200 to 300","critRate":"-","critValue":"-","defRate":"40 to 60","defValue":"400 to 600","type":"Claymore","icon":"Weapon_Skyrider_Greatsword.webp"},{"name":"Dragonspine Spear","worldLevel":6,"crucible":300,"weight":3,"hp":"-","atkType":"flat","atkRoll":"300 to 400","critRate":"40 to 60","critValue":"150 to 200","defRate":"-","defValue":"-","type":"Polearm","icon":"Weapon_Dragonspine_Spear.webp"},{"name":"Tulaytullah's Remembrance","worldLevel":7,"hp":"100 to 200","atkType":"minMax","atkRoll":"-","critRate":"14 to 22","critValue":"48 to 72","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Tulaytullah's_Remembrance.webp","atkRollMin":"340 to 425","atkRollMax":"442 to 510"},{"name":"Hakushin Ring","worldLevel":7,"hp":"400 to 600","atkType":"flat","atkRoll":"400 to 600","critRate":"6 to 12","critValue":"16 to 28","defRate":"-","defValue":"-","type":"Catalyst","icon":"Weapon_Hakushin_Ring.webp"},{"name":"Hamayumi","worldLevel":7,"hp":"-700 to -300","atkType":"flat","atkRoll":"-","critRate":"-","critValue":"-","defRate":"-","defValue":"-","type":"Bow","icon":"Weapon_Hamayumi.webp","dodge":"10 to 20"},{"name":"Kagotsurube Isshin","worldLevel":7,"hp":"300 to 400","atkType":"flat","atkRoll":"300 to 400","critRate":"-","critValue":"-","defRate":"-","defValue":"300 to 400","type":"Sword","icon":"Weapon_Kagotsurube_Isshin.webp"},{"name":"Katsuragikiri Nagamasa","worldLevel":7,"hp":"200","atkType":"flat","atkRoll":"300","critRate":"-","critValue":"-","defRate":"40 to 50","defValue":"300 to 400","type":"Claymore","icon":"Weapon_Katsuragikiri_Nagamasa.webp"},{"name":"Kitain Cross Spear","worldLevel":7,"hp":"-","atkType":"flat","atkRoll":"500 to 700","critRate":"30 to 45","critValue":"80 to 120","defRate":"-","defValue":"-","type":"Polearm","icon":"Weapon_Kitain_Cross_Spear.webp"}]</script>
+<script type="application/json" id="embeddedArtifactsData">[{"setName":"Adventurer","worldLevel":1,"crucible":20,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+10 HP","setBonus2pcStats":[{"stat":"HP","value":10}],"setBonus4pc":"+20 HP","setBonus4pcStats":[{"stat":"HP","value":20}],"pieces":{"flower":{"name":"Flower of Life","icon":"Adventurer_Flower.webp","stats":{"HP":{"min":1,"max":2},"ATK":{"min":1,"max":5}}},"plume":{"name":"Adventurer's Tail Feather","icon":"Adventurer_Plume.webp","stats":{"ATK":{"min":3,"max":4}}},"sands":{"name":"Adventurer's Pocket Watch","icon":"Adventurer_Sands.webp","stats":{"ATK":{"min":1,"max":3}}},"goblet":{"name":"Adventurer's Golden Goblet","icon":"Adventurer_Goblet.webp","stats":{"CV":{"min":3,"max":5}}},"circlet":{"name":"Adventurer's Bandana","icon":"Adventurer_Circlet.webp","stats":{"CR":{"min":1,"max":5}}}}},{"setName":"Traveling Doctor","worldLevel":1,"crucible":20,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+5 ATK","setBonus2pcStats":[{"stat":"ATK","value":5}],"setBonus4pc":"+10 ATK","setBonus4pcStats":[{"stat":"ATK","value":10}],"pieces":{"flower":{"name":"Traveling Doctor's Silver Lotus","icon":"Travdoc_Flower.png","stats":{"HP":{"min":6,"max":15},"ATK":{"min":1,"max":2}}},"plume":{"name":"Traveling Doctor's Owl Feather","icon":"Travdoc_Plume.webp","stats":{"HP":{"min":3,"max":12}}},"sands":{"name":"Traveling Doctor's Pocket Watch","icon":"Travdoc_Sands.webp","stats":{"HP":{"min":6,"max":15}}},"goblet":{"name":"Traveling Doctor's Medicine Pot","icon":"Travdoc_Goblet.webp","stats":{"HP":{"min":9,"max":12}}},"circlet":{"name":"Traveling Doctor's Handkerchief","icon":"Travdoc_Circlet.webp","stats":{"HP":{"min":3,"max":9}}}}},{"setName":"Lucky Dog","worldLevel":1,"crucible":20,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+3% CR","setBonus2pcStats":[{"stat":"CR","value":3}],"setBonus4pc":"+6% CR, +6% CV","setBonus4pcStats":[{"stat":"CR","value":6},{"stat":"CV","value":6}],"pieces":{"flower":{"name":"Lucky Dog's Clover","icon":"LuckyDog_Flower.png","stats":{"CR":{"min":1,"max":3},"CV":{"min":2,"max":4}}},"plume":{"name":"Lucky Dog's Eagle Feather","icon":"LuckyDog_Plume.webp","stats":{"CR":{"min":3,"max":5}}},"sands":{"name":"Lucky Dog's Hourglass","icon":"LuckyDog_Sands.webp","stats":{"CV":{"min":1,"max":5}}},"goblet":{"name":"Lucky Dog's Goblet","icon":"LuckyDog_Goblet.webp","stats":{"CV":{"min":3,"max":4}}},"circlet":{"name":"Lucky Dog's Silver Circlet","icon":"LuckyDog_Circlet.webp","stats":{"CR":{"min":1,"max":2}}}}},{"setName":"Berserker","worldLevel":2,"crucible":50,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"-12 HP, +4 ATK, +5% CR","setBonus2pcStats":[{"stat":"HP","value":-12},{"stat":"ATK","value":4},{"stat":"CR","value":5}],"setBonus4pc":"-30 HP, +6 ATK, +10% CR, +10% CV","setBonus4pcStats":[{"stat":"HP","value":-30},{"stat":"ATK","value":6},{"stat":"CR","value":10},{"stat":"CV","value":10}],"pieces":{"flower":{"name":"Berserker's Rose","icon":"Berserker_Flower.png","stats":{"HP":{"min":-8,"max":-4},"ATK":{"min":3,"max":6},"CR":{"min":2,"max":5}}},"plume":{"name":"Berserker's Indigo Feather","icon":"Berserker_Plume.webp","stats":{"HP":{"min":-6,"max":-3},"ATK":{"min":4,"max":7},"CV":{"min":3,"max":6}}},"sands":{"name":"Berserker's Timepiece","icon":"Berserker_Sands.webp","stats":{"ATK":{"min":3,"max":5},"CR":{"min":4,"max":7}}},"goblet":{"name":"Berserker's Bone Goblet","icon":"Berserker_Goblet.webp","stats":{"HP":{"min":-10,"max":-5},"ATK":{"min":4,"max":8},"CV":{"min":4,"max":8}}},"circlet":{"name":"Berserker's Battle Mask","icon":"Berserker_Circlet.webp","stats":{"HP":{"min":-12,"max":-6},"ATK":{"min":2,"max":5},"CR":{"min":5,"max":8}}}}},{"setName":"Instructor","worldLevel":2,"crucible":50,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+8% DR, +8 DV","setBonus2pcStats":[{"stat":"DR","value":8},{"stat":"DV","value":8}],"setBonus4pc":"+20 HP, +15% DR, +30 DV","setBonus4pcStats":[{"stat":"HP","value":20},{"stat":"DR","value":15},{"stat":"DV","value":30}],"pieces":{"flower":{"name":"Instructor's Brooch","icon":"Instructor_Flower.webp","stats":{"HP":{"min":2,"max":6},"DR":{"min":3,"max":8}}},"plume":{"name":"Instructor's Feather Accessory","icon":"Instructor_Plume.webp","stats":{"DR":{"min":3,"max":6},"DV":{"min":4,"max":8}}},"sands":{"name":"Instructor's Pocket Watch","icon":"Instructor_Sands.webp","stats":{"DR":{"min":2,"max":5},"DV":{"min":4,"max":10}}},"goblet":{"name":"Instructor's Tea Cup","icon":"Instructor_Goblet.webp","stats":{"HP":{"min":5,"max":12},"DV":{"min":4,"max":8}}},"circlet":{"name":"Instructor's Cap","icon":"Instructor_Circlet.webp","stats":{"HP":{"min":3,"max":8},"DR":{"min":3,"max":8}}}}},{"setName":"The Exile","worldLevel":3,"crucible":75,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+5 ATK, +5% CR, -8 DV","setBonus2pcStats":[{"stat":"ATK","value":5},{"stat":"CR","value":5},{"stat":"DV","value":-8}],"setBonus4pc":"+8 ATK, +7% CR, +10% CV, -5% DR, -18 DV","setBonus4pcStats":[{"stat":"ATK","value":8},{"stat":"CR","value":7},{"stat":"CV","value":10},{"stat":"DR","value":-5},{"stat":"DV","value":-18}],"pieces":{"flower":{"name":"Exile's Flower","icon":"Exile_Flower.png","stats":{"ATK":{"min":4,"max":7},"CR":{"min":3,"max":5},"DV":{"min":-6,"max":-3}}},"plume":{"name":"Exile's Feather","icon":"Exile_Plume.webp","stats":{"ATK":{"min":4,"max":8},"CV":{"min":4,"max":7},"DV":{"min":-5,"max":-2}}},"sands":{"name":"Exile's Pocket Watch","icon":"Exile_Sands.webp","stats":{"ATK":{"min":3,"max":6},"CR":{"min":4,"max":8}}},"goblet":{"name":"Exile's Goblet","icon":"Exile_Goblet.webp","stats":{"ATK":{"min":4,"max":9},"CV":{"min":4,"max":9},"DR":{"min":-5,"max":-2}}},"circlet":{"name":"Exile's Circlet","icon":"Exile_Circlet.webp","stats":{"ATK":{"min":3,"max":5},"CR":{"min":5,"max":9},"DV":{"min":-8,"max":-4}}}}},{"setName":"Martial Artist","worldLevel":3,"crucible":75,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"-10 HP, +4 ATK, +12% CR, +14% CV","setBonus2pcStats":[{"stat":"HP","value":-10},{"stat":"ATK","value":4},{"stat":"CR","value":12},{"stat":"CV","value":14}],"setBonus4pc":"-30 HP, +12 ATK, +18% CR, +34% CV","setBonus4pcStats":[{"stat":"HP","value":-30},{"stat":"ATK","value":12},{"stat":"CR","value":18},{"stat":"CV","value":34}],"pieces":{"flower":{"name":"Martial Artist's Red Flower","icon":"MartArt_Flower.png","stats":{"HP":{"min":-12,"max":-6},"ATK":{"min":2,"max":4},"CR":{"min":7,"max":12},"CV":{"min":5,"max":10}}},"plume":{"name":"Martial Artist's Feather","icon":"MartArt_Plume.webp","stats":{"HP":{"min":-18,"max":-10},"CV":{"min":12,"max":18}}},"sands":{"name":"Martial Artist's Water Hourglass","icon":"MartArt_Sands.webp","stats":{"HP":{"min":-10,"max":-4},"CR":{"min":6,"max":10},"CV":{"min":8,"max":14}}},"goblet":{"name":"Martial Artist's Wine Cup","icon":"MartArt_Goblet.webp","stats":{"HP":{"min":-22,"max":-14},"ATK":{"min":2,"max":5},"CV":{"min":14,"max":20}}},"circlet":{"name":"Martial Artist's Bandana","icon":"MartArt_Circlet.webp","stats":{"HP":{"min":-16,"max":-8},"CR":{"min":10,"max":16}}}}},{"setName":"Wanderer's Troupe","worldLevel":3,"crucible":100,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+25 HP","setBonus2pcStats":[{"stat":"HP","value":25}],"setBonus4pc":"+50 HP, +10% CR, +12% CV","setBonus4pcStats":[{"stat":"HP","value":50},{"stat":"CR","value":10},{"stat":"CV","value":12}],"pieces":{"flower":{"name":"Troupe's Dawnlight","icon":"WT_Flower.webp","stats":{"HP":{"min":30,"max":42},"CR":{"min":3,"max":6}}},"plume":{"name":"Bard's Arrow Feather","icon":"WT_Plume.webp","stats":{"HP":{"min":26,"max":38},"ATK":{"min":3,"max":6}}},"sands":{"name":"Concert's Final Hour","icon":"WT_Sands.webp","stats":{"HP":{"min":28,"max":40},"CV":{"min":6,"max":12}}},"goblet":{"name":"Wanderer's String-Kettle","icon":"WT_Goblet.webp","stats":{"HP":{"min":30,"max":44},"CV":{"min":8,"max":14}}},"circlet":{"name":"Conductor's Top Hat","icon":"WT_Circlet.webp","stats":{"HP":{"min":24,"max":36},"CR":{"min":8,"max":14}}}}},{"setName":"Gladiator's Finale","worldLevel":3,"crucible":100,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+8 ATK","setBonus2pcStats":[{"stat":"ATK","value":8}],"setBonus4pc":"+12 ATK, +10% CR, +12% CV","setBonus4pcStats":[{"stat":"ATK","value":12},{"stat":"CR","value":10},{"stat":"CV","value":12}],"pieces":{"flower":{"name":"Gladiator's Nostalgia","icon":"Gladiator_Flower.webp","stats":{"ATK":{"min":8,"max":14},"CR":{"min":3,"max":6}}},"plume":{"name":"Gladiator's Destiny","icon":"Gladiator_Plume.webp","stats":{"ATK":{"min":10,"max":16},"CV":{"min":6,"max":10}}},"sands":{"name":"Gladiator's Longing","icon":"Gladiator_Sands.webp","stats":{"ATK":{"min":6,"max":12},"CR":{"min":6,"max":10}}},"goblet":{"name":"Gladiator's Intoxication","icon":"Gladiator_Goblet.webp","stats":{"ATK":{"min":12,"max":18},"CV":{"min":8,"max":14}}},"circlet":{"name":"Gladiator's Triumphus","icon":"Gladiator_Circlet.webp","stats":{"ATK":{"min":6,"max":10},"CR":{"min":10,"max":16}}}}},{"setName":"Noblesse Oblige","worldLevel":4,"crucible":100,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+9 ATK, +14 DV, +3% Dodge","setBonus2pcStats":[{"stat":"ATK","value":9},{"stat":"DV","value":14},{"stat":"Dodge","value":3}],"setBonus4pc":"+15 ATK, +26 DV, +6% Dodge","setBonus4pcStats":[{"stat":"ATK","value":15},{"stat":"DV","value":26},{"stat":"Dodge","value":6}],"pieces":{"flower":{"name":"Royal Flora","icon":"Noblesse_Flower.webp","stats":{"ATK":{"min":8,"max":14},"DV":{"min":8,"max":14},"Dodge":{"min":1,"max":2}}},"plume":{"name":"Royal Plume","icon":"Noblesse_Plume.webp","stats":{"ATK":{"min":12,"max":18},"DV":{"min":5,"max":10},"Dodge":{"min":1,"max":2}}},"sands":{"name":"Royal Pocket Watch","icon":"Noblesse_Sands.webp","stats":{"ATK":{"min":6,"max":12},"DV":{"min":10,"max":15},"Dodge":{"min":1,"max":2}}},"goblet":{"name":"Royal Silver Urn","icon":"Noblesse_Goblet.webp","stats":{"ATK":{"min":10,"max":16},"DV":{"min":12,"max":18},"Dodge":{"min":1,"max":2}}},"circlet":{"name":"Royal Masque","icon":"Noblesse_Circlet.webp","stats":{"ATK":{"min":6,"max":12},"DV":{"min":8,"max":14},"Dodge":{"min":1,"max":2}}}}},{"setName":"Crimson Witch of Flames","worldLevel":4,"crucible":100,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+13% CR, +13% CV","setBonus2pcStats":[{"stat":"CR","value":13},{"stat":"CV","value":13}],"setBonus4pc":"+6 ATK, +20% CR, +29% CV","setBonus4pcStats":[{"stat":"CR","value":20},{"stat":"CV","value":29},{"stat":"ATK","value":6}],"pieces":{"flower":{"name":"Witch's Flower of Blaze","icon":"Witch_Flower.webp","stats":{"ATK":{"min":6,"max":12},"CR":{"min":6,"max":10},"CV":{"min":8,"max":14}}},"plume":{"name":"Witch's Ever-Burning Plume","icon":"Witch_Plume.webp","stats":{"CR":{"min":10,"max":16},"CV":{"min":16,"max":22}}},"sands":{"name":"Witch's End Time","icon":"Witch_Sands.webp","stats":{"ATK":{"min":4,"max":8},"CR":{"min":8,"max":14},"CV":{"min":12,"max":18}}},"goblet":{"name":"Witch's Heart of Flames","icon":"Witch_Goblet.webp","stats":{"ATK":{"min":10,"max":16},"CR":{"min":5,"max":9},"CV":{"min":12,"max":18}}},"circlet":{"name":"Witch's Scorching Hat","icon":"Witch_Circlet.webp","stats":{"CR":{"min":12,"max":18},"CV":{"min":14,"max":20}}}}},{"setName":"Bloodstained Chivalry","worldLevel":5,"crucible":125,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+28% CV","setBonus2pcStats":[{"stat":"CV","value":28}],"setBonus4pc":"+60% CV","setBonus4pcStats":[{"stat":"CV","value":60}],"pieces":{"flower":{"name":"Bloodstained Flower of Iron","icon":"Bloodstained_Flower.webp","stats":{"ATK":{"min":16,"max":24},"DV":{"min":-14,"max":-8}}},"plume":{"name":"Bloodstained Black Plume","icon":"Bloodstained_Plume.webp","stats":{"ATK":{"min":20,"max":28},"DR":{"min":-10,"max":-6}}},"sands":{"name":"Bloodstained Final Hour","icon":"Bloodstained_Sands.webp","stats":{"ATK":{"min":14,"max":22},"DV":{"min":-16,"max":-10}}},"goblet":{"name":"Bloodstained Chevalier's Goblet","icon":"Bloodstained_Goblet.webp","stats":{"ATK":{"min":22,"max":30},"DR":{"min":-12,"max":-6},"DV":{"min":-12,"max":-6}}},"circlet":{"name":"Bloodstained Iron Mask","icon":"Bloodstained_Circlet.webp","stats":{"ATK":{"min":16,"max":24},"DR":{"min":-10,"max":-6}}}}},{"setName":"Maiden Beloved","worldLevel":5,"crucible":125,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"-25 ATK","setBonus2pcStats":[{"stat":"ATK","value":-25}],"setBonus4pc":"-55 ATK","setBonus4pcStats":[{"stat":"ATK","value":-55}],"pieces":{"flower":{"name":"Maiden's Distant Love","icon":"Maiden_Flower.png","stats":{"HP":{"min":185,"max":225}}},"plume":{"name":"Maiden's Heart-stricken Infatuation","icon":"Maiden_Plume.webp","stats":{"HP":{"min":175,"max":215}}},"sands":{"name":"Maiden's Passing Youth","icon":"Maiden_Sands.webp","stats":{"HP":{"min":180,"max":220}}},"goblet":{"name":"Maiden's Fleeting Leisure","icon":"Maiden_Goblet.webp","stats":{"HP":{"min":190,"max":230}}},"circlet":{"name":"Maiden's Fading Beauty","icon":"Maiden_Circlet.webp","stats":{"HP":{"min":170,"max":210}}}}},{"setName":"Blizzard Strayer","worldLevel":5,"crucible":125,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+8% Dodge","setBonus2pcStats":[{"stat":"Dodge","value":8}],"setBonus4pc":"+16% Dodge","setBonus4pcStats":[{"stat":"Dodge","value":16}],"pieces":{"flower":{"name":"Snowswept Memory","icon":"Blizzard_Flower.webp","stats":{"Dodge":{"min":2,"max":4}}},"plume":{"name":"Icebreaker's Resolve","icon":"Blizzard_Plume.webp","stats":{"Dodge":{"min":2,"max":4}}},"sands":{"name":"Frozen Homeland's Demise","icon":"Blizzard_Sands.webp","stats":{"Dodge":{"min":2,"max":4}}},"goblet":{"name":"Frost-Weaved Dignity","icon":"Blizzard_Goblet.webp","stats":{"Dodge":{"min":2,"max":4}}},"circlet":{"name":"Broken Rime's Echo","icon":"Blizzard_Circlet.webp","stats":{"Dodge":{"min":10,"max":20}}}}},{"setName":"Pale Flame","worldLevel":6,"crucible":150,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+50 ATK, -8% CR, -10% CV","setBonus2pcStats":[{"stat":"ATK","value":50},{"stat":"CR","value":-8},{"stat":"CV","value":-10}],"setBonus4pc":"+110 ATK, -16% CR, -20% CV","setBonus4pcStats":[{"stat":"ATK","value":110},{"stat":"CR","value":-16},{"stat":"CV","value":-20}],"pieces":{"flower":{"name":"Stainless Bloom","icon":"PaleFlame_Flower.webp","stats":{"ATK":{"min":36,"max":54},"CR":{"min":-8,"max":-4}}},"plume":{"name":"Wise Doctor's Pinion","icon":"PaleFlame_Plume.webp","stats":{"ATK":{"min":45,"max":63},"CV":{"min":-14,"max":-8}}},"sands":{"name":"Moment of Cessation","icon":"PaleFlame_Sands.webp","stats":{"ATK":{"min":33,"max":51},"CR":{"min":-10,"max":-5}}},"goblet":{"name":"Surpassing Cup","icon":"PaleFlame_Goblet.webp","stats":{"ATK":{"min":51,"max":69},"CR":{"min":-6,"max":-3},"CV":{"min":-12,"max":-6}}},"circlet":{"name":"Mocking Mask","icon":"PaleFlame_Circlet.webp","stats":{"ATK":{"min":39,"max":57},"CR":{"min":-12,"max":-6}}}}},{"setName":"Viridescent Venerer","worldLevel":6,"crucible":150,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+60 HP, +10% CR, +12% CV","setBonus2pcStats":[{"stat":"HP","value":60},{"stat":"CR","value":10},{"stat":"CV","value":12}],"setBonus4pc":"+120 HP, +18% CR, +28% CV","setBonus4pcStats":[{"stat":"HP","value":120},{"stat":"CR","value":18},{"stat":"CV","value":28}],"pieces":{"flower":{"name":"In Remembrance of Viridescent Fields","icon":"VV_Flower.webp","stats":{"HP":{"min":105,"max":143},"ATK":{"min":3,"max":8},"CR":{"min":8,"max":14}}},"plume":{"name":"Viridescent Arrow Feather","icon":"VV_Plume.webp","stats":{"HP":{"min":98,"max":135},"ATK":{"min":5,"max":9},"CV":{"min":12,"max":20}}},"sands":{"name":"Viridescent Venerer's Determination","icon":"VV_Sands.webp","stats":{"HP":{"min":90,"max":128},"CR":{"min":6,"max":12},"CV":{"min":8,"max":14}}},"goblet":{"name":"Viridescent Venerer's Vessel","icon":"VV_Goblet.webp","stats":{"HP":{"min":113,"max":150},"ATK":{"min":3,"max":6},"CV":{"min":14,"max":22}}},"circlet":{"name":"Viridescent Venerer's Diadem","icon":"VV_Circlet.webp","stats":{"HP":{"min":98,"max":135},"ATK":{"min":3,"max":8},"CR":{"min":12,"max":18}}}}},{"setName":"Archaic Petra","worldLevel":6,"crucible":150,"weights":{"flower":0.5,"plume":0.3,"sands":0.25,"goblet":0.4,"circlet":0.15},"setBonus2pc":"+100 HP, +8% DR, +22 DV","setBonus2pcStats":[{"stat":"HP","value":100},{"stat":"DR","value":8},{"stat":"DV","value":22}],"setBonus4pc":"+210 HP, +14% DR, +45 DV","setBonus4pcStats":[{"stat":"HP","value":210},{"stat":"DR","value":14},{"stat":"DV","value":45}],"pieces":{"flower":{"name":"Flower of Creviced Cliff","icon":"Petra_Flower.webp","stats":{"HP":{"min":180,"max":245},"DV":{"min":14,"max":22}}},"plume":{"name":"Feather of Jagged Peaks","icon":"Petra_Plume.webp","stats":{"HP":{"min":165,"max":230},"DR":{"min":3,"max":7},"DV":{"min":18,"max":28}}},"sands":{"name":"Sundial of Enduring Jade","icon":"Petra_Sands.webp","stats":{"HP":{"min":155,"max":220},"DR":{"min":4,"max":8},"DV":{"min":22,"max":32}}},"goblet":{"name":"Goblet of Chiseled Crag","icon":"Petra_Goblet.webp","stats":{"HP":{"min":195,"max":260},"DV":{"min":20,"max":30}}},"circlet":{"name":"Mask of Solitude Basalt","icon":"Petra_Circlet.webp","stats":{"HP":{"min":165,"max":230},"DR":{"min":5,"max":9},"DV":{"min":12,"max":20}}}}},{"setName":"Tiara of Flame","worldLevel":1,"crucible":100,"pieces":{"circlet":{"name":"Tiara of Flame","icon":"Item_Tiara_of_Flame.webp","stats":{"ATK":{"min":5,"max":15}},"special":{"label":"Chance to avoid Pyro elemental debuffs","min":1,"max":100,"suffix":"%"}}}},{"setName":"Tiara of Frost","worldLevel":1,"crucible":100,"pieces":{"circlet":{"name":"Tiara of Frost","icon":"Item_Tiara_of_Frost.webp","stats":{"ATK":{"min":5,"max":15}},"special":{"label":"Chance to avoid Cryo elemental debuffs","min":1,"max":100,"suffix":"%"}}}},{"setName":"Tiara of Thunder","worldLevel":1,"crucible":100,"pieces":{"circlet":{"name":"Tiara of Thunder","icon":"Item_Tiara_of_Thunder.webp","stats":{"ATK":{"min":5,"max":15}},"special":{"label":"Chance to avoid Electro elemental debuffs","min":1,"max":100,"suffix":"%"}}}},{"setName":"Tiara of Torrents","worldLevel":1,"crucible":100,"pieces":{"circlet":{"name":"Tiara of Torrents","icon":"Item_Tiara_of_Torrents.webp","stats":{"ATK":{"min":5,"max":15}},"special":{"label":"Chance to avoid Hydro elemental debuffs","min":1,"max":100,"suffix":"%"}}}},{"setName":"Tiara of Wind","worldLevel":1,"crucible":100,"pieces":{"circlet":{"name":"Tiara of Wind","icon":"Item_Tiara_of_Wind.png","stats":{"ATK":{"min":5,"max":15}},"special":{"label":"Chance to avoid Anemo elemental debuffs","min":1,"max":100,"suffix":"%"}}}},{"setName":"Thundering Fury","worldLevel":7,"setBonus2pc":"-50 HP, +60 ATK","setBonus2pcStats":[{"stat":"HP","value":-50},{"stat":"ATK","value":60}],"setBonus4pc":"-120 HP, +135 ATK","setBonus4pcStats":[{"stat":"HP","value":-120},{"stat":"ATK","value":135}],"pieces":{"flower":{"name":"Thunderbird's Mercy","icon":"Item_Thunderbird's_Mercy.webp","stats":{"ATK":{"min":180,"max":225},"HP":{"min":-110,"max":-60}}},"plume":{"name":"Survivor of Catastrophe","icon":"Item_Survivor_of_Catastrophe.webp","stats":{"ATK":{"min":190,"max":235},"HP":{"min":-100,"max":-60}}},"goblet":{"name":"Omen of Thunderstorm","icon":"Item_Omen_of_Thunderstorm.webp","stats":{"ATK":{"min":170,"max":220},"HP":{"min":-120,"max":-70}}}}},{"setName":"Shimenawa's Reminiscence","worldLevel":7,"setBonus2pc":"+70 HP, -18 ATK, -8% CR","setBonus2pcStats":[{"stat":"HP","value":70},{"stat":"ATK","value":-18},{"stat":"CR","value":-8}],"setBonus4pc":"+150 HP, -40 ATK, -16% CR, -20% CV","setBonus4pcStats":[{"stat":"HP","value":150},{"stat":"ATK","value":-40},{"stat":"CR","value":-16},{"stat":"CV","value":-20}],"pieces":{"sands":{"name":"Morning Dew's Moment","icon":"Item_Morning_Dew's_Moment.webp","stats":{"HP":{"min":245,"max":325},"ATK":{"min":-35,"max":-20},"CR":{"min":-10,"max":-5}}},"circlet":{"name":"Capricious Visage","icon":"Item_Capricious_Visage.webp","stats":{"HP":{"min":235,"max":315},"ATK":{"min":-40,"max":-20},"CV":{"min":-14,"max":-8}}}}}]</script>
 <script>
 
 const WEAPON_ICON_PATH = '../Textures/Weapons/';
@@ -1272,7 +1318,7 @@ const ARTIFACT_ICON_PATH = '../Textures/Artifacts/';
 const SLOTS = ['flower','plume','sands','goblet','circlet'];
 const SLOT_LABELS = {flower:'Flower', plume:'Plume', sands:'Sands', goblet:'Goblet', circlet:'Circlet'};
 
-const BASE_STATS = { hp:100, atkLow:5, atkHigh:7, cr:0, cv:100, dr:0, dv:0 };
+const BASE_STATS = { hp:100, atkLow:5, atkHigh:7, cr:0, cv:100, dr:0, dv:0, dodge:0 };
 
 // Prefix system: multiplies an item's OWN rolled stats before they're added to totals.
 const PREFIXES = {
@@ -1300,7 +1346,7 @@ const PREFIX_NAMES = Object.keys(PREFIXES);
 // Maps weapon/artifact roll keys to the canonical stat key used in PREFIXES.
 const ROLL_TO_STATKEY = {
   atk:'ATK', atkMin:'ATK', atkMax:'ATK', hp:'HP',
-  critRate:'CR', critValue:'CV', defRate:'DR', defValue:'DV',
+  critRate:'CR', critValue:'CV', defRate:'DR', defValue:'DV', dodge:'Dodge',
   HP:'HP', ATK:'ATK', CR:'CR', CV:'CV', DR:'DR', DV:'DV'
 };
 function prefixFactor(prefixName, statKey){
@@ -1336,22 +1382,40 @@ function makePrefixSelect(currentValue, onChange){
 }
 // Anvil star enhancement multipliers (level 0 = off). Weapons and artifacts scale differently.
 const STAR_MULTS = {
-  weapon:   [1, 1.5, 2, 2.5],
+  weapon:   [1, 1.5, 2.25, 3.375], // 1.5x per star, compounding
   artifact: [1, 1.5, 2, 2.5]
 };
+// Evolve (weapons and artifacts): separate from the Anvil Star, stacks on top of it. 3 levels: 2x / 4x / 8x.
+const EVOLVE_MULTS = [1, 2, 4, 8];
+function evolveGlyph(level){
+  return '✦'.repeat(Math.max(0, Math.min(3, level|0)));
+}
+function evolveMult(level){
+  return EVOLVE_MULTS[Math.max(0, Math.min(3, level|0))];
+}
 function starGlyph(level){
   return '✪'.repeat(Math.max(0, Math.min(3, level|0)));
 }
-function starMult(level, kind){
+function starMult(level, kind, evolve){
   const table = STAR_MULTS[kind] || STAR_MULTS.weapon;
   const lvl = Math.max(0, Math.min(3, level|0));
-  return table[lvl];
+  // Evolve (all weapons and artifacts) multiplies on top of the Anvil Star.
+  return table[lvl] * evolveMult(evolve);
+}
+function weaponTag(starred, evolved){
+  const parts = [];
+  if(starred) parts.push(starGlyph(starred));
+  if(evolved) parts.push(evolveGlyph(evolved));
+  return parts.length ? ' ' + parts.join(' ') : '';
 }
 function makeStarToggle(currentValue, onChange, kind){
-  const table = STAR_MULTS[kind] || STAR_MULTS.weapon;
+  const isEvo = kind === 'evolve';
+  const table = isEvo ? EVOLVE_MULTS : (STAR_MULTS[kind] || STAR_MULTS.weapon);
+  const labelText = isEvo ? 'Evolve' : 'Anvil Star';
+  const glyph = isEvo ? evolveGlyph : starGlyph;
   const level = Math.max(0, Math.min(3, currentValue|0));
   const mode = state.starInputMode || 'click';
-  const stateText = level === 0 ? 'OFF' : `${starGlyph(level)} ON (${table[level]}x)`;
+  const stateText = level === 0 ? 'OFF' : `${glyph(level)} ON (${table[level]}x)`;
 
   if(mode === 'dropdown'){
     const wrap = document.createElement('div');
@@ -1360,7 +1424,7 @@ function makeStarToggle(currentValue, onChange, kind){
     for(let i = 0; i <= 3; i++){
       const opt = document.createElement('option');
       opt.value = String(i);
-      opt.textContent = i === 0 ? 'Anvil Star: OFF' : `Anvil Star: ${starGlyph(i)} (${table[i]}x)`;
+      opt.textContent = i === 0 ? `${labelText}: OFF` : `${labelText}: ${glyph(i)} (${table[i]}x)`;
       if(i === level) opt.selected = true;
       select.appendChild(opt);
     }
@@ -1379,7 +1443,7 @@ function makeStarToggle(currentValue, onChange, kind){
     wrap.className = 'star-stepper' + (level > 0 ? ' is-active' : '');
     const label = document.createElement('span');
     label.className = 'star-stepper-label';
-    label.textContent = 'Anvil Star';
+    label.textContent = labelText;
     const controls = document.createElement('div');
     controls.className = 'star-stepper-controls';
     const minusBtn = document.createElement('button');
@@ -1407,7 +1471,7 @@ function makeStarToggle(currentValue, onChange, kind){
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'star-toggle' + (level > 0 ? ' is-active' : '');
-  btn.innerHTML = `<span>Anvil Star</span><span>${stateText}</span>`;
+  btn.innerHTML = `<span>${labelText}</span><span>${stateText}</span>`;
   btn.addEventListener('click', () => onChange((level + 1) % 4));
   return btn;
 }
@@ -1419,6 +1483,7 @@ let state = {
   weapon: null,        // weapon name
   weaponRolls: {},      // { atk / atkMin / atkMax / hp / critRate / critValue / defRate / defValue : value }
   weaponPrefix: 'None', // prefix applied to the equipped weapon's own rolls
+  weaponEvolved: 0, // evolve level (0-3) — weapons only, 2x/4x/8x, stacks with the anvil star
   weaponStarred: 0, // anvil "star" upgrade level (0/1/2) — ✪ doubles, ✪✪ quadruples the weapon's own rolled stats
   skillChoices: {},    // rootSkillId -> { skillId, level } — the active skill picked per skill-tree
   artifacts: {},        // slot -> { setName, pieceName, rolls: {statKey:value}, specialRoll:value }
@@ -1497,19 +1562,30 @@ function parseRange(str){
 
 function midpoint(range){ return Math.round(((range.min + range.max)/2) * 100) / 100; }
 
+function readEmbeddedJson(id){
+  const el = document.getElementById(id);
+  return el ? JSON.parse(el.textContent) : null;
+}
 async function loadData(){
+  // Weapons and Artifacts are embedded in this file (see the <script type="application/json"> blocks),
+  // so the page works on its own. Skills.json is still optional and read from ../JSON/ when available.
   try{
-    const [wRes, aRes, sRes] = await Promise.all([
-      fetch('../JSON/Weapons.json'), fetch('../JSON/Artifacts.json'), fetch('../JSON/Skills.json')
-    ]);
-    weapons = await wRes.json();
-    artifactSets = await aRes.json();
+    weapons = readEmbeddedJson('embeddedWeaponsData') || [];
+    artifactSets = readEmbeddedJson('embeddedArtifactsData') || [];
+  }catch(e){
+    setStatus('⚠ Could not read the embedded weapon/artifact data.');
+    console.error(e);
+    return;
+  }
+  try{
+    const sRes = await fetch('../JSON/Skills.json');
     const skillsJson = await sRes.json();
     skillsData = (skillsJson && skillsJson.skills) ? skillsJson.skills : {};
     setStatus('Data loaded.');
   }catch(e){
-    setStatus('⚠ Could not load ../JSON/Weapons.json, Artifacts.json, or Skills.json.');
-    console.error(e);
+    skillsData = {};
+    setStatus('Weapons & artifacts loaded. Skills.json not found, so the skills panel is empty.');
+    console.warn(e);
   }
 }
 
@@ -1953,6 +2029,7 @@ function snapshotCurrentBuildData(){
     weaponRolls: {...state.weaponRolls},
     weaponPrefix: state.weaponPrefix,
     weaponStarred: state.weaponStarred,
+    weaponEvolved: state.weaponEvolved|0,
     skillChoices: JSON.parse(JSON.stringify(state.skillChoices || {})),
     artifacts: JSON.parse(JSON.stringify(state.artifacts || {})),
     ar: state.ar,
@@ -1982,6 +2059,7 @@ function loadBuildSlot(id){
   state.weaponRolls = {...d.weaponRolls};
   state.weaponPrefix = d.weaponPrefix || 'None';
   state.weaponStarred = typeof d.weaponStarred === 'number' ? d.weaponStarred : (d.weaponStarred ? 1 : 0);
+  state.weaponEvolved = d.weaponEvolved|0;
   state.skillChoices = JSON.parse(JSON.stringify(d.skillChoices || {}));
   state.artifacts = JSON.parse(JSON.stringify(d.artifacts || {}));
   state.ar = d.ar || 1;
@@ -2243,7 +2321,7 @@ var weaponPickerBtn = null;
 function weaponPickerLabel(){
   if(!state.weapon) return { label: '— Select a weapon —', isPlaceholder:true };
   const w = weapons.find(x => x.name === state.weapon);
-  return { label: w ? `${w.name}${state.weaponStarred ? ' ' + starGlyph(state.weaponStarred) : ''} (WL${w.worldLevel})` : state.weapon };
+  return { label: w ? `${w.name}${weaponTag(state.weaponStarred, state.weaponEvolved)} (WL${w.worldLevel})` : state.weapon };
 }
 function weaponPickerIconInfo(){
   const w = weapons.find(x => x.name === state.weapon);
@@ -2276,6 +2354,7 @@ function openWeaponPicker(){
       state.weaponRolls = {};
       state.weaponPrefix = 'None';
       state.weaponStarred = 0;
+      state.weaponEvolved = 0;
       weaponPickerBtn.refresh();
       renderWeaponSlot();
       renderTotals();
@@ -2307,13 +2386,14 @@ function renderWeaponSlot(){
   head.appendChild(iconImg(w.icon, WEAPON_ICON_PATH, w.name));
   const nameWrap = document.createElement('div');
   nameWrap.className = 'slot-head-name';
-  nameWrap.innerHTML = `<div class="name">${w.name}${state.weaponStarred ? ' ' + starGlyph(state.weaponStarred) : ''}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
+  nameWrap.innerHTML = `<div class="name">${w.name}${weaponTag(state.weaponStarred, state.weaponEvolved)}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
   head.appendChild(nameWrap);
   const removeBtn = makeRemoveButton('weapon', ()=>{
     state.weapon = null;
     state.weaponRolls = {};
     state.weaponPrefix = 'None';
     state.weaponStarred = 0;
+    state.weaponEvolved = 0;
     if(weaponPickerBtn) weaponPickerBtn.refresh();
     renderWeaponSlot();
     renderTotals();
@@ -2334,8 +2414,15 @@ function renderWeaponSlot(){
     renderTotals();
   }, 'weapon'));
 
+  slotDiv.appendChild(makeStarToggle(state.weaponEvolved, (val) => {
+    state.weaponEvolved = val;
+    if(weaponPickerBtn) weaponPickerBtn.refresh();
+    renderWeaponSlot();
+    renderTotals();
+  }, 'evolve'));
+
   // ATK
-  const weaponMult = (rollKey) => prefixFactor(state.weaponPrefix, rollKey) * starMult(state.weaponStarred, 'weapon');
+  const weaponMult = (rollKey) => prefixFactor(state.weaponPrefix, rollKey) * starMult(state.weaponStarred, 'weapon', state.weaponEvolved);
   const effFn = (rollKey) => (v) => {
     const m = weaponMult(rollKey);
     return m !== 1 ? Math.floor(v * m) : null;
@@ -2359,13 +2446,13 @@ function renderWeaponSlot(){
   // Secondary stats
   const secondary = [
     ['hp','HP'], ['critRate','Crit Rate'], ['critValue','Crit Value'],
-    ['defRate','Def Rate'], ['defValue','Def Value']
+    ['defRate','Def Rate'], ['defValue','Def Value'], ['dodge','Dodge']
   ];
   secondary.forEach(([key,label])=>{
     const range = parseRange(w[key]);
     if(range) slotDiv.appendChild(makeSlider(label, key, range, val => {
       state.weaponRolls[key] = val; renderTotals();
-    }, state.weaponRolls[key], key==='critRate'||key==='defRate' ? '%' : '', effFn(key)));
+    }, state.weaponRolls[key], key==='critRate'||key==='defRate'||key==='dodge' ? '%' : '', effFn(key)));
   });
 
   if(w.ability){
@@ -2411,7 +2498,9 @@ function weaponBagChips(item){
   if(rolls.critValue !== undefined) chips.push(`CV ${rolls.critValue}`);
   if(rolls.defRate !== undefined) chips.push(`DR ${rolls.defRate}%`);
   if(rolls.defValue !== undefined) chips.push(`DV ${rolls.defValue}`);
+  if(rolls.dodge !== undefined) chips.push(`Dodge ${rolls.dodge}%`);
   if(item.starred) chips.push(starGlyph(item.starred) + ' Anvil');
+  if(item.evolved) chips.push(evolveGlyph(item.evolved) + ' Evolve');
   return chips;
 }
 
@@ -2433,6 +2522,7 @@ function saveWeaponToBag(){
       rolls: {...state.weaponRolls},
       prefix: state.weaponPrefix || 'None',
       starred: state.weaponStarred|0,
+      evolved: state.weaponEvolved|0,
       favorite: false
     };
     state.weaponBag.push(item);
@@ -2449,6 +2539,7 @@ function equipWeaponFromBag(id){
   state.weaponRolls = {...item.rolls};
   state.weaponPrefix = item.prefix || 'None';
   state.weaponStarred = item.starred|0;
+  state.weaponEvolved = item.evolved|0;
   if(weaponPickerBtn) weaponPickerBtn.refresh();
   renderWeaponSlot();
   renderTotals();
@@ -2489,6 +2580,7 @@ function loadWeaponBagFromStorage(){
   try{
     const raw = localStorage.getItem('buildCalculator.weaponBag');
     state.weaponBag = raw ? JSON.parse(raw) : [];
+    state.weaponBag.forEach(it => { if(it && it.evolved === undefined) it.evolved = 0; });
   }catch(e){
     state.weaponBag = [];
   }
@@ -2696,7 +2788,7 @@ function openArtifactPicker(slot){
       if(!o){
         delete state.artifacts[slot];
       } else {
-        state.artifacts[slot] = { setName: o.setName, pieceName: o.pieceName, icon: o.icon, statsDef: o.stats, special: o.special, weight: o.weight, rolls: {}, specialRoll: undefined, prefix: 'None', starred: 0 };
+        state.artifacts[slot] = { setName: o.setName, pieceName: o.pieceName, icon: o.icon, statsDef: o.stats, special: o.special, weight: o.weight, rolls: {}, specialRoll: undefined, prefix: 'None', starred: 0, evolved: 0 };
       }
       if(artifactPickerBtns[slot]) artifactPickerBtns[slot].refresh();
       renderArtifactSlotDetail(slot, options);
@@ -2743,7 +2835,7 @@ function renderArtifactSlotDetail(slot, options){
     head.appendChild(iconImg(current.icon, ARTIFACT_ICON_PATH, current.pieceName));
     const nameWrap = document.createElement('div');
     nameWrap.className = 'slot-head-name';
-    nameWrap.innerHTML = `<div class="name">${current.pieceName}${current.starred ? ' ' + starGlyph(current.starred) : ''}</div><div class="sub">${current.setName}</div>`;
+    nameWrap.innerHTML = `<div class="name">${current.pieceName}${weaponTag(current.starred, current.evolved)}</div><div class="sub">${current.setName}</div>`;
     head.appendChild(nameWrap);
     const removeBtn = makeRemoveButton(SLOT_LABELS[slot], ()=>{
       delete state.artifacts[slot];
@@ -2766,11 +2858,17 @@ function renderArtifactSlotDetail(slot, options){
       renderTotals();
     }, 'artifact'));
 
+    slotDiv.appendChild(makeStarToggle(current.evolved|0, (val) => {
+      current.evolved = val;
+      renderArtifactSlotDetail(slot, options);
+      renderTotals();
+    }, 'evolve'));
+
     Object.entries(current.statsDef).forEach(([statKey, range]) => {
       slotDiv.appendChild(makeSlider(statLabel(statKey), statKey, range, val => {
         current.rolls[statKey] = val; renderTotals();
-      }, current.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR') ? '%' : '', (v) => {
-        const m = prefixFactor(current.prefix, statKey) * starMult(current.starred, 'artifact');
+      }, current.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR'||statKey==='Dodge') ? '%' : '', (v) => {
+        const m = prefixFactor(current.prefix, statKey) * starMult(current.starred, 'artifact', current.evolved);
         return m !== 1 ? Math.floor(v * m) : null;
       }));
     });
@@ -2807,14 +2905,15 @@ function artifactBagMeta(item){
 
 // Individual stat chips (short labels, kept as separate chips instead of one long line).
 function artifactBagChips(item){
-  const shortLabel = {HP:'HP', ATK:'ATK', CR:'CR', CV:'CV', DR:'DR', DV:'DV'};
+  const shortLabel = {HP:'HP', ATK:'ATK', CR:'CR', CV:'CV', DR:'DR', DV:'DV', Dodge:'Dodge'};
   const chips = Object.entries(item.rolls || {}).map(([k,v]) =>
-    `${shortLabel[k] || statLabel(k)} ${v}${(k==='CR'||k==='CV'||k==='DR') ? '%' : ''}`
+    `${shortLabel[k] || statLabel(k)} ${v}${(k==='CR'||k==='CV'||k==='DR'||k==='Dodge') ? '%' : ''}`
   );
   if(item.special && item.specialRoll !== undefined){
     chips.push(`${item.special.label} ${item.specialRoll}${item.special.suffix || ''}`);
   }
   if(item.starred) chips.push(starGlyph(item.starred) + ' Anvil');
+  if(item.evolved) chips.push(evolveGlyph(item.evolved) + ' Evolve');
   return chips;
 }
 
@@ -2835,6 +2934,7 @@ function saveToBag(slot){
       specialRoll: current.specialRoll,
       prefix: current.prefix || 'None',
       starred: current.starred|0,
+      evolved: current.evolved|0,
       favorite: false
     };
     if(!state.bag[slot]) state.bag[slot] = [];
@@ -2859,7 +2959,8 @@ function equipFromBag(slot, id){
     rolls: {...item.rolls},
     specialRoll: item.specialRoll,
     prefix: item.prefix || 'None',
-    starred: item.starred|0
+    starred: item.starred|0,
+    evolved: item.evolved|0
   };
   const options = options_for(slot);
   if(artifactPickerBtns[slot]) artifactPickerBtns[slot].refresh();
@@ -2941,7 +3042,7 @@ function loadBagFromStorage(){
 }
 
 function statLabel(key){
-  const map = {HP:'HP', ATK:'ATK', CR:'Crit Rate', CV:'Crit Value', DR:'Def Rate', DV:'Def Value'};
+  const map = {HP:'HP', ATK:'ATK', CR:'Crit Rate', CV:'Crit Value', DR:'Def Rate', DV:'Def Value', Dodge:'Dodge'};
   return map[key] || key;
 }
 
@@ -3071,7 +3172,7 @@ function renderTotals(){
 let currentTotals = null;
 function computeAndRenderTotals(){
   const totals = { hp: BASE_STATS.hp, atkLow: BASE_STATS.atkLow, atkHigh: BASE_STATS.atkHigh,
-                    cr: BASE_STATS.cr, cv: BASE_STATS.cv, dr: BASE_STATS.dr, dv: BASE_STATS.dv };
+                    cr: BASE_STATS.cr, cv: BASE_STATS.cv, dr: BASE_STATS.dr, dv: BASE_STATS.dv, dodge: 0 };
 
   // AR contributions — every AR above 1 grants +5 HP and +1 ATK (both ends of the roll).
   const arLevels = Math.max(0, (state.ar || 1) - 1);
@@ -3087,7 +3188,7 @@ function computeAndRenderTotals(){
   // Weapon contributions (prefix multiplies the weapon's own rolls)
   const wr = state.weaponRolls;
   const wPfx = state.weaponPrefix || 'None';
-  const wStar = starMult(state.weaponStarred, 'weapon');
+  const wStar = starMult(state.weaponStarred, 'weapon', state.weaponEvolved);
   if(wr.atk !== undefined){ const v = Math.floor(wr.atk * prefixFactor(wPfx,'atk') * wStar); totals.atkLow += v; totals.atkHigh += v; }
   if(wr.atkMin !== undefined) totals.atkLow += Math.floor(wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar);
   if(wr.atkMax !== undefined) totals.atkHigh += Math.floor(wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar);
@@ -3096,6 +3197,7 @@ function computeAndRenderTotals(){
   if(wr.critValue !== undefined) totals.cv += Math.floor(wr.critValue * prefixFactor(wPfx,'critValue') * wStar);
   if(wr.defRate !== undefined) totals.dr += Math.floor(wr.defRate * prefixFactor(wPfx,'defRate') * wStar);
   if(wr.defValue !== undefined) totals.dv += Math.floor(wr.defValue * prefixFactor(wPfx,'defValue') * wStar);
+  if(wr.dodge !== undefined) totals.dodge += Math.floor(wr.dodge * prefixFactor(wPfx,'dodge') * wStar);
 
   // Artifact piece contributions (prefix multiplies that piece's own rolls)
   const specials = [];
@@ -3103,7 +3205,7 @@ function computeAndRenderTotals(){
     const a = state.artifacts[slot];
     if(!a) return;
     const aPfx = a.prefix || 'None';
-    const aStar = starMult(a.starred, 'artifact');
+    const aStar = starMult(a.starred, 'artifact', a.evolved);
     Object.entries(a.rolls).forEach(([statKey, val]) => {
       if(val === undefined) return;
       addStatToTotals(totals, statKey, Math.floor(val * prefixFactor(aPfx, statKey) * aStar));
@@ -3147,6 +3249,7 @@ function computeAndRenderTotals(){
     <li><span class="stat-name">Crit Value</span><span class="stat-val">${round(totals.cv)}%</span></li>
     <li><span class="stat-name">Def Rate</span><span class="stat-val">${round(totals.dr)}%</span></li>
     <li><span class="stat-name">Def Value</span><span class="stat-val">${round(totals.dv)}</span></li>
+    <li><span class="stat-name">Dodge</span><span class="stat-val">${round(totals.dodge)}%</span></li>
   `;
 
   // Render bonus list
@@ -3184,6 +3287,7 @@ function addStatToTotals(totals, statKey, value){
     case 'CV': totals.cv += value; break;
     case 'DR': totals.dr += value; break;
     case 'DV': totals.dv += value; break;
+    case 'Dodge': totals.dodge = (totals.dodge || 0) + value; break;
   }
 }
 
@@ -3409,7 +3513,7 @@ function buildWeaponBagRow(item, showSlotTag){
   const slotTag = showSlotTag ? '<span class="bag-slot-tag">Weapon</span>' : '';
   return buildBagRow({
     icon: item.icon, iconPath: WEAPON_ICON_PATH, iconAlt: item.weaponName,
-    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.weaponName}${item.starred ? ' ' + starGlyph(item.starred) : ''}`,
+    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.weaponName}${weaponTag(item.starred, item.evolved)}`,
     metaHtml: `${slotTag}${weaponBagMeta(item)}`,
     chips: weaponBagChips(item),
     favorite: !!item.favorite,
@@ -3425,7 +3529,7 @@ function buildArtifactBagRow(slot, item, showSlotTag){
   const slotTag = showSlotTag ? `<span class="bag-slot-tag">${SLOT_LABELS[slot] || slot}</span>` : '';
   return buildBagRow({
     icon: item.icon, iconPath: ARTIFACT_ICON_PATH, iconAlt: item.pieceName,
-    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.pieceName}${item.starred ? ' ' + starGlyph(item.starred) : ''}`,
+    nameHtml: `${item.nickname ? item.nickname + ' — ' : ''}${item.pieceName}${weaponTag(item.starred, item.evolved)}`,
     metaHtml: `${slotTag}${artifactBagMeta(item)}`,
     chips: artifactBagChips(item),
     favorite: !!item.favorite,
@@ -3496,7 +3600,7 @@ function openQuickAddWeaponPicker(){
 }
 
 function startQuickAddWeapon(w){
-  quickAdd = { kind:'weapon', def:w, rolls:{}, prefix:'None', starred:0, nickname:'' };
+  quickAdd = { kind:'weapon', def:w, rolls:{}, prefix:'None', starred:0, evolved:0, nickname:'' };
   renderQuickAddEditor();
   quickAddModal.open();
 }
@@ -3527,7 +3631,7 @@ function openQuickAddArtifactPicker(slot){
 }
 
 function startQuickAddArtifact(slot, o){
-  quickAdd = { kind:'artifact', slot, def:o, rolls:{}, prefix:'None', starred:0, specialRoll:undefined, nickname:'' };
+  quickAdd = { kind:'artifact', slot, def:o, rolls:{}, prefix:'None', starred:0, evolved:0, specialRoll:undefined, nickname:'' };
   renderQuickAddEditor();
   quickAddModal.open();
 }
@@ -3547,7 +3651,7 @@ function renderQuickAddEditor(){
     head.appendChild(iconImg(w.icon, WEAPON_ICON_PATH, w.name));
     const nameWrap = document.createElement('div');
     nameWrap.className = 'slot-head-name';
-    nameWrap.innerHTML = `<div class="name">${w.name}${quickAdd.starred ? ' ' + starGlyph(quickAdd.starred) : ''}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
+    nameWrap.innerHTML = `<div class="name">${w.name}${weaponTag(quickAdd.starred, quickAdd.evolved)}</div><div class="sub">${w.type} · WL${w.worldLevel}</div>`;
     head.appendChild(nameWrap);
     body.appendChild(head);
 
@@ -3559,8 +3663,12 @@ function renderQuickAddEditor(){
       quickAdd.starred = val;
       renderQuickAddEditor();
     }, 'weapon'));
+    body.appendChild(makeStarToggle(quickAdd.evolved|0, (val) => {
+      quickAdd.evolved = val;
+      renderQuickAddEditor();
+    }, 'evolve'));
 
-    const weaponMult = (rollKey) => prefixFactor(quickAdd.prefix, rollKey) * starMult(quickAdd.starred, 'weapon');
+    const weaponMult = (rollKey) => prefixFactor(quickAdd.prefix, rollKey) * starMult(quickAdd.starred, 'weapon', quickAdd.evolved);
     const effFn = (rollKey) => (v) => {
       const m = weaponMult(rollKey);
       return m !== 1 ? Math.floor(v * m) : null;
@@ -3583,13 +3691,13 @@ function renderQuickAddEditor(){
 
     const secondary = [
       ['hp','HP'], ['critRate','Crit Rate'], ['critValue','Crit Value'],
-      ['defRate','Def Rate'], ['defValue','Def Value']
+      ['defRate','Def Rate'], ['defValue','Def Value'], ['dodge','Dodge']
     ];
     secondary.forEach(([key,label])=>{
       const range = parseRange(w[key]);
       if(range) body.appendChild(makeSlider(label, key, range, val => {
         quickAdd.rolls[key] = val;
-      }, quickAdd.rolls[key], key==='critRate'||key==='defRate' ? '%' : '', effFn(key)));
+      }, quickAdd.rolls[key], key==='critRate'||key==='defRate'||key==='dodge' ? '%' : '', effFn(key)));
     });
 
     if(w.ability){
@@ -3622,12 +3730,16 @@ function renderQuickAddEditor(){
       quickAdd.starred = val;
       renderQuickAddEditor();
     }, 'artifact'));
+    body.appendChild(makeStarToggle(quickAdd.evolved|0, (val) => {
+      quickAdd.evolved = val;
+      renderQuickAddEditor();
+    }, 'evolve'));
 
     Object.entries(o.stats).forEach(([statKey, range]) => {
       body.appendChild(makeSlider(statLabel(statKey), statKey, range, val => {
         quickAdd.rolls[statKey] = val;
-      }, quickAdd.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR') ? '%' : '', (v) => {
-        const m = prefixFactor(quickAdd.prefix, statKey) * starMult(quickAdd.starred, 'artifact');
+      }, quickAdd.rolls[statKey], (statKey==='CR'||statKey==='CV'||statKey==='DR'||statKey==='Dodge') ? '%' : '', (v) => {
+        const m = prefixFactor(quickAdd.prefix, statKey) * starMult(quickAdd.starred, 'artifact', quickAdd.evolved);
         return m !== 1 ? Math.floor(v * m) : null;
       }));
     });
@@ -3687,6 +3799,7 @@ function saveQuickAdd(){
       rolls: {...quickAdd.rolls},
       prefix: quickAdd.prefix || 'None',
       starred: quickAdd.starred|0,
+      evolved: quickAdd.evolved|0,
       favorite: false
     };
     state.weaponBag.push(item);
@@ -3707,6 +3820,7 @@ function saveQuickAdd(){
       specialRoll: quickAdd.specialRoll,
       prefix: quickAdd.prefix || 'None',
       starred: quickAdd.starred|0,
+      evolved: quickAdd.evolved|0,
       favorite: false
     };
     if(!state.bag[slot]) state.bag[slot] = [];
@@ -3747,8 +3861,8 @@ function buildBulkPasteIndex(){
 // emoji tags, markdown bold, and bracketed weight notes are stripped first.
 // Maps a substat abbreviation (as it appears in a Discord "( +48 ATK, -8% CR )"
 // style stat block) to the roll key the app uses for it.
-const BULK_PASTE_ARTIFACT_STAT_KEYS = { HP:'HP', ATK:'ATK', CR:'CR', CV:'CV', DR:'DR', DV:'DV' };
-const BULK_PASTE_WEAPON_STAT_KEYS = { HP:'hp', CR:'critRate', CV:'critValue', DR:'defRate', DV:'defValue' };
+const BULK_PASTE_ARTIFACT_STAT_KEYS = { HP:'HP', ATK:'ATK', CR:'CR', CV:'CV', DR:'DR', DV:'DV', DODGE:'Dodge' };
+const BULK_PASTE_WEAPON_STAT_KEYS = { HP:'hp', CR:'critRate', CV:'critValue', DR:'defRate', DV:'defValue', DODGE:'dodge' };
 // Lowercase lookup for the game's Prefix system (see PREFIXES) so a leading
 // word like "Spicy Big Balls" is recognized as the "Spicy" prefix plus a
 // custom nickname, instead of failing to match as an item name.
@@ -4001,6 +4115,134 @@ function applyBulkPasteBag(parsed){
   return { weaponCount, pieceCount };
 }
 
+// ---------- Catalog: browse every weapon / artifact piece and add by selecting ----------
+let catalogModal = null;
+const catalogSel = {}; // key -> quantity
+function catalogEntries(){
+  const out = [];
+  weapons.forEach(w => out.push({ key:'w|' + w.name, cat:'weapon', group:'Weapons', name:w.name, meta:`${w.type} · WL${w.worldLevel}`,
+    wl:w.worldLevel, icon:w.icon, path:WEAPON_ICON_PATH, search:`${w.name} ${w.type}`.toLowerCase(), weapon:w }));
+  SLOTS.forEach(slot => findPieceOptions(slot).forEach(o => out.push({
+    key:`a|${slot}|${o.setName}|${o.pieceName}`, cat:slot, group:SLOT_LABELS[slot] + 's', name:`${o.setName} — ${o.pieceName}`,
+    meta:`WL${o.worldLevel}`, wl:o.worldLevel, icon:o.icon, path:ARTIFACT_ICON_PATH,
+    search:`${o.setName} ${o.pieceName} ${SLOT_LABELS[slot]}`.toLowerCase(), slot, piece:o })));
+  return out;
+}
+function renderCatalog(){
+  const list = document.getElementById('catalogList');
+  const term = document.getElementById('catalogSearch').value.trim().toLowerCase();
+  const cat = document.getElementById('catalogCategory').value;
+  const entries = catalogEntries().filter(e => (!cat || e.cat === cat) && (!term || e.search.includes(term)));
+  list.innerHTML = '';
+  if(!entries.length){
+    list.innerHTML = '<div class="picker-empty">No matches found.</div>';
+  }
+  let lastGroup = null;
+  entries.forEach(e => {
+    if(e.group !== lastGroup){
+      lastGroup = e.group;
+      const g = document.createElement('div');
+      g.className = 'catalog-group';
+      g.textContent = e.group;
+      list.appendChild(g);
+    }
+    const qty = catalogSel[e.key] || 0;
+    const row = document.createElement('div');
+    row.className = 'catalog-item' + (qty ? ' is-selected' : '');
+    const check = document.createElement('div');
+    check.className = 'catalog-check';
+    check.textContent = qty ? '✓' : '';
+    row.appendChild(check);
+    const iconWrap = document.createElement('div');
+    iconWrap.className = 'picker-item-icon';
+    iconWrap.appendChild(iconImg(e.icon, e.path, e.name));
+    row.appendChild(iconWrap);
+    const text = document.createElement('div');
+    text.className = 'picker-item-text';
+    text.innerHTML = '<div class="picker-item-name"></div><div class="picker-item-meta"></div>';
+    text.querySelector('.picker-item-name').textContent = e.name;
+    text.querySelector('.picker-item-meta').textContent = e.meta;
+    row.appendChild(text);
+    if(qty){
+      const q = document.createElement('div');
+      q.className = 'catalog-qty';
+      const minus = document.createElement('button'); minus.type = 'button'; minus.textContent = '−';
+      const num = document.createElement('span'); num.textContent = qty;
+      const plus = document.createElement('button'); plus.type = 'button'; plus.textContent = '+';
+      minus.addEventListener('click', ev => { ev.stopPropagation(); catalogSel[e.key] = qty - 1; if(catalogSel[e.key] <= 0) delete catalogSel[e.key]; renderCatalog(); });
+      plus.addEventListener('click', ev => { ev.stopPropagation(); catalogSel[e.key] = Math.min(99, qty + 1); renderCatalog(); });
+      q.appendChild(minus); q.appendChild(num); q.appendChild(plus);
+      row.appendChild(q);
+    }
+    row.addEventListener('click', () => {
+      if(catalogSel[e.key]) delete catalogSel[e.key]; else catalogSel[e.key] = 1;
+      renderCatalog();
+    });
+    list.appendChild(row);
+  });
+  const total = Object.values(catalogSel).reduce((a,b) => a + b, 0);
+  document.getElementById('catalogCount').textContent = total ? `${total} selected` : 'Tap items to select';
+  document.getElementById('catalogAddBtn').disabled = !total;
+}
+function openCatalog(){
+  const sel = document.getElementById('catalogCategory');
+  if(!sel.options.length){
+    [['', 'All Items'], ['weapon', 'Weapons'], ...SLOTS.map(sl => [sl, SLOT_LABELS[sl] + 's'])].forEach(([v, l]) => {
+      const o = document.createElement('option'); o.value = v; o.textContent = l; sel.appendChild(o);
+    });
+  }
+  // Start on the category matching the active bag tab when there is one.
+  sel.value = (bagUI.tab === 'weapon' || SLOTS.includes(bagUI.tab)) ? bagUI.tab : '';
+  document.getElementById('catalogSearch').value = '';
+  renderCatalog();
+  catalogModal.open();
+}
+function applyCatalogSelection(){
+  const byKey = {};
+  catalogEntries().forEach(e => { byKey[e.key] = e; });
+  let wCount = 0, pCount = 0;
+  Object.entries(catalogSel).forEach(([key, qty]) => {
+    const e = byKey[key];
+    if(!e) return;
+    for(let i = 0; i < qty; i++){
+      if(e.weapon){
+        const w = e.weapon;
+        state.weaponBag.push({
+          id: 'w' + Date.now() + Math.random().toString(36).slice(2, 7),
+          nickname: '', weaponName: w.name, icon: w.icon, type: w.type, worldLevel: w.worldLevel,
+          crucible: w.crucible, weight: w.weight, ability: w.ability, rolls: {}, prefix: 'None', starred: 0, evolved: 0, favorite: false
+        });
+        wCount++;
+      } else {
+        const o = e.piece;
+        if(!state.bag[e.slot]) state.bag[e.slot] = [];
+        state.bag[e.slot].push({
+          id: 'b' + Date.now() + Math.random().toString(36).slice(2, 7),
+          nickname: '', setName: o.setName, pieceName: o.pieceName, icon: o.icon, statsDef: o.stats,
+          special: o.special, weight: o.weight, rolls: {}, specialRoll: undefined, prefix: 'None', starred: 0, favorite: false
+        });
+        pCount++;
+      }
+    }
+  });
+  if(wCount) saveWeaponBagToStorage();
+  if(pCount) saveBagToStorage();
+  Object.keys(catalogSel).forEach(k => delete catalogSel[k]);
+  catalogModal.close();
+  refreshBagUI();
+  setStatus(`Added ${wCount + pCount} item${wCount + pCount === 1 ? '' : 's'} to the bag.`);
+}
+function initCatalogModal(){
+  catalogModal = bindSimpleOverlay('catalogOverlay', 'catalogCloseBtn');
+  document.getElementById('bagCatalogBtn').addEventListener('click', openCatalog);
+  document.getElementById('catalogSearch').addEventListener('input', renderCatalog);
+  document.getElementById('catalogCategory').addEventListener('change', renderCatalog);
+  document.getElementById('catalogClearBtn').addEventListener('click', () => {
+    Object.keys(catalogSel).forEach(k => delete catalogSel[k]); renderCatalog();
+  });
+  document.getElementById('catalogAddBtn').addEventListener('click', applyCatalogSelection);
+}
+
 let bulkPasteModal = null;
 function initBagBulkPaste(){
   bulkPasteModal = bindSimpleOverlay('bulkPasteOverlay', 'bulkPasteCloseBtn');
@@ -4096,6 +4338,7 @@ function loadBuild(){
   if(state.weaponPrefix === undefined) state.weaponPrefix = 'None';
   if(state.weaponStarred === undefined) state.weaponStarred = 0;
   state.weaponStarred = typeof state.weaponStarred === 'number' ? state.weaponStarred : (state.weaponStarred ? 1 : 0);
+  state.weaponEvolved = typeof state.weaponEvolved === 'number' ? Math.max(0, Math.min(3, state.weaponEvolved)) : 0;
   if(state.autosave === undefined) state.autosave = true;
   if(state.showRollQuality === undefined) state.showRollQuality = false;
   if(!['click','dropdown','stepper'].includes(state.starInputMode)) state.starInputMode = 'click';
@@ -4105,10 +4348,10 @@ function loadBuild(){
   delete state.dpsMasteryLearned;
   // Backfill anvil star field on artifacts/bag items saved before the artifact star system existed.
   if(state.artifacts){
-    Object.values(state.artifacts).forEach(a => { if(a && a.starred === undefined) a.starred = 0; });
+    Object.values(state.artifacts).forEach(a => { if(a && a.starred === undefined) a.starred = 0; if(a && a.evolved === undefined) a.evolved = 0; });
   }
   if(state.bag){
-    Object.values(state.bag).forEach(list => (list || []).forEach(item => { if(item.starred === undefined) item.starred = 0; }));
+    Object.values(state.bag).forEach(list => (list || []).forEach(item => { if(item.starred === undefined) item.starred = 0; if(item.evolved === undefined) item.evolved = 0; }));
   }
   if(!state.dpsOptimizeGoal) state.dpsOptimizeGoal = 'dps';
   if(state.dpsOptimizeWeight === undefined) state.dpsOptimizeWeight = 50;
@@ -4125,10 +4368,10 @@ function loadBuild(){
 function resetBuild(){
   const prevGear = {
     weapon: state.weapon, weaponRolls: {...state.weaponRolls}, weaponPrefix: state.weaponPrefix,
-    weaponStarred: state.weaponStarred, skillChoices: JSON.parse(JSON.stringify(state.skillChoices || {})),
+    weaponStarred: state.weaponStarred, weaponEvolved: state.weaponEvolved|0, skillChoices: JSON.parse(JSON.stringify(state.skillChoices || {})),
     artifacts: JSON.parse(JSON.stringify(state.artifacts || {})), ar: state.ar, frostTreeLevel: state.frostTreeLevel
   };
-  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:0, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, showRollQuality: state.showRollQuality, starInputMode: state.starInputMode, bag: state.bag, weaponBag: state.weaponBag };
+  state = { weapon:null, weaponRolls:{}, weaponPrefix:'None', weaponStarred:0, weaponEvolved:0, skillChoices:{}, artifacts:{}, ar:1, frostTreeLevel:0, darkMode: state.darkMode, autosave: state.autosave, showRollQuality: state.showRollQuality, starInputMode: state.starInputMode, bag: state.bag, weaponBag: state.weaponBag };
   if(weaponPickerBtn) weaponPickerBtn.refresh();
   renderWeaponSlot();
   buildArtifactSlots();
@@ -4141,6 +4384,7 @@ function resetBuild(){
     state.weaponRolls = prevGear.weaponRolls;
     state.weaponPrefix = prevGear.weaponPrefix;
     state.weaponStarred = prevGear.weaponStarred;
+    state.weaponEvolved = prevGear.weaponEvolved|0;
     state.skillChoices = prevGear.skillChoices;
     state.artifacts = prevGear.artifacts;
     state.ar = prevGear.ar;
@@ -5072,7 +5316,7 @@ function renderDpsPanel(){
 // ---------- Best-DPS-from-Bag optimizer ----------
 // Pure version of the stat-totals half of computeAndRenderTotals — takes a candidate
 // weapon+artifact loadout instead of reading it off `state`, and does no DOM work.
-function computeTotalsForLoadout(weaponRolls, weaponPrefix, weaponStarred, artifactsObj){
+function computeTotalsForLoadout(weaponRolls, weaponPrefix, weaponStarred, artifactsObj, weaponEvolved){
   const totals = { hp: BASE_STATS.hp, atkLow: BASE_STATS.atkLow, atkHigh: BASE_STATS.atkHigh,
                     cr: BASE_STATS.cr, cv: BASE_STATS.cv, dr: BASE_STATS.dr, dv: BASE_STATS.dv };
 
@@ -5084,7 +5328,7 @@ function computeTotalsForLoadout(weaponRolls, weaponPrefix, weaponStarred, artif
 
   const wr = weaponRolls || {};
   const wPfx = weaponPrefix || 'None';
-  const wStar = starMult(weaponStarred, 'weapon');
+  const wStar = starMult(weaponStarred, 'weapon', weaponEvolved);
   if(wr.atk !== undefined){ const v = Math.floor(wr.atk * prefixFactor(wPfx,'atk') * wStar); totals.atkLow += v; totals.atkHigh += v; }
   if(wr.atkMin !== undefined) totals.atkLow += Math.floor(wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar);
   if(wr.atkMax !== undefined) totals.atkHigh += Math.floor(wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar);
@@ -5098,7 +5342,7 @@ function computeTotalsForLoadout(weaponRolls, weaponPrefix, weaponStarred, artif
     const a = artifactsObj[slot];
     if(!a) return;
     const aPfx = a.prefix || 'None';
-    const aStar = starMult(a.starred, 'artifact');
+    const aStar = starMult(a.starred, 'artifact', a.evolved);
     Object.entries(a.rolls || {}).forEach(([statKey, val]) => {
       if(val === undefined) return;
       addStatToTotals(totals, statKey, Math.floor(val * prefixFactor(aPfx, statKey) * aStar));
@@ -5196,10 +5440,10 @@ function computeDpsForLoadout(weaponName, totals){
 function gatherWeaponCandidates(){
   const list = [];
   if(state.weapon){
-    list.push({ label: 'Equipped', weaponName: state.weapon, rolls: {...state.weaponRolls}, prefix: state.weaponPrefix || 'None', starred: state.weaponStarred|0 });
+    list.push({ label: 'Equipped', weaponName: state.weapon, rolls: {...state.weaponRolls}, prefix: state.weaponPrefix || 'None', starred: state.weaponStarred|0, evolved: state.weaponEvolved|0 });
   }
   (state.weaponBag || []).forEach(item => {
-    list.push({ label: item.nickname || item.weaponName, weaponName: item.weaponName, rolls: {...item.rolls}, prefix: item.prefix || 'None', starred: item.starred|0 });
+    list.push({ label: item.nickname || item.weaponName, weaponName: item.weaponName, rolls: {...item.rolls}, prefix: item.prefix || 'None', starred: item.starred|0, evolved: item.evolved|0 });
   });
   return list;
 }
@@ -5272,7 +5516,7 @@ function precomputeWeaponDelta(wc){
   const delta = { hp:0, atkLow:0, atkHigh:0, cr:0, cv:0, dr:0, dv:0 };
   const wr = wc.rolls || {};
   const wPfx = wc.prefix || 'None';
-  const wStar = starMult(wc.starred, 'weapon');
+  const wStar = starMult(wc.starred, 'weapon', wc.evolved);
   if(wr.atk !== undefined){ const v = Math.floor(wr.atk * prefixFactor(wPfx,'atk') * wStar); delta.atkLow += v; delta.atkHigh += v; }
   if(wr.atkMin !== undefined) delta.atkLow += Math.floor(wr.atkMin * prefixFactor(wPfx,'atkMin') * wStar);
   if(wr.atkMax !== undefined) delta.atkHigh += Math.floor(wr.atkMax * prefixFactor(wPfx,'atkMax') * wStar);
@@ -5291,7 +5535,7 @@ function precomputeArtifactDelta(a){
   if(!a) return null;
   const delta = { hp:0, atkLow:0, atkHigh:0, cr:0, cv:0, dr:0, dv:0 };
   const aPfx = a.prefix || 'None';
-  const aStar = starMult(a.starred, 'artifact');
+  const aStar = starMult(a.starred, 'artifact', a.evolved);
   Object.entries(a.rolls || {}).forEach(([statKey, val]) => {
     if(val === undefined) return;
     addStatToTotals(delta, statKey, Math.floor(val * prefixFactor(aPfx, statKey) * aStar));
@@ -5410,7 +5654,7 @@ function computeSurvivabilityScore(totals){
 // Stat terms for whatever is currently equipped (not a search candidate) — the
 // baseline the 'upgrade' goal compares every combo against.
 function computeCurrentEquippedStatTerms(){
-  const totals = computeTotalsForLoadout(state.weaponRolls, state.weaponPrefix, state.weaponStarred, state.artifacts || {});
+  const totals = computeTotalsForLoadout(state.weaponRolls, state.weaponPrefix, state.weaponStarred, state.artifacts || {}, state.weaponEvolved);
   return statTermsFor(totals);
 }
 
@@ -5666,13 +5910,14 @@ function applyBestDpsBuild(result){
   state.weaponRolls = { ...weapon.rolls };
   state.weaponPrefix = weapon.prefix;
   state.weaponStarred = weapon.starred;
+  state.weaponEvolved = weapon.evolved|0;
   SLOTS.forEach(slot => {
     const a = artifacts[slot];
     if(a){
       state.artifacts[slot] = {
         setName: a.setName, pieceName: a.pieceName, icon: a.icon, statsDef: a.statsDef,
         special: a.special, weight: a.weight, rolls: { ...a.rolls }, specialRoll: a.specialRoll,
-        prefix: a.prefix || 'None', starred: a.starred|0
+        prefix: a.prefix || 'None', starred: a.starred|0, evolved: a.evolved|0
       };
     } else {
       delete state.artifacts[slot];
@@ -5907,6 +6152,7 @@ async function init(){
   initQuickAddModal();
   initBuildsModal();
   initBagBulkPaste();
+  initCatalogModal();
   initArInput();
   initFrostTreeInput();
   await loadData();
