@@ -9,7 +9,6 @@
     "icon": "Item Domain Reliquary - Tier III.webp",
     "category": "misc"
   },
-
   "damaged_mask": {
     "name": "Damaged Mask",
     "icon": "Damaged Mask icon.png",
@@ -198,7 +197,90 @@
     "category": "drops",
     "group": "boss"
   },
-
+  "old_handguard": {
+    "name": "Old Handguard",
+    "icon": "Item Old Handguard.webp",
+    "category": "drops",
+    "tier": 1,
+    "group": "nobushi"
+  },
+  "kageuchi_handguard": {
+    "name": "Kageuchi Handguard",
+    "icon": "Item Kageuchi Handguard.webp",
+    "category": "drops",
+    "tier": 2,
+    "group": "nobushi"
+  },
+  "famed_handguard": {
+    "name": "Famed Handguard",
+    "icon": "Item Famed Handguard.webp",
+    "category": "drops",
+    "tier": 3,
+    "group": "nobushi"
+  },
+  "inactivated_fungal_nucleus": {
+    "name": "Inactivated Fungal Nucleus",
+    "icon": "Item Inactivated Fungal Nucleus.webp",
+    "category": "drops",
+    "tier": 1,
+    "group": "fungus"
+  },
+  "dormant_fungal_nucleus": {
+    "name": "Dormant Fungal Nucleus",
+    "icon": "Item Dormant Fungal Nucleus.webp",
+    "category": "drops",
+    "tier": 2,
+    "group": "fungus"
+  },
+  "robust_fungal_nucleus": {
+    "name": "Robust Fungal Nucleus",
+    "icon": "Item Robust Fungal Nucleus.webp",
+    "category": "drops",
+    "tier": 3,
+    "group": "fungus"
+  },
+  "faded_red_satin": {
+    "name": "Faded Red Satin",
+    "icon": "Item Faded Red Satin.webp",
+    "category": "drops",
+    "tier": 1,
+    "group": "eremite"
+  },
+  "trimmed_red_silk": {
+    "name": "Trimmed Red Silk",
+    "icon": "Item Trimmed Red Silk.webp",
+    "category": "drops",
+    "tier": 2,
+    "group": "eremite"
+  },
+  "rich_red_brocade": {
+    "name": "Rich Red Brocade",
+    "icon": "Item Rich Red Brocade.webp",
+    "category": "drops",
+    "tier": 3,
+    "group": "eremite"
+  },
+  "prithiva_topaz_sliver": {
+    "name": "Prithiva Topaz Sliver",
+    "icon": "Item Prithiva Topaz Sliver.webp",
+    "category": "drops",
+    "tier": 1,
+    "group": "boss"
+  },
+  "prithiva_topaz_fragment": {
+    "name": "Prithiva Topaz Fragment",
+    "icon": "Item Prithiva Topaz Fragment.webp",
+    "category": "drops",
+    "tier": 2,
+    "group": "boss"
+  },
+  "prithiva_topaz_chunk": {
+    "name": "Prithiva Topaz Chunk",
+    "icon": "Item Prithiva Topaz Chunk.webp",
+    "category": "drops",
+    "tier": 3,
+    "group": "boss"
+  },
   "berry": {
     "name": "Berry",
     "icon": "Item Berry.webp",
@@ -217,7 +299,7 @@
   "raw_meat": {
     "name": "Raw Meat",
     "icon": "Item Raw Meat.webp",
-    "category": "misc"
+    "category": "consumables"
   },
   "fowl": {
     "name": "Fowl",
@@ -232,7 +314,7 @@
   "apple": {
     "name": "Apple",
     "icon": "Item Apple.webp",
-    "category": "misc"
+    "category": "consumables"
   },
   "calla_lily": {
     "name": "Calla Lily",
@@ -378,7 +460,16 @@
     "icon": "Item Sugar.webp",
     "category": "misc"
   },
-
+  "almond": {
+    "name": "Almond",
+    "icon": "Item Almond.webp",
+    "category": "misc"
+  },
+  "milk": {
+    "name": "Milk",
+    "icon": "Item Milk.webp",
+    "category": "misc"
+  },
   "whopperflower_nectar": {
     "name": "Whopperflower Nectar",
     "icon": "Item Whopperflower Nectar.webp",
@@ -429,6 +520,21 @@
     "icon": "Item Qingxin.webp",
     "category": "misc"
   },
+  "naku_weed": {
+    "name": "Naku Weed",
+    "icon": "Item Naku Weed.webp",
+    "category": "misc"
+  },
+  "sakura_bloom": {
+    "name": "Sakura Bloom",
+    "icon": "Item Sakura Bloom.webp",
+    "category": "misc"
+  },
+  "kalpalata_lotus": {
+    "name": "Kalpalata Lotus",
+    "icon": "Item Kalpalata Lotus.webp",
+    "category": "misc"
+  },
   "jueyun_chili": {
     "name": "Jueyun Chili",
     "icon": "Item Jueyun Chili.webp",
@@ -439,5 +545,196 @@
     "icon": "Item Cor Lapis.webp",
     "category": "misc",
     "group": "ores"
+  },
+  "amethyst_lump": {
+    "name": "Amethyst Lump",
+    "icon": "Item Amethyst Lump.webp",
+    "category": "misc",
+    "group": "ores"
+  },
+  "electro_sigil": {
+    "name": "Electro Sigil",
+    "icon": "Item Electro Sigil.webp",
+    "category": "misc"
+  },
+  "adeptus_temptation": {
+    "name": "Adeptus' Temptation",
+    "icon": "Foods/Item Adeptus Temptation.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "almond_tofu": {
+    "name": "Almond Tofu",
+    "icon": "Foods/Item Almond Tofu.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "berries_and_fried_meat": {
+    "name": "Berries and Fried Meat",
+    "icon": "Foods/Item Berries and Fried Meat.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "biryani": {
+    "name": "Biryani",
+    "icon": "Foods/Item Biryani.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "borscht": {
+    "name": "Borscht",
+    "icon": "Foods/Item Borscht.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "butter_chicken": {
+    "name": "Butter Chicken",
+    "icon": "Foods/Item Butter Chicken.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "chicken_mushroom_skewer": {
+    "name": "Chicken Mushroom Skewer",
+    "icon": "Foods/Item Chicken-Mushroom Skewer.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "consomme": {
+    "name": "Consommé",
+    "icon": "Foods/Item Consomme.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "mondstadt_grilled_fish": {
+    "name": "Mondstadt Grilled Fish",
+    "icon": "Foods/Item Mondstadt Grilled Fish.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "northern_apple_stew": {
+    "name": "Northern Apple Stew",
+    "icon": "Foods/Item Northern Apple Stew.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "radish_veggie_soup": {
+    "name": "Radish Veggie Soup",
+    "icon": "Foods/Item Radish Veggie Soup.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "steak": {
+    "name": "Steak",
+    "icon": "Foods/Item Steak.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "sticky_honey_roast": {
+    "name": "Sticky Honey Roast",
+    "icon": "Foods/Item Sticky Honey Roast.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "sweet_madame": {
+    "name": "Sweet Madame",
+    "icon": "Foods/Item Sweet Madame.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "tea_break_pancake": {
+    "name": "Tea Break Pancake",
+    "icon": "Foods/Item Tea Break Pancake.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "teyvat_fried_egg": {
+    "name": "Teyvat Fried Egg",
+    "icon": "Foods/Item Teyvat Fried Egg.webp",
+    "category": "consumables",
+    "group": "cookable"
+  },
+  "a_jug_of_wine": {
+    "name": "A Jug of Wine",
+    "icon": "Foods/Item A Jug of Wine.webp",
+    "category": "consumables",
+    "group": "dawn_winery_menu"
+  },
+  "barbatos_ratatouille": {
+    "name": "Barbatos Ratatouille",
+    "icon": "Foods/Item Barbatos Ratatouille.webp",
+    "category": "consumables",
+    "group": "dawn_winery_menu"
+  },
+  "calla_lily_seafood_soup": {
+    "name": "Calla Lily Seafood Soup",
+    "icon": "Foods/Item Calla Lily Seafood Soup.webp",
+    "category": "consumables",
+    "group": "dawn_winery_menu"
+  },
+  "cream_stew": {
+    "name": "Cream Stew",
+    "icon": "Foods/Item Cream Stew.webp",
+    "category": "consumables",
+    "group": "dawn_winery_menu"
+  },
+  "moon_pie": {
+    "name": "Moon Pie",
+    "icon": "Foods/Item Moon Pie.webp",
+    "category": "consumables",
+    "group": "dawn_winery_menu"
+  },
+  "mushroom_pizza": {
+    "name": "Mushroom Pizza",
+    "icon": "Foods/Item Mushroom Pizza.webp",
+    "category": "consumables",
+    "group": "dawn_winery_menu"
+  },
+  "sunset_berry_tea": {
+    "name": "Sunset Berry Tea",
+    "icon": "Foods/Item Sunset Berry Tea.webp",
+    "category": "consumables",
+    "group": "dawn_winery_menu"
+  },
+  "unmoving_essential_oil": {
+    "name": "Unmoving Essential Oil",
+    "icon": "Foods/Item Unmoving Essential Oil.webp",
+    "category": "consumables",
+    "group": "potions"
+  },
+  "gushing_essential_oil": {
+    "name": "Gushing Essential Oil",
+    "icon": "Foods/Item Gushing Essential Oil.webp",
+    "category": "consumables",
+    "group": "potions"
+  },
+  "frosting_essential_oil": {
+    "name": "Frosting Essential Oil",
+    "icon": "Foods/Item Frosting Essential Oil.webp",
+    "category": "consumables",
+    "group": "potions"
+  },
+  "streaming_essential_oil": {
+    "name": "Streaming Essential Oil",
+    "icon": "Foods/Item Streaming Essential Oil.webp",
+    "category": "consumables",
+    "group": "potions"
+  },
+  "flaming_essential_oil": {
+    "name": "Flaming Essential Oil",
+    "icon": "Foods/Item Flaming Essential Oil.webp",
+    "category": "consumables",
+    "group": "potions"
+  },
+  "shocking_essential_oil": {
+    "name": "Shocking Essential Oil",
+    "icon": "Foods/Item Shocking Essential Oil.webp",
+    "category": "consumables",
+    "group": "potions"
+  },
+  "forest_essential_oil": {
+    "name": "Forest Essential Oil",
+    "icon": "Foods/Item Forest Essential Oil.webp",
+    "category": "consumables",
+    "group": "potions"
   }
 }
