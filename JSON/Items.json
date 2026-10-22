@@ -611,12 +611,6 @@
     "category": "consumables",
     "group": "cookable"
   },
-  "northern_apple_stew": {
-    "name": "Northern Apple Stew",
-    "icon": "Foods/Item Northern Apple Stew.webp",
-    "category": "consumables",
-    "group": "cookable"
-  },
   "radish_veggie_soup": {
     "name": "Radish Veggie Soup",
     "icon": "Foods/Item Radish Veggie Soup.webp",
