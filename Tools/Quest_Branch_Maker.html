@@ -803,7 +803,7 @@ s.dialogues.forEach((d,i) => {
 const taId = 'dlg-ta-'+i;
 const block = document.createElement('div');
 block.className = 'dialogue-block';
-block.innerHTML = '<div class="dialogue-header" onclick="toggleDialogue(this.parentElement)"><span class="dialogue-toggle">▶</span><span class="dialogue-speaker">'+( esc(d.speaker)||'Objective')+'</span><span class="dialogue-preview">'+(esc(d.text.split('\n')[0])||'...')+'</span><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px;min-height:0;flex-shrink:0" title="Toggle collapsed in exported game" onclick="event.stopPropagation();toggleDialogueCollapsed('+i+')">'+(d.collapsed?'▼ Dropdown':'— Visible')+'</button><button class="dialogue-del" onclick="removeDialogue(event,'+i+')">✕</button></div>'
+block.innerHTML = '<div class="dialogue-header" onclick="toggleDialogue(this.parentElement)"><span class="dialogue-toggle">▶</span><span class="dialogue-speaker">'+( esc(d.speaker)||'Objective')+'</span><span class="dialogue-preview">'+(esc(d.text.split('\n')[0])||'...')+'</span><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px;min-height:0;flex-shrink:0" title="Toggle collapsed in exported game" onclick="event.stopPropagation();toggleDialogueCollapsed('+i+')">'+(d.collapsed?'▼ Dropdown':'— Visible')+'</button>'+objMoveBtns('moveDialogue('+i+',-1)','moveDialogue('+i+',1)',i===0,i===s.dialogues.length-1)+'<button class="dialogue-del" onclick="removeDialogue(event,'+i+')">✕</button></div>'
 +'<div class="dialogue-body">'
 +'<div class="field-group" style="margin-bottom:8px"><label class="field-label">Objective Label</label><input type="text" id="dlg-spk-'+i+'" value="'+esc(d.speaker)+'" placeholder="e.g. Objective, Side Quest..." oninput="updateDialogue('+i+',\'speaker\',this.value)">'+objPresetChipsHTML('dlg-spk-'+i)+'</div>'
 +'<div class="field-group" style="margin-bottom:0"><label class="field-label">Objective text</label><textarea id="'+taId+'" style="min-height:80px" oninput="updateDialogue('+i+',\'text\',this.value)">'+esc(d.text)+'</textarea></div>'
@@ -853,6 +853,7 @@ dlgHtml += '<div class="dialogue-block'+(d._open?' open':'')+'" id="sub-dlg-bloc
 +'<span class="dialogue-speaker">'+(esc(d.speaker)||'Objective')+'</span>'
 +'<span class="dialogue-preview">'+(esc((d.text||'').split('\n')[0])||'...')+'</span>'
 +'<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px;min-height:0;flex-shrink:0" title="Toggle collapsed in exported game" onclick="event.stopPropagation();toggleSubSceneDialogueCollapsed('+i+','+ni+','+di+')">'+(d.collapsed?'▼ Dropdown':'— Visible')+'</button>'
++objMoveBtns('moveSubSceneDialogue('+i+','+ni+','+di+',-1)','moveSubSceneDialogue('+i+','+ni+','+di+',1)',di===0,di===node.dialogues.length-1)
 +'<button class="dialogue-del" onclick="event.stopPropagation();removeSubSceneDialogue('+i+','+ni+','+di+')">✕</button>'
 +'</div>'
 +'<div class="dialogue-body">'
@@ -1146,6 +1147,7 @@ objHtml += '<div class="dialogue-block" id="choice-obj-block-'+i+'-'+oi+'">'
 +'<span class="dialogue-speaker">'+( esc(obj.speaker)||'Objective')+'</span>'
 +'<span class="dialogue-preview">'+(esc(obj.text.split('\n')[0])||'...')+'</span>'
 +'<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px;min-height:0;flex-shrink:0" title="Toggle collapsed in exported game" onclick="event.stopPropagation();toggleChoiceObjCollapsed('+i+','+oi+')">'+(obj.collapsed?'▼ Dropdown':'— Visible')+'</button>'
++objMoveBtns('moveChoiceObjective('+i+','+oi+',-1)','moveChoiceObjective('+i+','+oi+',1)',oi===0,oi===objectives.length-1)
 +'<button class="dialogue-del" onclick="event.stopPropagation();removeChoiceObjective('+i+','+oi+')">✕</button>'
 +'</div>'
 +'<div class="dialogue-body">'
@@ -1280,7 +1282,7 @@ el.value=val;
 el.dispatchEvent(new Event('input',{bubbles:true}));
 }
 function objPresetChipsHTML(inputId){
-const presets=['📌 Objective','📦 Gave','📦 Obtained'];
+const presets=['📌 Objective','📦 Gave','📦 Obtained','📖 Learned a recipe'];
 return '<div class="preset-chip-row">'+presets.map(p=>'<button type="button" class="preset-chip" onclick="setPresetValue(\''+inputId+'\',\''+p+'\')">'+p+'</button>').join('')+'</div>';
 }
 function appendPresetValue(id,val){
@@ -1384,6 +1386,41 @@ refreshPreview();
 }
 function toggleDialogue(block){block.classList.toggle('open')}
 function addDialogue(){scenes[currentSceneId].dialogues.push({speaker:'Objective',text:'',collapsed:false});renderEditor();const b=document.querySelectorAll('.dialogue-block');if(b.length)b[b.length-1].classList.add('open')}
+function objMoveBtns(upCall,downCall,isFirst,isLast){
+const st='font-size:10px;padding:2px 6px;min-height:0;flex-shrink:0';
+return '<button class="btn btn-ghost btn-sm" style="'+st+(isFirst?';opacity:.3;pointer-events:none':'')+'" title="Move up" onclick="event.stopPropagation();'+upCall+'">▲</button>'
++'<button class="btn btn-ghost btn-sm" style="'+st+(isLast?';opacity:.3;pointer-events:none':'')+'" title="Move down" onclick="event.stopPropagation();'+downCall+'">▼</button>';
+}
+function moveDialogue(i,dir){
+const arr=scenes[currentSceneId].dialogues,j=i+dir;
+if(j<0||j>=arr.length)return;
+const open=Array.from(document.querySelectorAll('#dialogue-list > .dialogue-block')).map(b=>b.classList.contains('open'));
+[arr[i],arr[j]]=[arr[j],arr[i]];[open[i],open[j]]=[open[j],open[i]];
+renderEditor();
+document.querySelectorAll('#dialogue-list > .dialogue-block').forEach((b,k)=>{if(open[k])b.classList.add('open');});
+refreshPreview();
+}
+function moveSubSceneDialogue(i,ni,di,dir){
+const sub=scenes[currentSceneId].subScenes[i];
+const node=getSubNodes(sub)[ni];
+if(!node||!node.dialogues)return;
+const j=di+dir;
+if(j<0||j>=node.dialogues.length)return;
+[node.dialogues[di],node.dialogues[j]]=[node.dialogues[j],node.dialogues[di]];
+sub._open=true;
+renderEditor();refreshPreview();
+}
+function moveChoiceObjective(ci,oi,dir){
+const c=scenes[currentSceneId].choices[ci];
+if(!c.objectives)return;
+const j=oi+dir;
+if(j<0||j>=c.objectives.length)return;
+const open=c.objectives.map((_,k)=>{const b=document.getElementById('choice-obj-block-'+ci+'-'+k);return !!(b&&b.classList.contains('open'));});
+[c.objectives[oi],c.objectives[j]]=[c.objectives[j],c.objectives[oi]];[open[oi],open[j]]=[open[j],open[oi]];
+renderChoices();
+open.forEach((o,k)=>{const b=document.getElementById('choice-obj-block-'+ci+'-'+k);if(b&&o)b.classList.add('open');});
+refreshPreview();
+}
 function removeDialogue(e,i){e.stopPropagation();scenes[currentSceneId].dialogues.splice(i,1);renderEditor();refreshPreview()}
 function addChoice(){scenes[currentSceneId].choices.push({label:'',next:'',best:false,responseText:'',objectives:[],itemReq:''});renderChoices()}
 function removeChoice(i){scenes[currentSceneId].choices.splice(i,1);renderChoices();refreshPreview()}
