@@ -3566,29 +3566,34 @@ function qghCfg(){
 let saved={};
 try{saved=JSON.parse(localStorage.getItem(QGH_KEY)||'{}')||{};}catch(e){}
 const det=(typeof qipDetect==='function')?qipDetect():{};
-const c=Object.assign({owner:'dwrpgdc',repo:'DW-RPG-Data',branch:'main',folder:'Quests/Quest JSON'},det,saved);
+const c=Object.assign({owner:'dwrpgdc',repo:'DW-RPG-Data',branch:'main',folder:'Quests/Quest JSON',missingFolder:'Quests/Quests With Missing Data'},det,saved);
 c.folder=String(c.folder||'').replace(/^\/+|\/+$/g,'');
+c.missingFolder=String(c.missingFolder||'').replace(/^\/+|\/+$/g,'');
 return c;
 }
-function qghRaw(c,rel){
-return 'https://raw.githubusercontent.com/'+encodeURIComponent(c.owner)+'/'+encodeURIComponent(c.repo)+'/'+encodeURIComponent(c.branch)+'/'+(c.folder?c.folder.split('/').map(encodeURIComponent).join('/')+'/':'')+rel.split('/').map(encodeURIComponent).join('/');
+function qghRaw(c,rel,folder){
+const f=(folder===undefined?c.folder:folder);
+return 'https://raw.githubusercontent.com/'+encodeURIComponent(c.owner)+'/'+encodeURIComponent(c.repo)+'/'+encodeURIComponent(c.branch)+'/'+(f?f.split('/').map(encodeURIComponent).join('/')+'/':'')+rel.split('/').map(encodeURIComponent).join('/');
 }
 async function qghList(c,force){
-const key='qbm_quest_gh_cache_'+c.owner+'/'+c.repo+'@'+c.branch+':'+c.folder;
+const key='qbm_quest_gh_cache2_'+c.owner+'/'+c.repo+'@'+c.branch+':'+c.folder+'|'+c.missingFolder;
 let cached=null;
 try{cached=JSON.parse(localStorage.getItem(key)||'null');}catch(e){}
-if(!force&&cached&&Date.now()-cached.t<5*60*1000)return cached.files;
+if(!force&&cached&&Date.now()-cached.t<5*60*1000)return cached;
 try{
 const r=await fetch('https://api.github.com/repos/'+encodeURIComponent(c.owner)+'/'+encodeURIComponent(c.repo)+'/git/trees/'+encodeURIComponent(c.branch)+'?recursive=1',{headers:{Accept:'application/vnd.github+json'}});
 if(!r.ok) throw new Error(r.status===403?'GitHub rate limit reached — try again in a bit.':r.status===404?'Repo or branch not found (check the settings; the repo must be public).':'GitHub returned error '+r.status+'.');
 const j=await r.json();
-const pre=c.folder?c.folder+'/':'';
-const files=(j.tree||[]).filter(n=>n.type==='blob'&&n.path.indexOf(pre)===0&&/\.json$/i.test(n.path)).map(n=>n.path.slice(pre.length));
-files.sort((x,y)=>x.localeCompare(y,undefined,{numeric:true,sensitivity:'base'}));
-try{localStorage.setItem(key,JSON.stringify({t:Date.now(),files:files}));}catch(e){}
-return files;
+const lst=function(folder){
+if(!folder)return [];
+const pre=folder+'/';
+return (j.tree||[]).filter(n=>n.type==='blob'&&n.path.indexOf(pre)===0&&/\.json$/i.test(n.path)).map(n=>n.path.slice(pre.length)).sort((x,y)=>x.localeCompare(y,undefined,{numeric:true,sensitivity:'base'}));
+};
+const out={t:Date.now(),files:lst(c.folder),missing:lst(c.missingFolder)};
+try{localStorage.setItem(key,JSON.stringify(out));}catch(e){}
+return out;
 }catch(err){
-if(cached)return cached.files;
+if(cached)return cached;
 if(err&&err.message==='Failed to fetch')throw new Error('Could not reach GitHub — check your connection.');
 throw err;
 }
@@ -3601,26 +3606,41 @@ ov.id='qgh-modal';
 ov.style.cssText='position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.4)';
 ov.innerHTML='<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;max-width:460px;width:100%;max-height:85dvh;display:flex;flex-direction:column;padding:18px 20px 14px;box-shadow:0 8px 32px rgba(0,0,0,.2)">'
 +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><h3 style="font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;flex:1">Load quest from GitHub</h3>'
-+'<button class="btn btn-ghost btn-sm" id="qgh-refresh" title="Re-scan folder">↻</button><button class="btn btn-ghost btn-sm" id="qgh-gear" title="Settings">⚙</button><button class="btn btn-ghost btn-sm" id="qgh-close">✕</button></div>'
++'<button class="btn btn-ghost btn-sm" id="qgh-refresh" title="Re-scan folders">↻</button><button class="btn btn-ghost btn-sm" id="qgh-gear" title="Settings">⚙</button><button class="btn btn-ghost btn-sm" id="qgh-close">✕</button></div>'
++'<div class="qip-tabs" id="qgh-tabs" style="padding:0 0 8px;border-bottom:none"><button type="button" class="qip-tab active" data-tab="files" id="qgh-tab-files">✅ Complete<small></small></button><button type="button" class="qip-tab" data-tab="missing" id="qgh-tab-missing">⚠ Missing Data<small></small></button></div>'
 +'<div class="meta-hint" id="qgh-where" style="margin:0 0 8px;word-break:break-all"></div>'
 +'<div id="qgh-settings" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;margin-bottom:8px">'
 +'<label class="field-label">Owner</label><input type="text" id="qgh-owner"><label class="field-label" style="margin-top:6px">Repo</label><input type="text" id="qgh-repo">'
-+'<label class="field-label" style="margin-top:6px">Branch</label><input type="text" id="qgh-branch"><label class="field-label" style="margin-top:6px">Folder</label><input type="text" id="qgh-folder">'
++'<label class="field-label" style="margin-top:6px">Branch</label><input type="text" id="qgh-branch"><label class="field-label" style="margin-top:6px">Folder (complete quests)</label><input type="text" id="qgh-folder">'
++'<label class="field-label" style="margin-top:6px">Folder (quests with missing data)</label><input type="text" id="qgh-missing">'
 +'<button class="btn btn-gold btn-sm" id="qgh-save" style="margin-top:8px">Save &amp; reload list</button></div>'
 +'<input type="text" id="qgh-q" placeholder="Search quests…" autocomplete="off" style="margin-bottom:6px">'
 +'<label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);margin-bottom:8px;cursor:pointer"><input type="checkbox" id="qgh-old"> Show --Old-- files</label>'
 +'<div id="qgh-list" style="overflow-y:auto;flex:1;min-height:120px"></div></div>';
 document.body.appendChild(ov);
 const $=id=>document.getElementById(id);
-let files=[];
-$('qgh-where').textContent=c.owner+'/'+c.repo+' @ '+c.branch+' › '+c.folder;
-$('qgh-owner').value=c.owner;$('qgh-repo').value=c.repo;$('qgh-branch').value=c.branch;$('qgh-folder').value=c.folder;
+let data={files:[],missing:[]};
+let tab='files';
+function whereText(){
+const n=qghCfg();
+return n.owner+'/'+n.repo+' @ '+n.branch+' › '+(tab==='missing'?(n.missingFolder||'(no folder set — open ⚙)'):n.folder);
+}
+$('qgh-where').textContent=whereText();
+$('qgh-owner').value=c.owner;$('qgh-repo').value=c.repo;$('qgh-branch').value=c.branch;$('qgh-folder').value=c.folder;$('qgh-missing').value=c.missingFolder;
+function setCounts(){
+const showOld=$('qgh-old').checked;
+const vis=a=>a.filter(f=>showOld||f.indexOf('--Old--')<0).length;
+$('qgh-tab-files').querySelector('small').textContent=vis(data.files);
+$('qgh-tab-missing').querySelector('small').textContent=vis(data.missing);
+}
 function render(){
+setCounts();
 const q=$('qgh-q').value.trim().toLowerCase();
 const showOld=$('qgh-old').checked;
-const list=files.filter(f=>(showOld||f.indexOf('--Old--')<0)&&f.toLowerCase().indexOf(q)>=0);
+const cur=tab==='missing'?data.missing:data.files;
+const list=cur.filter(f=>(showOld||f.indexOf('--Old--')<0)&&f.toLowerCase().indexOf(q)>=0);
 const box=$('qgh-list');
-if(!list.length){box.innerHTML='<div style="color:var(--text3);font-size:12px;padding:6px 0">No quest files found.</div>';return;}
+if(!list.length){box.innerHTML='<div style="color:var(--text3);font-size:12px;padding:6px 0">'+(tab==='missing'?'No quests with missing data right now.':'No quest files found.')+'</div>';return;}
 box.innerHTML=list.map(f=>'<button type="button" class="btn btn-ghost btn-sm" data-f="'+esc(f)+'" style="width:100%;justify-content:flex-start;margin-bottom:4px;white-space:normal;text-align:left">'+esc(f.replace(/\.json$/i,''))+'</button>').join('');
 box.querySelectorAll('[data-f]').forEach(function(b){
 b.onclick=async function(){
@@ -3628,7 +3648,7 @@ const f=b.getAttribute('data-f');
 const cc=qghCfg();
 b.disabled=true;
 try{
-const r=await fetch(qghRaw(cc,f));
+const r=await fetch(qghRaw(cc,f,tab==='missing'?cc.missingFolder:cc.folder));
 if(!r.ok) throw new Error('GitHub returned error '+r.status+' for that file.');
 const text=await r.text();
 ov.remove();
@@ -3642,18 +3662,26 @@ toast(err.message==='Failed to fetch'?'Could not reach GitHub':err.message,3500)
 }
 async function load(force){
 $('qgh-list').innerHTML='<div style="color:var(--text3);font-size:12px;padding:6px 0">Loading…</div>';
-try{ files=await qghList(qghCfg(),force); render(); }
+try{ data=await qghList(qghCfg(),force); data.files=data.files||[]; data.missing=data.missing||[]; setCounts(); render(); }
 catch(err){ $('qgh-list').innerHTML='<div style="color:var(--red);font-size:12px;padding:6px 0">'+esc(err.message)+'</div>'; }
 }
+$('qgh-tabs').addEventListener('click',function(e){
+const b=e.target.closest('[data-tab]');
+if(!b)return;
+tab=b.getAttribute('data-tab');
+$('qgh-tab-files').classList.toggle('active',tab==='files');
+$('qgh-tab-missing').classList.toggle('active',tab==='missing');
+$('qgh-where').textContent=whereText();
+render();
+});
 $('qgh-close').onclick=function(){ov.remove();};
 ov.addEventListener('mousedown',function(e){ if(e.target===ov)ov.remove(); });
 $('qgh-refresh').onclick=function(){load(true);};
 $('qgh-gear').onclick=function(){var st=$('qgh-settings');st.style.display=st.style.display==='none'?'block':'none';};
 $('qgh-save').onclick=function(){
 const g=id=>($(id).value||'').trim();
-try{localStorage.setItem(QGH_KEY,JSON.stringify({owner:g('qgh-owner'),repo:g('qgh-repo'),branch:g('qgh-branch')||'main',folder:g('qgh-folder')}));}catch(e){}
-const n=qghCfg();
-$('qgh-where').textContent=n.owner+'/'+n.repo+' @ '+n.branch+' › '+n.folder;
+try{localStorage.setItem(QGH_KEY,JSON.stringify({owner:g('qgh-owner'),repo:g('qgh-repo'),branch:g('qgh-branch')||'main',folder:g('qgh-folder'),missingFolder:g('qgh-missing')}));}catch(e){}
+$('qgh-where').textContent=whereText();
 load(true);
 };
 $('qgh-q').addEventListener('input',render);
