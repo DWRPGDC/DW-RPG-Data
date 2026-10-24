@@ -1,0 +1,3068 @@
+{
+  "meta": {
+    "requirement": "Explore Dawn Winery (40%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Dawn_Winery|Dawn Winery]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "The Load Stone",
+      "text": "''A portable forge leans against Dawn Winery's outer wall. Harness frames hang like stubborn laundry.''\n\n''The smith stops mid-strike. Soot and sweat stripe his forearms.''\n\nCorvin: Traveler. Good. I need someone who does not scare easy.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's wrong?",
+          "next": "What_s_wrong_"
+        },
+        {
+          "label": "You talking to me?",
+          "next": "What_s_wrong_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_s_wrong_": {
+      "id": "What_s_wrong_",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Under this manor sits a Load Stone. Geo crystal. Old temper stock.\n\nCorvin: Slice a shaving, rivet it into a frame, and the pack holds twenty kilograms more without folding.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "So why is it still down there?",
+          "next": "So_why_is_it_still_down_there_"
+        },
+        {
+          "label": "And you can't just buy plates?",
+          "next": "So_why_is_it_still_down_there_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "So_why_is_it_still_down_there_": {
+      "id": "So_why_is_it_still_down_there_",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Because three Geo seals locked it after a cellar collapse. One worker dead. House called it sealed and holy and done.\n\nCorvin: ''tongs jab the dirt'' I call it wasted steel.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You want it opened",
+          "next": "You_want_it_opened"
+        },
+        {
+          "label": "Sounds dangerous",
+          "next": "You_want_it_opened"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_want_it_opened": {
+      "id": "You_want_it_opened",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Help me open it and the first shaving becomes your load plates. Permanent. On your pack.\n\nCorvin: That is the pay. Fair?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Fair. How do we get in?",
+          "next": "Fair__How_do_we_get_in_"
+        },
+        {
+          "label": "What's the catch?",
+          "next": "Fair__How_do_we_get_in_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Fair__How_do_we_get_in_": {
+      "id": "Fair__How_do_we_get_in_",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Two doors. Adelinde holds proper cellar leave. Clean. Slow. Legal.\n\nCorvin: Reed knows a drainage cut from the old accident. Fast. Dirty. He still drinks like he owes the stone blood.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Choose how to open the Load Stone under Dawn Winery",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll ask Adelinde",
+          "next": "I_ll_ask_Adelinde"
+        },
+        {
+          "label": "I'll find Reed",
+          "next": "I_ll_find_Reed"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_ask_Adelinde": {
+      "id": "I_ll_ask_Adelinde",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Good. Tell her I am not stripping the house for scrap. Tell her you will obey wards.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Where is she?",
+          "next": "Where_is_she_"
+        },
+        {
+          "label": "I'll keep it clean",
+          "next": "Where_is_she_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Where_is_she_": {
+      "id": "Where_is_she_",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Manor hall. I will keep the forge hot.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Speak with Adelinde at Dawn Winery about cellar access",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Speak_with_Adelinde",
+          "label": "Do /rpg again and then click on Speak with Adelinde"
+        }
+      ]
+    },
+    "I_ll_find_Reed": {
+      "id": "I_ll_find_Reed",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: ''grimace'' Fine. Reed is the man who lived. He knows the cut better than anyone still breathing.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Lived through what?",
+          "next": "Lived_through_what_"
+        },
+        {
+          "label": "Where do I find him?",
+          "next": "I_ll_find_him"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Lived_through_what_": {
+      "id": "Lived_through_what_",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: The collapse. His partner did not crawl out. Reed did, through the drainage.\n\nCorvin: He will help you. He will also hate himself for knowing how.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll find him",
+          "next": "I_ll_find_him"
+        },
+        {
+          "label": "I'll be careful",
+          "next": "I_ll_find_him"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_find_him": {
+      "id": "I_ll_find_him",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Wolvendom runoff mouth. Look for someone pretending wolves are the problem.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Meet Reed at the drainage mouth in Wolvendom",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Meet_Reed_at_the_Drainage_Mouth",
+          "label": "Go to Wolvendom (Mondstadt), do /rpg and click on Meet Reed at the Drainage Mouth"
+        }
+      ]
+    },
+    "Meet_Reed_at_the_Drainage_Mouth": {
+      "id": "Meet_Reed_at_the_Drainage_Mouth",
+      "type": "scene",
+      "title": "",
+      "text": "''A wet stone pipe mouths the Wolvendom edge. A wiry man kicks mud and watches trees too hard.''\n\nReed: Corvin's runner. Good. Paper doors make me itch.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You know a cut to the vault",
+          "next": "You_know_a_cut_to_the_vault"
+        },
+        {
+          "label": "Show me the drainage",
+          "next": "You_know_a_cut_to_the_vault"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_know_a_cut_to_the_vault": {
+      "id": "You_know_a_cut_to_the_vault",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: I know it because I ran it while someone called my name behind me.\n\nReed: ''flat'' His name was Orrin. Seal work. I left him. The cut got me out. The house locked the stone so nobody else would \"help\" like I did.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "And now you want back in",
+          "next": "And_now_you_want_back_in"
+        },
+        {
+          "label": "Why help Corvin?",
+          "next": "Why_help_Corvin_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "And_now_you_want_back_in": {
+      "id": "And_now_you_want_back_in",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Hilichurls nested in the first bend. Clear them.\n\nReed: Then bring me grit and an offering. Same recipe the house would use, just uglier.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What recipe?",
+          "next": "What_recipe_"
+        },
+        {
+          "label": "Hilichurls first",
+          "next": "Hilichurls_first"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_recipe_": {
+      "id": "What_recipe_",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Twenty Crystal Chunk. Geo grit.\n\nReed: Sixty Silver Raven Insignia, or sixty Black Bronze Horn. Greed or brute force. The seals hate both. We feed them a little so they soften on our schedule.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Then what?",
+          "next": "Then_what_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Then_what_": {
+      "id": "Then_what_",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: I mix a primer. You plant it at Windrise under the oak. Old Geo line thinks someone still worships upstream.\n\nReed: Distracts the seals long enough for a chorus later. Silly. Works. When it worked for cowards, anyway.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Hilichurls first",
+          "next": "Hilichurls_first"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Hilichurls_first": {
+      "id": "Hilichurls_first",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: I stay at the mouth. If you die in there, I get to say I warned you.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Clear the Hilichurls from the drainage cut in Wolvendom",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Clear_the_Drainage_Cut",
+          "label": "Do /rpg again and then click on Clear the Drainage Cut. Defeat 2 [[Hilichurl]]s and 1 [[Hilichurl Berserker]]"
+        }
+      ]
+    },
+    "Why_help_Corvin_": {
+      "id": "Why_help_Corvin_",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Because Corvin will actually forge something useful. And because if those seals open right, maybe Orrin stops shouting in my sleep.\n\nReed: Or he doesn't. Either way, we do this careful.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's the plan?",
+          "next": "And_now_you_want_back_in"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Clear_the_Drainage_Cut": {
+      "id": "Clear_the_Drainage_Cut",
+      "type": "scene",
+      "title": "",
+      "text": "''The cut goes quiet except for drip water. Reed peeks in and nods once.''\n\nReed: Path's clear.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Reed",
+          "label": "Do /rpg again and then click on Talk to Reed"
+        }
+      ]
+    },
+    "Talk_to_Reed": {
+      "id": "Talk_to_Reed",
+      "type": "scene",
+      "title": "",
+      "text": "''The cut goes quiet except for drip water. Reed peeks in and nods once.''\n\nReed: Path's clear.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What do you need?",
+          "next": "What_do_you_need_"
+        },
+        {
+          "label": "Kit next?",
+          "next": "What_do_you_need_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_do_you_need_": {
+      "id": "What_do_you_need_",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Twenty Crystal Chunk. Plus sixty raven marks or sixty bronze horns.\n\nReed: Come back heavy.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I can't carry that much",
+          "next": "I_can_t_carry_that_much"
+        },
+        {
+          "label": "That's a wagon load",
+          "next": "I_can_t_carry_that_much"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_can_t_carry_that_much": {
+      "id": "I_can_t_carry_that_much",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then do not. Four trips. Five crystal, fifteen of one offering. Same paste. Just staggered.\n\nReed: Pick greed or horns. Then walk.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll use Silver Raven Insignia",
+          "next": "Reed_Silver"
+        },
+        {
+          "label": "I'll use Black Bronze Horn",
+          "next": "Reed_Horn"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Still_gathering"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_gathering": {
+      "id": "Still_gathering",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: I am not going anywhere pretty.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring primer kit materials to Reed in four trips",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "I_can_t_carry_that_much",
+          "label": "Do /rpg again and then click on Talk to Reed about the Kit"
+        }
+      ]
+    },
+    "Reed_Silver": {
+      "id": "Reed_Silver",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Four trips. Five crystal, fifteen raven marks. Same paste. Just staggered.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 1 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Reed_Silver_1",
+          "label": "Do /rpg again and then click on Return to Reed"
+        }
+      ]
+    },
+    "Reed_Horn": {
+      "id": "Reed_Horn",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Four trips. Five crystal, fifteen bronze horns. Same paste. Just staggered.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 1 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Reed_Horn_1",
+          "label": "Do /rpg again and then click on Return to Reed"
+        }
+      ]
+    },
+    "Reed_Silver_1": {
+      "id": "Reed_Silver_1",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 1 of 4. Kit?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Silver Raven Insignia",
+          "next": "Reed_Silver_1d",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"
+        },
+        {
+          "label": "Still short",
+          "next": "Reed_short_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_short_1": {
+      "id": "Reed_short_1",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then keep walking. The vault is not getting kinder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 1 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Silver_1d": {
+      "id": "Reed_Silver_1d",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: ''scrapes raven marks into the grit'' Trip 1. Keep them coming.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load.",
+          "next": "Reed_Silver_1dd"
+        },
+        {
+          "label": "Back soon",
+          "next": "Reed_Silver_1dd"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Silver_1dd": {
+      "id": "Reed_Silver_1dd",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 2 of 4. I am still here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 2 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Reed_Silver_1_copy",
+          "label": "Do /rpg again and then click on Return to Reed"
+        }
+      ]
+    },
+    "Reed_Silver_1_copy": {
+      "id": "Reed_Silver_1_copy",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 2 of 4. Kit?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Silver Raven Insignia",
+          "next": "Reed_Silver_1d_copy",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"
+        },
+        {
+          "label": "Still short",
+          "next": "Reed_short_1_copy"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_short_1_copy": {
+      "id": "Reed_short_1_copy",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then keep walking. The vault is not getting kinder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 2 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Silver_1d_copy": {
+      "id": "Reed_Silver_1d_copy",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: ''scrapes raven marks into the grit'' Trip 2. Keep them coming.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load.",
+          "next": "Reed_Silver_1dd_copy"
+        },
+        {
+          "label": "Back soon",
+          "next": "Reed_Silver_1dd_copy"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Silver_1dd_copy": {
+      "id": "Reed_Silver_1dd_copy",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 3 of 4. I am still here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 3 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Reed_Silver_1_copy2",
+          "label": "Do /rpg again and then click on Return to Reed"
+        }
+      ]
+    },
+    "Reed_Silver_1_copy2": {
+      "id": "Reed_Silver_1_copy2",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 3 of 4. Kit?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Silver Raven Insignia",
+          "next": "Reed_Silver_1d_copy2",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"
+        },
+        {
+          "label": "Still short",
+          "next": "Reed_short_1_copy2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_short_1_copy2": {
+      "id": "Reed_short_1_copy2",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then keep walking. The vault is not getting kinder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 3 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Silver_1d_copy2": {
+      "id": "Reed_Silver_1d_copy2",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: ''scrapes raven marks into the grit'' Trip 3. Keep them coming.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load.",
+          "next": "Reed_Silver_1dd_copy2"
+        },
+        {
+          "label": "Back soon",
+          "next": "Reed_Silver_1dd_copy2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Silver_1dd_copy2": {
+      "id": "Reed_Silver_1dd_copy2",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 4 of 4. I am still here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 4 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Reed_Silver_1_copy3",
+          "label": "Do /rpg again and then click on Return to Reed"
+        }
+      ]
+    },
+    "Reed_Silver_1_copy3": {
+      "id": "Reed_Silver_1_copy3",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 4 of 4. Kit?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Silver Raven Insignia",
+          "next": "Reed_Silver_done",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"
+        },
+        {
+          "label": "Still short",
+          "next": "Reed_short_1_copy3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_short_1_copy3": {
+      "id": "Reed_short_1_copy3",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then keep walking. The vault is not getting kinder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 4 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Silver_done": {
+      "id": "Reed_Silver_done",
+      "type": "scene",
+      "title": "",
+      "text": "''Reed mixes the last measure. Raven marks dissolve into crystal grit. The primer hums once.''\n\nReed: Windrise. West root hollow. Plant it. Leave.\n\nReed: After you plant it, three hours soak. Then Windrise again for three hours of smoke. Two waits. Both matter.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Obtained",
+          "text": "1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll plant it",
+          "next": "I_ll_plant_it"
+        },
+        {
+          "label": "Understood",
+          "next": "I_ll_plant_it"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_plant_it": {
+      "id": "I_ll_plant_it",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: If a bard asks, lie badly and walk away.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Place Reed's primed charge under the oak at Windrise",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Place_the_Primed_Charge",
+          "label": "Go to Windrise (Mondstadt), do /rpg and click on Place the Primed Charge"
+        }
+      ]
+    },
+    "Reed_Horn_1": {
+      "id": "Reed_Horn_1",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 1 of 4. Kit?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Black Bronze Horn",
+          "next": "Reed_Horn_1d",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"
+        },
+        {
+          "label": "Still short",
+          "next": "Reed_hshort_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_hshort_1": {
+      "id": "Reed_hshort_1",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then keep walking. The vault is not getting kinder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 1 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Horn_1d": {
+      "id": "Reed_Horn_1d",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: ''scrapes horn powder into the grit'' Trip 1. Keep them coming.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load.",
+          "next": "Reed_Horn_1dd"
+        },
+        {
+          "label": "Back soon",
+          "next": "Reed_Horn_1dd"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Horn_1dd": {
+      "id": "Reed_Horn_1dd",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 2 of 4. I am still here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 2 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Reed_Horn_1_copy",
+          "label": "Do /rpg again and then click on Return to Reed"
+        }
+      ]
+    },
+    "Reed_Horn_1_copy": {
+      "id": "Reed_Horn_1_copy",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 2 of 4. Kit?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Black Bronze Horn",
+          "next": "Reed_Horn_1d_copy",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"
+        },
+        {
+          "label": "Still short",
+          "next": "Reed_hshort_1_copy"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_hshort_1_copy": {
+      "id": "Reed_hshort_1_copy",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then keep walking. The vault is not getting kinder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 2 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Horn_1d_copy": {
+      "id": "Reed_Horn_1d_copy",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: ''scrapes horn powder into the grit'' Trip 2. Keep them coming.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load.",
+          "next": "Reed_Horn_1dd_copy"
+        },
+        {
+          "label": "Back soon",
+          "next": "Reed_Horn_1dd_copy"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Horn_1dd_copy": {
+      "id": "Reed_Horn_1dd_copy",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 3 of 4. I am still here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 3 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Reed_Horn_1_copy2",
+          "label": "Do /rpg again and then click on Return to Reed"
+        }
+      ]
+    },
+    "Reed_Horn_1_copy2": {
+      "id": "Reed_Horn_1_copy2",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 3 of 4. Kit?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Black Bronze Horn",
+          "next": "Reed_Horn_1d_copy2",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"
+        },
+        {
+          "label": "Still short",
+          "next": "Reed_hshort_1_copy"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_hshort_1_copy2": {
+      "id": "Reed_hshort_1_copy2",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then keep walking. The vault is not getting kinder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 3 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Horn_1d_copy2": {
+      "id": "Reed_Horn_1d_copy2",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: ''scrapes horn powder into the grit'' Trip 3. Keep them coming.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load.",
+          "next": "Reed_Horn_1dd_copy2"
+        },
+        {
+          "label": "Back soon",
+          "next": "Reed_Horn_1dd_copy2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Horn_1dd_copy2": {
+      "id": "Reed_Horn_1dd_copy2",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 4 of 4. I am still here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 4 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Reed_Horn_1_copy3",
+          "label": "Do /rpg again and then click on Return to Reed"
+        }
+      ]
+    },
+    "Reed_Horn_1_copy3": {
+      "id": "Reed_Horn_1_copy3",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Trip 4 of 4. Kit?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Black Bronze Horn",
+          "next": "Reed_Horn_done",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"
+        },
+        {
+          "label": "Still short",
+          "next": "Reed_hshort_1_copy3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_hshort_1_copy3": {
+      "id": "Reed_hshort_1_copy3",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Then keep walking. The vault is not getting kinder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 4 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Reed_Horn_done": {
+      "id": "Reed_Horn_done",
+      "type": "scene",
+      "title": "",
+      "text": "''Reed mixes the last measure. Horn powder bites the grit. The primer hums once.''\n\nReed: Windrise. West root hollow. Plant it. Leave.\n\nReed: After you plant it, three hours soak. Then Windrise again for three hours of smoke. Two waits. Both matter.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Obtained",
+          "text": "1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll plant it",
+          "next": "I_ll_plant_it"
+        },
+        {
+          "label": "Understood",
+          "next": "I_ll_plant_it"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Speak_with_Adelinde": {
+      "id": "Speak_with_Adelinde",
+      "type": "scene",
+      "title": "",
+      "text": "''Adelinde meets you with a ledger and a look that already counted your boots.''\n\nAdelinde: Corvin's traveler. He warned me in three sentences.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "We need the Load Stone opened",
+          "next": "We_need_the_Load_Stone_opened"
+        },
+        {
+          "label": "He offered me load plates",
+          "next": "We_need_the_Load_Stone_opened"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "We_need_the_Load_Stone_opened": {
+      "id": "We_need_the_Load_Stone_opened",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: Then we open it as the house. Not as thieves in our own cellar.\n\nAdelinde: The seals were set so greed and panic could not dig again. I will not break them with either.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's the proper way?",
+          "next": "What_s_the_proper_way_"
+        },
+        {
+          "label": "What do you need from me?",
+          "next": "What_s_the_proper_way_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_s_the_proper_way_": {
+      "id": "What_s_the_proper_way_",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: First, clear scavengers off the east service path. They have been sniffing the sealed cellar like dogs at a locked pantry.\n\nAdelinde: Then I give you a Guild request. Stamp in Mondstadt. After that, Springvale salts.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll clear the path",
+          "next": "I_ll_clear_the_path"
+        },
+        {
+          "label": "Why salts?",
+          "next": "why_salts"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_clear_the_path": {
+      "id": "I_ll_clear_the_path",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: East service path. When it is quiet, come back.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Drive Treasure Hoarders off the service path at Dawn Winery",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Clear_the_Service_Path",
+          "label": "Do /rpg again and then click on Clear the Service Path. Defeat 1 [[Treasure Hoarder Crusher]] and 1 [[Treasure Hoarder Marksman]]"
+        }
+      ]
+    },
+    "why_salts": {
+      "id": "why_salts",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: Crystal Chunk is the grit. The seals drink Geo.\n\nAdelinde: Sixty Silver Raven Insignia, or sixty Black Bronze Horn. Stolen greed, or brute force. The ward was built to swallow both. We feed it a measured dose so it softens instead of snaps.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Path first, then",
+          "next": "I_ll_clear_the_path"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Clear_the_Service_Path": {
+      "id": "Clear_the_Service_Path",
+      "type": "scene",
+      "title": "",
+      "text": "''The last Treasure Hoarder drops. Wine air returns to the path.''\n\n''Adelinde is already waiting with a waxed packet.''\n\nAdelinde: Acceptable.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Adelinde",
+          "label": "Do /rpg again and then click on Talk to Adelinde"
+        }
+      ]
+    },
+    "Talk_to_Adelinde": {
+      "id": "Talk_to_Adelinde",
+      "type": "scene",
+      "title": "",
+      "text": "''The last Treasure Hoarder drops. Wine air returns to the path.''\n\n''Adelinde is already waiting with a waxed packet.''\n\nAdelinde: Acceptable.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Is that the Guild request?",
+          "next": "Is_that_the_Guild_request_"
+        },
+        {
+          "label": "What's next?",
+          "next": "Is_that_the_Guild_request_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Is_that_the_Guild_request_": {
+      "id": "Is_that_the_Guild_request_",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: Sealed. Guild desk in Mondstadt. Ask for a stamp under Adelinde of Dawn Winery.\n\nAdelinde: Do not open it. Do not \"improve\" my wording.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Obtained",
+          "text": "1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Mondstadt. Got it",
+          "next": "Mondstadt__Got_it_"
+        },
+        {
+          "label": "And after the stamp?",
+          "next": "And_after_the_stamp_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Mondstadt__Got_it_": {
+      "id": "Mondstadt__Got_it_",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: Go. Look competent. It helps.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver Adelinde's sealed request to the Adventurers' Guild in Mondstadt",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Deliver_Adelinde_s_Request",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Deliver Adelinde's Request"
+        }
+      ]
+    },
+    "And_after_the_stamp_": {
+      "id": "And_after_the_stamp_",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: Springvale well. Twenty Crystal Chunk, plus sixty raven marks or sixty bronze horns.\n\nAdelinde: Mix. Wait. Soften. Cure. Then the vault.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll start at the Guild",
+          "next": "Mondstadt__Got_it_"
+        },
+        {
+          "label": "Remind me why those offerings?",
+          "next": "Remind_me_why_those_offerings_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Remind_me_why_those_offerings_": {
+      "id": "Remind_me_why_those_offerings_",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: Because the seals were written against theft and blunt force. We apologize to them in their own language. Measured. Not panicked.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Guild first",
+          "next": "Mondstadt__Got_it_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Deliver_Adelinde_s_Request": {
+      "id": "Deliver_Adelinde_s_Request",
+      "type": "scene",
+      "title": "",
+      "text": "''The Guild desk smells of wet cloaks and ink.''\n\nClerk: Dawn Winery cellar leave?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Stamp for Adelinde, please",
+          "next": "Stamp_for_Adelinde__please",
+          "itemReq": "Need 1x[img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''"
+        },
+        {
+          "label": "Here. Sealed request",
+          "next": "Stamp_for_Adelinde__please",
+          "itemReq": "Need 1x[img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Stamp_for_Adelinde__please": {
+      "id": "Stamp_for_Adelinde__please",
+      "type": "scene",
+      "title": "",
+      "text": "Clerk: ''stamp'' Outer ward softening authorized.\n\nClerk: Try not to die under somebody else's wine.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Springvale next",
+          "next": "Springvale_next_"
+        },
+        {
+          "label": "That was fast",
+          "next": "Springvale_next_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Springvale_next_": {
+      "id": "Springvale_next_",
+      "type": "scene",
+      "title": "",
+      "text": "''Adelinde's list is simple now: twenty Crystal Chunk, and either sixty Silver Raven Insignia or sixty Black Bronze Horn, at the Springvale well.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring ward salt materials to Springvale in four trips",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_at_the_Springvale_Well",
+          "label": "Go to Springvale (Mondstadt), do /rpg and click on Talk at the Springvale Well"
+        }
+      ]
+    },
+    "Talk_at_the_Springvale_Well": {
+      "id": "Talk_at_the_Springvale_Well",
+      "type": "scene",
+      "title": "",
+      "text": "''Chalk circles ring an old basin by the Springvale well. A strip of paper names the grit and the two allowed offerings. Twenty crystal. Sixty of one.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I can't carry this much",
+          "next": "I_can_t_carry_this_much_"
+        },
+        {
+          "label": "That's more than my pack holds",
+          "next": "I_can_t_carry_this_much_"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Still_gatheringajaja"
+        },
+        {
+          "label": "Why either of those?",
+          "next": "Why_either_of_those_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Why_either_of_those_": {
+      "id": "Why_either_of_those_",
+      "type": "scene",
+      "title": "",
+      "text": "''Adelinde's note, smaller hand:'' Crystal feeds Geo. Raven marks are greed the ward already knows. Bronze horns are force it already fears. Either completes the salt. Not both. Not less.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Back to the basin",
+          "next": "Talk_at_the_Springvale_Well"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Still_gatheringajaja"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_gatheringajaja": {
+      "id": "Still_gatheringajaja",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. The Load Stone will not forever.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring ward salt materials to Springvale in four trips",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_can_t_carry_this_much_": {
+      "id": "I_can_t_carry_this_much_",
+      "type": "scene",
+      "title": "",
+      "text": "''Adelinde's note, cramped in the margin:'' You will not carry that in one trip. Nobody does.\n\n''Four trips. Five Crystal Chunk and fifteen of one offering each time. Mix as you go. Same salt. Just staggered.''\n\n''Choose raven greed or bronze force. Then start walking.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll use Silver Raven Insignia",
+          "next": "I_ll_use_Silver_Raven_Insignia_ade"
+        },
+        {
+          "label": "I'll use Black Bronze Horn",
+          "next": "I_ll_use_Black_Bronze_Horn_ade"
+        },
+        {
+          "label": "Still gathering materials",
+          "next": "Still_gatheringajaja"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_use_Silver_Raven_Insignia_ade": {
+      "id": "I_ll_use_Silver_Raven_Insignia_ade",
+      "type": "scene",
+      "title": "",
+      "text": "''Four trips. Five crystal and fifteen raven marks each time.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 1 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Adelinde_TripSilv_1",
+          "label": "Do /rpg again and then click on Return to the Springvale Well"
+        }
+      ]
+    },
+    "I_ll_use_Black_Bronze_Horn_ade": {
+      "id": "I_ll_use_Black_Bronze_Horn_ade",
+      "type": "scene",
+      "title": "",
+      "text": "''Four trips. Five crystal and fifteen bronze horns each time.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 1 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Adelinde_TripHorn_1",
+          "label": "Do /rpg again and then click on Return to the Springvale Well"
+        }
+      ]
+    },
+    "Adelinde_TripSilv_1": {
+      "id": "Adelinde_TripSilv_1",
+      "type": "scene",
+      "title": "",
+      "text": "''The basin waits. Chalk marks trip 1 of 4 beside the raven column.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Silver Raven Insignia",
+          "next": "Adelinde_TripSilv_Submit_1",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Adelinde_GatheringSilv_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_GatheringSilv_1": {
+      "id": "Adelinde_GatheringSilv_1",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. Four trips. No shortcuts.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 1 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripSilv_Submit_1": {
+      "id": "Adelinde_TripSilv_Submit_1",
+      "type": "scene",
+      "title": "",
+      "text": "''Crystal grit and raven marks cloud the water. The salt thickens. Trip 1 of 4.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load",
+          "next": "Adelinde_TripSilv_Done_1"
+        },
+        {
+          "label": "Back soon",
+          "next": "Adelinde_TripSilv_Done_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripSilv_Done_1": {
+      "id": "Adelinde_TripSilv_Done_1",
+      "type": "scene",
+      "title": "",
+      "text": "''Trip 2 of 4 waits at the Springvale well.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 2 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Adelinde_TripSilv_2",
+          "label": "Do /rpg again and then click on Return to the Springvale Well"
+        }
+      ]
+    },
+    "Adelinde_TripSilv_2": {
+      "id": "Adelinde_TripSilv_2",
+      "type": "scene",
+      "title": "",
+      "text": "''The basin waits. Chalk marks trip 2 of 4 beside the raven column.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Silver Raven Insignia",
+          "next": "Adelinde_TripSilv_Submit_2",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Adelinde_GatheringSilv_2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_GatheringSilv_2": {
+      "id": "Adelinde_GatheringSilv_2",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. Four trips. No shortcuts.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 2 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripSilv_Submit_2": {
+      "id": "Adelinde_TripSilv_Submit_2",
+      "type": "scene",
+      "title": "",
+      "text": "''Crystal grit and raven marks cloud the water. The salt thickens. Trip 2 of 4.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load",
+          "next": "Adelinde_TripSilv_Done_2"
+        },
+        {
+          "label": "Back soon",
+          "next": "Adelinde_TripSilv_Done_2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripSilv_Done_2": {
+      "id": "Adelinde_TripSilv_Done_2",
+      "type": "scene",
+      "title": "",
+      "text": "''Trip 3 of 4 waits at the Springvale well.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 3 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Adelinde_TripSilv_3",
+          "label": "Do /rpg again and then click on Return to the Springvale Well"
+        }
+      ]
+    },
+    "Adelinde_TripSilv_3": {
+      "id": "Adelinde_TripSilv_3",
+      "type": "scene",
+      "title": "",
+      "text": "''The basin waits. Chalk marks trip 3 of 4 beside the raven column.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Silver Raven Insignia",
+          "next": "Adelinde_TripSilv_Submit_3",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Adelinde_GatheringSilv_3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_GatheringSilv_3": {
+      "id": "Adelinde_GatheringSilv_3",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. Four trips. No shortcuts.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 3 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripSilv_Submit_3": {
+      "id": "Adelinde_TripSilv_Submit_3",
+      "type": "scene",
+      "title": "",
+      "text": "''Crystal grit and raven marks cloud the water. The salt thickens. Trip 3 of 4.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load",
+          "next": "Adelinde_TripSilv_Done_3"
+        },
+        {
+          "label": "Back soon",
+          "next": "Adelinde_TripSilv_Done_3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripSilv_Done_3": {
+      "id": "Adelinde_TripSilv_Done_3",
+      "type": "scene",
+      "title": "",
+      "text": "''Trip 4 of 4 waits at the Springvale well.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 4 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Adelinde_TripSilv_4",
+          "label": "Do /rpg again and then click on Return to the Springvale Well"
+        }
+      ]
+    },
+    "Adelinde_TripSilv_4": {
+      "id": "Adelinde_TripSilv_4",
+      "type": "scene",
+      "title": "",
+      "text": "''The basin waits. Chalk marks trip 4 of 4 beside the raven column.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Silver Raven Insignia",
+          "next": "Adelinde_Silv_Done",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Adelinde_GatheringSilv_4"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_GatheringSilv_4": {
+      "id": "Adelinde_GatheringSilv_4",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. Four trips. No shortcuts.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 4 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_Silv_Done": {
+      "id": "Adelinde_Silv_Done",
+      "type": "scene",
+      "title": "",
+      "text": "''The last grit settles. Pale salt fills the jar.''\n\n''Note: Return to Adelinde at Dawn Winery in three hours. Softening has a clock. First wait softens the outer ward. Second cures the salts. Skip either, dig a grave.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Back to the winery",
+          "next": "Back_to_the_winery"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Back_to_the_winery": {
+      "id": "Back_to_the_winery",
+      "type": "scene",
+      "title": "",
+      "text": "''The jar on the basin rim is stoppered. Three hours for softening. No sooner.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Adelinde at Dawn Winery in 3 hours. The outer ward is softening",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Check_the_Outer_Ward_with_Adelinde",
+          "label": "Wait for 3 hours, and after that go to Dawn Winery (Mondstadt), do /rpg and click on Check the Outer Ward with Adelinde"
+        }
+      ]
+    },
+    "Adelinde_TripHorn_1": {
+      "id": "Adelinde_TripHorn_1",
+      "type": "scene",
+      "title": "",
+      "text": "''The basin waits. Chalk marks trip 1 of 4 beside the horn column.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Black Bronze Horn",
+          "next": "Adelinde_TripHorn_Submit_1",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Adelinde_GatheringHorn_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_GatheringHorn_1": {
+      "id": "Adelinde_GatheringHorn_1",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. Four trips. No shortcuts.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 1 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripHorn_Submit_1": {
+      "id": "Adelinde_TripHorn_Submit_1",
+      "type": "scene",
+      "title": "",
+      "text": "''Crystal grit and bronze horn powder cloud the water. The salt thickens. Trip 1 of 4.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load",
+          "next": "Adelinde_TripHorn_Done_1"
+        },
+        {
+          "label": "Back soon",
+          "next": "Adelinde_TripHorn_Done_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripHorn_Done_1": {
+      "id": "Adelinde_TripHorn_Done_1",
+      "type": "scene",
+      "title": "",
+      "text": "''Trip 2 of 4 waits at the Springvale well.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 2 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Adelinde_TripHorn_2",
+          "label": "Do /rpg again and then click on Return to the Springvale Well"
+        }
+      ]
+    },
+    "Adelinde_TripHorn_2": {
+      "id": "Adelinde_TripHorn_2",
+      "type": "scene",
+      "title": "",
+      "text": "''The basin waits. Chalk marks trip 2 of 4 beside the horn column.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Black Bronze Horn",
+          "next": "Adelinde_TripHorn_Submit_2",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Adelinde_GatheringHorn_2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_GatheringHorn_2": {
+      "id": "Adelinde_GatheringHorn_2",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. Four trips. No shortcuts.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 2 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripHorn_Submit_2": {
+      "id": "Adelinde_TripHorn_Submit_2",
+      "type": "scene",
+      "title": "",
+      "text": "''Crystal grit and bronze horn powder cloud the water. The salt thickens. Trip 2 of 4.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load",
+          "next": "Adelinde_TripHorn_Done_2"
+        },
+        {
+          "label": "Back soon",
+          "next": "Adelinde_TripHorn_Done_2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripHorn_Done_2": {
+      "id": "Adelinde_TripHorn_Done_2",
+      "type": "scene",
+      "title": "",
+      "text": "''Trip 3 of 4 waits at the Springvale well.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 3 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Adelinde_TripHorn_3",
+          "label": "Do /rpg again and then click on Return to the Springvale Well"
+        }
+      ]
+    },
+    "Adelinde_TripHorn_3": {
+      "id": "Adelinde_TripHorn_3",
+      "type": "scene",
+      "title": "",
+      "text": "''The basin waits. Chalk marks trip 3 of 4 beside the horn column.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Black Bronze Horn",
+          "next": "Adelinde_TripHorn_Submit_3",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Adelinde_GatheringHorn_3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_GatheringHorn_3": {
+      "id": "Adelinde_GatheringHorn_3",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. Four trips. No shortcuts.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 3 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripHorn_Submit_3": {
+      "id": "Adelinde_TripHorn_Submit_3",
+      "type": "scene",
+      "title": "",
+      "text": "''Crystal grit and bronze horn powder cloud the water. The salt thickens. Trip 3 of 4.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll bring the next load",
+          "next": "Adelinde_TripHorn_Done_3"
+        },
+        {
+          "label": "Back soon",
+          "next": "Adelinde_TripHorn_Done_3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_TripHorn_Done_3": {
+      "id": "Adelinde_TripHorn_Done_3",
+      "type": "scene",
+      "title": "",
+      "text": "''Trip 4 of 4 waits at the Springvale well.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 4 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Adelinde_TripHorn_4",
+          "label": "Do /rpg again and then click on Return to the Springvale Well"
+        }
+      ]
+    },
+    "Adelinde_TripHorn_4": {
+      "id": "Adelinde_TripHorn_4",
+      "type": "scene",
+      "title": "",
+      "text": "''The basin waits. Chalk marks trip 4 of 4 beside the horn column.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "5 Crystal Chunk and 15 Black Bronze Horn",
+          "next": "Adelinde_Horn_Done",
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Adelinde_GatheringHorn_4"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_GatheringHorn_4": {
+      "id": "Adelinde_GatheringHorn_4",
+      "type": "scene",
+      "title": "",
+      "text": "''The chalk waits. Four trips. No shortcuts.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring trip 4 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Adelinde_Horn_Done": {
+      "id": "Adelinde_Horn_Done",
+      "type": "scene",
+      "title": "",
+      "text": "''The last grit settles. Pale salt fills the jar.''\n\n''Note: Return to Adelinde at Dawn Winery in three hours. Softening has a clock. First wait softens the outer ward. Second cures the salts. Skip either, dig a grave.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Back to the winery",
+          "next": "Back_to_the_winery"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Check_the_Outer_Ward_with_Adelinde": {
+      "id": "Check_the_Outer_Ward_with_Adelinde",
+      "type": "scene",
+      "title": "",
+      "text": "''Adelinde checks a pocket watch.''\n\nAdelinde: Outer ward is soft enough.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Vault now?",
+          "next": "Vault_now_"
+        },
+        {
+          "label": "What about the salts?",
+          "next": "Vault_now_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Vault_now_": {
+      "id": "Vault_now_",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: Not yet. Take the jar back to Springvale. Three more hours to cure.\n\nAdelinde: Soft is not safe. Cured is safe.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll wait it out",
+          "next": "I_ll_wait_it_out_"
+        },
+        {
+          "label": "Springvale again",
+          "next": "I_ll_wait_it_out_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_wait_it_out_": {
+      "id": "I_ll_wait_it_out_",
+      "type": "scene",
+      "title": "",
+      "text": "Adelinde: Do not rush curing. That is how cellars eat people.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to the Springvale well in 3 hours. The ward salts must finish curing",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Check_the_Curing_Salts",
+          "label": "Wait for 3 hours, and after that go to Springvale (Mondstadt), do /rpg and click on Check the Curing Salts"
+        }
+      ]
+    },
+    "Check_the_Curing_Salts": {
+      "id": "Check_the_Curing_Salts",
+      "type": "scene",
+      "title": "",
+      "text": "''At the well the grit has gone pale to amber. Ready.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "To the vault",
+          "next": "To_the_vault"
+        },
+        {
+          "label": "Anything else first?",
+          "next": "Anything_else_first_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "To_the_vault": {
+      "id": "To_the_vault",
+      "type": "scene",
+      "title": "",
+      "text": "''Dawn Winery's cellar stairs breathe cold. Geo light pulses past wreckage and old chalk.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the Geo guardians at the Load Stone vault under Dawn Winery",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Enter_the_Load_Stone_Vault",
+          "label": "Go to Dawn Winery (Mondstadt), do /rpg and click on Enter the Load Stone Vault. Defeat 2 [[Geo Slime]]s and 1 [[Geo Samachurl]]"
+        }
+      ]
+    },
+    "Anything_else_first_": {
+      "id": "Anything_else_first_",
+      "type": "scene",
+      "title": "",
+      "text": "''Adelinde's last scrap:'' Guardians first. Then three Geo seals. Then Corvin takes one shaving. Only one.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "To the vault",
+          "next": "To_the_vault"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Enter_the_Load_Stone_Vault": {
+      "id": "Enter_the_Load_Stone_Vault",
+      "type": "scene",
+      "title": "",
+      "text": "''The Geo guardians crack and go quiet. Three seal pillars wake around the Load Stone.''\n\nCorvin: ''from the stair'' Good.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Corvin",
+          "label": "Do /rpg again and then click on Talk to Corvin"
+        }
+      ]
+    },
+    "Talk_to_Corvin": {
+      "id": "Talk_to_Corvin",
+      "type": "scene",
+      "title": "",
+      "text": "''The Geo guardians crack and go quiet. Three seal pillars wake around the Load Stone.''\n\nCorvin: ''from the stair'' Good.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Now the seals?",
+          "next": "Now_the_seals_"
+        },
+        {
+          "label": "What next?",
+          "next": "Now_the_seals_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Now_the_seals_": {
+      "id": "Now_the_seals_",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Three seals. Three Geo travelers. Same breath. I can hold one. You find two more who are not cowards.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "We'll wake them together",
+          "next": "We_ll_wake_them_together"
+        },
+        {
+          "label": "Why three?",
+          "next": "why_three"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "We_ll_wake_them_together": {
+      "id": "We_ll_wake_them_together",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: When they open, one shaving. Only one. Greed gets people sealed in dirt.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Resonate the three Geo seals at the Load Stone vault with two other travelers",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "triple_geo_seals",
+          "label": "Do /rpg again and then click on Resonate the Geo Seals"
+        }
+      ]
+    },
+    "why_three": {
+      "id": "why_three",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Because panic digging killed Orrin. The lock demands company so nobody opens this alone again.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll gather travelers",
+          "next": "I_ll_gather_travelers"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_gather_travelers": {
+      "id": "I_ll_gather_travelers",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: One shaving. Only one. Reed already paid the price of taking more than the stone allowed.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Resonate the three Geo seals at the Load Stone vault with two other travelers",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "triple_geo_seals",
+          "label": "Do /rpg again and then click on Resonate the Geo Seals"
+        }
+      ]
+    },
+    "triple_geo_seals": {
+      "id": "triple_geo_seals",
+      "type": "scene",
+      "title": "🪨 Triple Geo Seals",
+      "text": "''Three seals. Three Geo marks. They will only wake if three travelers answer together.''\n\nNeed 3 players with [img:../Textures/Elements/Element_Geo.webp]Geo element in Dawn Winery (Mondstadt)\n\nEach player must imbue each seals at the same time (within a ~3-second window of each other). Complete within 1 minute",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Corvin_",
+          "label": "Do /rpg again after successfully imbued Geo to the seals, and then click on Talk to Corvin"
+        }
+      ]
+    },
+    "Talk_to_Corvin_": {
+      "id": "Talk_to_Corvin_",
+      "type": "scene",
+      "title": "",
+      "text": "''Three Geo answers meet. The Load Stone sheds a clean plane of crystal.''\n\nCorvin: ''wrapping it'' Upstairs. Forge. Now.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Forge the plates",
+          "next": "Forge_the_plates"
+        },
+        {
+          "label": "Right behind you",
+          "next": "Forge_the_plates"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Forge_the_plates": {
+      "id": "Forge_the_plates",
+      "type": "scene",
+      "title": "",
+      "text": "Corvin: Outer wall. Same crooked forge.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Corvin at Dawn Winery for the load plates",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Collect_Your_Load_Plates",
+          "label": "Do /rpg again and then click on Collect Your Load Plates"
+        }
+      ]
+    },
+    "Collect_Your_Load_Plates": {
+      "id": "Collect_Your_Load_Plates",
+      "type": "scene",
+      "title": "",
+      "text": "''Heat drinks the shaving. Corvin rivets plates into your frame.''\n\nCorvin: Twenty kilograms more. Permanent.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Thank you",
+          "next": "____The_Load_Stone__Opened_by_Leave"
+        },
+        {
+          "label": "Worth the paperwork",
+          "next": "____The_Load_Stone__Opened_by_Leave"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____The_Load_Stone__Opened_by_Leave": {
+      "id": "____The_Load_Stone__Opened_by_Leave",
+      "type": "ending",
+      "title": "Opened by Leave",
+      "text": "Adelinde: ''from the path, dry'' I approved competence. Do not waste either.\n\nCorvin: ''almost smiling'' Go carry something heavy on purpose.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 250,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 280,
+          "icon": ""
+        },
+        {
+          "item": "Carry Capacity upgraded to 60kg",
+          "qty": 0,
+          "icon": "🎒"
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Place_the_Primed_Charge": {
+      "id": "Place_the_Primed_Charge",
+      "type": "scene",
+      "title": "",
+      "text": "''The Windrise oak holds the sky open. West root hollow. Old Geo dust answers slight pressure.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Place Reed's primed charge",
+          "next": "Place_Reed_s_primed_charge_",
+          "itemReq": "Need 1x[img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''"
+        },
+        {
+          "label": "Not yet",
+          "next": "Not_yet"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Not_yet": {
+      "id": "Not_yet",
+      "type": "scene",
+      "title": "",
+      "text": "''The hollow waits. Reed's timer does not.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Place Reed's primed charge under the oak at Windrise",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Place_Reed_s_primed_charge_": {
+      "id": "Place_Reed_s_primed_charge_",
+      "type": "scene",
+      "title": "",
+      "text": "''The primer sinks and stops humming, which somehow feels louder.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Back to Reed",
+          "next": "Back_to_Reed"
+        },
+        {
+          "label": "Soak time starts now",
+          "next": "Back_to_Reed"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Back_to_Reed": {
+      "id": "Back_to_Reed",
+      "type": "scene",
+      "title": "",
+      "text": "''Somewhere under Mondstadt stone, a Geo line leans the wrong useful way. Three hours.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Reed in Wolvendom in 3 hours. The charge must soak",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Check_the_Charge_Soak_with_Reed",
+          "label": "Wait for 3 hours, and after that go to Wolvendom (Mondstadt), do /rpg and click on Check the Charge Soak with Reed"
+        }
+      ]
+    },
+    "Check_the_Charge_Soak_with_Reed": {
+      "id": "Check_the_Charge_Soak_with_Reed",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Soak's done.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Vault?",
+          "next": "Vault_"
+        },
+        {
+          "label": "What's left?",
+          "next": "Vault_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Vault_": {
+      "id": "Vault_",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: Windrise again. Smoke clears in three hours. After that the vault locks will take a chorus.\n\nReed: ''quieter'' If you get a chance, tell the stone I am sorry. Or don't. I still will be.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll wait out the smoke",
+          "next": "I_ll_wait_out_the_smoke_"
+        },
+        {
+          "label": "I'll tell it",
+          "next": "I_ll_wait_out_the_smoke_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_wait_out_the_smoke_": {
+      "id": "I_ll_wait_out_the_smoke_",
+      "type": "scene",
+      "title": "",
+      "text": "Reed: When the oak air stops tasting like hot metal, go to the winery cellar. Corvin will be twitching.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to the oak at Windrise in 3 hours. The smoke must clear",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Check_the_Primer_Site",
+          "label": "Wait for 3 hours, and after that go to Windrise (Mondstadt), do /rpg and click on Check the Primer Site"
+        }
+      ]
+    },
+    "Check_the_Primer_Site": {
+      "id": "Check_the_Primer_Site",
+      "type": "scene",
+      "title": "",
+      "text": "''The hollow is clean of smoke. Only oak and faint warmth remain.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "To the vault",
+          "next": "To_the_vault"
+        },
+        {
+          "label": "Guardians, then seals",
+          "next": "To_the_vault"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}
