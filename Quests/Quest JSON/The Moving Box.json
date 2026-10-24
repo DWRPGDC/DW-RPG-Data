@@ -1,0 +1,245 @@
+{
+  "meta": {
+    "requirement": "Explore Starfell Lake (40%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Starfell_Lake|Starfell Lake]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "The Moving Box",
+      "text": "''Some rough-looking men are sitting around a roped crate on the shore, and the crate slides sideways on its own.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Walk past",
+          "next": "____The_Moving_Box__Walked_Away"
+        },
+        {
+          "label": "Hey, what's in the box?",
+          "next": "Hey__what_s_in_the_box_",
+          "best": true
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Hey__what_s_in_the_box_": {
+      "id": "Hey__what_s_in_the_box_",
+      "type": "scene",
+      "title": "",
+      "text": "Ketch: Nothing. None of your business.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Okay, okay",
+          "next": "____The_Moving_Box__Walked_Away_"
+        },
+        {
+          "label": "Come on, what's in it?",
+          "next": "Come_on__what_s_in_it_",
+          "best": true
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Come_on__what_s_in_it_": {
+      "id": "Come_on__what_s_in_it_",
+      "type": "scene",
+      "title": "",
+      "text": "Ketch: Why do you care what's in it? It's a normal box.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "It's moving",
+          "next": "It_s_moving"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "It_s_moving": {
+      "id": "It_s_moving",
+      "type": "scene",
+      "title": "",
+      "text": "Ketch: ...Get him.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Stop the Treasure Hoarders at Starfell Lake",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Treasure_Hoarders",
+          "label": "Do /rpg again and then click on Fight the Treasure Hoarders. Defeat 1 [[Treasure Hoarder Cryo Potioneer]], 1 [[Treasure Hoarder Marksman]], and 1 [[Treasure Hoarder Crusher]]"
+        }
+      ]
+    },
+    "____The_Moving_Box__Walked_Away": {
+      "id": "____The_Moving_Box__Walked_Away",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "''You keep walking and the thumping fades out behind you.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____The_Moving_Box__Walked_Away_": {
+      "id": "____The_Moving_Box__Walked_Away_",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "''You back off and they watch you the whole way.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Fight_the_Treasure_Hoarders": {
+      "id": "Fight_the_Treasure_Hoarders",
+      "type": "scene",
+      "title": "",
+      "text": "''The crate is still thumping, and a small voice is yelling from inside.''\n\nVoice: Hello?? Is it the mean men?? Hello!!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Open the crate the Treasure Hoarders were guarding",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Open_the_crate",
+          "label": "Do /rpg again and then click on Open the crate"
+        }
+      ]
+    },
+    "Open_the_crate": {
+      "id": "Open_the_crate",
+      "type": "scene",
+      "title": "",
+      "text": "''You cut the rope and lift the lid, and a boy with a gag around his neck and his wrists tied is squinting up at you.''\n\nTobi: Thank you thank you, I couldn't even yell, they put me in here and it was so dark.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Where do you live?",
+          "next": "Where_do_you_live_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Where_do_you_live_": {
+      "id": "Where_do_you_live_",
+      "type": "scene",
+      "title": "",
+      "text": "Tobi: Falcon Coast! My dad sells fish by the pier, can we go, please?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Take Tobi home to Falcon Coast",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Find_Tobi_s_dad",
+          "label": "Go to Falcon Coast (Mondstadt), do /rpg and click on Find Tobi's dad"
+        }
+      ]
+    },
+    "Find_Tobi_s_dad": {
+      "id": "Find_Tobi_s_dad",
+      "type": "scene",
+      "title": "",
+      "text": "Tobi: DAD!!\n\n''Joren drops his cart handle and Tobi runs straight into him.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "____The_Moving_Box__Boy_Returned_Home"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____The_Moving_Box__Boy_Returned_Home": {
+      "id": "____The_Moving_Box__Boy_Returned_Home",
+      "type": "ending",
+      "title": "Boy Returned Home",
+      "text": "Joren: I looked all night... I didn't know where to... ''takes his cap off''\n\nJoren: I owe you. It's a hundred silver, I know it's not much.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 100,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 100,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}
