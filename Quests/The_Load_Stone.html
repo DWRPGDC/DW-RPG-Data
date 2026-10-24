@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>The Load Stone</title>
+<style>
+:root{--bg:#ffffff;--bg2:#f5f5f5;--bg3:#ebebeb;--border:#ddd;--border2:#ccc;--text:#1a1a1a;--text2:#444;--text3:#888;--gold:#7a5c10;--tab-h:52px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*:focus{outline:none}
+*:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+button,a,summary,[onclick],.choice-btn,.bchoice,.tchoice-label,.subchoice{transition:filter .15s ease}
+button:active,a:active,summary:active,[onclick]:active,.choice-btn:active,.bchoice:active,.tchoice-label:active,.subchoice:active{filter:brightness(.85);transition:filter .03s ease}
+body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14px;height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+#app{display:flex;flex:1;overflow:hidden}
+#branch-panel{width:100%;display:flex;flex-direction:column;overflow:hidden}
+#branch-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;scroll-behavior:smooth}
+#branch-header::-webkit-scrollbar{display:none}
+#back-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;align-items:center;gap:4px;text-decoration:none;font-family:sans-serif;flex-shrink:0}
+#back-btn.visible{display:inline-flex}
+#back-btn:hover{background:var(--bg3);color:var(--text)}
+.panel-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2);flex:0 0 auto;white-space:nowrap}
+#mode-toggle{display:flex;border:1px solid var(--border2);border-radius:5px;overflow:hidden;flex-shrink:0}
+#mode-toggle button{background:none;border:none;padding:5px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:background .12s,color .12s;white-space:nowrap}
+#mode-toggle button.active{background:var(--gold);color:#fff8ee}
+#best-route-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s;flex-shrink:0}
+#best-route-btn:hover{background:var(--bg3);color:var(--text)}
+#best-route-btn.active-normal{background:#fff0ee;border-color:#e03020;color:#b02010}
+#best-route-btn.active-important{background:#e03020;border-color:#b02010;color:#fff8ee}
+.ellipsis-card{text-align:center;color:var(--text3);font-size:20px;letter-spacing:4px;padding:8px 0;user-select:none}
+#collapse-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s;display:none;flex-shrink:0}
+#collapse-btn.visible{display:inline-flex;align-items:center;gap:4px}
+#branch-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;min-width:0;padding:12px 12px 40px;container-type:inline-size}
+#sim-fab{position:fixed;bottom:24px;right:24px;z-index:400;width:68px;height:68px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:background .15s,transform .15s;padding:0}
+#sim-fab:hover{background:#6b5010;transform:scale(1.07)}
+#sim-fab .fab-icon{font-size:22px;line-height:1;color:#fff8ee}
+#sim-fab .fab-label{font-size:7px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#fff8ee;text-align:center;line-height:1.2;max-width:58px}
+#sim-modal{display:none;position:fixed;inset:0;z-index:450;align-items:center;justify-content:center;padding:20px}
+#sim-modal.open{display:flex}
+#sim-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+#sim-box{position:relative;background:var(--bg);border:1px solid var(--border2);border-radius:12px;width:460px;max-width:100%;max-height:90dvh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.28);z-index:1}
+#play-header{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);flex-shrink:0}
+#play-title{font-size:13px;font-weight:700;color:var(--gold);font-family:sans-serif;letter-spacing:.07em;text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sim-header-actions{display:flex;align-items:center;gap:6px}
+#restart-btn{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:sans-serif;font-size:12px;padding:5px 12px;border-radius:5px;cursor:pointer;white-space:nowrap}
+#restart-btn:hover{border-color:var(--text);color:var(--text)}
+#sim-close{background:none;border:none;font-size:20px;color:var(--text3);cursor:pointer;line-height:1;padding:2px 6px;border-radius:4px;min-width:30px;min-height:30px;display:flex;align-items:center;justify-content:center}
+#sim-close:hover{color:var(--text);background:var(--bg3)}
+#play-body{flex:1;overflow-y:auto;padding:22px 24px 40px;font-family:Georgia,serif;font-size:16px;line-height:1.8;color:var(--text)}
+#scene-title{font-size:11px;font-weight:700;font-family:sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px}
+#scene-text{line-height:1.8;margin-bottom:18px;white-space:pre-wrap}
+#scene-embed{margin-bottom:18px}
+#scene-embed iframe{width:100%;min-height:420px;border:1px solid var(--border2);border-radius:8px;display:block}
+.tembed-wrap{margin:4px 0 8px;border:1px solid var(--border2);border-radius:6px;overflow:hidden}
+.tembed-wrap summary{cursor:pointer;padding:6px 10px;font-size:11px;font-weight:700;background:rgba(0,0,0,.04);list-style:none;user-select:none}
+.wiki-list{margin:6px 0;padding-left:22px}
+.wiki-list li{margin-bottom:3px;line-height:1.6}
+.tembed-wrap summary::-webkit-details-marker{display:none}
+.tembed-wrap[open] summary{border-bottom:1px solid var(--border2)}
+.tembed-wrap iframe{margin:0!important;border:none!important;border-radius:0!important;display:block}
+#dialogues{margin-bottom:4px}
+.dlg-visible{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:10px;overflow:hidden;padding:10px 14px}
+.dlg-vis-spk{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:6px}
+.bbody .dlg-visible{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;margin-bottom:4px}
+.bbody .dlg-vis-spk{font-size:10px;margin-bottom:2px}
+.bbody .dlg-visible .dlg-text{font-size:11px;color:var(--text2);border-top:none;padding:0}
+.dlg-vis-spk{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:6px}
+details{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:10px;overflow:hidden}
+summary{cursor:pointer;padding:10px 14px;font-family:sans-serif;font-size:13px;font-weight:600;color:var(--gold);list-style:none;display:flex;align-items:center;gap:6px}
+summary::before{content:"\25B6";font-size:9px}
+details[open] summary::before{content:"\25BC"}
+summary::-webkit-details-marker{display:none}
+.dlg-text{padding:10px 14px 12px;font-size:14px;line-height:1.7;color:var(--text2);border-top:1px solid var(--border);white-space:pre-wrap}
+#choices{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+.choice-btn{background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:Georgia,serif;font-size:15px;padding:12px 16px;cursor:pointer;text-align:left;transition:background .12s,border-color .12s,color .12s;min-height:46px;width:100%;display:flex;align-items:center;gap:10px}
+.choice-btn:hover,.choice-btn:active{background:var(--bg3);border-color:var(--gold);color:var(--gold)}
+.choice-btn.best{background:#fff0ee;border-color:#e03020}
+.choice-btn.best:hover,.choice-btn.best:active{background:#ffe8e4;border-color:#c02010;color:var(--gold)}
+.choice-btn-label{flex:1}
+.choice-btn-badge{display:inline-flex;align-items:center;gap:3px;background:#e03020;color:#fff8ee;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0;font-family:sans-serif}
+.choice-itemreq{font-size:11px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:4px;padding:3px 8px;margin:-4px 0 2px;display:inline-block;font-family:sans-serif}
+.bchoice-itemreq{font-size:10px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:1px 6px;margin-top:2px;flex-basis:100%;white-space:normal;word-break:break-word;font-family:sans-serif}
+.tchoice-itemreq{font-size:10px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:1px 6px;margin-top:2px;flex-basis:100%;white-space:normal;word-break:break-word;font-family:sans-serif}
+.tchoice-label-text{flex:1 1 auto;min-width:80px;word-break:break-word}
+.ending-msg{text-align:center;padding:24px 0 8px;color:var(--text3);font-family:sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+#reward-box{background:#f0e8d0;border:1px solid #c8b870;border-radius:6px;padding:11px 16px;margin-top:12px;display:none;flex-direction:column;gap:6px}
+.reward-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7a5a18}
+.reward-items{display:flex;flex-wrap:wrap;gap:8px}
+.reward-item{display:flex;align-items:center;gap:5px;background:#e8d8b8;border:1px solid #c8b870;border-radius:4px;padding:4px 10px}
+.reward-item img{width:20px;height:20px;object-fit:contain;image-rendering:pixelated}
+.reward-item-name{font-size:12px;font-weight:600;color:#4a3810}
+.reward-item-qty{font-size:14px;color:#4a3810;font-family:Georgia,serif}
+#unlocks-box{background:#e8f0e8;border:1px solid #9ab89a;border-radius:6px;padding:11px 16px;margin-top:8px;display:none;flex-direction:column;gap:3px}
+.unlocks-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2e6b2e}
+.unlocks-text{font-size:14px;color:#1e4e1e;line-height:1.6}
+.unlocks-text a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.bscene{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;margin-bottom:12px;overflow:hidden;transition:border-color .15s,box-shadow .15s;scroll-margin-top:10px}
+.bscene.playing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.2)}
+.bscene.has-best{border-left:3px solid #e03020}
+.bscene.has-best.playing{border-color:var(--gold);border-left-color:#e03020}
+.bhead{display:flex;align-items:center;gap:7px;padding:9px 11px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.bbadge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.b-start{background:#c8e8c8;color:#1e4e1e}
+.b-scene{background:#ddd0ee;color:#3e2458}
+.b-ending{background:#f0d8c8;color:#7a3a18}
+.btitle{font-size:13px;font-weight:600;color:var(--gold);flex:1}
+.bid{font-size:10px;color:var(--text3);font-family:monospace}
+.bplay-btn{background:var(--gold);border:none;color:#fff8ee;font-size:10px;font-weight:700;padding:4px 9px;border-radius:4px;cursor:pointer;flex-shrink:0}
+.bplay-btn:hover{background:#6b5010}
+.bbody{padding:9px 11px;font-size:12px;line-height:1.6;color:var(--text2)}
+.btext{color:var(--text);white-space:pre-wrap;margin-bottom:7px;font-size:12px}
+.bdlg-wrap{margin-bottom:7px}
+.bchoices{display:flex;flex-direction:column;gap:5px;margin-top:5px}
+.bchoice{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:6px 9px;display:flex;flex-wrap:wrap;align-items:center;gap:7px;cursor:pointer;transition:background .12s,border-color .12s}
+.bchoice:hover{background:#ddd;border-color:var(--gold)}
+.bchoice.best{background:#fff0ee;border-color:#e03020}
+.bchoice-arrow{color:var(--text3);font-size:11px}
+.bchoice-label{flex:1;min-width:120px;color:var(--text);font-size:11px;font-weight:700;word-break:break-word}
+.bchoice-dest{font-size:10px;color:var(--gold);font-weight:600;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.best-route-badge{display:inline-flex;align-items:center;gap:3px;background:#e03020;color:#fff8ee;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.choice-btn.best{background:#fff0ee;border-color:#e03020}
+.choice-btn.best:hover,.choice-btn.best:active{background:#ffe8e4;border-color:#c02010;color:var(--gold)}
+.breward{background:#f0e8d0;border:1px solid #c8b870;border-radius:4px;padding:7px 10px;margin-top:5px;display:flex;flex-direction:column;gap:4px}
+.breward-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7a5a18;display:block}
+.breward-items{display:flex;flex-direction:column;gap:4px;margin-top:2px}
+.breward-item{display:flex;align-items:center;gap:5px}
+.breward-item img{width:16px;height:16px;object-fit:contain;image-rendering:pixelated}
+.breward-item-txt{font-size:12px;color:#4a3810}
+.bunlocks{background:#e8f0e8;border:1px solid #9ab89a;border-radius:4px;padding:5px 9px;margin-top:4px;display:flex;gap:7px;align-items:baseline}
+.bunlocks-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#2e6b2e;flex-shrink:0}
+.bunlocks-text{font-size:11px;color:#1e4e1e;line-height:1.5}
+.bunlocks-text a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.req-box{background:#fff0ee;border:1px solid #d4b870;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#5a4010;line-height:1.5;display:block}
+.req-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;color:#7a5a18}
+.req-box a{color:#7a5a18;text-decoration:underline}
+.loc-box{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#1a4a5a;line-height:1.5;display:block}
+.loc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;color:#1a4a5a}
+.loc-box a{color:#1a4a5a;text-decoration:underline}
+.breq{background:#fff0ee;border:1px solid #d4b870;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:#5a4010;line-height:1.6;display:block}
+.breq-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#7a5a18}
+.breq a{color:#7a5a18;text-decoration:underline}
+.bloc{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:#1a4a5a;line-height:1.6;display:block}
+.bloc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#1a4a5a}
+.bloc a{color:#1a4a5a;text-decoration:underline}
+.treq{background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:6px 10px;margin-bottom:5px;font-size:13px;color:#5a4010;line-height:1.6;display:block}
+.treq-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#7a5a18}
+.treq a{color:#7a5a18;text-decoration:underline}
+.tloc{background:#e8f4f8;border:1px solid #8ab8cc;border-radius:3px;padding:6px 10px;margin-bottom:5px;font-size:13px;color:#1a4a5a;line-height:1.6;display:block}
+.tloc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:3px;color:#1a4a5a}
+.tloc a{color:#1a4a5a;text-decoration:underline}
+.cnote-box{border:1px solid #7a5c10;border-radius:4px;padding:8px 12px;margin-bottom:7px;font-size:13px;color:var(--text,#1a1a1a);line-height:1.6;display:block}
+.cnote-lbl{font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:11px;display:flex;align-items:center;gap:5px;margin-bottom:3px;cursor:pointer;user-select:none}
+.cnote-lbl::before{content:"▸";font-size:9px;display:inline-block}
+.cnote-box:not(.collapsed) .cnote-lbl::before{content:"▾"}
+.cnote-box.collapsed .cnote-lbl{margin-bottom:0}
+.cnote-content{display:none}
+.cnote-box:not(.collapsed) .cnote-content{display:block}
+.cnote-lbl.no-toggle{cursor:default}
+.cnote-lbl.no-toggle::before,
+.cnote-box:not(.collapsed) .cnote-lbl.no-toggle::before{content:""}
+.cnote-box a{text-decoration:underline}
+.meta-banner{margin-bottom:8px}
+.troot{padding-left:4px;display:table}
+.troot-imp{display:block;width:100%;box-sizing:border-box}
+.tnode{margin-top:0;display:block}
+.tnode-imp{width:100%;max-width:640px;margin:0 auto 10px;box-sizing:border-box}
+.tnode-imp .tcard,.tnode-imp .tnode-body{width:100%;box-sizing:border-box}
+.tnode-imp .bchoices{width:100%;box-sizing:border-box}
+.tnode-imp .bchoice{box-sizing:border-box}
+.tcard{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px 6px 0 0;cursor:pointer;transition:border-color .12s,box-shadow .15s;scroll-margin-top:10px;width:clamp(220px,78cqw,340px);box-sizing:border-box}
+.tcard:hover{border-color:var(--gold)}
+.tcard.playing{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.2)}
+.ttitle{font-size:13px;font-weight:600;color:var(--gold);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.tnode-body{background:var(--bg2);border:1px solid var(--border2);border-top:none;border-radius:0 0 6px 6px;padding:8px 10px 9px;display:flex;flex-direction:column;gap:6px;width:clamp(220px,78cqw,340px);box-sizing:border-box}
+.tree-collapsed .tnode-body{display:none}
+.tscene-text{font-size:12px;color:var(--text);line-height:1.55;white-space:pre-wrap}
+.tdlgs{display:flex;flex-direction:column;gap:4px}
+.tdlg{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:12px;line-height:1.5}
+.tdlg-spk{font-weight:700;color:var(--gold);display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.tdlg-txt{color:var(--text2);white-space:pre-wrap}
+.tdlgs details{background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:4px;font-size:12px}
+.tdlgs details summary{padding:5px 8px;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.05em}
+.tdlgs details .dlg-text{padding:4px 8px 6px;font-size:12px;border-top:1px solid var(--border)}
+.tsub{background:#f5eddc;border:1px solid #d4b870;border-radius:4px;padding:6px 8px;font-size:12px;margin-bottom:4px}
+.tsub-title{font-weight:700;color:#7a5a18;font-size:11px;text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:3px}
+.tsub-text{color:var(--text2);white-space:pre-wrap;margin-bottom:3px}
+.bsubs{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.bsub{background:#f5eddc;border:1px solid #d4b870;border-radius:5px;padding:7px 9px;font-size:12px}
+.bsub-title{font-weight:700;color:#7a5a18;font-size:11px;text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:3px}
+.bsub-text{color:var(--text2);white-space:pre-wrap;margin-bottom:3px}
+.bsub summary{cursor:pointer;list-style:none}
+.bsub summary::-webkit-details-marker{display:none}
+.bsub summary::before{content:"▸ ";font-size:9px}
+.bsub[open] summary::before{content:"▾ "}
+.bsub-inner{margin-top:5px}
+.bsub-nodes,.tsub-nodes{display:flex;flex-direction:column;gap:8px}
+.bsub-node{background:#fffaf0;border:1px solid #e3d3a8;border-radius:6px;padding:8px 10px}
+.tsub-node{background:#fffaf0;border:1px solid #e3d3a8;border-radius:6px;padding:7px 9px}
+.bsub-node-name,.tsub-node-name{font-size:10px;font-weight:700;color:#7a5a18;text-transform:uppercase;letter-spacing:.03em;margin-bottom:3px}
+.tsub summary{cursor:pointer;list-style:none}
+.tsub summary::-webkit-details-marker{display:none}
+.tsub summary::before{content:"▸ ";font-size:9px}
+.tsub[open] summary::before{content:"▾ "}
+.tsub-inner{margin-top:4px}
+.subchoices{display:flex;flex-direction:column;gap:4px;margin-top:5px}
+.subchoice{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11px}
+.subchoice-label{flex:1;min-width:100px;color:var(--text);font-weight:700;word-break:break-word}
+.subchoice-dest{font-size:10px;color:var(--gold);font-weight:600;white-space:nowrap}
+.bdlg-wrap details{margin-bottom:5px}
+.treward-inline{background:#f0e8d0;border:1px solid #c8b870;border-radius:4px;padding:7px 10px;margin-top:4px;display:flex;flex-direction:column;gap:4px}
+.treward-inline-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7a5a18;display:block}
+.treward-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#4a3810}
+.treward-item img{width:16px;height:16px;object-fit:contain;image-rendering:pixelated}
+.tunlocks-inline{font-size:11px;color:#2e6b2e;background:#e8f0e8;border:1px solid #9ab89a;border-radius:3px;padding:3px 8px;margin-top:3px;display:block;line-height:1.5}
+.tunlocks-inline a{color:#2e6b2e;text-decoration:underline;text-underline-offset:2px}
+.tchoices{margin-left:12px;padding-left:12px;border-left:none;margin-top:6px;display:flex;flex-direction:column;gap:0;position:relative;box-sizing:border-box}
+.tchoices.has-best{border-left:none}
+.tchoice{position:relative;padding-top:7px;display:flex;flex-direction:column;box-sizing:border-box}
+.tc-vert{position:absolute;left:0;width:4px;pointer-events:none;border-radius:1px}
+.tc-horiz{position:absolute;left:-12px;top:19px;width:12px;height:2px;pointer-events:none}
+.tchoice-label{font-size:13px;font-weight:700;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;margin-bottom:4px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
+.tchoice-label.tchoice-best{background:#fff0ee;border-color:#e03020}
+.tcontinue-label{font-size:12px;font-weight:600;font-style:italic;color:#123f62;background:transparent;border:1px dashed #1a5a8a;border-radius:4px;padding:4px 11px;margin-bottom:3px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;width:clamp(220px,78cqw,340px);box-sizing:border-box;white-space:normal;word-break:break-word}
+.tcontinue-label.tchoice-best{background:#fff0ee;border-color:#e03020;color:var(--text)}
+.tcontinue-label-text::before{content:"↓ ";font-style:normal}
+.tchoice-itemreq{font-size:10px;color:#7a5a18;background:#fff0ee;border:1px solid #d4b870;border-radius:3px;padding:1px 6px;margin-top:2px;flex-basis:100%;white-space:normal;word-break:break-word;font-family:sans-serif}
+.tchoice-label-text{flex:1 1 auto;min-width:80px;word-break:break-word}
+.tvisited{font-size:11px;color:var(--text3);font-style:italic;padding:4px 0 4px 2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px;display:block}
+.tvisited:hover{color:var(--gold)}
+.tmissing{font-size:11px;color:#b03020;padding:4px;font-style:italic}
+.tchoice-inline{margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;box-sizing:border-box}
+.tchoice-inline>.tchoice-label{display:flex;flex-wrap:wrap;align-self:flex-start;margin-bottom:0;font-size:13px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 11px;font-weight:700;white-space:normal;word-break:break-word;width:clamp(220px,78cqw,340px);box-sizing:border-box}
+.tchoice-inline>.tchoice-label.tchoice-best{color:var(--text);background:#fff0ee;border-color:#e03020}
+@media(orientation:landscape) and (max-width:900px){
+.tcard,.tnode-body,.tchoice-label,.tchoice-inline>.tchoice-label,.tcontinue-label{width:80vw;max-width:80vw}
+}
+@media(min-width:901px){
+.tcard,.tnode-body,.tchoice-label,.tchoice-inline>.tchoice-label,.tcontinue-label{width:clamp(420px,52vw,980px);max-width:980px}
+}
+.tchoice-inline>.tnode{margin-top:10px;display:block}
+.tcard-best{border-left:3px solid #e03020!important}
+.tnbody-best{border-left:3px solid #e03020!important}
+.tcontinue-arrow{font-size:13px;color:var(--text3);padding:2px 0 2px 2px}
+@media(max-width:680px){
+#app{height:100dvh}
+#branch-panel{width:100%;max-width:none;border-right:none}
+#branch-body{padding-bottom:100px}
+#sim-fab{bottom:20px;right:16px;width:58px;height:58px}
+#sim-fab .fab-icon{font-size:18px}
+#sim-fab .fab-label{font-size:6.5px}
+#sim-box{max-height:92dvh}
+#play-body{padding:16px 16px 32px}
+}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.obj-icon{width:18px;height:18px;object-fit:contain;image-rendering:pixelated;vertical-align:middle;margin:0 2px;display:inline-block}
+#endings-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s,color .12s,border-color .12s;flex-shrink:0}
+#endings-btn:hover{background:var(--bg3);color:var(--text)}
+#endings-btn.active{background:var(--gold);color:#fff8ee;border-color:var(--gold)}
+.endings-list{display:flex;flex-direction:column;gap:12px}
+.endings-list-hint{font-size:11px;color:var(--text3);padding:0 2px 2px;line-height:1.5}
+.ending-pick-card{cursor:pointer;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.ending-pick-card:hover{border-color:var(--gold);box-shadow:0 0 0 2px rgba(138,106,24,.15)}
+.endings-empty{text-align:center;padding:30px 12px;color:var(--text3);font-size:13px}
+.back-to-endings-btn{background:none;border:1px solid var(--border2);border-radius:5px;padding:6px 12px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;margin-bottom:12px;display:inline-flex;align-items:center;gap:4px;font-family:sans-serif}
+.back-to-endings-btn:hover{background:var(--bg3);color:var(--text)}
+.path-choice{cursor:default}
+.path-choice:hover{background:var(--bg3);border-color:var(--border)}
+.path-unreachable{text-align:center;padding:24px 12px;color:#b03020;font-size:13px;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="branch-panel">
+    <div id="branch-header">
+      <button id="back-btn" onclick="goBack()">&#8592; Back</button>
+      <span class="panel-label">🌿 Branches</span>
+      <button id="collapse-btn" onclick="toggleTreeCollapse()">▼ Collapse</button>
+      <button id="best-route-btn" onclick="toggleBestRoute()">⭐ Best Route</button>
+      <button id="endings-btn" onclick="toggleEndingsMode()">🏁 Endings</button>
+      <div id="mode-toggle">
+        <button id="btn-tree" class="active" onclick="setBranchMode('tree')">Tree</button>
+        <button id="btn-cards" onclick="setBranchMode('cards')">Cards</button>
+      </div>
+    </div>
+    <div id="branch-body"></div>
+  </div>
+</div>
+
+<!-- Simulate FAB -->
+<button id="sim-fab" onclick="openPlay()" title="Simulate Quest">
+  <span class="fab-icon">▶</span>
+  <span class="fab-label">Simulate</span>
+</button>
+
+<!-- Simulate Modal -->
+<div id="sim-modal" onclick="if(event.target===this||event.target.id==='sim-overlay')closePlay()">
+  <div id="sim-overlay"></div>
+  <div id="sim-box">
+    <div id="play-header">
+      <div id="play-title">The Load Stone</div>
+      <div id="sim-header-actions">
+        <button id="restart-btn" onclick="go('start')">&#8635; Restart</button>
+        <button id="sim-close" onclick="closePlay()">&#x2715;</button>
+      </div>
+    </div>
+    <div id="play-body">
+      <div id="scene-title"></div>
+      <div id="scene-req" class="req-box" style="display:none"></div>
+      <div id="scene-loc" class="loc-box" style="display:none"></div>
+      <div id="scene-notes" style="display:none"></div>
+      <div id="scene-text"></div>
+      <div id="scene-embed" style="display:none"></div>
+      <div id="dialogues"></div>
+      <div id="subscenes"></div>
+      <div id="choices"></div>
+      <div id="reward-box"><span class="reward-label">&#127873; Reward</span><span class="reward-text" id="reward-text"></span></div>
+      <div id="unlocks-box"><span class="unlocks-label">&#128275; Unlocks</span><span class="unlocks-text" id="unlocks-text"></span></div>
+    </div>
+  </div>
+</div>
+<script>
+const scenes={"start":{"id":"start","type":"start","title":"The Load Stone","text":"''A portable forge leans against Dawn Winery's outer wall. Harness frames hang like stubborn laundry.''\n\n''The smith stops mid-strike. Soot and sweat stripe his forearms.''\n\nCorvin: Traveler. Good. I need someone who does not scare easy.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What's wrong?","next":"What_s_wrong_"},{"label":"You talking to me?","next":"What_s_wrong_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"What_s_wrong_":{"id":"What_s_wrong_","type":"scene","title":"","text":"Corvin: Under this manor sits a Load Stone. Geo crystal. Old temper stock.\n\nCorvin: Slice a shaving, rivet it into a frame, and the pack holds twenty kilograms more without folding.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"So why is it still down there?","next":"So_why_is_it_still_down_there_"},{"label":"And you can't just buy plates?","next":"So_why_is_it_still_down_there_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"So_why_is_it_still_down_there_":{"id":"So_why_is_it_still_down_there_","type":"scene","title":"","text":"Corvin: Because three Geo seals locked it after a cellar collapse. One worker dead. House called it sealed and holy and done.\n\nCorvin: ''tongs jab the dirt'' I call it wasted steel.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"You want it opened","next":"You_want_it_opened"},{"label":"Sounds dangerous","next":"You_want_it_opened"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"You_want_it_opened":{"id":"You_want_it_opened","type":"scene","title":"","text":"Corvin: Help me open it and the first shaving becomes your load plates. Permanent. On your pack.\n\nCorvin: That is the pay. Fair?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Fair. How do we get in?","next":"Fair__How_do_we_get_in_"},{"label":"What's the catch?","next":"Fair__How_do_we_get_in_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Fair__How_do_we_get_in_":{"id":"Fair__How_do_we_get_in_","type":"scene","title":"","text":"Corvin: Two doors. Adelinde holds proper cellar leave. Clean. Slow. Legal.\n\nCorvin: Reed knows a drainage cut from the old accident. Fast. Dirty. He still drinks like he owes the stone blood.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Choose how to open the Load Stone under Dawn Winery","collapsed":false}],"choices":[{"label":"I'll ask Adelinde","next":"I_ll_ask_Adelinde"},{"label":"I'll find Reed","next":"I_ll_find_Reed"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_ll_ask_Adelinde":{"id":"I_ll_ask_Adelinde","type":"scene","title":"","text":"Corvin: Good. Tell her I am not stripping the house for scrap. Tell her you will obey wards.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Where is she?","next":"Where_is_she_"},{"label":"I'll keep it clean","next":"Where_is_she_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Where_is_she_":{"id":"Where_is_she_","type":"scene","title":"","text":"Corvin: Manor hall. I will keep the forge hot.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Speak with Adelinde at Dawn Winery about cellar access","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Speak_with_Adelinde","label":"Do /rpg again and then click on Speak with Adelinde"}],"subScenes":[],"gateSubScenes":false},"I_ll_find_Reed":{"id":"I_ll_find_Reed","type":"scene","title":"","text":"Corvin: ''grimace'' Fine. Reed is the man who lived. He knows the cut better than anyone still breathing.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Lived through what?","next":"Lived_through_what_"},{"label":"Where do I find him?","next":"I_ll_find_him"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Lived_through_what_":{"id":"Lived_through_what_","type":"scene","title":"","text":"Corvin: The collapse. His partner did not crawl out. Reed did, through the drainage.\n\nCorvin: He will help you. He will also hate himself for knowing how.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll find him","next":"I_ll_find_him"},{"label":"I'll be careful","next":"I_ll_find_him"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_ll_find_him":{"id":"I_ll_find_him","type":"scene","title":"","text":"Corvin: Wolvendom runoff mouth. Look for someone pretending wolves are the problem.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Meet Reed at the drainage mouth in Wolvendom","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Meet_Reed_at_the_Drainage_Mouth","label":"Go to Wolvendom (Mondstadt), do /rpg and click on Meet Reed at the Drainage Mouth","best":false}],"subScenes":[],"gateSubScenes":false},"Meet_Reed_at_the_Drainage_Mouth":{"id":"Meet_Reed_at_the_Drainage_Mouth","type":"scene","title":"","text":"''A wet stone pipe mouths the Wolvendom edge. A wiry man kicks mud and watches trees too hard.''\n\nReed: Corvin's runner. Good. Paper doors make me itch.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"You know a cut to the vault","next":"You_know_a_cut_to_the_vault"},{"label":"Show me the drainage","next":"You_know_a_cut_to_the_vault"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"You_know_a_cut_to_the_vault":{"id":"You_know_a_cut_to_the_vault","type":"scene","title":"","text":"Reed: I know it because I ran it while someone called my name behind me.\n\nReed: ''flat'' His name was Orrin. Seal work. I left him. The cut got me out. The house locked the stone so nobody else would \"help\" like I did.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"And now you want back in","next":"And_now_you_want_back_in"},{"label":"Why help Corvin?","next":"Why_help_Corvin_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"And_now_you_want_back_in":{"id":"And_now_you_want_back_in","type":"scene","title":"","text":"Reed: Hilichurls nested in the first bend. Clear them.\n\nReed: Then bring me grit and an offering. Same recipe the house would use, just uglier.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What recipe?","next":"What_recipe_"},{"label":"Hilichurls first","next":"Hilichurls_first"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"What_recipe_":{"id":"What_recipe_","type":"scene","title":"","text":"Reed: Twenty Crystal Chunk. Geo grit.\n\nReed: Sixty Silver Raven Insignia, or sixty Black Bronze Horn. Greed or brute force. The seals hate both. We feed them a little so they soften on our schedule.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Then what?","next":"Then_what_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Then_what_":{"id":"Then_what_","type":"scene","title":"","text":"Reed: I mix a primer. You plant it at Windrise under the oak. Old Geo line thinks someone still worships upstream.\n\nReed: Distracts the seals long enough for a chorus later. Silly. Works. When it worked for cowards, anyway.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Hilichurls first","next":"Hilichurls_first"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Hilichurls_first":{"id":"Hilichurls_first","type":"scene","title":"","text":"Reed: I stay at the mouth. If you die in there, I get to say I warned you.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Clear the Hilichurls from the drainage cut in Wolvendom","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Clear_the_Drainage_Cut","label":"Do /rpg again and then click on Clear the Drainage Cut. Defeat 2 [[Hilichurl]]s and 1 [[Hilichurl Berserker]]","best":false}],"subScenes":[],"gateSubScenes":false},"Why_help_Corvin_":{"id":"Why_help_Corvin_","type":"scene","title":"","text":"Reed: Because Corvin will actually forge something useful. And because if those seals open right, maybe Orrin stops shouting in my sleep.\n\nReed: Or he doesn't. Either way, we do this careful.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What's the plan?","next":"And_now_you_want_back_in"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Clear_the_Drainage_Cut":{"id":"Clear_the_Drainage_Cut","type":"scene","title":"","text":"''The cut goes quiet except for drip water. Reed peeks in and nods once.''\n\nReed: Path's clear.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Talk_to_Reed","label":"Do /rpg again and then click on Talk to Reed","best":false}],"subScenes":[],"gateSubScenes":false},"Talk_to_Reed":{"id":"Talk_to_Reed","type":"scene","title":"","text":"''The cut goes quiet except for drip water. Reed peeks in and nods once.''\n\nReed: Path's clear.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What do you need?","next":"What_do_you_need_"},{"label":"Kit next?","next":"What_do_you_need_"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"What_do_you_need_":{"id":"What_do_you_need_","type":"scene","title":"","text":"Reed: Twenty Crystal Chunk. Plus sixty raven marks or sixty bronze horns.\n\nReed: Come back heavy.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I can't carry that much","next":"I_can_t_carry_that_much"},{"label":"That's a wagon load","next":"I_can_t_carry_that_much"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_can_t_carry_that_much":{"id":"I_can_t_carry_that_much","type":"scene","title":"","text":"Reed: Then do not. Four trips. Five crystal, fifteen of one offering. Same paste. Just staggered.\n\nReed: Pick greed or horns. Then walk.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll use Silver Raven Insignia","next":"Reed_Silver"},{"label":"I'll use Black Bronze Horn","next":"Reed_Horn"},{"label":"Still gathering","next":"Still_gathering"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Still_gathering":{"id":"Still_gathering","type":"scene","title":"","text":"Reed: I am not going anywhere pretty.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring primer kit materials to Reed in four trips","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"I_can_t_carry_that_much","label":"Do /rpg again and then click on Talk to Reed about the Kit","best":false}],"subScenes":[],"gateSubScenes":false},"Reed_Silver":{"id":"Reed_Silver","type":"scene","title":"","text":"Reed: Four trips. Five crystal, fifteen raven marks. Same paste. Just staggered.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 1 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Reed_Silver_1","label":"Do /rpg again and then click on Return to Reed","best":false}],"subScenes":[],"gateSubScenes":false},"Reed_Horn":{"id":"Reed_Horn","type":"scene","title":"","text":"Reed: Four trips. Five crystal, fifteen bronze horns. Same paste. Just staggered.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 1 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Reed_Horn_1","label":"Do /rpg again and then click on Return to Reed"}],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1":{"id":"Reed_Silver_1","type":"scene","title":"","text":"Reed: Trip 1 of 4. Kit?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Silver Raven Insignia","next":"Reed_Silver_1d","itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"},{"label":"Still short","next":"Reed_short_1"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_short_1":{"id":"Reed_short_1","type":"scene","title":"","text":"Reed: Then keep walking. The vault is not getting kinder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 1 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1d":{"id":"Reed_Silver_1d","type":"scene","title":"","text":"Reed: ''scrapes raven marks into the grit'' Trip 1. Keep them coming.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load.","next":"Reed_Silver_1dd"},{"label":"Back soon","next":"Reed_Silver_1dd"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1dd":{"id":"Reed_Silver_1dd","type":"scene","title":"","text":"Reed: Trip 2 of 4. I am still here.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 2 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Reed_Silver_1_copy","label":"Do /rpg again and then click on Return to Reed","best":false}],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1_copy":{"id":"Reed_Silver_1_copy","type":"scene","title":"","text":"Reed: Trip 2 of 4. Kit?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Silver Raven Insignia","next":"Reed_Silver_1d_copy","itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"},{"label":"Still short","next":"Reed_short_1_copy"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_short_1_copy":{"id":"Reed_short_1_copy","type":"scene","title":"","text":"Reed: Then keep walking. The vault is not getting kinder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 2 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1d_copy":{"id":"Reed_Silver_1d_copy","type":"scene","title":"","text":"Reed: ''scrapes raven marks into the grit'' Trip 2. Keep them coming.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load.","next":"Reed_Silver_1dd_copy"},{"label":"Back soon","next":"Reed_Silver_1dd_copy"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1dd_copy":{"id":"Reed_Silver_1dd_copy","type":"scene","title":"","text":"Reed: Trip 3 of 4. I am still here.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 3 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Reed_Silver_1_copy2","label":"Do /rpg again and then click on Return to Reed","best":false}],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1_copy2":{"id":"Reed_Silver_1_copy2","type":"scene","title":"","text":"Reed: Trip 3 of 4. Kit?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Silver Raven Insignia","next":"Reed_Silver_1d_copy2","itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"},{"label":"Still short","next":"Reed_short_1_copy2"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_short_1_copy2":{"id":"Reed_short_1_copy2","type":"scene","title":"","text":"Reed: Then keep walking. The vault is not getting kinder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 3 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1d_copy2":{"id":"Reed_Silver_1d_copy2","type":"scene","title":"","text":"Reed: ''scrapes raven marks into the grit'' Trip 3. Keep them coming.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load.","next":"Reed_Silver_1dd_copy2"},{"label":"Back soon","next":"Reed_Silver_1dd_copy2"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1dd_copy2":{"id":"Reed_Silver_1dd_copy2","type":"scene","title":"","text":"Reed: Trip 4 of 4. I am still here.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 4 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Reed_Silver_1_copy3","label":"Do /rpg again and then click on Return to Reed","best":false}],"subScenes":[],"gateSubScenes":false},"Reed_Silver_1_copy3":{"id":"Reed_Silver_1_copy3","type":"scene","title":"","text":"Reed: Trip 4 of 4. Kit?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Silver Raven Insignia","next":"Reed_Silver_done","itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''"},{"label":"Still short","next":"Reed_short_1_copy3"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_short_1_copy3":{"id":"Reed_short_1_copy3","type":"scene","title":"","text":"Reed: Then keep walking. The vault is not getting kinder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 4 of 4 to Reed: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Silver_done":{"id":"Reed_Silver_done","type":"scene","title":"","text":"''Reed mixes the last measure. Raven marks dissolve into crystal grit. The primer hums once.''\n\nReed: Windrise. West root hollow. Plant it. Leave.\n\nReed: After you plant it, three hours soak. Then Windrise again for three hours of smoke. Two waits. Both matter.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Obtained","text":"1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''","collapsed":false},{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","collapsed":false}],"choices":[{"label":"I'll plant it","next":"I_ll_plant_it","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Understood","next":"I_ll_plant_it","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_ll_plant_it":{"id":"I_ll_plant_it","type":"scene","title":"","text":"Reed: If a bard asks, lie badly and walk away.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Place Reed's primed charge under the oak at Windrise","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Place_the_Primed_Charge","label":"Go to Windrise (Mondstadt), do /rpg and click on Place the Primed Charge"}],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1":{"id":"Reed_Horn_1","type":"scene","title":"","text":"Reed: Trip 1 of 4. Kit?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Black Bronze Horn","next":"Reed_Horn_1d","itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"},{"label":"Still short","next":"Reed_hshort_1"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_hshort_1":{"id":"Reed_hshort_1","type":"scene","title":"","text":"Reed: Then keep walking. The vault is not getting kinder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 1 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1d":{"id":"Reed_Horn_1d","type":"scene","title":"","text":"Reed: ''scrapes horn powder into the grit'' Trip 1. Keep them coming.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load.","next":"Reed_Horn_1dd"},{"label":"Back soon","next":"Reed_Horn_1dd"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1dd":{"id":"Reed_Horn_1dd","type":"scene","title":"","text":"Reed: Trip 2 of 4. I am still here.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 2 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Reed_Horn_1_copy","label":"Do /rpg again and then click on Return to Reed"}],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1_copy":{"id":"Reed_Horn_1_copy","type":"scene","title":"","text":"Reed: Trip 2 of 4. Kit?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Black Bronze Horn","next":"Reed_Horn_1d_copy","itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"},{"label":"Still short","next":"Reed_hshort_1_copy"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_hshort_1_copy":{"id":"Reed_hshort_1_copy","type":"scene","title":"","text":"Reed: Then keep walking. The vault is not getting kinder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 2 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1d_copy":{"id":"Reed_Horn_1d_copy","type":"scene","title":"","text":"Reed: ''scrapes horn powder into the grit'' Trip 2. Keep them coming.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load.","next":"Reed_Horn_1dd_copy"},{"label":"Back soon","next":"Reed_Horn_1dd_copy"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1dd_copy":{"id":"Reed_Horn_1dd_copy","type":"scene","title":"","text":"Reed: Trip 3 of 4. I am still here.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 3 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Reed_Horn_1_copy2","label":"Do /rpg again and then click on Return to Reed"}],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1_copy2":{"id":"Reed_Horn_1_copy2","type":"scene","title":"","text":"Reed: Trip 3 of 4. Kit?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Black Bronze Horn","next":"Reed_Horn_1d_copy2","itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"},{"label":"Still short","next":"Reed_hshort_1_copy"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_hshort_1_copy2":{"id":"Reed_hshort_1_copy2","type":"scene","title":"","text":"Reed: Then keep walking. The vault is not getting kinder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 3 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1d_copy2":{"id":"Reed_Horn_1d_copy2","type":"scene","title":"","text":"Reed: ''scrapes horn powder into the grit'' Trip 3. Keep them coming.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load.","next":"Reed_Horn_1dd_copy2"},{"label":"Back soon","next":"Reed_Horn_1dd_copy2"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1dd_copy2":{"id":"Reed_Horn_1dd_copy2","type":"scene","title":"","text":"Reed: Trip 4 of 4. I am still here.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 4 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Reed_Horn_1_copy3","label":"Do /rpg again and then click on Return to Reed"}],"subScenes":[],"gateSubScenes":false},"Reed_Horn_1_copy3":{"id":"Reed_Horn_1_copy3","type":"scene","title":"","text":"Reed: Trip 4 of 4. Kit?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Black Bronze Horn","next":"Reed_Horn_done","itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''"},{"label":"Still short","next":"Reed_hshort_1_copy3"}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_hshort_1_copy3":{"id":"Reed_hshort_1_copy3","type":"scene","title":"","text":"Reed: Then keep walking. The vault is not getting kinder.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 4 of 4 to Reed: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Reed_Horn_done":{"id":"Reed_Horn_done","type":"scene","title":"","text":"''Reed mixes the last measure. Horn powder bites the grit. The primer hums once.''\n\nReed: Windrise. West root hollow. Plant it. Leave.\n\nReed: After you plant it, three hours soak. Then Windrise again for three hours of smoke. Two waits. Both matter.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Obtained","text":"1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''","collapsed":false},{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","collapsed":false}],"choices":[{"label":"I'll plant it","next":"I_ll_plant_it","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Understood","next":"I_ll_plant_it","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Speak_with_Adelinde":{"id":"Speak_with_Adelinde","type":"scene","title":"","text":"''Adelinde meets you with a ledger and a look that already counted your boots.''\n\nAdelinde: Corvin's traveler. He warned me in three sentences.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"We need the Load Stone opened","next":"We_need_the_Load_Stone_opened","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"He offered me load plates","next":"We_need_the_Load_Stone_opened","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"We_need_the_Load_Stone_opened":{"id":"We_need_the_Load_Stone_opened","type":"scene","title":"","text":"Adelinde: Then we open it as the house. Not as thieves in our own cellar.\n\nAdelinde: The seals were set so greed and panic could not dig again. I will not break them with either.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"What's the proper way?","next":"What_s_the_proper_way_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"What do you need from me?","next":"What_s_the_proper_way_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"What_s_the_proper_way_":{"id":"What_s_the_proper_way_","type":"scene","title":"","text":"Adelinde: First, clear scavengers off the east service path. They have been sniffing the sealed cellar like dogs at a locked pantry.\n\nAdelinde: Then I give you a Guild request. Stamp in Mondstadt. After that, Springvale salts.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll clear the path","next":"I_ll_clear_the_path","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Why salts?","next":"why_salts","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_ll_clear_the_path":{"id":"I_ll_clear_the_path","type":"scene","title":"","text":"Adelinde: East service path. When it is quiet, come back.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Drive Treasure Hoarders off the service path at Dawn Winery","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Clear_the_Service_Path","label":"Do /rpg again and then click on Clear the Service Path. Defeat 1 [[Treasure Hoarder Crusher]] and 1 [[Treasure Hoarder Marksman]]"}],"subScenes":[],"gateSubScenes":false},"why_salts":{"id":"why_salts","type":"scene","title":"","text":"Adelinde: Crystal Chunk is the grit. The seals drink Geo.\n\nAdelinde: Sixty Silver Raven Insignia, or sixty Black Bronze Horn. Stolen greed, or brute force. The ward was built to swallow both. We feed it a measured dose so it softens instead of snaps.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Path first, then","next":"I_ll_clear_the_path","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Clear_the_Service_Path":{"id":"Clear_the_Service_Path","type":"scene","title":"","text":"''The last Treasure Hoarder drops. Wine air returns to the path.''\n\n''Adelinde is already waiting with a waxed packet.''\n\nAdelinde: Acceptable.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Talk_to_Adelinde","label":"Do /rpg again and then click on Talk to Adelinde"}],"subScenes":[],"gateSubScenes":false},"Talk_to_Adelinde":{"id":"Talk_to_Adelinde","type":"scene","title":"","text":"''The last Treasure Hoarder drops. Wine air returns to the path.''\n\n''Adelinde is already waiting with a waxed packet.''\n\nAdelinde: Acceptable.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Is that the Guild request?","next":"Is_that_the_Guild_request_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"What's next?","next":"Is_that_the_Guild_request_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Is_that_the_Guild_request_":{"id":"Is_that_the_Guild_request_","type":"scene","title":"","text":"Adelinde: Sealed. Guild desk in Mondstadt. Ask for a stamp under Adelinde of Dawn Winery.\n\nAdelinde: Do not open it. Do not \"improve\" my wording.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Obtained","text":"1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''","collapsed":false}],"choices":[{"label":"Mondstadt. Got it","next":"Mondstadt__Got_it_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"And after the stamp?","next":"And_after_the_stamp_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Mondstadt__Got_it_":{"id":"Mondstadt__Got_it_","type":"scene","title":"","text":"Adelinde: Go. Look competent. It helps.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Deliver Adelinde's sealed request to the Adventurers' Guild in Mondstadt","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Deliver_Adelinde_s_Request","label":"Go to Mondstadt City (Mondstadt), do /rpg and click on Deliver Adelinde's Request"}],"subScenes":[],"gateSubScenes":false},"And_after_the_stamp_":{"id":"And_after_the_stamp_","type":"scene","title":"","text":"Adelinde: Springvale well. Twenty Crystal Chunk, plus sixty raven marks or sixty bronze horns.\n\nAdelinde: Mix. Wait. Soften. Cure. Then the vault.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll start at the Guild","next":"Mondstadt__Got_it_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Remind me why those offerings?","next":"Remind_me_why_those_offerings_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Remind_me_why_those_offerings_":{"id":"Remind_me_why_those_offerings_","type":"scene","title":"","text":"Adelinde: Because the seals were written against theft and blunt force. We apologize to them in their own language. Measured. Not panicked.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Guild first","next":"Mondstadt__Got_it_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Deliver_Adelinde_s_Request":{"id":"Deliver_Adelinde_s_Request","type":"scene","title":"","text":"''The Guild desk smells of wet cloaks and ink.''\n\nClerk: Dawn Winery cellar leave?","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Stamp for Adelinde, please","next":"Stamp_for_Adelinde__please","best":false,"responseText":"","objectives":[],"itemReq":"Need 1x[img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''","_showItemReq":true},{"label":"Here. Sealed request","next":"Stamp_for_Adelinde__please","best":false,"responseText":"","objectives":[],"itemReq":"Need 1x[img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''","_showItemReq":true}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Stamp_for_Adelinde__please":{"id":"Stamp_for_Adelinde__please","type":"scene","title":"","text":"Clerk: ''stamp'' Outer ward softening authorized.\n\nClerk: Try not to die under somebody else's wine.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''","collapsed":false}],"choices":[{"label":"Springvale next","next":"Springvale_next_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"That was fast","next":"Springvale_next_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Springvale_next_":{"id":"Springvale_next_","type":"scene","title":"","text":"''Adelinde's list is simple now: twenty Crystal Chunk, and either sixty Silver Raven Insignia or sixty Black Bronze Horn, at the Springvale well.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring ward salt materials to Springvale in four trips","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Talk_at_the_Springvale_Well","label":"Go to Springvale (Mondstadt), do /rpg and click on Talk at the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"Talk_at_the_Springvale_Well":{"id":"Talk_at_the_Springvale_Well","type":"scene","title":"","text":"''Chalk circles ring an old basin by the Springvale well. A strip of paper names the grit and the two allowed offerings. Twenty crystal. Sixty of one.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I can't carry this much","next":"I_can_t_carry_this_much_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"That's more than my pack holds","next":"I_can_t_carry_this_much_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Still gathering","next":"Still_gatheringajaja","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Why either of those?","next":"Why_either_of_those_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Why_either_of_those_":{"id":"Why_either_of_those_","type":"scene","title":"","text":"''Adelinde's note, smaller hand:'' Crystal feeds Geo. Raven marks are greed the ward already knows. Bronze horns are force it already fears. Either completes the salt. Not both. Not less.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Back to the basin","next":"Talk_at_the_Springvale_Well","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Still gathering","next":"Still_gatheringajaja","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Still_gatheringajaja":{"id":"Still_gatheringajaja","type":"scene","title":"","text":"''The chalk waits. The Load Stone will not forever.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring ward salt materials to Springvale in four trips","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_can_t_carry_this_much_":{"id":"I_can_t_carry_this_much_","type":"scene","title":"","text":"''Adelinde's note, cramped in the margin:'' You will not carry that in one trip. Nobody does.\n\n''Four trips. Five Crystal Chunk and fifteen of one offering each time. Mix as you go. Same salt. Just staggered.''\n\n''Choose raven greed or bronze force. Then start walking.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll use Silver Raven Insignia","next":"I_ll_use_Silver_Raven_Insignia_ade","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"I'll use Black Bronze Horn","next":"I_ll_use_Black_Bronze_Horn_ade","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Still gathering materials","next":"Still_gatheringajaja","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_ll_use_Silver_Raven_Insignia_ade":{"id":"I_ll_use_Silver_Raven_Insignia_ade","type":"scene","title":"","text":"''Four trips. Five crystal and fifteen raven marks each time.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 1 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Adelinde_TripSilv_1","label":"Do /rpg again and then click on Return to the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"I_ll_use_Black_Bronze_Horn_ade":{"id":"I_ll_use_Black_Bronze_Horn_ade","type":"scene","title":"","text":"''Four trips. Five crystal and fifteen bronze horns each time.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 1 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Adelinde_TripHorn_1","label":"Do /rpg again and then click on Return to the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_1":{"id":"Adelinde_TripSilv_1","type":"scene","title":"","text":"''The basin waits. Chalk marks trip 1 of 4 beside the raven column.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Silver Raven Insignia","next":"Adelinde_TripSilv_Submit_1","best":false,"responseText":"","objectives":[],"itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","_showItemReq":true},{"label":"Still gathering","next":"Adelinde_GatheringSilv_1","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_GatheringSilv_1":{"id":"Adelinde_GatheringSilv_1","type":"scene","title":"","text":"''The chalk waits. Four trips. No shortcuts.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 1 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_Submit_1":{"id":"Adelinde_TripSilv_Submit_1","type":"scene","title":"","text":"''Crystal grit and raven marks cloud the water. The salt thickens. Trip 1 of 4.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load","next":"Adelinde_TripSilv_Done_1","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Back soon","next":"Adelinde_TripSilv_Done_1","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_Done_1":{"id":"Adelinde_TripSilv_Done_1","type":"scene","title":"","text":"''Trip 2 of 4 waits at the Springvale well.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 2 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Adelinde_TripSilv_2","label":"Do /rpg again and then click on Return to the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_2":{"id":"Adelinde_TripSilv_2","type":"scene","title":"","text":"''The basin waits. Chalk marks trip 2 of 4 beside the raven column.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Silver Raven Insignia","next":"Adelinde_TripSilv_Submit_2","best":false,"responseText":"","objectives":[],"itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","_showItemReq":true},{"label":"Still gathering","next":"Adelinde_GatheringSilv_2","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_GatheringSilv_2":{"id":"Adelinde_GatheringSilv_2","type":"scene","title":"","text":"''The chalk waits. Four trips. No shortcuts.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 2 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_Submit_2":{"id":"Adelinde_TripSilv_Submit_2","type":"scene","title":"","text":"''Crystal grit and raven marks cloud the water. The salt thickens. Trip 2 of 4.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load","next":"Adelinde_TripSilv_Done_2","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Back soon","next":"Adelinde_TripSilv_Done_2","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_Done_2":{"id":"Adelinde_TripSilv_Done_2","type":"scene","title":"","text":"''Trip 3 of 4 waits at the Springvale well.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 3 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Adelinde_TripSilv_3","label":"Do /rpg again and then click on Return to the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_3":{"id":"Adelinde_TripSilv_3","type":"scene","title":"","text":"''The basin waits. Chalk marks trip 3 of 4 beside the raven column.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Silver Raven Insignia","next":"Adelinde_TripSilv_Submit_3","best":false,"responseText":"","objectives":[],"itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","_showItemReq":true},{"label":"Still gathering","next":"Adelinde_GatheringSilv_3","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_GatheringSilv_3":{"id":"Adelinde_GatheringSilv_3","type":"scene","title":"","text":"''The chalk waits. Four trips. No shortcuts.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 3 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_Submit_3":{"id":"Adelinde_TripSilv_Submit_3","type":"scene","title":"","text":"''Crystal grit and raven marks cloud the water. The salt thickens. Trip 3 of 4.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load","next":"Adelinde_TripSilv_Done_3","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Back soon","next":"Adelinde_TripSilv_Done_3","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_Done_3":{"id":"Adelinde_TripSilv_Done_3","type":"scene","title":"","text":"''Trip 4 of 4 waits at the Springvale well.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 4 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Adelinde_TripSilv_4","label":"Do /rpg again and then click on Return to the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"Adelinde_TripSilv_4":{"id":"Adelinde_TripSilv_4","type":"scene","title":"","text":"''The basin waits. Chalk marks trip 4 of 4 beside the raven column.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Silver Raven Insignia","next":"Adelinde_Silv_Done","best":false,"responseText":"","objectives":[],"itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","_showItemReq":true},{"label":"Still gathering","next":"Adelinde_GatheringSilv_4","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_GatheringSilv_4":{"id":"Adelinde_GatheringSilv_4","type":"scene","title":"","text":"''The chalk waits. Four trips. No shortcuts.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 4 of 4 to Springvale: 5 Crystal Chunk and 15 Silver Raven Insignia","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_Silv_Done":{"id":"Adelinde_Silv_Done","type":"scene","title":"","text":"''The last grit settles. Pale salt fills the jar.''\n\n''Note: Return to Adelinde at Dawn Winery in three hours. Softening has a clock. First wait softens the outer ward. Second cures the salts. Skip either, dig a grave.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Silver Raven Insignia_icon.webp]'''[[Silver Raven Insignia]]'''","collapsed":false}],"choices":[{"label":"Back to the winery","next":"Back_to_the_winery","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Back_to_the_winery":{"id":"Back_to_the_winery","type":"scene","title":"","text":"''The jar on the basin rim is stoppered. Three hours for softening. No sooner.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Return to Adelinde at Dawn Winery in 3 hours. The outer ward is softening","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Check_the_Outer_Ward_with_Adelinde","label":"Wait for 3 hours, and after that go to Dawn Winery (Mondstadt), do /rpg and click on Check the Outer Ward with Adelinde"}],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_1":{"id":"Adelinde_TripHorn_1","type":"scene","title":"","text":"''The basin waits. Chalk marks trip 1 of 4 beside the horn column.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Black Bronze Horn","next":"Adelinde_TripHorn_Submit_1","best":false,"responseText":"","objectives":[],"itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","_showItemReq":true},{"label":"Still gathering","next":"Adelinde_GatheringHorn_1","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_GatheringHorn_1":{"id":"Adelinde_GatheringHorn_1","type":"scene","title":"","text":"''The chalk waits. Four trips. No shortcuts.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 1 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_Submit_1":{"id":"Adelinde_TripHorn_Submit_1","type":"scene","title":"","text":"''Crystal grit and bronze horn powder cloud the water. The salt thickens. Trip 1 of 4.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load","next":"Adelinde_TripHorn_Done_1","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Back soon","next":"Adelinde_TripHorn_Done_1","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_Done_1":{"id":"Adelinde_TripHorn_Done_1","type":"scene","title":"","text":"''Trip 2 of 4 waits at the Springvale well.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 2 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Adelinde_TripHorn_2","label":"Do /rpg again and then click on Return to the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_2":{"id":"Adelinde_TripHorn_2","type":"scene","title":"","text":"''The basin waits. Chalk marks trip 2 of 4 beside the horn column.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Black Bronze Horn","next":"Adelinde_TripHorn_Submit_2","best":false,"responseText":"","objectives":[],"itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","_showItemReq":true},{"label":"Still gathering","next":"Adelinde_GatheringHorn_2","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_GatheringHorn_2":{"id":"Adelinde_GatheringHorn_2","type":"scene","title":"","text":"''The chalk waits. Four trips. No shortcuts.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 2 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_Submit_2":{"id":"Adelinde_TripHorn_Submit_2","type":"scene","title":"","text":"''Crystal grit and bronze horn powder cloud the water. The salt thickens. Trip 2 of 4.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load","next":"Adelinde_TripHorn_Done_2","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Back soon","next":"Adelinde_TripHorn_Done_2","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_Done_2":{"id":"Adelinde_TripHorn_Done_2","type":"scene","title":"","text":"''Trip 3 of 4 waits at the Springvale well.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 3 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Adelinde_TripHorn_3","label":"Do /rpg again and then click on Return to the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_3":{"id":"Adelinde_TripHorn_3","type":"scene","title":"","text":"''The basin waits. Chalk marks trip 3 of 4 beside the horn column.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Black Bronze Horn","next":"Adelinde_TripHorn_Submit_3","best":false,"responseText":"","objectives":[],"itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","_showItemReq":true},{"label":"Still gathering","next":"Adelinde_GatheringHorn_3","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_GatheringHorn_3":{"id":"Adelinde_GatheringHorn_3","type":"scene","title":"","text":"''The chalk waits. Four trips. No shortcuts.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 3 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_Submit_3":{"id":"Adelinde_TripHorn_Submit_3","type":"scene","title":"","text":"''Crystal grit and bronze horn powder cloud the water. The salt thickens. Trip 3 of 4.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","collapsed":false}],"choices":[{"label":"I'll bring the next load","next":"Adelinde_TripHorn_Done_3","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Back soon","next":"Adelinde_TripHorn_Done_3","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_Done_3":{"id":"Adelinde_TripHorn_Done_3","type":"scene","title":"","text":"''Trip 4 of 4 waits at the Springvale well.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 4 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Adelinde_TripHorn_4","label":"Do /rpg again and then click on Return to the Springvale Well"}],"subScenes":[],"gateSubScenes":false},"Adelinde_TripHorn_4":{"id":"Adelinde_TripHorn_4","type":"scene","title":"","text":"''The basin waits. Chalk marks trip 4 of 4 beside the horn column.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"5 Crystal Chunk and 15 Black Bronze Horn","next":"Adelinde_Horn_Done","best":false,"responseText":"","objectives":[],"itemReq":"Need 5x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 15x[img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","_showItemReq":true},{"label":"Still gathering","next":"Adelinde_GatheringHorn_4","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_GatheringHorn_4":{"id":"Adelinde_GatheringHorn_4","type":"scene","title":"","text":"''The chalk waits. Four trips. No shortcuts.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Bring trip 4 of 4 to Springvale: 5 Crystal Chunk and 15 Black Bronze Horn","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Adelinde_Horn_Done":{"id":"Adelinde_Horn_Done","type":"scene","title":"","text":"''The last grit settles. Pale salt fills the jar.''\n\n''Note: Return to Adelinde at Dawn Winery in three hours. Softening has a clock. First wait softens the outer ward. Second cures the salts. Skip either, dig a grave.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"5x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n15x [img:../Textures/Items/Black Bronze Horn_icon.webp]'''[[Black Bronze Horn]]'''","collapsed":false}],"choices":[{"label":"Back to the winery","next":"Back_to_the_winery","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Check_the_Outer_Ward_with_Adelinde":{"id":"Check_the_Outer_Ward_with_Adelinde","type":"scene","title":"","text":"''Adelinde checks a pocket watch.''\n\nAdelinde: Outer ward is soft enough.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Vault now?","next":"Vault_now_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"What about the salts?","next":"Vault_now_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Vault_now_":{"id":"Vault_now_","type":"scene","title":"","text":"Adelinde: Not yet. Take the jar back to Springvale. Three more hours to cure.\n\nAdelinde: Soft is not safe. Cured is safe.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll wait it out","next":"I_ll_wait_it_out_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Springvale again","next":"I_ll_wait_it_out_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_ll_wait_it_out_":{"id":"I_ll_wait_it_out_","type":"scene","title":"","text":"Adelinde: Do not rush curing. That is how cellars eat people.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Return to the Springvale well in 3 hours. The ward salts must finish curing","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Check_the_Curing_Salts","label":"Wait for 3 hours, and after that go to Springvale (Mondstadt), do /rpg and click on Check the Curing Salts"}],"subScenes":[],"gateSubScenes":false},"Check_the_Curing_Salts":{"id":"Check_the_Curing_Salts","type":"scene","title":"","text":"''At the well the grit has gone pale to amber. Ready.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"To the vault","next":"To_the_vault","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Anything else first?","next":"Anything_else_first_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"To_the_vault":{"id":"To_the_vault","type":"scene","title":"","text":"''Dawn Winery's cellar stairs breathe cold. Geo light pulses past wreckage and old chalk.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Defeat the Geo guardians at the Load Stone vault under Dawn Winery","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Enter_the_Load_Stone_Vault","label":"Go to Dawn Winery (Mondstadt), do /rpg and click on Enter the Load Stone Vault. Defeat 2 [[Geo Slime]]s and 1 [[Geo Samachurl]]"}],"subScenes":[],"gateSubScenes":false},"Anything_else_first_":{"id":"Anything_else_first_","type":"scene","title":"","text":"''Adelinde's last scrap:'' Guardians first. Then three Geo seals. Then Corvin takes one shaving. Only one.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"To the vault","next":"To_the_vault","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Enter_the_Load_Stone_Vault":{"id":"Enter_the_Load_Stone_Vault","type":"scene","title":"","text":"''The Geo guardians crack and go quiet. Three seal pillars wake around the Load Stone.''\n\nCorvin: ''from the stair'' Good.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Talk_to_Corvin","label":"Do /rpg again and then click on Talk to Corvin"}],"subScenes":[],"gateSubScenes":false},"Talk_to_Corvin":{"id":"Talk_to_Corvin","type":"scene","title":"","text":"''The Geo guardians crack and go quiet. Three seal pillars wake around the Load Stone.''\n\nCorvin: ''from the stair'' Good.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Now the seals?","next":"Now_the_seals_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"What next?","next":"Now_the_seals_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Now_the_seals_":{"id":"Now_the_seals_","type":"scene","title":"","text":"Corvin: Three seals. Three Geo travelers. Same breath. I can hold one. You find two more who are not cowards.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"We'll wake them together","next":"We_ll_wake_them_together","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Why three?","next":"why_three","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"We_ll_wake_them_together":{"id":"We_ll_wake_them_together","type":"scene","title":"","text":"Corvin: When they open, one shaving. Only one. Greed gets people sealed in dirt.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Resonate the three Geo seals at the Load Stone vault with two other travelers","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"triple_geo_seals","label":"Do /rpg again and then click on Resonate the Geo Seals"}],"subScenes":[],"gateSubScenes":false},"why_three":{"id":"why_three","type":"scene","title":"","text":"Corvin: Because panic digging killed Orrin. The lock demands company so nobody opens this alone again.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll gather travelers","next":"I_ll_gather_travelers","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_ll_gather_travelers":{"id":"I_ll_gather_travelers","type":"scene","title":"","text":"Corvin: One shaving. Only one. Reed already paid the price of taking more than the stone allowed.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Resonate the three Geo seals at the Load Stone vault with two other travelers","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"triple_geo_seals","label":"Do /rpg again and then click on Resonate the Geo Seals"}],"subScenes":[],"gateSubScenes":false},"triple_geo_seals":{"id":"triple_geo_seals","type":"scene","title":"🪨 Triple Geo Seals","text":"''Three seals. Three Geo marks. They will only wake if three travelers answer together.''\n\nNeed 3 players with [img:../Textures/Elements/Element_Geo.webp]Geo element in Dawn Winery (Mondstadt)\n\nEach player must imbue each seals at the same time (within a ~3-second window of each other). Complete within 1 minute","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Talk_to_Corvin_","label":"Do /rpg again after successfully imbued Geo to the seals, and then click on Talk to Corvin"}],"subScenes":[],"gateSubScenes":false},"Talk_to_Corvin_":{"id":"Talk_to_Corvin_","type":"scene","title":"","text":"''Three Geo answers meet. The Load Stone sheds a clean plane of crystal.''\n\nCorvin: ''wrapping it'' Upstairs. Forge. Now.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Forge the plates","next":"Forge_the_plates","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Right behind you","next":"Forge_the_plates","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Forge_the_plates":{"id":"Forge_the_plates","type":"scene","title":"","text":"Corvin: Outer wall. Same crooked forge.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Return to Corvin at Dawn Winery for the load plates","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Collect_Your_Load_Plates","label":"Do /rpg again and then click on Collect Your Load Plates"}],"subScenes":[],"gateSubScenes":false},"Collect_Your_Load_Plates":{"id":"Collect_Your_Load_Plates","type":"scene","title":"","text":"''Heat drinks the shaving. Corvin rivets plates into your frame.''\n\nCorvin: Twenty kilograms more. Permanent.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Thank you","next":"____The_Load_Stone__Opened_by_Leave","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Worth the paperwork","next":"____The_Load_Stone__Opened_by_Leave","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"____The_Load_Stone__Opened_by_Leave":{"id":"____The_Load_Stone__Opened_by_Leave","type":"ending","title":"Opened by Leave","text":"Adelinde: ''from the path, dry'' I approved competence. Do not waste either.\n\nCorvin: ''almost smiling'' Go carry something heavy on purpose.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[],"rewards":[{"item":"Silver","qty":250,"icon":""},{"item":"AEXP","qty":280,"icon":""},{"item":"Carry Capacity upgraded to 60kg","qty":0,"icon":"🎒"}],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Place_the_Primed_Charge":{"id":"Place_the_Primed_Charge","type":"scene","title":"","text":"''The Windrise oak holds the sky open. West root hollow. Old Geo dust answers slight pressure.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Place Reed's primed charge","next":"Place_Reed_s_primed_charge_","best":false,"responseText":"","objectives":[],"itemReq":"Need 1x[img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''","_showItemReq":true},{"label":"Not yet","next":"Not_yet","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Not_yet":{"id":"Not_yet","type":"scene","title":"","text":"''The hollow waits. Reed's timer does not.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Place Reed's primed charge under the oak at Windrise","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Place_Reed_s_primed_charge_":{"id":"Place_Reed_s_primed_charge_","type":"scene","title":"","text":"''The primer sinks and stops humming, which somehow feels louder.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📦 Gave","text":"1x [img:../Textures/Items/Sealed Scroll_icon.png]'''[[Sealed Scroll]]'''","collapsed":false}],"choices":[{"label":"Back to Reed","next":"Back_to_Reed","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Soak time starts now","next":"Back_to_Reed","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Back_to_Reed":{"id":"Back_to_Reed","type":"scene","title":"","text":"''Somewhere under Mondstadt stone, a Geo line leans the wrong useful way. Three hours.''","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Return to Reed in Wolvendom in 3 hours. The charge must soak","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Check_the_Charge_Soak_with_Reed","label":"Wait for 3 hours, and after that go to Wolvendom (Mondstadt), do /rpg and click on Check the Charge Soak with Reed"}],"subScenes":[],"gateSubScenes":false},"Check_the_Charge_Soak_with_Reed":{"id":"Check_the_Charge_Soak_with_Reed","type":"scene","title":"","text":"Reed: Soak's done.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"Vault?","next":"Vault_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"What's left?","next":"Vault_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"Vault_":{"id":"Vault_","type":"scene","title":"","text":"Reed: Windrise again. Smoke clears in three hours. After that the vault locks will take a chorus.\n\nReed: ''quieter'' If you get a chance, tell the stone I am sorry. Or don't. I still will be.","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"I'll wait out the smoke","next":"I_ll_wait_out_the_smoke_","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"I'll tell it","next":"I_ll_wait_out_the_smoke_","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false},"I_ll_wait_out_the_smoke_":{"id":"I_ll_wait_out_the_smoke_","type":"scene","title":"","text":"Reed: When the oak air stops tasting like hot metal, go to the winery cellar. Corvin will be twitching.","embedUrl":"","embedLabel":"","dialogues":[{"speaker":"📌 Objective","text":"Return to the oak at Windrise in 3 hours. The smoke must clear","collapsed":false}],"choices":[],"rewards":[],"unlocks":"","requirement":"","continues":[{"next":"Check_the_Primer_Site","label":"Wait for 3 hours, and after that go to Windrise (Mondstadt), do /rpg and click on Check the Primer Site"}],"subScenes":[],"gateSubScenes":false},"Check_the_Primer_Site":{"id":"Check_the_Primer_Site","type":"scene","title":"","text":"''The hollow is clean of smoke. Only oak and faint warmth remain.''","embedUrl":"","embedLabel":"","dialogues":[],"choices":[{"label":"To the vault","next":"To_the_vault","best":false,"responseText":"","objectives":[],"itemReq":""},{"label":"Guardians, then seals","next":"To_the_vault","best":false,"responseText":"","objectives":[],"itemReq":""}],"rewards":[],"unlocks":"","requirement":"","continues":[],"subScenes":[],"gateSubScenes":false}};
+const questMeta={"requirement":"Explore Dawn Winery (40%+ exploration) to trigger this quest.","locations":["[[Locations#Dawn_Winery|Dawn Winery]]"],"questType":"special","customTabs":[{"id":"tip1","label":"TIP","color":"#ff0000","content":"You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.","collapsible":true}],"tabOrder":["loc","req","type","ct_tip1"]};
+const ICONS_OBJ={};
+var WIKI_BASE="https://dawnwineryrpg.miraheze.org/wiki/";
+var WIKI_MODE=true;
+function wikiUrlPart(n){return String(n||"").trim().replace(/ /g,"_").split("/").map(encodeURIComponent).join("/");}
+function wikiPageUrl(n){return WIKI_BASE+wikiUrlPart(n);}
+function wikiFileUrl(n){return WIKI_BASE+"Special:FilePath/"+wikiUrlPart(n);}
+function isUrlLike(s){s=String(s||"").trim();return /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s)||/^(\.\.?\/|\/)/.test(s)||/\.(html?|php)(\?.*)?$/i.test(s);}
+let currentPlayId="start";
+let subVisited={};
+let openSubId=null;
+let openSubNodeId=null;
+let branchMode="tree";
+let treeVisited={};
+let treeFirstLabel={};
+function eh(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function wl(s){  var WCLR={red:"#e53935",orange:"#e65100",gold:"#c79800",yellow:"#f9a825",green:"#2e7d32",teal:"#00796b",blue:"#1565c0",cyan:"#0097a7",purple:"#6a1b9a",pink:"#c2185b",gray:"#607d8b",white:"#f5f5f5",black:"#212121"};  function e(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");}  function wlInline(rest){    var tokenRe=new RegExp("'''''(.+?)'''''|'''(.+?)'''|''(.+?)''|__(.+?)__|~~(.+?)~~|\\[\\[([^|\\]]+)\\|([^\\]]+)\\]\\]|\\[\\[([^|\\]]+)\\]\\]|\\[img:([^\\]|]+)(?:\\|([^\\]|]+))?(?:\\|([^\\]]+))?\\]|\\[size:((?:[\\d.]+(?:em|px|%)?)|sm|small|xs|lg|large|xl|xxl)\\|([^\\]]+)\\]|\\{([a-zA-Z#][a-zA-Z0-9]*)\\|([^}]+)\\}","g");    var result="",last=0,m;    while((m=tokenRe.exec(rest))!==null){      result+=e(rest.slice(last,m.index));      if(m[1]!==undefined)result+="<b><i>"+wlInline(m[1])+"</i></b>";      else if(m[2]!==undefined)result+="<b>"+wlInline(m[2])+"</b>";      else if(m[3]!==undefined)result+="<i>"+wlInline(m[3])+"</i>";      else if(m[4]!==undefined)result+="<u>"+wlInline(m[4])+"</u>";      else if(m[5]!==undefined)result+="<s>"+wlInline(m[5])+"</s>";      else if(m[6]!==undefined){var lft=m[6],rgt=m[7];if(WIKI_MODE&&!isUrlLike(rgt)){result+='<a href="'+e(wikiPageUrl(lft))+'" target="_blank" rel="noopener">'+wlInline(rgt)+'</a>';}else{var u=rgt.replace(/\"/g,"&quot;");result+='<a href="'+u+'" target="_blank" rel="noopener">'+wlInline(lft)+'</a>';}}      else if(m[8]!==undefined){var lbl=m[8].trim();if(WIKI_MODE){result+='<a href="'+e(wikiPageUrl(lbl))+'" target="_blank" rel="noopener">'+wlInline(lbl)+'</a>';}else{result+=e("[["+lbl+"]]");}}      else if(m[9]!==undefined){var n=m[9].trim();var ilbl=n,isz=null;var szRe=/^\d+(\.\d+)?(px|%|em)?(\s*x\s*\d+(\.\d+)?(px|%|em)?)?$/i;if(m[11]!==undefined){ilbl=m[10].trim();isz=m[11].trim();}else if(m[10]!==undefined){var p=m[10].trim();if(szRe.test(p))isz=p;else ilbl=p;}var isPath=/^(\.\.\/|\.\/)/.test(n)||n[0]==="/"||isUrlLike(n);var src;if(isPath)src=n;else src=ICONS_OBJ[n];var ist="";if(isz){var idm=isz.match(/^(\d+(?:\.\d+)?(?:px|%|em)?)\s*(?:x\s*(\d+(?:\.\d+)?(?:px|%|em)?))?$/i);var inrm=function(v){return /^[\d.]+$/.test(v)?v+"px":v;};ist=idm[2]?' style="width:'+e(inrm(idm[1]))+';height:'+e(inrm(idm[2]))+'"':' style="width:'+e(inrm(idm[1]))+'"';}result+=src?'<img class="obj-icon" src="'+e(src)+'" alt="'+e(ilbl)+'" title="'+e(ilbl)+'"'+ist+'>':'<span style="opacity:.5;font-family:monospace;font-size:11px">[img:'+e(n)+']</span>';}      else if(m[12]!==undefined){var rawSz=m[12].trim();var szMap={sm:"0.8em",small:"0.8em",xs:"0.65em",lg:"1.25em",large:"1.25em",xl:"1.5em",xxl:"1.8em"};var szv=szMap[rawSz.toLowerCase()]||rawSz;result+='<span style="font-size:'+e(szv)+'">'+wlInline(m[13])+'</span>';}      else if(m[14]!==undefined){var clr=WCLR[m[14]]||m[14];result+='<span style="color:'+clr+'">'+wlInline(m[15])+'</span>';}      last=m.index+m[0].length;    }    result+=e(rest.slice(last));    return result;  }  var lines=String(s||"").split("\n");  var out="",inList=false,paraBuf=[];  function flushPara(){if(paraBuf.length){out+=wlInline(paraBuf.join("\n")).replace(/\n/g,"<br>");paraBuf=[];}}  for(var li=0;li<lines.length;li++){    var line=lines[li];    var bm=line.match(/^\s*[*\-]\s+(.+)$/);    if(bm){      flushPara();      if(!inList){out+="<ul class=\"wiki-list\">";inList=true;}      out+="<li>"+wlInline(bm[1])+"</li>";      continue;    }    if(inList){out+="</ul>";inList=false;}    var headM=line.match(/^==(.+?)==\s*$/);    if(headM){flushPara();out+="<span style=\"font-size:1.15em;font-weight:700;display:block;margin:4px 0 2px\">"+wlInline(headM[1])+"</span>";continue;}    paraBuf.push(line);  }  flushPara();  if(inList)out+="</ul>";  return out;}
+function metaBannersHTML(variant){  var order=(questMeta.tabOrder||[]).slice();  var validKeys=["loc","req","type"].concat((questMeta.customTabs||[]).map(function(t){return "ct_"+t.id;}));  order=order.filter(function(k){return validKeys.indexOf(k)!==-1;});  validKeys.forEach(function(k){if(order.indexOf(k)===-1)order.push(k);});  var locClass=variant==="t"?"tloc":(variant==="play"?"loc-box":"bloc");  var locLblClass=variant==="t"?"tloc-lbl":(variant==="play"?"loc-lbl":"bloc-lbl");  var reqClass=variant==="t"?"treq":(variant==="play"?"req-box":"breq");  var reqLblClass=variant==="t"?"treq-lbl":(variant==="play"?"req-lbl":"breq-lbl");  var out="";  order.forEach(function(key){    if(key==="loc"){      var locs=(questMeta.locations||[]).filter(function(l){return l.trim();});      if(locs.length)out+="<div class=\""+locClass+"\"><span class=\""+locLblClass+"\">📍 Locations</span>"+locs.map(function(l){return wl(l);}).join("<br>")+"</div>";    } else if(key==="req"){      if(questMeta.requirement)out+="<div class=\""+reqClass+"\"><span class=\""+reqLblClass+"\">⚠ Requirement</span>"+wl(questMeta.requirement)+"</div>";    } else if(key.indexOf("ct_")===0){      var t=(questMeta.customTabs||[]).filter(function(ct){return "ct_"+ct.id===key;})[0];      if(t&&t.content&&t.content.trim()){        var c=t.color||"#7a5c10";        var collapsible=t.collapsible!==false;        var boxClass=collapsible?"cnote-box collapsed":"cnote-box";        var lblClass=collapsible?"cnote-lbl":"cnote-lbl no-toggle";        var onclk=collapsible?" onclick=\"this.parentElement.classList.toggle('collapsed')\"":"";        out+="<div class=\""+boxClass+"\" style=\"border-color:"+eh(c)+";background:"+eh(c)+"1a\"><span class=\""+lblClass+"\" style=\"color:"+eh(c)+"\""+onclk+">"+eh(t.label||"Note")+"</span><div class=\"cnote-content\">"+wl(t.content)+"</div></div>";      }    }  });  return out;}
+var ICONS={Silver:"../Textures/silver.png",AEXP:"../Textures/aexp.png",Mora:"../Textures/mora.png"};
+function isImgPath(v){return /^(https?:)?\/\//i.test(v)||v.indexOf("/")>-1||/\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(v);}
+function rewIcon(r,w){var custom=(r.icon||"").trim();if(custom){if(isImgPath(custom)){return "<img src=\""+eh(custom)+"\" alt=\""+eh(r.item||"")+"\" width=\""+w+"\" height=\""+w+"\" style=\"object-fit:contain;image-rendering:pixelated\" onerror=\"this.style.display='none'\">";}return "<span class=\"reward-icon-emoji\" style=\"font-size:"+Math.round(w*0.7)+"px\">"+eh(custom)+"</span>";}if(ICONS[r.item]){return "<img src=\""+eh(ICONS[r.item])+"\" alt=\""+eh(r.item||"")+"\" width=\""+w+"\" height=\""+w+"\" style=\"object-fit:contain;image-rendering:pixelated\">";}return "";}
+function rewQty(r){return (r.qty&&Number(r.qty)>0)?" ×"+r.qty:"";}
+function rewardItemsHtml(rewards,imgW){var h="";(rewards||[]).forEach(function(r){h+="<span class=\"reward-it\">"+rewIcon(r,imgW)+wl(r.item)+rewQty(r)+"</span>";});return h;}
+function getSubNodesJs(sub){if(!Array.isArray(sub.nodes)){sub.nodes=[{id:"node_"+Math.random().toString(36).slice(2,8),text:sub.text||"",dialogues:Array.isArray(sub.dialogues)?sub.dialogues:[],choices:Array.isArray(sub.choices)?sub.choices:[]}];}return sub.nodes;}
+function subNodeLabelJs(node,ix){return (node.name&&node.name.trim())?node.name:"Node "+(ix+1);}
+function subChoicesHtml(node){var out="";if(node.choices&&node.choices.length){out+="<div class=\"bchoices\" style=\"margin-top:6px\">";node.choices.forEach(function(ch){out+="<div class=\"bchoice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(ch.label)||"...")+"</span></div>";});out+="</div>";}if(node.continues&&node.continues.length){out+="<div class=\"bchoices\" style=\"margin-top:6px\">";node.continues.forEach(function(cn){out+="<div class=\"bchoice\" style=\"opacity:.8;border-style:dashed\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(cn.label)||"Continue")+"</span></div>";});out+="</div>";}return out;}
+function subScenesCardHtml(s){if(!s.subScenes||!s.subScenes.length)return "";var out="<div class=\"bsubs\">";s.subScenes.forEach(function(sub){var nodes=getSubNodesJs(sub);out+="<details class=\"bsub\" onclick=\"event.stopPropagation()\"><summary class=\"bsub-title\">"+eh(sub.title||"Sub-Scene")+"</summary><div class=\"bsub-inner bsub-nodes\">";nodes.forEach(function(node){out+="<div class=\"bsub-node\">";if(node.name&&node.name.trim())out+="<div class=\"bsub-node-name\">"+eh(node.name)+"</div>";if(node.text)out+="<div class=\"bsub-text\">"+wl(node.text)+"</div>";(node.dialogues||[]).forEach(function(d){out+="<div class=\"dlg-visible\" style=\"margin-top:3px\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";});out+="</div>";out+=subChoicesHtml(node);});out+="</div></details>";});out+="</div>";return out;}
+function subScenesTreeHtml(s){if(!s.subScenes||!s.subScenes.length)return "";var out="";s.subScenes.forEach(function(sub){var nodes=getSubNodesJs(sub);out+="<details class=\"tsub\" onclick=\"event.stopPropagation()\"><summary class=\"tsub-title\">"+eh(sub.title||"Sub-Scene")+"</summary><div class=\"tsub-inner tsub-nodes\">";nodes.forEach(function(node){out+="<div class=\"tsub-node\">";if(node.name&&node.name.trim())out+="<div class=\"tsub-node-name\">"+eh(node.name)+"</div>";if(node.text)out+="<div class=\"tsub-text\">"+wl(node.text)+"</div>";(node.dialogues||[]).forEach(function(d){out+="<div class=\"tdlg\" style=\"margin-top:3px\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";});out+="</div>";out+=subChoicesHtml(node);});out+="</div></details>";});return out;}
+function openPlay(){go(currentPlayId);document.getElementById("sim-modal").classList.add("open");}
+function closePlay(){document.getElementById("sim-modal").classList.remove("open");}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closePlay();});
+function setBranchMode(m){
+  branchMode=m;
+  document.getElementById("btn-cards").classList.toggle("active",m==="cards");
+  document.getElementById("btn-tree").classList.toggle("active",m==="tree");
+  var cb=document.getElementById("collapse-btn");
+  cb.classList.toggle("visible",m==="tree"&&!(endingsMode&&!selectedEndingPath));
+  if(m==="tree"){treeCollapsed=false;cb.textContent="▼ Collapse";}
+  renderBranchBody();
+}
+var endingsMode=false;
+var selectedEndingPath=null;
+function toggleEndingsMode(){
+  endingsMode=!endingsMode;
+  selectedEndingPath=null;
+  document.getElementById("endings-btn").classList.toggle("active",endingsMode);
+  renderBranchBody();
+}
+function renderBranchBody(){
+  var cb=document.getElementById("collapse-btn");
+  cb.classList.toggle("visible",branchMode==="tree"&&!(endingsMode&&!selectedEndingPath));
+  if(endingsMode){
+    if(selectedEndingPath){branchMode==="tree"?renderPathTree(selectedEndingPath):renderPathCards(selectedEndingPath);}
+    else{renderEndingsList();}
+  } else {
+    branchMode==="tree"?renderTree():renderCards();
+  }
+}
+function findEdgeLabel(s,nextId){
+  var m=(s.choices||[]).filter(function(c){return c.next===nextId;})[0];
+  if(m)return m.label||"...";
+  var mc=(s.continues||[]).filter(function(c){return c.next===nextId;})[0];
+  if(mc)return mc.label||"Continue";
+  return "...";
+}
+function findPathToEnding(targetId){
+  if(!scenes[targetId])return null;
+  var visited={start:true};
+  var queue=[["start"]];
+  while(queue.length){
+    var path=queue.shift();
+    var id=path[path.length-1];
+    if(id===targetId)return path;
+    var s=scenes[id];if(!s)continue;
+    var edges=[];
+    (s.choices||[]).forEach(function(c){if(c.next)edges.push(c.next);});
+    (s.continues||[]).forEach(function(c){if(c.next)edges.push(c.next);});
+    for(var i=0;i<edges.length;i++){
+      var nid=edges[i];
+      if(!visited[nid]&&scenes[nid]){visited[nid]=true;queue.push(path.concat([nid]));}
+    }
+  }
+  return null;
+}
+function renderEndingsList(){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var endingIds=Object.keys(scenes).filter(function(k){return scenes[k].type==="ending";});
+  if(!endingIds.length){bv.innerHTML="<div class=\"endings-empty\">No endings in this quest yet.</div>";return;}
+  var hint=document.createElement("div");hint.className="endings-list-hint";hint.textContent="Tap an ending to see the branches that lead to it.";bv.appendChild(hint);
+  var wrap=document.createElement("div");wrap.className="endings-list";
+  endingIds.forEach(function(id){
+    var s=scenes[id];
+    var el=document.createElement("div");el.className="ending-pick-card";
+    el.onclick=function(){selectEndingPath(id);};
+    var inner="<div class=\"bhead\"><span class=\"bbadge b-ending\">Ending</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"</div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+wl(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;wrap.appendChild(el);
+  });
+  bv.appendChild(wrap);
+}
+function selectEndingPath(id){
+  var path=findPathToEnding(id);
+  if(!path){
+    var bv=document.getElementById("branch-body");
+    bv.innerHTML="<button class=\"back-to-endings-btn\" onclick=\"selectedEndingPath=null;renderBranchBody();\">← All Endings</button><div class=\"path-unreachable\">This ending has no path from Start — it may only be reachable through branches that aren't currently connected.</div>";
+    return;
+  }
+  selectedEndingPath=path;
+  renderBranchBody();
+}
+function backToEndingsList(){selectedEndingPath=null;renderBranchBody();}
+function renderPathCards(path){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var back=document.createElement("button");back.className="back-to-endings-btn";back.textContent="← All Endings";back.onclick=backToEndingsList;bv.appendChild(back);
+  path.forEach(function(id,idx){
+    var s=scenes[id];if(!s)return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    var el=document.createElement("div");el.className="bscene"+(id===currentPlayId?" playing":"");el.id="bscene-"+id;
+    var inner="<div class=\"bhead\"><span class=\"bbadge "+bclass+"\">"+blabel+"</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"<button class=\"bplay-btn\" onclick=\"go('"+id+"')\">&#9654;</button></div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.dialogues&&s.dialogues.length){
+      inner+="<div class=\"bdlg-wrap\">";
+      s.dialogues.forEach(function(d){if(d.collapsed){inner+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{inner+="<div class=\"dlg-visible\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";}});
+      inner+="</div>";
+    }
+    inner+=subScenesCardHtml(s);
+    if(idx<path.length-1){
+      var label=findEdgeLabel(s,path[idx+1]);
+      inner+="<div class=\"bchoices\"><div class=\"bchoice path-choice\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+wl(label)+"</span></div></div>";
+    }
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+wl(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;bv.appendChild(el);
+  });
+}
+function renderPathTree(path){
+  var bv=document.getElementById("branch-body");
+  var html="<button class=\"back-to-endings-btn\" onclick=\"backToEndingsList()\">← All Endings</button>";
+  html+="<div class=\"troot\">";
+  path.forEach(function(id,idx){
+    var s=scenes[id];if(!s)return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    html+="<div class=\"tnode\">";
+    html+="<div class=\"tcard"+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+    html+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span><span class=\"ttitle\">"+eh(s.title)+"</span>";
+    html+="</div>";
+    var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.subScenes&&s.subScenes.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+    if(hasBody){
+      html+="<div class=\"tnode-body\">";
+      if(s.text)html+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";
+      if(s.embedUrl)html+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";
+      if(s.dialogues&&s.dialogues.length){
+        html+="<div class=\"tdlgs\">";
+        s.dialogues.forEach(function(d){
+          if(d.collapsed){html+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}
+          else{html+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}
+        });
+        html+="</div>";
+      }
+      html+=subScenesTreeHtml(s);
+      if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){html+="<span class=\"treward-item\">"+rewIcon(r,16)+wl(r.item)+rewQty(r)+"</span>";});html+="</div>";}
+      if(s.type==="ending"&&s.unlocks){html+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+      html+="</div>";
+    }
+    if(idx<path.length-1){
+      var label=findEdgeLabel(s,path[idx+1]);
+      html+="<div class=\"tchoice-inline\"><div class=\"tchoice-label\"><span class=\"tchoice-label-text\">"+wl(label)+"</span></div></div>";
+    }
+    html+="</div>";
+  });
+  html+="</div>";
+  bv.innerHTML=html;
+}
+var treeCollapsed=false;
+var bestRouteMode=0;
+function getBestRouteIds(){
+  var ids={};
+  function walk(id){
+    if(!id||!scenes[id]||ids[id])return;
+    ids[id]=true;
+    var s=scenes[id];
+    var bestChoices=(s.choices||[]).filter(function(c){return c.best;});
+    if(bestChoices.length>0){
+      bestChoices.forEach(function(c){if(c.next)walk(c.next);});
+    } else {
+      (s.choices||[]).forEach(function(c){if(c.next)walk(c.next);});
+    }
+    var conts=(s.continues||[]);
+    var bestConts=conts.filter(function(c){return c.best;});
+    (bestConts.length>0?bestConts:conts).forEach(function(c){if(c.next)walk(c.next);});
+  }
+  walk("start");
+  return ids;
+}
+function getImportantOnlyOrder(){
+  var bestIds=getBestRouteIds();
+  var fullOrder=["start"].concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="scene"&&k!=="start";})).concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="ending";}));
+  var triggerIds={};
+  fullOrder.forEach(function(id){if(scenes[id]&&((scenes[id].choices||[]).some(function(c){return c.best;})||(scenes[id].continues||[]).some(function(c){return c.best;})))triggerIds[id]=true;});
+  var postTriggerIds={};
+  function walkBest(id,afterTrigger,visited){
+    visited=visited||{};
+    if(!id||!scenes[id]||visited[id])return;
+    visited[id]=true;
+    if(afterTrigger)postTriggerIds[id]=true;
+    var s=scenes[id];
+    var bc=(s.choices||[]).filter(function(c){return c.best;});
+    var nowAfter=afterTrigger||!!triggerIds[id];
+    if(bc.length>0){bc.forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
+    else{(s.choices||[]).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});}
+    var conts=(s.continues||[]);
+    var bestConts=conts.filter(function(c){return c.best;});
+    (bestConts.length>0?bestConts:conts).forEach(function(c){if(c.next)walkBest(c.next,nowAfter,visited);});
+  }
+  walkBest("start",false);
+  var importantSet={};
+  importantSet["start"]=true;
+  var filteredOrder=fullOrder.filter(function(id){return bestIds[id];});
+  filteredOrder.forEach(function(id,idx){
+    if(triggerIds[id]){importantSet[id]=true;if(idx>0)importantSet[filteredOrder[idx-1]]=true;}
+    if(postTriggerIds[id])importantSet[id]=true;
+  });
+  var result=[];var lastWasImportant=false;
+  fullOrder.forEach(function(id){
+    if(!bestIds[id])return;
+    if(importantSet[id]){
+      if(!lastWasImportant&&result.length>0&&result[result.length-1]!=="...")result.push("...");
+      result.push(id);lastWasImportant=true;
+    } else {lastWasImportant=false;}
+  });
+  return result;
+}
+function toggleBestRoute(){
+  bestRouteMode=(bestRouteMode+1)%3;
+  var btn=document.getElementById("best-route-btn");
+  btn.classList.remove("active-normal","active-important");
+  if(bestRouteMode===0){btn.textContent="⭐ Best Route";}
+  else if(bestRouteMode===1){btn.textContent="⭐ Best Route";btn.classList.add("active-normal");}
+  else{btn.textContent="⭐ Important Only";btn.classList.add("active-important");}
+  renderBranchBody();
+}
+function toggleTreeCollapse(){
+  treeCollapsed=!treeCollapsed;
+  var bv=document.getElementById("branch-body");
+  bv.classList.toggle("tree-collapsed",treeCollapsed);
+  var cb=document.getElementById("collapse-btn");
+  cb.textContent=treeCollapsed?"▶ Expand":"▼ Collapse";
+  requestAnimationFrame(drawTreeLines);
+}
+function go(id){
+  var s=scenes[id];if(!s)return;
+  currentPlayId=id;
+  document.getElementById("scene-title").textContent=s.title||"";
+  document.getElementById("scene-title").style.display=s.title?"":"none";
+  var reqEl=document.getElementById("scene-req");reqEl.style.display="none";
+  var locEl=document.getElementById("scene-loc");locEl.style.display="none";
+  var notesEl=document.getElementById("scene-notes");notesEl.style.display="none";
+  var _mb=metaBannersHTML("play");if(_mb){notesEl.innerHTML=_mb;notesEl.style.display="block";}
+  document.getElementById("scene-text").innerHTML=wl(s.text||"");
+  var embEl=document.getElementById("scene-embed");
+  if(s.embedUrl){embEl.innerHTML="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\"></iframe></details>";embEl.style.display="block";}else{embEl.innerHTML="";embEl.style.display="none";}
+  var dEl=document.getElementById("dialogues");dEl.innerHTML="";
+  (s.dialogues||[]).forEach(function(d){
+    if(d.collapsed){
+      var det=document.createElement("details");
+      var sum=document.createElement("summary");sum.textContent=d.speaker||"Objective";
+      var txt=document.createElement("div");txt.className="dlg-text";txt.innerHTML=wl(d.text||"");
+      det.appendChild(sum);det.appendChild(txt);dEl.appendChild(det);
+    } else {
+      var vis=document.createElement("div");vis.className="dlg-visible";
+      vis.innerHTML="<span class=\"dlg-vis-spk\">"+(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div>";
+      dEl.appendChild(vis);
+    }
+  });
+  openSubId=null;openSubNodeId=null;
+  var gated=renderSubscenes(s);
+  var cEl=document.getElementById("choices");cEl.innerHTML="";
+  var rwb=document.getElementById("reward-box");rwb.style.display="none";
+  var uwb=document.getElementById("unlocks-box");uwb.style.display="none";
+  if(gated){
+    var gateMsg=document.createElement("div");
+    gateMsg.style.cssText="margin-top:6px;padding:10px 12px;background:#f5f5f5;border:1px dashed #ccc;border-radius:6px;color:#888;font-size:12px;font-family:sans-serif";
+    gateMsg.textContent="Open every sub-scene above before this scene's choices unlock.";
+    cEl.appendChild(gateMsg);
+  } else if(s.choices&&s.choices.length){
+    s.choices.forEach(function(c,ci){
+      if(c.itemReq&&c.itemReq.trim()){
+        var ireq=document.createElement("div");ireq.className="choice-itemreq";ireq.innerHTML="\ud83d\udd12 "+wl(c.itemReq);
+        cEl.appendChild(ireq);
+      }
+      var btn=document.createElement("button");btn.className="choice-btn"+(c.best?" best":"");
+      btn.innerHTML="<span class=\"choice-btn-label\">"+(wl(c.label)||"...")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">\u2B50 Best Route</span>":"");
+      if(c.next&&scenes[c.next]){btn.onclick=function(){go(c.next);};}
+      else if(c.responseText){
+        (function(b,rt){b.onclick=function(){
+          if(b.disabled)return;
+          var rd=document.createElement("div");
+          rd.style.cssText="padding:4px 2px 8px;font-size:15px;line-height:1.7;color:var(--text);font-family:Georgia,serif";
+          rd.innerHTML=wl(rt);
+          b.parentNode.insertBefore(rd,b.nextSibling);
+          b.disabled=true;b.style.opacity=".65";
+        };}(btn,c.responseText));
+      }
+      else{btn.disabled=true;btn.style.opacity=".4";}
+      cEl.appendChild(btn);
+      if(c.objectives&&c.objectives.length){
+        c.objectives.forEach(function(obj){
+          if(obj.collapsed){
+            var det=document.createElement("details");
+            det.style.cssText="background:#f5f5f5;border:1px solid #ccc;border-radius:6px;margin-top:4px;overflow:hidden";
+            var sum=document.createElement("summary");sum.style.cssText="cursor:pointer;padding:9px 12px;font-family:var(--font-ui,sans-serif);font-size:12px;font-weight:600;color:var(--gold,#7a5c10);list-style:none;display:flex;align-items:center;gap:6px";sum.textContent=obj.speaker||"Objective";
+            var txt=document.createElement("div");txt.className="dlg-text";txt.innerHTML=wl(obj.text||"");
+            det.appendChild(sum);det.appendChild(txt);cEl.appendChild(det);
+          } else {
+            var vis=document.createElement("div");vis.className="dlg-visible";vis.style.cssText="margin-top:4px";
+            vis.innerHTML="<span class=\"dlg-vis-spk\">"+(obj.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(obj.text||"")+"</div>";
+            cEl.appendChild(vis);
+          }
+        });
+      }
+    });
+    (function(){
+      var contsAll=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+      var contsBest=contsAll.filter(function(c){return c.best;});
+      var contsVis=(bestRouteMode>0)&&contsBest.length>0?contsBest:contsAll;
+      contsVis.forEach(function(c){
+        var cntBtn=document.createElement("button");cntBtn.className="choice-btn"+(c.best?" best":"");cntBtn.style.cssText=c.best?"border-style:dashed":"background:#f0f0f0;border-style:dashed";
+        cntBtn.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">⭐ Best Route</span>":"");
+        cntBtn.onclick=function(){go(c.next);};
+        cEl.appendChild(cntBtn);
+      });
+    })();
+  } else if((s.continues||[]).some(function(c){return c.next&&scenes[c.next];})){
+    (function(){
+      var contsAll2=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+      var contsBest2=contsAll2.filter(function(c){return c.best;});
+      var contsVis2=(bestRouteMode>0)&&contsBest2.length>0?contsBest2:contsAll2;
+      contsVis2.forEach(function(c){
+        var cntBtn2=document.createElement("button");cntBtn2.className="choice-btn"+(c.best?" best":"");
+        cntBtn2.innerHTML="<span class=\"choice-btn-label\">→ "+(c.label?wl(c.label):"Continue")+"</span>"+(c.best?"<span class=\"choice-btn-badge\">⭐ Best Route</span>":"");
+        cntBtn2.onclick=function(){go(c.next);};
+        cEl.appendChild(cntBtn2);
+      });
+    })();
+  } else {
+    if(s.rewards&&s.rewards.length){
+      var rEl=document.getElementById("reward-box");
+      var ri="<div class=\"reward-items\">";
+      s.rewards.forEach(function(r){ri+="<div class=\"reward-item\">"+rewIcon(r,20)+"<span class=\"reward-item-name\">"+wl(r.item)+"</span><span class=\"reward-item-qty\">"+rewQty(r)+"</span></div>";});
+      ri+="</div>";
+      rEl.innerHTML="<span class=\"reward-label\">🎁 Rewards</span>"+ri;
+      rEl.style.display="flex";
+    }
+    if(s.unlocks){document.getElementById("unlocks-text").innerHTML=wl(s.unlocks);uwb.style.display="flex";}
+  }
+  document.getElementById("play-body").scrollTo({top:0,behavior:"smooth"});
+  document.querySelectorAll(".bscene").forEach(function(el){el.classList.toggle("playing",el.id==="bscene-"+id);});
+  document.querySelectorAll(".tcard").forEach(function(el){el.classList.toggle("playing",el.id==="tcard-"+id);});
+}
+function renderSubscenes(s){
+  var subEl=document.getElementById("subscenes");subEl.innerHTML="";
+  if(!s.subScenes||!s.subScenes.length)return false;
+  if(!subVisited[s.id])subVisited[s.id]={};
+  var doneCount=s.subScenes.filter(function(sub){return subVisited[s.id][sub.id];}).length;
+  var hdr=document.createElement("div");
+  hdr.style.cssText="font-size:11px;font-weight:700;font-family:sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--text3,#888);margin:4px 0 6px";
+  hdr.textContent="Sub-Scenes ("+doneCount+"/"+s.subScenes.length+")";
+  subEl.appendChild(hdr);
+  var wrap=document.createElement("div");wrap.style.cssText="display:flex;flex-direction:column;gap:6px;margin-bottom:10px";
+  s.subScenes.forEach(function(sub,i){
+    var done=!!subVisited[s.id][sub.id];
+    var b=document.createElement("button");b.className="choice-btn";b.style.textAlign="left";if(done)b.style.opacity=".6";
+    b.innerHTML="<span class=\"choice-btn-label\">"+(done?"\u2713 ":"\u25CB ")+eh(sub.title||"Untitled Sub-Scene")+"</span>";
+    b.onclick=function(){openSub(s.id,i);};
+    wrap.appendChild(b);
+  });
+  subEl.appendChild(wrap);
+  return !!s.gateSubScenes && s.subScenes.some(function(sub){return !subVisited[s.id][sub.id];});
+}
+function openSub(sceneId,i,nodeId){
+  var s=scenes[sceneId];if(!s||!s.subScenes||!s.subScenes[i])return;
+  var sub=s.subScenes[i];
+  var nodes=getSubNodesJs(sub);
+  var node=nodeId?(nodes.filter(function(n){return n.id===nodeId;})[0]||nodes[0]):nodes[0];
+  openSubId=i;
+  openSubNodeId=node.id;
+  document.getElementById("scene-title").textContent=sub.title||"";
+  document.getElementById("scene-title").style.display=sub.title?"":"none";
+  document.getElementById("scene-req").style.display="none";
+  document.getElementById("scene-loc").style.display="none";
+  document.getElementById("scene-notes").style.display="none";
+  document.getElementById("scene-text").innerHTML=wl(node.text||"");
+  var embEl2=document.getElementById("scene-embed");embEl2.innerHTML="";embEl2.style.display="none";
+  document.getElementById("dialogues").innerHTML="";
+  var subDEl=document.getElementById("dialogues");
+  (node.dialogues||[]).forEach(function(d){
+    if(d.collapsed){
+      var sdet=document.createElement("details");
+      var ssum=document.createElement("summary");ssum.textContent=d.speaker||"Objective";
+      var stxt=document.createElement("div");stxt.className="dlg-text";stxt.innerHTML=wl(d.text||"");
+      sdet.appendChild(ssum);sdet.appendChild(stxt);subDEl.appendChild(sdet);
+    } else {
+      var svis=document.createElement("div");svis.className="dlg-visible";
+      svis.innerHTML="<span class=\"dlg-vis-spk\">"+(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div>";
+      subDEl.appendChild(svis);
+    }
+  });
+  document.getElementById("subscenes").innerHTML="";
+  document.getElementById("reward-box").style.display="none";
+  document.getElementById("unlocks-box").style.display="none";
+  var cEl=document.getElementById("choices");cEl.innerHTML="";
+  (node.choices||[]).forEach(function(ch){
+    var chBtn=document.createElement("button");chBtn.className="choice-btn";
+    var t=ch.targetType||"scene";
+    if(t==="node"){
+      var targetNode=nodes.filter(function(n){return n.id===ch.target;})[0];
+      if(targetNode){
+        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span>";
+        chBtn.onclick=function(){openSub(sceneId,i,targetNode.id);};
+      } else {
+        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span> <span style=\"font-size:11px\">(missing node)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
+      }
+    } else if(t==="sub"){
+      var sIdx=-1;(s.subScenes||[]).forEach(function(x,xi){if(x.id===ch.target)sIdx=xi;});
+      if(sIdx>=0){
+        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span>";
+        chBtn.onclick=function(){openSub(sceneId,sIdx);};
+      } else {
+        chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span> <span style=\"font-size:11px\">(missing sub-scene)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
+      }
+    } else if(ch.target&&scenes[ch.target]){
+      chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span>";
+      chBtn.onclick=function(){
+        if(!subVisited[sceneId])subVisited[sceneId]={};
+        subVisited[sceneId][sub.id]=true;
+        openSubId=null;openSubNodeId=null;
+        go(ch.target);
+      };
+    } else {
+      chBtn.innerHTML="<span class=\"choice-btn-label\">"+(wl(ch.label)||"...")+"</span> <span style=\"font-size:11px\">(no destination)</span>";chBtn.disabled=true;chBtn.style.opacity=".4";
+    }
+    cEl.appendChild(chBtn);
+  });
+  (node.continues||[]).forEach(function(cn){
+    var ct=cn.targetType||"scene";
+    var cntBtn=document.createElement("button");cntBtn.className="choice-btn";cntBtn.style.cssText="background:#f0f0f0;border-style:dashed";
+    var clbl=cn.label?wl(cn.label):"Continue";
+    if(ct==="node"){
+      var cTargetNode=nodes.filter(function(n){return n.id===cn.target;})[0];
+      if(cTargetNode){
+        cntBtn.innerHTML="<span class=\"choice-btn-label\">\u2192 "+clbl+"</span>";
+        cntBtn.onclick=function(){openSub(sceneId,i,cTargetNode.id);};
+        cEl.appendChild(cntBtn);
+      }
+    } else if(ct==="sub"){
+      var cSIdx=-1;(s.subScenes||[]).forEach(function(x,xi){if(x.id===cn.target)cSIdx=xi;});
+      if(cSIdx>=0){
+        cntBtn.innerHTML="<span class=\"choice-btn-label\">\u2192 "+clbl+"</span>";
+        cntBtn.onclick=function(){openSub(sceneId,cSIdx);};
+        cEl.appendChild(cntBtn);
+      }
+    } else if(cn.target&&scenes[cn.target]){
+      cntBtn.innerHTML="<span class=\"choice-btn-label\">\u2192 "+clbl+"</span>";
+      cntBtn.onclick=function(){
+        if(!subVisited[sceneId])subVisited[sceneId]={};
+        subVisited[sceneId][sub.id]=true;
+        openSubId=null;openSubNodeId=null;
+        go(cn.target);
+      };
+      cEl.appendChild(cntBtn);
+    }
+  });
+  var back=document.createElement("button");back.className="choice-btn";back.style.cssText="background:#f0f0f0;border-style:dashed";
+  back.innerHTML="<span class=\"choice-btn-label\">\u2190 Back</span>";
+  back.onclick=function(){
+    if(!subVisited[sceneId])subVisited[sceneId]={};
+    subVisited[sceneId][sub.id]=true;
+    openSubId=null;openSubNodeId=null;
+    go(sceneId);
+  };
+  cEl.appendChild(back);
+  document.getElementById("play-body").scrollTo({top:0,behavior:"smooth"});
+}
+function renderCards(){
+  var bv=document.getElementById("branch-body");bv.innerHTML="";
+  var _metaHtml=metaBannersHTML("b");
+  if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)||( questMeta.customTabs&&questMeta.customTabs.some(function(t){return t.content&&t.content.trim();}))){
+    var _mb=document.createElement("div");_mb.className="meta-banner";
+    _mb.innerHTML=_metaHtml;bv.appendChild(_mb);
+  }
+  var order=["start"].concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="scene"&&k!=="start"})).concat(Object.keys(scenes).filter(function(k){return scenes[k].type==="ending"}));
+  var _bestIds=(bestRouteMode===1)?getBestRouteIds():null;
+  var _importantOrder=bestRouteMode===2?getImportantOnlyOrder():null;
+  var _renderOrder=_importantOrder||order;
+  _renderOrder.forEach(function(id){
+    if(id==="..."){var sep=document.createElement("div");sep.className="ellipsis-card";sep.textContent="•••";bv.appendChild(sep);return;}
+    var s=scenes[id];if(!s)return;
+    if(_bestIds&&!_bestIds[id])return;
+    var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+    var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+    var el=document.createElement("div");
+    var hasBest=(s.choices||[]).some(function(c){return c.best;});
+    el.className="bscene"+(id===currentPlayId?" playing":"")+(hasBest?" has-best":"");
+    el.id="bscene-"+id;
+    var inner="<div class=\"bhead\"><span class=\"bbadge "+bclass+"\">"+blabel+"</span>"+(s.title?"<span class=\"btitle\">"+eh(s.title)+"</span>":"<span style=\"flex:1\"></span>")+"<button class=\"bplay-btn\" onclick=\"go('"+id+"')\">&#9654;</button></div>";
+    inner+="<div class=\"bbody\">";
+    if(s.text)inner+="<div class=\"btext\">"+wl(s.text)+"</div>";
+    if(s.embedUrl)inner+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";
+    if(s.dialogues&&s.dialogues.length){
+      inner+="<div class=\"bdlg-wrap\">";
+      s.dialogues.forEach(function(d){if(d.collapsed){inner+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{inner+="<div class=\"dlg-visible\"><span class=\"dlg-vis-spk\">"+eh(d.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(d.text||"")+"</div></div>";}});
+      inner+="</div>";
+    }
+    inner+=subScenesCardHtml(s);
+    if(s.choices&&s.choices.length){
+      var _bcs=s.choices.filter(function(c){return c.best;});
+      var _vcs=bestRouteMode>0&&_bcs.length>0?_bcs:s.choices;
+      inner+="<div class=\"bchoices\">";
+      _vcs.forEach(function(c){
+        var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
+        var itemReqTag=(c.itemReq&&c.itemReq.trim())?"<span class=\"bchoice-itemreq\">\ud83d\udd12 "+wl(c.itemReq)+"</span>":"";
+        if(dest){inner+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"jumpToCard('"+c.next+"')\">"+"<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(c.label)||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+itemReqTag+"</div>";}
+        else if(c.responseText){inner+="<div class=\"bchoice\" style=\"opacity:.7;cursor:default;flex-direction:column;align-items:flex-start\"><div style=\"display:flex;flex-wrap:wrap;align-items:center;gap:6px\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(c.label)||"...")+"</span>"+itemReqTag+"</div><div style=\"font-size:11px;color:var(--text2);line-height:1.5;padding-left:16px\">"+wl(c.responseText)+"</div></div>";}
+        else{inner+="<div class=\"bchoice\" style=\"opacity:.5;cursor:default\"><span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(c.label)||"...")+"</span>"+itemReqTag+"</div>";}
+        if(c.objectives&&c.objectives.length){c.objectives.forEach(function(obj){if(obj.collapsed){inner+="<details style=\"background:var(--bg2);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>";}else{inner+="<div class=\"dlg-visible\" style=\"margin-top:4px\"><span class=\"dlg-vis-spk\">"+eh(obj.speaker||"Objective")+"</span><div class=\"dlg-text\" style=\"border-top:none;padding-top:0\">"+wl(obj.text||"")+"</div></div>";}});}
+      });
+      inner+="</div>";
+    }
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){var ri="<div class=\"breward-items\">";s.rewards.forEach(function(r){ri+="<span class=\"breward-item\">"+rewIcon(r,16)+"<span class=\"breward-item-txt\">"+wl(r.item)+rewQty(r)+"</span></span>";});ri+="</div>";inner+="<div class=\"breward\"><span class=\"breward-label\">🎁 Rewards</span>"+ri+"</div>";}
+    if(s.type==="ending"&&s.unlocks){inner+="<div class=\"bunlocks\"><span class=\"bunlocks-label\">🔓 Unlocks</span><span class=\"bunlocks-text\">"+wl(s.unlocks)+"</span></div>";}
+    inner+="</div>";
+    el.innerHTML=inner;bv.appendChild(el);
+  });
+}
+function jumpToCard(id){var el=document.getElementById("bscene-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function renderTree(){
+  treeVisited={};
+  treeFirstLabel={};
+  var bv=document.getElementById("branch-body");
+  var _th="";
+  if(questMeta.requirement||( questMeta.locations&&questMeta.locations.filter(function(l){return l.trim();}).length)||( questMeta.customTabs&&questMeta.customTabs.some(function(t){return t.content&&t.content.trim();}))){
+    _th+=metaBannersHTML("t");
+  }
+  if(bestRouteMode===2){
+    var _impOrder=getImportantOnlyOrder();
+    var _impHtml="";
+    _impOrder.forEach(function(id){
+      if(id==="..."){_impHtml+="<div class=\"ellipsis-card\">•••</div>";return;}
+      var s=scenes[id];if(!s)return;
+      var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+      var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+      _impHtml+="<div class=\"tnode tnode-imp\">";
+      _impHtml+="<div class=\"tcard"+(id===currentPlayId?" playing":"")+" \" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+      _impHtml+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span>";
+      _impHtml+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
+      _impHtml+="</div>";
+      var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.subScenes&&s.subScenes.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+      if(hasBody){
+        _impHtml+="<div class=\"tnode-body\">";
+        if(s.text)_impHtml+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";
+        if(s.embedUrl)_impHtml+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";
+        if(s.dialogues&&s.dialogues.length){_impHtml+="<div class=\"tdlgs\">";s.dialogues.forEach(function(d){if(d.collapsed){_impHtml+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}else{_impHtml+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}});_impHtml+="</div>";}
+        _impHtml+=subScenesTreeHtml(s);
+        if(s.type==="ending"&&s.rewards&&s.rewards.length){_impHtml+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){_impHtml+="<span class=\"treward-item\">"+rewIcon(r,16)+wl(r.item)+rewQty(r)+"</span>";});_impHtml+="</div>";}
+        if(s.type==="ending"&&s.unlocks){_impHtml+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+        _impHtml+="</div>";
+      }
+      if(s.choices&&s.choices.length){
+        var _bcs=s.choices.filter(function(c){return c.best;});
+        var _vcs=_bcs.length>0?_bcs:s.choices;
+        _impHtml+="<div class=\"bchoices\">";
+        _vcs.forEach(function(c){
+          var dest=scenes[c.next];var destLabel=dest&&dest.title?eh(dest.title):"";
+          _impHtml+="<div class=\"bchoice"+(c.best?" best":"")+" \" onclick=\"go('"+c.next+"')\">";
+          _impHtml+="<span class=\"bchoice-arrow\">→</span><span class=\"bchoice-label\">"+(wl(c.label)||"...")+"</span>"+(c.best?"<span class=\"best-route-badge\">⭐ Best Route</span>":"")+(destLabel?"<span class=\"bchoice-dest\">"+destLabel+"</span>":"")+((c.itemReq&&c.itemReq.trim())?"<span class=\"bchoice-itemreq\">\ud83d\udd12 "+wl(c.itemReq)+"</span>":"");
+          _impHtml+="</div>";
+        });
+        _impHtml+="</div>";
+      }
+      _impHtml+="</div>";
+    });
+    bv.innerHTML="<div class=\"troot troot-imp\">"+(_th?"<div class=\"tnode-imp\">"+_th+"</div>":"")+_impHtml+"</div>";
+  } else {
+    bv.innerHTML="<div class=\"troot\">"+_th+buildTreeNode("start",true)+"</div>";
+  }
+  requestAnimationFrame(drawTreeLines);
+}
+var _treeResizeT=null;
+window.addEventListener("resize",function(){
+  if(branchMode!=="tree")return;
+  clearTimeout(_treeResizeT);
+  _treeResizeT=setTimeout(function(){requestAnimationFrame(drawTreeLines);},120);
+});
+window.addEventListener("orientationchange",function(){
+  if(branchMode!=="tree")return;
+  clearTimeout(_treeResizeT);
+  _treeResizeT=setTimeout(function(){requestAnimationFrame(drawTreeLines);},250);
+});
+function buildTreeNode(id,isLast,isBestDest,incomingLabel){
+  var s=scenes[id];
+  if(!s)return "<div class=\"tmissing\">(missing: "+eh(id)+")</div>";
+  var bclass=s.type==="start"?"b-start":s.type==="ending"?"b-ending":"b-scene";
+  var blabel=s.type==="start"?"Start":s.type==="ending"?"Ending":"Scene";
+  var alreadyVisited=treeVisited[id];
+  if(!alreadyVisited)treeFirstLabel[id]=incomingLabel||"";
+  treeVisited[id]=true;
+  var html="<div class=\"tnode\">";
+  html+="<div class=\"tcard"+(isBestDest?" tcard-best":"")+(id===currentPlayId?" playing":"")+"\" id=\"tcard-"+id+"\" onclick=\"go('"+id+"')\">";
+  html+="<span class=\"bbadge "+bclass+"\">"+blabel+"</span>";
+  html+="<span class=\"ttitle\">"+eh(s.title)+"</span>";
+  html+="</div>";
+  if(alreadyVisited){
+    var sameLabel=treeFirstLabel[id]?wl(treeFirstLabel[id]):eh(s.title||id);
+    html+="<div class=\"tvisited\" onclick=\"jumpToTreeCard('"+id+"')\">↑ Same as: "+sameLabel+"</div>";
+    html+="</div>";return html;
+  }
+  var hasBody=s.text||s.embedUrl||(s.dialogues&&s.dialogues.length)||(s.subScenes&&s.subScenes.length)||(s.type==="ending"&&s.rewards&&s.rewards.length);
+  if(hasBody){
+    html+="<div class=\"tnode-body"+(isBestDest?" tnbody-best":"")+"\">";
+    if(s.text){html+="<div class=\"tscene-text\">"+wl(s.text)+"</div>";}
+    if(s.embedUrl){html+="<details class=\"tembed-wrap\"><summary>"+eh(s.embedLabel||"Embed")+"</summary><iframe src=\""+s.embedUrl.replace(/"/g,"&quot;")+"\" loading=\"lazy\" style=\"width:100%;min-height:360px;border:1px solid var(--border2);border-radius:6px;margin:4px 0 8px;display:block\"></iframe></details>";}
+    if(s.dialogues&&s.dialogues.length){
+      html+="<div class=\"tdlgs\">";
+      s.dialogues.forEach(function(d){
+        if(d.collapsed){html+="<details><summary>"+eh(d.speaker||"Objective")+"</summary><div class=\"dlg-text\">"+wl(d.text||"")+"</div></details>";}
+        else{html+="<div class=\"tdlg\"><span class=\"tdlg-spk\">"+eh(d.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(d.text||"")+"</span></div>";}
+      });
+      html+="</div>";
+    }
+    html+=subScenesTreeHtml(s);
+    if(s.type==="ending"&&s.rewards&&s.rewards.length){html+="<div class=\"treward-inline\"><span class=\"treward-inline-label\">🎁 Rewards</span>";s.rewards.forEach(function(r){html+="<span class=\"treward-item\">"+rewIcon(r,16)+wl(r.item)+rewQty(r)+"</span>";});html+="</div>";}
+    if(s.type==="ending"&&s.unlocks){html+="<div class=\"tunlocks-inline\">🔓 Unlocks: "+wl(s.unlocks)+"</div>";}
+    html+="</div>";
+  }
+  if(s.choices&&s.choices.length){
+    var bestChoices=s.choices.filter(function(c){return c.best;});
+    var visibleChoices=bestRouteMode>0&&bestChoices.length>0?bestChoices:s.choices;
+    if(visibleChoices.length===1){
+      var c1=visibleChoices[0];
+      var c1Objs=(c1.objectives&&c1.objectives.length)?c1.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
+      html+="<div class=\"tchoice-inline\">";
+      html+="<div class=\"tchoice-label"+(c1.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c1.label)||"...")+"</span>"+(c1.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c1.itemReq&&c1.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c1.itemReq)+"</span>":"")+"</div>";
+      if(c1Objs)html+="<div style=\"margin:2px 0 4px\">"+c1Objs+"</div>";
+      if(c1.next&&scenes[c1.next]){html+=buildTreeNode(c1.next,true,c1.best,c1.label);}
+      else if(c1.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c1.responseText)+"</div>";}
+      else{html+="<div class=\"tmissing\">(no destination)</div>";}
+      html+="</div>";
+    } else {
+      var anyBest=visibleChoices.some(function(c){return c.best;});
+      html+="<div class=\"tchoices"+(anyBest?" has-best":"")+"\">";
+      visibleChoices.forEach(function(c,i){
+        var last=i===visibleChoices.length-1;
+        var cObjs=(c.objectives&&c.objectives.length)?c.objectives.map(function(obj){return obj.collapsed?"<details style=\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\"><summary style=\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\">"+eh(obj.speaker||"Objective")+"</summary><span style=\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\">"+wl(obj.text||"")+"</span></details>":"<div class=\"tdlg\" style=\"margin-top:4px\"><span class=\"tdlg-spk\">"+eh(obj.speaker||"Objective")+"</span><span class=\"tdlg-txt\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";
+        html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">"; 
+        html+="<div class=\"tchoice-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tchoice-label-text\">"+(wl(c.label)||"...")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+((c.itemReq&&c.itemReq.trim())?" <span class=\"tchoice-itemreq\">🔒 "+wl(c.itemReq)+"</span>":"")+"</div>";
+        if(cObjs)html+="<div style=\"margin:2px 0 4px\">"+cObjs+"</div>";
+        if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best,c.label);}
+        else if(c.responseText){html+="<div style=\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\">"+wl(c.responseText)+"</div>";}
+        else{html+="<div class=\"tmissing\">(no destination)</div>";}
+        html+="</div>";
+      });
+      html+="</div>";
+    }
+  }
+  var _bestC=s.choices?(s.choices.filter(function(c){return c.best;})):[]; 
+  var _visLen=(s.choices&&s.choices.length)?(bestRouteMode>0&&_bestC.length>0?_bestC.length:s.choices.length):0;
+  var _contsAll=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});
+  var _contsBest=_contsAll.filter(function(c){return c.best;});
+  var _conts=(bestRouteMode>0)&&_contsBest.length>0?_contsBest:_contsAll;
+  if(_conts.length>1){
+    html+="<div class=\"tchoices tcontinues\" style=\"margin-top:8px\">";
+    _conts.forEach(function(c,ci){
+      var last=ci===_conts.length-1;
+      html+="<div class=\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+"\">";
+      html+="<div class=\"tcontinue-label"+(c.best?" tchoice-best":"")+"\"><span class=\"tcontinue-label-text\">"+(c.label?wl(c.label):"Continues to")+"</span>"+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>";
+      html+=buildTreeNode(c.next,last,isBestDest||c.best,c.label);
+      html+="</div>";
+    });
+    html+="</div>";
+  } else {
+    _conts.forEach(function(c){
+      html+="<div class=\"tchoice-inline\" style=\"margin-top:8px\"><div class=\"tcontinue-arrow\">"+(c.label?wl(c.label):"↓")+(c.best?" <span class=\"best-route-badge\">⭐ Best Route</span>":"")+"</div>"+buildTreeNode(c.next,true,isBestDest||c.best,c.label)+"</div>";
+    });
+  }
+  html+="</div>";return html;
+}
+function jumpToTreeCard(id){var el=document.getElementById("tcard-"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function drawTreeLines(){
+  var RED="#e03020",GREY="#cccccc",BLUE="#1a5a8a";
+  document.querySelectorAll(".tchoices").forEach(function(group){
+    group.querySelectorAll(":scope>.tc-vert,:scope>.tc-horiz").forEach(function(el){el.remove();});
+    group.querySelectorAll(":scope>.tchoice").forEach(function(ch){
+      var h=ch.querySelector(".tc-horiz");if(h)h.remove();
+    });
+    var choices=Array.from(group.querySelectorAll(":scope>.tchoice"));
+    if(!choices.length)return;
+    var isDashed=group.classList.contains("tcontinues");
+    var bestIdx=-1;
+    choices.forEach(function(ch,i){if(ch.classList.contains("best-branch"))bestIdx=i;});
+    var groupRect=group.getBoundingClientRect();
+    var prevStubY=-5;
+    choices.forEach(function(ch,i){
+      var chRect=ch.getBoundingClientRect();
+      var stubY=chRect.top-groupRect.top+19;
+      var vertColor=isDashed?((bestIdx>=0&&i<=bestIdx)?RED:BLUE):((bestIdx>=0&&i<=bestIdx)?RED:GREY);
+      var horizColor=isDashed?((i===bestIdx)?RED:BLUE):((i===bestIdx)?RED:GREY);
+      var horizH=(i===bestIdx&&!isDashed)?4:2;
+      var vert=document.createElement("div");
+      vert.className="tc-vert";
+      if(isDashed){
+        vert.style.cssText="top:"+prevStubY+"px;height:"+(stubY-prevStubY)+"px;width:1.5px;background:repeating-linear-gradient(to bottom,"+vertColor+" 0 2px,transparent 2px 4px)";
+      } else {
+        vert.style.cssText="top:"+prevStubY+"px;height:"+(stubY-prevStubY)+"px;background:"+vertColor;
+      }
+      group.appendChild(vert);
+      var horiz=document.createElement("div");
+      horiz.className="tc-horiz";
+      if(isDashed){
+        horiz.style.cssText="top:"+(19-(horizH===4?1:0))+"px;height:"+horizH+"px;background:repeating-linear-gradient(to right,"+horizColor+" 0 2px,transparent 2px 4px)";
+      } else {
+        horiz.style.cssText="top:"+(19-(horizH===4?1:0))+"px;height:"+horizH+"px;background:"+horizColor;
+      }
+      ch.appendChild(horiz);
+      prevStubY=stubY;
+    });
+  });
+}
+(function(){
+  var ref=document.referrer;
+  var btn=document.getElementById("back-btn");
+  if(ref&&ref!==location.href){btn.classList.add("visible");}
+})();
+function goBack(){history.back();}
+go("start");
+renderBranchBody();
+document.getElementById("collapse-btn").classList.add("visible");
+</script>
+</body>
+</html>
