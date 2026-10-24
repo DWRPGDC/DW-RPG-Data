@@ -3309,9 +3309,13 @@ a.download = filename;
 a.click();
 URL.revokeObjectURL(a.href);
 }
+function questFileBase(){
+const t=((scenes.start&&scenes.start.title)||'').replace(/[\\\/:*?"<>|\u0000-\u001f]/g,'').replace(/\s+/g,' ').replace(/^[\s.]+|[\s.]+$/g,'');
+return t||'quest';
+}
 function exportGame(){
 const built = buildExportHtml();
-downloadBlob(built.html,'text/html','quest.html');
+downloadBlob(built.html,'text/html',questFileBase()+'.html');
 toast('Exported \u2713 Tap to dismiss', 4000);
 }
 /* --- Minimal dependency-free ZIP writer (store/no-compression) --- */
@@ -3718,7 +3722,7 @@ const out = buildQuestJSON();
 const blob = new Blob([out],{type:'application/json'});
 const a = document.createElement('a');
 a.href = URL.createObjectURL(blob);
-a.download = 'quest.json';
+a.download = questFileBase()+'.json';
 a.click();
 URL.revokeObjectURL(a.href);
 toast('JSON exported ✓  — filter by meta.questType (normal / special / archon)', 4000);
