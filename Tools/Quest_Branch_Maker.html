@@ -107,16 +107,6 @@
             <div id="icon-grid" class="icon-grid"><span style="color:var(--text3);font-size:11px">No icons yet.</span></div>
             <div style="font-size:10px;color:var(--text3);line-height:1.45">Use <code style="background:var(--bg2);padding:1px 4px;border-radius:3px">[img:filename.png]</code> in objective text — or tap 🖼 in any text toolbar to pick from the Textures folder</div>
           </div>
-          <div class="wiki-toggle-row">
-            <label class="wiki-toggle-switch">
-              <input type="checkbox" id="wiki-mode-checkbox" onchange="toggleWikiMode(this)">
-              <span class="wiki-toggle-slider"></span>
-            </label>
-            <div class="wiki-toggle-label">
-              <span>🌐 Miraheze Wiki Links</span>
-              <span class="meta-hint" style="margin-top:2px">When on, <code style="background:var(--bg2);padding:1px 4px;border-radius:3px">[[Page Name]]</code> (or <code style="background:var(--bg2);padding:1px 4px;border-radius:3px">[[Page Name|Label]]</code>) links to the wiki page, and <code style="background:var(--bg2);padding:1px 4px;border-radius:3px">[img:File.png]</code> (or <code style="background:var(--bg2);padding:1px 4px;border-radius:3px">[img:File.png|Label]</code>) links to the wiki's uploaded file.</span>
-            </div>
-          </div>
           <button class="btn btn-gold btn-full" onclick="exportGame()">⬇ Export as HTML</button>
           <button class="btn btn-ghost btn-full btn-sm" onclick="exportJSON()">{ } Export as JSON</button>
           <label class="btn btn-ghost btn-full btn-sm" style="cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px">⬆ Import JSON<input type="file" accept="application/json,.json" style="display:none" onchange="importJSON(this)"></label>
@@ -339,8 +329,7 @@ let questMeta = { requirement: '', locations: [], questType: 'normal', customTab
 let uploadedIcons = {};
 const WIKI_BASE = 'https://dawnwineryrpg.miraheze.org/wiki/';
 const WIKI_MODE_KEY = 'qbm_wikiMode_v1';
-let wikiMode = false;
-try{ wikiMode = localStorage.getItem(WIKI_MODE_KEY) === '1'; }catch(e){}
+const wikiMode = true;
 function wikiUrlPart(name){
 return String(name||'').trim().replace(/ /g,'_').split('/').map(encodeURIComponent).join('/');
 }
@@ -349,12 +338,6 @@ function wikiFileUrl(name){ return WIKI_BASE + 'Special:FilePath/' + wikiUrlPart
 function isUrlLike(str){
 const s = String(str||'').trim();
 return /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(s) || /^(\.\.?\/|\/)/.test(s) || /\.(html?|php)(\?.*)?$/i.test(s);
-}
-function toggleWikiMode(cb){
-wikiMode = !!cb.checked;
-try{ localStorage.setItem(WIKI_MODE_KEY, wikiMode ? '1' : '0'); }catch(e){}
-refreshPreview();
-toast(wikiMode ? 'Miraheze wiki links enabled' : 'Miraheze wiki links disabled');
 }
 function handleIconUpload(input) {
 const files = Array.from(input.files);
@@ -3658,7 +3641,7 @@ null,
 {label:'S↑', title:'Large text: [size:lg|text]', before:'[size:lg|', after:']', style:'font-size:15px;font-weight:600'},
 {label:'•', title:'Bullet list: start each line with "* " or "- "', before:'* ', after:'', style:'font-weight:700'},
 null,
-{label:'🔗', title:'Link: [[Label|url]] (or [[Page Name]] for a Miraheze wiki link when enabled)', before:'[[', after:'|url]]', style:''},
+{label:'🔗', title:'Link: [[Page Name]] (Miraheze wiki link) or [[Page Name|Label]]', before:'[[', after:']]', style:''},
 ];
 btns.forEach(b=>{
 if(!b){const sep=document.createElement('span');sep.className='fmt-sep';toolbar.appendChild(sep);return;}
@@ -4153,16 +4136,22 @@ if(!ta){qipClose();return;}
 const c=qipCfg();
 const text='[img:'+(it.up?it.name:c.prefix+it.rel)+']';
 let st,en;
-if(ta.dataset.qbmTouched){st=ta.selectionStart;en=ta.selectionEnd;}
+const L=QIP.last;
+if(L&&L.taId===QIP.taId&&L.value===ta.value&&L.end<=ta.value.length){st=en=L.end;}
+else if(ta.dataset.qbmTouched){st=ta.selectionStart;en=ta.selectionEnd;}
 else{st=en=ta.value.length;}
 ta.setRangeText(text,st,en,'end');
 ta.dataset.qbmTouched='1';
+QIP.last={taId:QIP.taId,end:st+text.length,value:ta.value};
 ta.dispatchEvent(new Event('input',{bubbles:true}));
 if(QIP.onInput)QIP.onInput(ta.value);
 toast('Inserted '+it.name,1200);
 const keep=document.getElementById('qip-keep');
 if(!keep||!keep.checked)qipClose();
 }
+['mouseup','keyup'].forEach(function(ev){document.addEventListener(ev,function(e){
+if(QIP.last&&e.target&&e.target.id===QIP.last.taId)QIP.last=null;
+},true);});
 
 function attachFmtToolbar(taId, onInput){
 const ta=document.getElementById(taId);
@@ -4193,8 +4182,8 @@ rows:[
 ["[size:sm|text]","<span style='font-size:.8em'>text</span>","Small text — sm, xs, lg, xl, xxl, or a value like 1.2em"],
 ["[size:lg|text]","<span style='font-size:1.25em'>text</span>","Large text — same size keywords as above"],
 ["[[Label|path/page.html]]","<a>Label</a>","Clickable link"],
-["[[Page Name]]","<a>Page Name</a>","Miraheze wiki link — only active when the 🌐 Miraheze Wiki Links toggle in Tools is on"],
-["[[Page Name|Custom Label]]","<a>Custom Label</a>","Miraheze wiki link with a different display label — only active when 🌐 Miraheze Wiki Links is on"],
+["[[Page Name]]","<a>Page Name</a>","Miraheze wiki link"],
+["[[Page Name|Custom Label]]","<a>Custom Label</a>","Miraheze wiki link with a different display label"],
 ["{#ff0000|text}","<span style='color:#e53935'>text</span>","Colored text — any hex color, or named: red, orange, gold, yellow, green, teal, blue, cyan, purple, pink, gray, white, black"],
 ],
 note:'Formatting applies in both the Live Preview and the exported game.'
@@ -4212,8 +4201,8 @@ rows:[
 ["[size:sm|text]","<span style='font-size:.8em'>text</span>","Small text — sm, xs, lg, xl, xxl, or a value like 1.2em"],
 ["[size:lg|text]","<span style='font-size:1.25em'>text</span>","Large text — same size keywords as above"],
 ["[[Label|path/page.html]]","<a>Label</a>","Clickable link"],
-["[[Page Name]]","<a>Page Name</a>","Miraheze wiki link — only active when the 🌐 Miraheze Wiki Links toggle in Tools is on"],
-["[[Page Name|Custom Label]]","<a>Custom Label</a>","Miraheze wiki link with a different display label — only active when 🌐 Miraheze Wiki Links is on"],
+["[[Page Name]]","<a>Page Name</a>","Miraheze wiki link"],
+["[[Page Name|Custom Label]]","<a>Custom Label</a>","Miraheze wiki link with a different display label"],
 ["[img:filename.png]","<img> icon","Inline icon — uploaded PNG, or an external URL/path"],
 ["[img:filename.png|Item Name]","<img> icon","Same icon, but with a custom alt/title tooltip instead of the filename"],
 ["[img:filename.png|36px]","<img> icon","Resize the icon — set width only (height auto-scales)"],
@@ -4287,6 +4276,6 @@ previewSceneId=currentSceneId||'start';
 renderPreviewCards();
 renderMetaPanel();
 renderIconGrid();
-(function(){ const cb=document.getElementById('wiki-mode-checkbox'); if(cb) cb.checked = wikiMode; })();</script>
+</script>
 </body>
 </html>
