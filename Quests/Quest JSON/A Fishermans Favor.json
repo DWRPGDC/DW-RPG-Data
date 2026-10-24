@@ -1,0 +1,613 @@
+{
+  "meta": {
+    "requirement": "Explore Falcon Coast (1%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Falcon_Coast|Falcon Coast]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "A Fisherman's Favor",
+      "text": "''Near a rack of drying fish, an old man is wrestling a parcel with one arm. The other hangs stiff at his side.''\n\nBram: Easy, traveller. I am not drowning. I am only losing an argument with my own shoulder.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What happened?",
+          "next": "What_happened_"
+        },
+        {
+          "label": "Need a hand?",
+          "next": "Need_a_hand"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_happened_": {
+      "id": "What_happened_",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: Cast too hard yesterday. Felt the joint go. Today I can gut a fish and swear at the wind, but I cannot carry crates into town.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's in the parcels?",
+          "next": "Whats_in_the_parcels"
+        },
+        {
+          "label": "Sounds rough. Can I help?",
+          "next": "Need_a_hand"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Whats_in_the_parcels": {
+      "id": "Whats_in_the_parcels",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: Mondstadt first. Elise at the market. Smoked perch. Then Springvale for Torren, saltfish for the hunters. Last is Windrise for Mira, under the great tree.\n\nBram: Same route I walk when this shoulder behaves.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's in it for me?",
+          "next": "Whats_in_it_for_me"
+        },
+        {
+          "label": "I'll run them",
+          "next": "Deal"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Whats_in_it_for_me": {
+      "id": "Whats_in_it_for_me",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: Coin, and a spare rod I do not need while this joint sulks. Help me run these, and the rod is yours.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Deal",
+          "next": "Deal"
+        },
+        {
+          "label": "A rod for three runs. Done",
+          "next": "Deal"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Deal": {
+      "id": "Deal",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: ''stacks the parcels into your arms'' Do not open them. Curiosity smells like lunch, and lunch is already sold.\n\nBram: When the last one is gone, come back. The rod will be waiting.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver Bram's catch to Elise in Mondstadt City",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Elise",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Talk to Elise"
+        }
+      ]
+    },
+    "Need_a_hand": {
+      "id": "Need_a_hand",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: ''looks you over'' Working arms. That is more than I have today.\n\n''He nods at three sealed parcels on the rack.''\n\nBram: Three deliveries. Paid for. Waiting.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Where do they go?",
+          "next": "Whats_in_the_parcels"
+        },
+        {
+          "label": "I'll take them",
+          "next": "Whats_in_it_for_me"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Talk_to_Elise": {
+      "id": "Talk_to_Elise",
+      "type": "scene",
+      "title": "",
+      "text": "''Elise is stacking crates behind a market stall. She spots the oilcloth before you speak.''\n\nElise: Falcon Coast smoke. That Bram's wrap?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Delivery from Bram",
+          "next": "Delivery_from_Bram"
+        },
+        {
+          "label": "Smoked perch, for you",
+          "next": "Delivery_from_Bram"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Delivery_from_Bram": {
+      "id": "Delivery_from_Bram",
+      "type": "scene",
+      "title": "",
+      "text": "''She checks the seal, nods, and tucks the parcel under the counter.''\n\nElise: Still cool. Still sealed. Tell him the perch sold itself last week.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "His shoulder's out",
+          "next": "his_shoulders_out"
+        },
+        {
+          "label": "He said you'd be next",
+          "next": "He_said_youd_be_next"
+        },
+        {
+          "label": "Where to next?",
+          "next": "He_said_youd_be_next"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "He_said_youd_be_next": {
+      "id": "He_said_youd_be_next",
+      "type": "scene",
+      "title": "",
+      "text": "Elise: Springvale. Torren. Saltfish. He gets impatient when it is late.\n\n''She is already waving a customer over.''\n\nElise: Go on. Bram's route does not wait.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Thanks, Elise",
+          "next": "I_will_head_there"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "his_shoulders_out": {
+      "id": "his_shoulders_out",
+      "type": "scene",
+      "title": "",
+      "text": "Elise: ''winces'' That stubborn man. Tell him if he needs another week, I will still take the next catch.\n\nElise: Springvale is next on his usual route. Torren gets impatient when the saltfish is late.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll head there",
+          "next": "I_will_head_there"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_head_there": {
+      "id": "I_will_head_there",
+      "type": "scene",
+      "title": "",
+      "text": "''One parcel lighter. Two still strapped to your pack.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver Bram's catch to Torren in Springvale",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Torren",
+          "label": "Go to Springvale (Mondstadt), do /rpg and click on Talk to Torren"
+        }
+      ]
+    },
+    "Talk_to_Torren": {
+      "id": "Talk_to_Torren",
+      "type": "scene",
+      "title": "",
+      "text": "''Torren is near the smokehouses, sharpening a knife like he expected company an hour ago.''\n\nTorren: That smell. Bram finally sent someone.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Saltfish, from Falcon Coast",
+          "next": "Saltfish_from_Falcon_Coast"
+        },
+        {
+          "label": "Sorry for the wait",
+          "next": "sorry_for_the_wait"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Saltfish_from_Falcon_Coast": {
+      "id": "Saltfish_from_Falcon_Coast",
+      "type": "scene",
+      "title": "",
+      "text": "''He takes the parcel, weighs it once, and nods.''\n\nTorren: For the hunters who come back too tired to cook. Tell Bram his shoulder can rest.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "One stop left, right?",
+          "next": "One_stop_left_right"
+        },
+        {
+          "label": "Where does Mira wait?",
+          "next": "One_stop_left_right"
+        },
+        {
+          "label": "He'll be glad to hear it",
+          "next": "One_stop_left_right"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "On_my_way": {
+      "id": "On_my_way",
+      "type": "scene",
+      "title": "",
+      "text": "''Two down. One oilcloth wrap left.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver Bram's catch to Mira at Windrise",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Mira",
+          "label": "Go to Windrise (Mondstadt), do /rpg and click on Talk to Mira"
+        }
+      ]
+    },
+    "sorry_for_the_wait": {
+      "id": "sorry_for_the_wait",
+      "type": "scene",
+      "title": "",
+      "text": "Torren: ''half a smile'' Late fish still beats no fish. Hand it over.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here",
+          "next": "Saltfish_from_Falcon_Coast"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "One_stop_left_right": {
+      "id": "One_stop_left_right",
+      "type": "scene",
+      "title": "",
+      "text": "Torren: Windrise. Under the great tree. Mira waits there on market days, and today counts.\n\n''He is already slicing the cord.''\n\nTorren: Go. Last crate.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "On my way",
+          "next": "On_my_way"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Talk_to_Mira": {
+      "id": "Talk_to_Mira",
+      "type": "scene",
+      "title": "",
+      "text": "''Under the great tree, a woman with a travel cloak and a half-eaten apple watches the road. She stands when she sees the oilcloth.''\n\nMira: Bram's runner?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "That's me. Delivery for you",
+          "next": "Thats_me__Delivery_for_you"
+        },
+        {
+          "label": "He didn't forget you",
+          "next": "Thats_me__Delivery_for_you"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Thats_me__Delivery_for_you": {
+      "id": "Thats_me__Delivery_for_you",
+      "type": "scene",
+      "title": "",
+      "text": "''She takes the parcel carefully, opens a corner for the smoke, then seals it again.''\n\nMira: I was starting to wonder if the coast had forgotten me. Tell him the tree still listens, and so do I.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "He'll want me back at the coast",
+          "next": "He_will_want_me_back_at_the_coast"
+        },
+        {
+          "label": "Anything else to tell him?",
+          "next": "Anything_else_to_tell_him"
+        },
+        {
+          "label": "Enjoy the fish",
+          "next": "He_will_want_me_back_at_the_coast"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Anything_else_to_tell_him": {
+      "id": "Anything_else_to_tell_him",
+      "type": "scene",
+      "title": "",
+      "text": "Mira: Tell him thank you. Hot fish after a long road is a small miracle.\n\n''She settles against the roots with a tin plate.''\n\nMira: Men like Bram keep their promises louder than their injuries. He will want you back.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Back to Falcon Coast, then",
+          "next": "Safe_travels"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "He_will_want_me_back_at_the_coast": {
+      "id": "He_will_want_me_back_at_the_coast",
+      "type": "scene",
+      "title": "",
+      "text": "Mira: ''nods'' He will. Men like Bram keep their promises louder than their injuries.\n\n''She waves you off with the apple core.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Safe travels",
+          "next": "Safe_travels"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Safe_travels": {
+      "id": "Safe_travels",
+      "type": "scene",
+      "title": "",
+      "text": "''The last delivery is finished. Bram and that spare rod are waiting.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Bram at Falcon Coast",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Bram",
+          "label": "Go to Falcon Coast (Mondstadt), do /rpg and click on Talk to Bram"
+        }
+      ]
+    },
+    "Talk_to_Bram": {
+      "id": "Talk_to_Bram",
+      "type": "scene",
+      "title": "",
+      "text": "''Bram is still on his crate, watching the tide. The drying rack is empty. He clocks that before you speak.''\n\nBram: Elise, Torren, Mira. All three?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "All three",
+          "next": "All_three"
+        },
+        {
+          "label": "Elise says rest that shoulder",
+          "next": "Elise_says_rest_that_shoulder"
+        },
+        {
+          "label": "Mira says thank you",
+          "next": "Mira_says_thank_you"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Elise_says_rest_that_shoulder": {
+      "id": "Elise_says_rest_that_shoulder",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: ''snorts'' Elise always does. Stubborn woman. She is right, though.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "About that rod...",
+          "next": "You_promised_a_rod"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "All_three": {
+      "id": "All_three",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: And you still smell like salt instead of excuses. Good.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You promised a rod",
+          "next": "You_promised_a_rod"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Mira_says_thank_you": {
+      "id": "Mira_says_thank_you",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: ''quiet for a beat'' Mira always does. Tell her... no. You already did the telling that mattered.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You mentioned a spare rod",
+          "next": "You_promised_a_rod"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_promised_a_rod": {
+      "id": "You_promised_a_rod",
+      "type": "scene",
+      "title": "",
+      "text": "''He brings out a plain wooden rod, worn smooth at the grip, the line wound neat.''\n\nBram: Wilderness Rod. Spare. Barely a weapon, but it is what you need if you want to fish this coast properly.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Thank you, Bram",
+          "next": "____A_Fisherman_s_Favor__Deliveries_Complete"
+        },
+        {
+          "label": "I'll take good care of it",
+          "next": "____A_Fisherman_s_Favor__Deliveries_Complete"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____A_Fisherman_s_Favor__Deliveries_Complete": {
+      "id": "____A_Fisherman_s_Favor__Deliveries_Complete",
+      "type": "ending",
+      "title": "Deliveries Complete",
+      "text": "Bram: ''presses it into your hands'' Do not thank me. Thank the deliveries.\n\nBram: Equip it, cast from here, and try not to throw your shoulder out the way I did. If you catch anything worth smoking, you know where the rack is.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 100,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 100,
+          "icon": ""
+        },
+        {
+          "item": "[[Wilderness Rod]]",
+          "qty": 0,
+          "icon": "../Textures/Weapons/Item_Wilderness_Rod.webp"
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

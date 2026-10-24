@@ -1,0 +1,262 @@
+{
+  "meta": {
+    "requirement": "Explore Whispering Woods (20%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Whispering_Woods|Whispering Woods]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Klee's Day Off",
+      "text": "''You hear it before you see anything: a bright pop, then another, then a third that sends a spray of pine needles raining down from somewhere ahead.''\n\n''You round a bend and stop.''\n\n''A small clearing has been turned into something between a pond and a battlefield. Shallow pools of water glint in the afternoon light. Fish-shaped objects leap from the surface one after another, trailing sparks, and detonate in cheerful orange bursts that leave little scorch marks on the grass.''\n\n''In the middle of it all, a girl in a red coat and oversized hat claps her hands together.''\n\nKlee: ''delighted'' Again! Again!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What is going on here?",
+          "next": "whats_going_on"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "whats_going_on": {
+      "id": "whats_going_on",
+      "type": "scene",
+      "title": "",
+      "text": "''Klee spins around. Her eyes go wide, then wider.''\n\nKlee: Oh! A traveller! ''waves both arms'' You came at the perfect time! I was just testing my new Jumping Fish!\n\n''Another fish launches itself out of the nearest pool and pops midair. A frog that had been sitting on a rock launches itself in the opposite direction.''\n\nKlee: See? They jump ''and'' they go boom! Two whole things at once!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Should you be doing this out here?",
+          "next": "should_u_be_doin"
+        },
+        {
+          "label": "Those are... exploding fish?",
+          "next": "Exploding_fish_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "should_u_be_doin": {
+      "id": "should_u_be_doin",
+      "type": "scene",
+      "title": "",
+      "text": "Klee: ''tilts her head'' Miss Jean said I could have today off! She said I worked very hard on patrol last week and I deserved a whole day to myself!\n\n''She puffs out her chest a little.''\n\nKlee: So I came to the woods because the water here is nice and the fish are very cooperative. ''beat'' Well. They were. Now they are mostly fish-shaped bombs. But that is even better!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Exploding fish?",
+          "next": "Exploding_fish_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Exploding_fish_": {
+      "id": "Exploding_fish_",
+      "type": "scene",
+      "title": "",
+      "text": "Klee: Mhm! ''holds one up carefully, like a prize'' I put just a tiny little bit of spark powder inside. The fish jumps out of the water because it is surprised, and then ''pop''! It is a surprise for everyone!\n\n''She sets it back down. It twitches once, then launches itself at a stump and leaves a neat black scorch ring.''\n\nKlee: I still have six more! Do you want to try?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Sure. Show me how",
+          "next": "show_me_how"
+        },
+        {
+          "label": "I should tell Jean about this",
+          "next": "tell_jean"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "tell_jean": {
+      "id": "tell_jean",
+      "type": "scene",
+      "title": "",
+      "text": "''Klee's smile falters for just a moment.''\n\nKlee: ...Tell Miss Jean? ''she looks down at the fish in her hands'' But I am on my day off. She said I could!\n\n''She chews her lip, then shrugs with the total confidence of someone who has already decided the outcome.''\n\nKlee: Fine! But tell her the fish were very successful! And that I cleaned up after! ''glances at the scorch marks'' ...Mostly!\n\n''You turn back toward the road to Mondstadt. Behind you, another fish pops, softly, like a punctuation mark.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Report Klee to Jean in Mondstadt",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "report_to_jean",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Report Klee to Jean"
+        }
+      ]
+    },
+    "show_me_how": {
+      "id": "show_me_how",
+      "type": "scene",
+      "title": "",
+      "text": "Klee: Yay! Okay, okay, watch closely! ''she crouches by the pool and whispers something encouraging to a fish bomb'' You throw them like this!\n\n''She hurls one in a high arc. It lands in a puddle, pauses, then rockets upward and detonates with a sound like a cork popping inside a drum.''\n\nKlee: Your turn! Aim for the big flat rock! It makes the best sound!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Throw a Jumping Fish",
+          "next": "throw_1_fish"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "throw_1_fish": {
+      "id": "throw_1_fish",
+      "type": "scene",
+      "title": "",
+      "text": "''You throw. The fish clears the rock by a generous margin, hangs in the air for one perfect second, and explodes directly above a bush. A squirrel abandons its dignity and sprints up a tree.''\n\nKlee: ''absolutely thrilled'' That was even better than mine! The squirrel looked so surprised!\n\n''She presses another fish into your hands.''\n\nKlee: One more! Then we can do the double throw! That is when two fish go at the same time and you have to guess which one pops first!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Double throw it is",
+          "next": "double_throw"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "double_throw": {
+      "id": "double_throw",
+      "type": "scene",
+      "title": "",
+      "text": "''You and Klee throw at the same time. Two arcs. Two splashes. Two pops, one beat apart, and a shower of harmless sparks that drift down like confetti.''\n\nKlee: ''spinning in a circle'' That was the best double throw I have ever seen! And I have seen a lot of double throws!\n\n''She digs through her bag and produces a small cloth pouch, heavy with coins.''\n\nKlee: Here! For being my explosion buddy! Miss Jean gives me allowance and I never spend all of it anyway.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Thanks, Klee",
+          "next": "boom_boom_bakudan"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "boom_boom_bakudan": {
+      "id": "boom_boom_bakudan",
+      "type": "ending",
+      "title": "Explosion Buddy",
+      "text": "Klee: ''beaming'' Come back tomorrow! I am going to try bouncing ones next! They jump off the water ''twice'' before they pop!\n\n''She is already crouched by the pool again, whispering to another fish, as you leave the clearing behind. Somewhere in the trees, the squirrel is still watching from a very high branch, judging everyone involved.''\n\n''The woods smell faintly of gunpowder and pond water. It was, against all reason, a good afternoon.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 180,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 165,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "report_to_jean": {
+      "id": "report_to_jean",
+      "type": "scene",
+      "title": "",
+      "text": "''You find Jean at the Knights of Favonius headquarters, halfway through a stack of reports. She looks up when you enter, and something in your expression makes her set the quill down carefully.''\n\nJean: ...Go on.\n\n''You explain. The clearing. The Jumping Fish. The six, then five, then however many were left.''\n\nJean: ''pinches the bridge of her nose, but there is the faintest hint of a smile fighting it'' Klee. Of course. On her day off.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "She said you approved it",
+          "next": "approved"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "approved": {
+      "id": "approved",
+      "type": "scene",
+      "title": "",
+      "text": "Jean: I approved a day off. I did not approve turning the Whispering Woods into a testing range. ''sighs'' But thank you for telling me. The last person who found her out there simply joined in, and I spent a week filing incident reports.\n\n''She opens a drawer and counts out a stack of silver with practiced efficiency.''\n\nJean: For responsible reporting. And for not encouraging her. The Knights appreciate citizens who understand the difference between a day off and a forest fire hazard.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll leave her to you",
+          "next": "L"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "L": {
+      "id": "L",
+      "type": "ending",
+      "title": "Reported to Jean",
+      "text": "Jean: ''already reaching for another report'' I will send someone to collect the remaining fish. And Klee. ''a beat'' Mostly the fish.\n\n''You step back out into the Mondstadt afternoon. From the direction of the woods, very faintly, you can still hear the occasional pop.''\n\n''Jean will handle it. She always does.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 280,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 130,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

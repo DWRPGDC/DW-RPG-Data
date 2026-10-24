@@ -1,0 +1,179 @@
+{
+  "meta": {
+    "requirement": "Explore Wyrmrest Valley (40%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Wyrmrest_Valley|Wyrmrest Valley]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "A Traveller's Purse",
+      "text": "''The valley wind cuts harder than the map suggested. Farther along the gravel track, someone has stopped beside a weathered stone marker, one gloved hand on the post for balance.''\n\n''She is old. Not fragile exactly, but careful in the way people become after too many winters on the road. A slim pack sits at her feet. A second strap hangs empty from her shoulder, as if something important used to ride there.''\n\nGreta: ''looking up as you approach'' Easy now. I am not a bandit, and I am not lost. I am only catching my breath.\n\n''Her eyes are sharp behind the frost. She studies your pack the way seasoned travellers always do.''\n\nGreta: Still. If you have a moment, I could use a younger pair of legs. Or at least a younger purse.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Are you all right?",
+          "next": "Are_you_all_right"
+        },
+        {
+          "label": "What do you need?",
+          "next": "Are_you_all_right"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_makes_that_Purse_special_": {
+      "id": "What_makes_that_Purse_special_",
+      "type": "scene",
+      "title": "",
+      "text": "Greta: ''almost fond'' Craftsman's trick from over the border. The pouch sits apart from your main pack. Silver in it does not drag the same way. Up to twenty kilograms of coin, riding light.\n\n''She shrugs one shoulder.''\n\nGreta: I used it for years. Then my knees started negotiating every hill, and I started travelling lighter. The spare was insurance. Now it is a gift, if you earn it.\n\nGreta: One hundred and fifty Silver. Fair trade for an old woman and a road that never gets shorter.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll get the Silver",
+          "next": "I_will_bring_you_150_Silver"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_bring_you_150_Silver": {
+      "id": "I_will_bring_you_150_Silver",
+      "type": "scene",
+      "title": "",
+      "text": "Greta: ''nodding once'' Good. I will wait here a while. The marker has better manners than most inns.\n\n''She pulls her coat tighter and watches the ridge line.''\n\nGreta: Take your time. Cold makes people hurry, and hurried people leave Silver where they fall.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 150 Silver to Greta in Wyrmrest Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Greta",
+          "label": "Do /rpg again and then click on Talk to Greta"
+        }
+      ]
+    },
+    "Are_you_all_right": {
+      "id": "Are_you_all_right",
+      "type": "scene",
+      "title": "",
+      "text": "Greta: ''a dry little laugh'' Silver. Always Silver.\n\n''She taps the empty strap with two fingers.''\n\nGreta: My spare purse tore open on the last ridge. Half the coins went skittering into the snow before I could swear properly. I have enough to keep walking. I do not have enough to pay the innkeep at the next warm door without looking foolish.\n\n''She settles back against the marker, unhurried.''\n\nGreta: One hundred and fifty Silver would set me right. Bring me that, and I will not send you off empty-handed. I still have one Purse that works the way it should. Strong stitching. Separate pouch for coin. Keeps the weight off your shoulder where it belongs.\n\nGreta: I am too old to carry two of them, and too stubborn to throw a good thing away. Better it go to someone still climbing mountains on purpose.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll bring you 150 Silver",
+          "next": "I_will_bring_you_150_Silver"
+        },
+        {
+          "label": "What makes that Purse special?",
+          "next": "What_makes_that_Purse_special_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Talk_to_Greta": {
+      "id": "Talk_to_Greta",
+      "type": "scene",
+      "title": "",
+      "text": "''Greta is still by the marker, warming her hands against a tin cup. She looks up when your boots crunch on the gravel.''\n\nGreta: Back already. ''a faint smile'' Did you bring the Silver?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 150 Silver",
+          "next": "____A_Traveller_s_Purse__Purse_Gifted",
+          "best": true,
+          "itemReq": "Need 150x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "Not yet",
+          "next": "Not_yet"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Not_yet": {
+      "id": "Not_yet",
+      "type": "scene",
+      "title": "",
+      "text": "Greta: ''unbothered'' Then gather. I am not going anywhere until my knees forgive me.\n\n''She takes another sip from the tin cup and returns to watching the wind tear frost off the stones.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 150 Silver to Greta in Wyrmrest Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____A_Traveller_s_Purse__Purse_Gifted": {
+      "id": "____A_Traveller_s_Purse__Purse_Gifted",
+      "type": "ending",
+      "title": "Purse Gifted",
+      "text": "''Greta counts the Silver with slow, certain fingers. When she is satisfied, she tucks it away and reaches into her pack.''\n\n''What she brings out is a worn but well-kept purse, leather darkened by years of travel, seams doubled, clasp still bright.''\n\nGreta: ''pressing it into your hands'' There. My spare. Put your Silver in it. Up to twenty kilograms will ride light, separate from the rest of your load.\n\n''She stands, testing her balance, and shoulders her slim pack with a practised shrug.''\n\nGreta: You kept an old woman from haggling at a cold doorway. That is worth more than a speech.\n\n''She sets off down the valley path, slower than most travellers, and steadier than most would expect.''\n\nGreta: ''over her shoulder'' Walk carefully. Dragonspine likes pride more than it likes people.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "150x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        },
+        {
+          "item": "Silver Purse (holds up to 20kg of Silver)",
+          "qty": 0,
+          "icon": "👛"
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

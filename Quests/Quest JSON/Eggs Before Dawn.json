@@ -1,0 +1,269 @@
+{
+  "meta": {
+    "requirement": "Explore Wangshu Inn (1%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Wangshu_Inn|Wangshu Inn]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Eggs Before Dawn",
+      "text": "''The kitchen is loud. You smell something coming from the back of the room.. something on the back burner is definitely on fire.''\n\nLan: OH COME ON. Come ON. No no no no okay it's fine, it's fine, I can scrape that off.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Uh... you good?",
+          "next": "Uh____you_good_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Uh____you_good_": {
+      "id": "Uh____you_good_",
+      "type": "scene",
+      "title": "",
+      "text": "Lan: Do I look good?? Xiangling's other guy called out this morning so it's just me, and the runner who does the market pickup didn't show either, and apparently EVERY traveller on the road decided that today is the day they want breakfast at four in the morning.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Want a hand?",
+          "next": "Want_a_hand_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Want_a_hand_": {
+      "id": "Want_a_hand_",
+      "type": "scene",
+      "title": "",
+      "text": "''She stops moving for a second, which is somehow worse.''\n\nLan: Wait, seriously? Can you actually cook though? Because I've had people offer before and then they stand there holding a spoon and asking me what medium heat means.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Test me then",
+          "next": "Test_me_then"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Test_me_then": {
+      "id": "Test_me_then",
+      "type": "scene",
+      "title": "",
+      "text": "Lan: Alright let's go! If you burn one we start over from the top because I'm not sending out something half decent.\n\n''She shoves a clean pan at you.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Pass Lan's cooking test at Wangshu Inn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Take_the_Cooking_Test",
+          "label": "Do /rpg again and then click on Take the Cooking Test"
+        }
+      ]
+    },
+    "Take_the_Cooking_Test": {
+      "id": "Take_the_Cooking_Test",
+      "type": "scene",
+      "title": "🍳 Cooking Test",
+      "text": "''Lan shoves a clean pan at you.''\n\nLan: Alright let's go! If you burn one we start over from the top because I'm not sending out something half decent.\n\n\nFinish the cooking test 4 times within 10 minutes to continue. Failing once on any plate will make you start over.\n\nPlate 1: 7 seconds\nPlate 2: 10 seconds\nPlate 3: 15 seconds\nPlate 4: 25 seconds",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Speak_with_Lan",
+          "label": "Do /rpg again and then click on Speak with Lan"
+        }
+      ]
+    },
+    "Speak_with_Lan": {
+      "id": "Speak_with_Lan",
+      "type": "scene",
+      "title": "",
+      "text": "Lan: OKAY. Okay okay okay you can actually cook!\n\nLan: I've got maybe an hour before the real rush hits and I am completely out of eggs because half the tickets this morning wanted them and I burned through the whole crate before sunrise.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "How many do you need?",
+          "next": "How_many_do_you_need_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "How_many_do_you_need_": {
+      "id": "How_many_do_you_need_",
+      "type": "scene",
+      "title": "",
+      "text": "Lan: Thirty would get me through breakfast. Thirty-five would be amazing but I'm not going to be greedy about it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Got it!",
+          "next": "Got_it_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Got_it_": {
+      "id": "Got_it_",
+      "type": "scene",
+      "title": "",
+      "text": "Lan: You're a LEGEND!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Gather 30 Bird Eggs and bring them to Lan at Wangshu Inn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Bring_Eggs_to_Lan",
+          "label": "Do /rpg again and then click on Bring Eggs to Lan"
+        }
+      ]
+    },
+    "Bring_Eggs_to_Lan": {
+      "id": "Bring_Eggs_to_Lan",
+      "type": "scene",
+      "title": "",
+      "text": "Lan: Do you have the eggs?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Yep!",
+          "next": "yep",
+          "best": true,
+          "itemReq": "Need 30x[img:../Textures/Items/Bird_Egg_icon.webp]'''Bird Egg'''"
+        },
+        {
+          "label": "Still hunting for them, sorry",
+          "next": "Still_hunting_for_them__sorry"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_hunting_for_them__sorry": {
+      "id": "Still_hunting_for_them__sorry",
+      "type": "scene",
+      "title": "",
+      "text": "Lan: That's okay! That's fine! I'm going to stretch the omelettes with more onion and nobody will ever know.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Gather 30 Bird Eggs and bring them to Lan at Wangshu Inn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "yep": {
+      "id": "yep",
+      "type": "scene",
+      "title": "",
+      "text": "''She counts them into the crate under the counter, gets to maybe eleven, gets distracted by something on the stove, and then just gives up.''\n\nLan: Whatever, that's thirty, I trust you.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "____Eggs_Before_Dawn__Eggs_Delivered"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Eggs_Before_Dawn__Eggs_Delivered": {
+      "id": "____Eggs_Before_Dawn__Eggs_Delivered",
+      "type": "ending",
+      "title": "Eggs Delivered",
+      "text": "''She digs around and comes out with a pouch, which she wipes off on her apron before handing it over.''\n\nLan: Here, take it. Feel free to come back around lunch and I'll feed you, on the house.\n\nLan: Okay I have to go, there's four tickets up, THANK YOU!!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "30x [img:../Textures/Items/Bird_Egg_icon.webp]'''Bird Egg'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 200,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

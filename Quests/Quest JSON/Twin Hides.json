@@ -1,0 +1,240 @@
+{
+  "meta": {
+    "requirement": "Explore Wuwang Hill (5%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Wuwang_Hill|Wuwang Hill]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Twin Hides",
+      "text": "''The mist on Wuwang Hill thickens until the path is only a suggestion. Then a man's voice cuts through it, raw and close.''\n\nHarlan: ''shouting'' Back! I said BACK!\n\n''You push through the fog onto a narrow ridge. A middle-aged merchant in a travel cloak is pressed against a broken milestone, satchel clutched to his chest. Two Stonehide Lawachurls close the gap from either side, stone plates grinding as they advance.''\n\nHarlan: ''spotting you'' Traveller! Please!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Get behind me",
+          "next": "getnehind",
+          "best": true
+        },
+        {
+          "label": "Not my problem",
+          "next": "____Twin_Hides__Walked_Away"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Twin_Hides__Walked_Away": {
+      "id": "____Twin_Hides__Walked_Away",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "''You ease back into the mist. Harlan's shout cracks, then vanishes under a double stomp that rattles loose stone past your boots.''\n\n''The ridge belongs to the Lawachurls now. You keep walking.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "getnehind": {
+      "id": "getnehind",
+      "type": "scene",
+      "title": "",
+      "text": "''Harlan scrambles behind the milestone. Both Lawachurls turn toward you at once, shells scraping, eyes locked through the fog.''\n\n''Two hides. One ridge. Nowhere left to step that is not already claimed.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the two Stonehide Lawachurls attacking Harlan on Wuwang Hill",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Lawachurls",
+          "label": "Do /rpg again and then click on Fight the Lawachurls. Defeat 2 [[Stonehide Lawachurl]]s"
+        }
+      ]
+    },
+    "Fight_the_Lawachurls": {
+      "id": "Fight_the_Lawachurls",
+      "type": "scene",
+      "title": "",
+      "text": "''The second Lawachurl crashes down. Mist rolls back over the empty ridge.''\n\n''Harlan peels himself off the milestone, brushes dirt from his cloak with shaking hands, and exhales like a man who had already written his will.''\n\nHarlan: Alive. I am... actually alive.\n\n''He looks at you properly for the first time, then digs for a business card that comes out bent.''\n\nHarlan: Harlan. Merchant. Mondstadt. I was checking the Wuwang route and those two decided I was the cargo.\n\nHarlan: You saved my life. The least I can do is buy you dinner. Good Hunter, Mondstadt City. Give me six hours to get cleaned up and put a table aside. Will you come?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Harlan",
+          "label": "Do /rpg again and then click on Talk to Harlan"
+        }
+      ]
+    },
+    "Talk_to_Harlan": {
+      "id": "Talk_to_Harlan",
+      "type": "scene",
+      "title": "",
+      "text": "''The second Lawachurl crashes down. Mist rolls back over the empty ridge.''\n\n''Harlan peels himself off the milestone, brushes dirt from his cloak with shaking hands, and exhales like a man who had already written his will.''\n\nHarlan: Alive. I am... actually alive.\n\n''He looks at you properly for the first time, then digs for a business card that comes out bent.''\n\nHarlan: Harlan. Merchant. Mondstadt. I was checking the Wuwang route and those two decided I was the cargo.\n\nHarlan: You saved my life. The least I can do is buy you dinner. Good Hunter, Mondstadt City. Give me six hours to get cleaned up and put a table aside. Will you come?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll be there",
+          "next": "I_ll_be_there"
+        },
+        {
+          "label": "Dinner sounds fair",
+          "next": "I_ll_be_there"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_be_there": {
+      "id": "I_ll_be_there",
+      "type": "scene",
+      "title": "",
+      "text": "Harlan: Good. Six hours. Do not be late, or I will eat your share out of spite and gratitude mixed together.\n\n''He limps downslope toward the clearer path, satchel hugged tight, already muttering about bathwater and a proper table.''\n\n''Mondstadt City. Good Hunter. After six hours.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Wait six hours, then have dinner with Harlan in Mondstadt City",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Have_Dinner_with_Harlan",
+          "label": "Wait for 6 hours, then go to Mondstadt City (Mondstadt), do /rpg and click on Have Dinner with Harlan"
+        }
+      ]
+    },
+    "Have_Dinner_with_Harlan": {
+      "id": "Have_Dinner_with_Harlan",
+      "type": "scene",
+      "title": "",
+      "text": "''Good Hunter smells like grilled fish and warm bread. Harlan is already at a corner table, cloak cleaned, hair still damp, waving you over like he has been watching the door for an hour.''\n\nHarlan: You came. Sit. Eat. I ordered enough for a small garrison.\n\n''Plates arrive. He insists you take the better cuts, talks too fast about routes and weather, and only slows when the last of the food is gone.''\n\nHarlan: ''quieter'' I meant what I said on the hill. You saved me. A meal is courtesy. A reward is owed.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You don't owe me anything",
+          "next": "____Twin_Hides__Asked_for_Nothing"
+        },
+        {
+          "label": "Silver would help",
+          "next": "____Twin_Hides__Asked_for_Silver"
+        },
+        {
+          "label": "Whatever you want",
+          "next": "____Twin_Hides__Asked_for_Whatever"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Twin_Hides__Asked_for_Nothing": {
+      "id": "____Twin_Hides__Asked_for_Nothing",
+      "type": "ending",
+      "title": "Asked for Nothing",
+      "text": "Harlan: ''blinks'' Nothing.\n\n''He sits with that for a moment, then laughs once, soft and disbelieving.''\n\nHarlan: Most people ask for a purse. You ask for the satisfaction of not asking.\n\n''He raises his cup.''\n\nHarlan: Then take this instead. A full stomach, a warm table, and a merchant in Mondstadt who will never forget your face. Safe roads, traveller.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Twin_Hides__Asked_for_Silver": {
+      "id": "____Twin_Hides__Asked_for_Silver",
+      "type": "ending",
+      "title": "Asked for Silver",
+      "text": "Harlan: ''nods, already reaching for his belt pouch'' Silver. Honest. Easy to carry. Harder to argue with.\n\n''He counts out a solid stack and slides it across the table without ceremony.''\n\nHarlan: For the ridge. For the mist. For not leaving me to become a story someone tells badly.\n\nHarlan: Eat here again sometime. Next meal is still on me if you ever want it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 250,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Twin_Hides__Asked_for_Whatever": {
+      "id": "____Twin_Hides__Asked_for_Whatever",
+      "type": "ending",
+      "title": "Asked for Whatever",
+      "text": "Harlan: Whatever I want.\n\n''He grins like you just walked into a trap he is proud of setting.''\n\nHarlan: Careful. I trade through Liyue. What I want to give is not always coin.\n\n''From under the table he lifts a wrapped bundle and sets it between the empty plates. Inside, Noctilucous Jade catches the tavern light, deep green and heavy.''\n\nHarlan: Ten pieces. Good grade. Worth more than a polite purse if you know where to use them.\n\nHarlan: Take them. And if anyone asks where you found a merchant generous enough to tip in jade, tell them he was very nearly Lawachurl food.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Obtained",
+          "text": "10x [img:../Textures/Items/Noctilucous%20Jade_icon.webp]'''Noctilucous Jade'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

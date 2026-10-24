@@ -1,0 +1,398 @@
+{
+  "meta": {
+    "requirement": "- Explore Starglow Cavern (1%+ exploration) to trigger this quest.\n- Marla alive (from the [[Flowers for Marla|https://dwrpgdc.github.io/DW-RPG-Data/Quests/Flowers_for_Marla]] quest)",
+    "locations": [
+      "[[Locations#Starglow_Cavern|Starglow Cavern]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Somewhere We Met",
+      "text": "''You're picking your way through Starglow Cavern when movement flashes ahead. Two figures stumble under the ice-glow, already hemmed in by staff-wielding Cryo Samachurls.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Jump in to help!",
+          "next": "Jump_in_to_help_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Jump_in_to_help_": {
+      "id": "Jump_in_to_help_",
+      "type": "scene",
+      "title": "",
+      "text": "''The cavern rings with chanting. Two Cryo Samachurls raise their staves, frost gathering at the tips. The figures behind them are down and barely moving.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the Cryo Samachurls attacking the travelers in Starglow Cavern",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Cryo_Samachurls",
+          "label": "Do /rpg again and then click on Fight the Cryo Samachurls. Defeat 2 [[Cryo Samachurl]]s"
+        }
+      ]
+    },
+    "Fight_the_Cryo_Samachurls": {
+      "id": "Fight_the_Cryo_Samachurls",
+      "type": "scene",
+      "title": "",
+      "text": "''The last Samachurl crumples into the frost. You turn to the wounded travelers, and your stomach drops.''\n\n''It's Marla. Beside her lies a man in travel leathers you don't recognize. Both are pale, bleeding, and cannot stand.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Are you alright?",
+          "next": "Are_you_alright_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Are_you_alright_": {
+      "id": "Are_you_alright_",
+      "type": "scene",
+      "title": "",
+      "text": "Marla: ''voice thin'' Traveller... please. We can't... we can't move.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Stay with them",
+          "next": "Stay_with_them"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Stay_with_them": {
+      "id": "Stay_with_them",
+      "type": "scene",
+      "title": "",
+      "text": "Devin: ''coughing hard'' There's a camp in Wyrmrest Valley. Adventurers. Medicine. Go. Now.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What about you two?",
+          "next": "What_about_you_two_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_about_you_two_": {
+      "id": "What_about_you_two_",
+      "type": "scene",
+      "title": "",
+      "text": "Marla: Please. Hurry.\n\n''Neither of them can stand. Waiting here will not save them.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Ask for aid at the adventurer camp in Wyrmrest Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Ask_for_Aid_at_the_Camp",
+          "label": "Go to Wyrmrest Valley (Dragonspine), do /rpg and click on Ask for Aid at the Camp"
+        }
+      ]
+    },
+    "Ask_for_Aid_at_the_Camp": {
+      "id": "Ask_for_Aid_at_the_Camp",
+      "type": "scene",
+      "title": "",
+      "text": "''An adventurer at the Wyrmrest Valley camp digs through a satchel and presses a single vial into your hands.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Is this all you have?",
+          "next": "Is_this_all_you_have"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Is_this_all_you_have": {
+      "id": "Is_this_all_you_have",
+      "type": "scene",
+      "title": "",
+      "text": "Adventurer: This is all I can spare in this weather. One dose. Make it count.\n\n''The vial is warm against your palm. Not enough for two.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Marla and Devin in Starglow Cavern with the medicine",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Return_to_Marla_and_Devin",
+          "label": "Go to Starglow Cavern (Dragonspine), do /rpg and click on Return to Marla and Devin"
+        }
+      ]
+    },
+    "Return_to_Marla_and_Devin": {
+      "id": "Return_to_Marla_and_Devin",
+      "type": "scene",
+      "title": "",
+      "text": "''You kneel between them in Starglow Cavern and tell them the truth. One vial. One life.''\n\n''Silence. Then the air turns sharp.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "first_fucking_dot"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "first_fucking_dot": {
+      "id": "first_fucking_dot",
+      "type": "scene",
+      "title": "",
+      "text": "Devin: Give it to me. I'm the one who can still make it matter.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Listen",
+          "next": "listen_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "listen_1": {
+      "id": "listen_1",
+      "type": "scene",
+      "title": "",
+      "text": "Marla: Give it to me. I own a store. I can give you a discount on everything. Forever.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Listen",
+          "next": "listen_2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "listen_2": {
+      "id": "listen_2",
+      "type": "scene",
+      "title": "",
+      "text": "Devin: A discount? I have connections with the Adventurers' Guild. Real benefits. Rank. Work. Protection.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Listen",
+          "next": "listen_3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "listen_3": {
+      "id": "listen_3",
+      "type": "scene",
+      "title": "",
+      "text": "Marla: ''interjecting'' My husband was well known. I can introduce you to people who matter.\n\n''They look at you. Waiting.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Save Devin",
+          "next": "Save_Devin"
+        },
+        {
+          "label": "Save Marla",
+          "next": "Save_Marla"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Save_Marla": {
+      "id": "Save_Marla",
+      "type": "scene",
+      "title": "",
+      "text": "''You tip the vial to Marla's lips. She gasps, then manages a thin, grateful smile.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "dot_marla"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "dot_marla": {
+      "id": "dot_marla",
+      "type": "scene",
+      "title": "",
+      "text": "Devin: ''bitter laugh'' Of course. Store discounts. Introductions. Naturally.\n\nMarla: ''quiet'' Well. Obviously they would choose me.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Look at Devin",
+          "next": "____Somewhere_We_Met__Saved_Marla"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Somewhere_We_Met__Saved_Marla": {
+      "id": "____Somewhere_We_Met__Saved_Marla",
+      "type": "ending",
+      "title": "Saved Marla",
+      "text": "''Devin's hand goes slack against the ice. He does not speak again.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 175,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 125,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Save_Devin": {
+      "id": "Save_Devin",
+      "type": "scene",
+      "title": "",
+      "text": "''You tip the vial to Devin's lips. Color returns to his face almost at once.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "dot_devin"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "dot_devin": {
+      "id": "dot_devin",
+      "type": "scene",
+      "title": "",
+      "text": "Marla: ''staring'' Of course. Of course you'd choose him.\n\nDevin: ''breathing harder, steadier'' Well. Obviously they would choose me. I told you.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Look at Marla",
+          "next": "____Somewhere_We_Met__Saved_Devin"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Somewhere_We_Met__Saved_Devin": {
+      "id": "____Somewhere_We_Met__Saved_Devin",
+      "type": "ending",
+      "title": "Saved Devin",
+      "text": "''Marla's breathing slows. By the time you look back, she is gone.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 175,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 125,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

@@ -1,0 +1,732 @@
+{
+  "meta": {
+    "requirement": "Explore Stormterror's Lair (30%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Stormterror's_Lair|Stormterror's Lair]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "The Spinning Compass",
+      "text": "''Someone in a faded guide vest is walking the same loop of broken stone, talking like there's a crowd.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Uh... is this a tour?",
+          "next": "Uh____is_this_a_tour_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Uh____is_this_a_tour_": {
+      "id": "Uh____is_this_a_tour_",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: YES! Hi! Welcome to Stormterror's Lair please stay on the path and do not climb anything that looks like it used to be a dragon I have to say that every time.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "The bones?",
+          "next": "The_bones_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "The_bones_": {
+      "id": "The_bones_",
+      "type": "scene",
+      "title": "",
+      "text": "''You walk past a pile of bones big enough to be a wall.''\n\nNils: Ah. Yes. The pile. Ancient dragon, rumored to be Dvalin, slain a long time ago. Very educational. Please do not take a souvenir bone, someone did that last week and I am still filling out the form.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "dot3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "dot3": {
+      "id": "dot3",
+      "type": "scene",
+      "title": "",
+      "text": "''You feel really uneasy. Nils keeps walking.''\n\nNils: And if you look to your left... wait. Wait wait wait.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You okay?",
+          "next": "You_okay_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_okay_": {
+      "id": "You_okay_",
+      "type": "scene",
+      "title": "",
+      "text": "''He holds up a brass compass. The needle is spinning.''\n\nNils: No no no not now... ugh. The gems are dying. I usually tell people the needle spinning is part of the show but it is not part of the show, the gems are actually dying.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What gems?",
+          "next": "What_gems_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_gems_": {
+      "id": "What_gems_",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: There's five of them. They seal the center. Nobody knows what for, which is great on a tour, very mysterious, except I can't finish the loop if the compass is drunk.\n\nNils: I can show you the first one? If you help me repair them I can actually do my job today.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Yeah I'll help",
+          "next": "Yeah_I_ll_help"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Yeah_I_ll_help": {
+      "id": "Yeah_I_ll_help",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: Really? Oh thank god. First one needs twenty Chaos Circuits. I have a vest. I do not have twenty Chaos Circuits.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Repair the first seal with 20 Chaos Circuits at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Repair_the_First_Seal",
+          "label": "Do /rpg again and then click on Repair the First Seal"
+        }
+      ]
+    },
+    "Repair_the_First_Seal": {
+      "id": "Repair_the_First_Seal",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: This is the first one. Housing's loose, circuits are dead.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I have the circuits",
+          "next": "I_have_the_circuits",
+          "best": true,
+          "itemReq": "Need 20x[img:../Textures/Items/Item_Chaos_Circuit.webp]'''Chaos Circuit'''"
+        },
+        {
+          "label": "Still looking",
+          "next": "Still_looking"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_looking": {
+      "id": "Still_looking",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: Ruin Guards drop them. I don't fight those. That's kind of the whole problem.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Repair the first seal with 20 Chaos Circuits at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_have_the_circuits": {
+      "id": "I_have_the_circuits",
+      "type": "scene",
+      "title": "",
+      "text": "''You slot the circuits in. The gem steadies.''\n\nNils: Okay that's one. Next wants ten Iron Chunks for the brace. I don't know the technical name. It's iron.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "20x [img:../Textures/Items/Item_Chaos_Circuit.webp]'''Chaos Circuit'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Repair the second seal with 10 Iron Chunks at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Repair_the_Second_Seal",
+          "label": "Do /rpg again and then click on Repair the Second Seal"
+        }
+      ]
+    },
+    "Repair_the_Second_Seal": {
+      "id": "Repair_the_Second_Seal",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: Second one's this way. Brace is shot.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I have the iron",
+          "next": "I_have_the_iron",
+          "best": true,
+          "itemReq": "Need 10x[img:../Textures/Items/Iron%20Chunk_icon.png]'''Iron Chunk'''"
+        },
+        {
+          "label": "Still looking",
+          "next": "still_looking"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_have_the_iron": {
+      "id": "I_have_the_iron",
+      "type": "scene",
+      "title": "",
+      "text": "''The brace seats. The second gem holds.''\n\nNils: Two. Third one wants five Crystal Chunks. Don't ask me why, I didn't build it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "10x [img:../Textures/Items/Iron%20Chunk_icon.png]'''Iron Chunk'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Repair the third seal with 5 Crystal Chunks at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Repair_the_Third_Seal",
+          "label": "Do /rpg again and then click on Repair the Third Seal"
+        }
+      ]
+    },
+    "still_looking": {
+      "id": "still_looking",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: I'll just stand here and pretend this is still a tour.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Repair the second seal with 10 Iron Chunks at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Repair_the_Third_Seal": {
+      "id": "Repair_the_Third_Seal",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: Yeah this is the crystal one. Looks expensive. Is not working.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I have the crystal",
+          "next": "I_have_the_crystal",
+          "best": true,
+          "itemReq": "Need 5x[img:../Textures/Items/Crystal%20Chunk_icon.png]'''Crystal Chunk'''"
+        },
+        {
+          "label": "Still looking",
+          "next": "Still_looking_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_looking_": {
+      "id": "Still_looking_",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: If I start the bone speech again please stop me.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Repair the third seal with 5 Crystal Chunks at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_have_the_crystal": {
+      "id": "I_have_the_crystal",
+      "type": "scene",
+      "title": "",
+      "text": "''The third gem lights. Nils taps his compass. Still spinning.''\n\nNils: Three. Last two I can't touch. Special fittings. There's a guy in Springvale, Piet, he used to service this stuff. I asked him last month and he told me to get lost.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Crystal%20Chunk_icon.png]'''Crystal Chunk'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll go to Springvale",
+          "next": "I_ll_go_to_Springvale"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_go_to_Springvale": {
+      "id": "I_ll_go_to_Springvale",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: If you can get him up here I'll keep watch. I am very good at standing still. It's like half the job.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Find Piet in Springvale and convince him to help with the last two seals",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Piet",
+          "label": "Go to Springvale (Mondstadt), do /rpg and click on Talk to Piet"
+        }
+      ]
+    },
+    "Talk_to_Piet": {
+      "id": "Talk_to_Piet",
+      "type": "scene",
+      "title": "",
+      "text": "''A man at a workbench is scraping an empty plate with a fork.''\n\nPiet: If you're here about a job, no.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I need help with the seals at Stormterror's Lair",
+          "next": "I_need_help_with_the_seals_at_Stormterror_s_Lair"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_need_help_with_the_seals_at_Stormterror_s_Lair": {
+      "id": "I_need_help_with_the_seals_at_Stormterror_s_Lair",
+      "type": "scene",
+      "title": "",
+      "text": "Piet: Everybody needs help with something. Make it fast.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Offer a free steak",
+          "next": "Offer_a_free_steak",
+          "best": true,
+          "itemReq": "Need 1x[img:../Textures/Items/Foods/Item_Steak.webp]'''Perfect Steak'''"
+        },
+        {
+          "label": "Offer 100 silver",
+          "next": "Offer_100_silver"
+        },
+        {
+          "label": "Try to talk to him",
+          "next": "Try_to_talk_to_him"
+        },
+        {
+          "label": "I'll come back",
+          "next": "I_ll_come_back"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Offer_a_free_steak": {
+      "id": "Offer_a_free_steak",
+      "type": "scene",
+      "title": "",
+      "text": "''You set a Perfect Steak on the empty plate.''\n\nPiet: ...did you actually cook this right?\n\n''He eats. He eats all of it.''\n\nPiet: Fine. I'll come. Don't talk on the walk.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "1x [img:../Textures/Items/Foods/Item_Steak.webp]'''Perfect Steak'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Piet to the fourth seal at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Bring_Piet_to_the_Fourth_Seal",
+          "label": "Go to Stormterror's Lair (Mondstadt), do /rpg and click on Bring Piet to the Fourth Seal"
+        }
+      ]
+    },
+    "I_ll_come_back": {
+      "id": "I_ll_come_back",
+      "type": "scene",
+      "title": "",
+      "text": "Piet: Yeah. Door's that way.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Find Piet in Springvale and convince him to help with the last two seals",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Offer_100_silver": {
+      "id": "Offer_100_silver",
+      "type": "scene",
+      "title": "",
+      "text": "Piet: Money. Cool. Another stranger waving coins at me like I'm a shop. Go away.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Come back to Piet in Springvale in 3 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Piet_",
+          "label": "Wait for 3 hours, then do /rpg and click on Talk to Piet"
+        }
+      ]
+    },
+    "Try_to_talk_to_him": {
+      "id": "Try_to_talk_to_him",
+      "type": "scene",
+      "title": "",
+      "text": "Piet: Yeah I know the seals. Yeah I can fix them. No I'm not hiking to a dragon graveyard because you asked nicely. Go away.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Come back to Piet in Springvale in 3 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Piet_",
+          "label": "Wait for 3 hours, then do /rpg and click on Talk to Piet"
+        }
+      ]
+    },
+    "Talk_to_Piet_": {
+      "id": "Talk_to_Piet_",
+      "type": "scene",
+      "title": "",
+      "text": "Piet: You again. I said go away.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Offer 100 silver",
+          "next": "Offer_100_silver",
+          "itemReq": "Need 100x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "Offer a free steak",
+          "next": "Offer_a_free_steak",
+          "best": true,
+          "itemReq": "Need 1x[img:../Textures/Items/Foods/Item_Steak.webp]'''Perfect Steak'''"
+        },
+        {
+          "label": "Try to talk to him",
+          "next": "Try_to_talk_to_him"
+        },
+        {
+          "label": "I'll come back",
+          "next": "I_ll_come_back"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Bring_Piet_to_the_Fourth_Seal": {
+      "id": "Bring_Piet_to_the_Fourth_Seal",
+      "type": "scene",
+      "title": "",
+      "text": "Piet: Yeah this is junk. Hold that.\n\n''He does something with a tool you do not own. The gem lights.''\n\nPiet: Four. Last one's further in.\n\n''You start walking. Something heavy moves in the stone.''\n\nPiet: Of course. There's a machine. Of course there is.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the Ruin Guard and Ruin Hunter at the fifth seal",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Ruin_Machines",
+          "label": "Do /rpg again and then click on Fight the Ruin Machines. Defeat 1 [[Ruin Guard]] and 1 [[Ruin Hunter]]"
+        }
+      ]
+    },
+    "Fight_the_Ruin_Machines": {
+      "id": "Fight_the_Ruin_Machines",
+      "type": "scene",
+      "title": "",
+      "text": "''The machines go still. Piet is already walking toward the gem.''\n\nPiet: Don't celebrate.\n\n''Wind hits. Three big slimes drop in.''\n\nPiet: I hate this place.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the Large Anemo Slimes at the fifth seal",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Slimes",
+          "label": "Do /rpg again and then click on Fight the Slimes. Defeat 3 [[Large Anemo Slime]]s"
+        }
+      ]
+    },
+    "Fight_the_Slimes": {
+      "id": "Fight_the_Slimes",
+      "type": "scene",
+      "title": "",
+      "text": "''The last gem steadies. Piet wipes his hands on his vest.''\n\nPiet: Done. Take me home. I'm not walking back through that alone.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Take Piet back to Springvale",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Take_Piet_back_to_Springvale",
+          "label": "Go to Springvale (Mondstadt), do /rpg and click on Take Piet back to Springvale"
+        }
+      ]
+    },
+    "Take_Piet_back_to_Springvale": {
+      "id": "Take_Piet_back_to_Springvale",
+      "type": "scene",
+      "title": "",
+      "text": "Piet: That's my door. Thanks for the steak. Don't come back unless you have another one.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Nils at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Nils",
+          "label": "Go to Stormterror's Lair (Mondstadt), do /rpg and click on Talk to Nils"
+        }
+      ]
+    },
+    "Talk_to_Nils": {
+      "id": "Talk_to_Nils",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: You're back. Piet actually came?? Wait.\n\n''He holds the compass up. The needle settles.''\n\nNils: It's working. It's actually working.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's the seal guarding?",
+          "next": "What_s_the_seal_guarding_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_s_the_seal_guarding_": {
+      "id": "What_s_the_seal_guarding_",
+      "type": "scene",
+      "title": "",
+      "text": "Nils: I... I don't actually know. I say mysterious center on the tour. I've never gone in. Do you wanna...",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Yeah. Show me",
+          "next": "____The_Spinning_Compass__Portal_Found"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____The_Spinning_Compass__Portal_Found": {
+      "id": "____The_Spinning_Compass__Portal_Found",
+      "type": "ending",
+      "title": "Portal Found",
+      "text": "''He takes you past the bones, through a gap the gems were locking. In the middle there's a strange portal, just sitting there.''\n\nNils: I am not putting this on the brochure.\n\n''He counts silver into your hand, still looking at the portal.''\n\nNils: That's for the circuits and the hiking and whatever Piet charged you in food.\n\nNils: I have to rewrite the last ten minutes of the tour.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 500,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 300,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Dvalin]]",
+      "requirement": ""
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "requirement": "Explore Starglow Cavern (5%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Starglow_Cavern|Starglow Cavern]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Twin Reflections",
+      "text": "''Deeper in Starglow Cavern, the ice throws light in wrong directions. Two shapes stand ahead where the tunnel widens, still as glass.''\n\n''Hydro shimmer pools at their feet. When you take another step, both heads turn at once.''\n\n''Mirror Maidens. A matched pair. Neither one looks surprised to see you.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Draw your weapon",
+          "next": "Draw_your_weapon"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Draw_your_weapon": {
+      "id": "Draw_your_weapon",
+      "type": "scene",
+      "title": "",
+      "text": "''The nearer Maiden raises her hand. A mirror-plane blooms between you, then another beside it. Her twin steps wide, already moving to cut the angle.''\n\n''Two reflections. One cavern. Nowhere left to walk around them.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the two Mirror Maidens in Starglow Cavern",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "____Twin_Reflections__Mirror_Maidens_Defeated",
+          "label": "Do /rpg again and then click on Fight the Mirror Maidens. Defeat 2 [[Mirror Maiden]]s"
+        }
+      ]
+    },
+    "____Twin_Reflections__Mirror_Maidens_Defeated": {
+      "id": "____Twin_Reflections__Mirror_Maidens_Defeated",
+      "type": "ending",
+      "title": "Mirror Maidens Defeated",
+      "text": "''The last Maiden collapses into scattered Hydro light. The cavern goes quiet again, save for meltwater ticking off the ice.''\n\n''Among the frost where they stood, a small purse of Silver catches the glow.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 250,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

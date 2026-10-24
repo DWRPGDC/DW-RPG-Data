@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "requirement": "Explore Falcon Coast (5%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Falcon_Coast|Falcon Coast]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "A Fisherman's Business",
+      "text": "''A new plank counter stands beside Bram's drying racks. He is painting a price board while his recovered shoulder holds the wood steady.''\n\nBram: There you are. The rod still treating you well?\n\n''He sets the brush down and points toward a brass measuring rail fixed across the counter.''\n\nBram: I am buying fresh catches again. Species matters, but length matters more than most fishers admit. Bring me something uncommon and long enough, and I will pay properly for it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You're opening a store?",
+          "next": "You_are_opening_a_store"
+        },
+        {
+          "label": "How do you set the price?",
+          "next": "You_are_opening_a_store"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_are_opening_a_store": {
+      "id": "You_are_opening_a_store",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: A buying counter, not a charity. ''taps the measuring rail'' Short, common fish earn a few Silver. Most catches land somewhere between one and ten. Rare species with exceptional length are another matter. The finest can fetch a hundred Silver or more.\n\nBram: I buy what you carry here. If a catch is special enough that you marked it as a favorite, I leave it alone. No arguments and no accidents.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll bring you my catches",
+          "next": "____A_Fisherman_s_Business__Fisherman_s_Store_Opened"
+        },
+        {
+          "label": "Fair prices for fair catches",
+          "next": "____A_Fisherman_s_Business__Fisherman_s_Store_Opened"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____A_Fisherman_s_Business__Fisherman_s_Store_Opened": {
+      "id": "____A_Fisherman_s_Business__Fisherman_s_Store_Opened",
+      "type": "ending",
+      "title": "Fisherman's Store Opened",
+      "text": "''Bram turns the price board around and hooks it above the counter. Fresh white letters read: FISH BOUGHT BY SPECIES AND LENGTH.''\n\nBram: Then we are in business. Pick the fish you want to sell, check my total, and confirm it before anything changes hands.\n\n''He puts a small stack of Silver beside the measuring rail and gives the tide an appraising look.''\n\nBram: The counter is open whenever you are at Falcon Coast.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 50,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 100,
+          "icon": ""
+        }
+      ],
+      "unlocks": "Fisherman's Store",
+      "requirement": ""
+    }
+  }
+}

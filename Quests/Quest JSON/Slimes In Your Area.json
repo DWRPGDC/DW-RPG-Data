@@ -1,0 +1,285 @@
+{
+  "meta": {
+    "requirement": "Explore Windrise (5%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Windrise|Windrise]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Slimes In Your Area",
+      "text": "''Someone is shouting at a slime.''\n\n''Not shouting at it in anger. More like presenting to it. You follow the voice around a low ridge and find a man in a stained coat kneeling in the grass, one hand braced on a folding stool, the other pointing at a small red slime that has retreated to the base of a tree.''\n\nRoland: ''without looking up'' Note forty-seven. When cornered, the specimen retreats vertically rather than laterally. Fascinating. Also inconvenient.\n\n''The pyro slime pops once, warningly. Roland scoots his stool back six inches.''\n\nRoland: ''finally noticing you'' Oh! Traveller! Perfect. You look like someone who fights things. Do you fight things?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Sometimes. What's going on here?",
+          "next": "Sometimes__What_s_going_on_here_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Sometimes__What_s_going_on_here_": {
+      "id": "Sometimes__What_s_going_on_here_",
+      "type": "scene",
+      "title": "",
+      "text": "Roland: ''stands up too fast, catches himself on the stool'' Right. Introductions. Roland. Independent researcher. Slime behaviour, specifically. ''taps his stack of notebooks'' I have been compiling a field guide for three months and I am, and I say this with complete honesty, about forty percent done.\n\n''He gestures at the pyro slime, which has not moved.''\n\nRoland: The problem is observation distance. Slimes are most interesting when they are fighting back, and I am most interesting when I am not on fire. ''beat'' I need a proxy observer. Someone who can engage the specimen and report what it actually does.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You want me to fight slimes for you?",
+          "next": "You_want_me_to_fight_slimes_for_you"
+        },
+        {
+          "label": "How many slimes are we talking about?",
+          "next": "You_want_me_to_fight_slimes_for_you"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_want_me_to_fight_slimes_for_you": {
+      "id": "You_want_me_to_fight_slimes_for_you",
+      "type": "scene",
+      "title": "",
+      "text": "Roland: ''already flipping open a notebook'' Five total, across three sites. One Pyro here at Windrise, two Anemo in Springvale, two Cryo in the Whispering Woods. Standard specimens, nothing exotic. I need behavioural notes from each encounter. How they move, how they attack, what they do when cornered.\n\n''He holds the notebook out like a contract.''\n\nRoland: You fight. You watch. You come back and tell me everything. I will pay you. I will also be extremely grateful, which is worth something on its own, I think.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Five slimes. I'll take notes",
+          "next": "Five_slimes__I_will_take_notes"
+        },
+        {
+          "label": "Start with the one right here",
+          "next": "Five_slimes__I_will_take_notes"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Five_slimes__I_will_take_notes": {
+      "id": "Five_slimes__I_will_take_notes",
+      "type": "scene",
+      "title": "",
+      "text": "Roland: ''grins'' Excellent. Scientific partnership begins now.\n\n''He tears a page from the notebook and hands it to you. It is covered in cramped handwriting and a small drawing of a slime with question marks around it.''\n\nRoland: Start with the Pyro specimen. It is right there. ''gestures at the tree'' I will be here when you get back. Try not to let it pop on you. They pop.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat a Pyro Slime near Windrise for Roland's research",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_Pyro_Slime",
+          "label": "Do /rpg again and then click on Fight Pyro Slime. Defeat 1 [[Pyro Slime]]"
+        }
+      ]
+    },
+    "Fight_Pyro_Slime": {
+      "id": "Fight_Pyro_Slime",
+      "type": "scene",
+      "title": "",
+      "text": "''The pyro slime is gone. Roland peers out from behind his stool, notebook already open.''\n\nRoland: You survived! Good. Did it charge before it popped, or pop before it charged? ''scribbling furiously'' No wait, tell me later. Springvale next. Two Anemo specimens. They swirl. They are very fond of swirling.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat two Anemo Slimes in Springvale for Roland's research",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_Anemo_Slimes",
+          "label": "Go to Springvale (Mondstadt), do /rpg and click on Fight Anemo Slimes. Defeat 2 [[Anemo Slime]]s"
+        }
+      ]
+    },
+    "Fight_Anemo_Slimes": {
+      "id": "Fight_Anemo_Slimes",
+      "type": "scene",
+      "title": "",
+      "text": "''Roland would be proud of the notes you could give him about swirling.''\n\n''Two anemo slimes, two tight little gusts, both gone. The Springvale grass is still spinning in lazy circles where they stood.''\n\n''You check Roland's list. Whispering Woods. Two Cryo specimens. Frost trails and slow presses. Then home.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat two Cryo Slimes in the Whispering Woods for Roland's research",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_Cryo_Slimes",
+          "label": "Go to Whispering Woods (Mondstadt), do /rpg and click on Fight Cryo Slimes. Defeat 2 [[Cryo Slime]]s"
+        }
+      ]
+    },
+    "Fight_Cryo_Slimes": {
+      "id": "Fight_Cryo_Slimes",
+      "type": "scene",
+      "title": "",
+      "text": "''The woods settle. The last cryo slime's frost fades from the pine needles.''\n\n''Five slimes, three elements, three locations. Roland is still at Windrise with his notebooks and his folding stool, probably shouting at nothing by now.''\n\n''Time to report.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Roland at Windrise and report your findings",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Report_to_Roland",
+          "label": "Go to Windrise (Mondstadt), do /rpg and click on Report to Roland"
+        }
+      ]
+    },
+    "Report_to_Roland": {
+      "id": "Report_to_Roland",
+      "type": "scene",
+      "title": "",
+      "text": "''Roland is exactly where you left him, though the stool has migrated three feet and he has acquired a second notebook.''\n\nRoland: ''looks up, eyes bright'' You're back! You're back and you look like someone who has seen things. Slime things. Tell me everything. Start with the Pyro. Did it lead with heat or did it try to scare you off first?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Heat first. It popped when I closed in",
+          "next": "Heat_first__It_popped_when_I_closed_in"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Heat_first__It_popped_when_I_closed_in": {
+      "id": "Heat_first__It_popped_when_I_closed_in",
+      "type": "scene",
+      "title": "",
+      "text": "Roland: ''writing'' Heat first, aggressive posture, retreat to vertical cover when pressured. ''mutters'' Consistent with prior observations.\n\nRoland: Springvale. The Anemo pair. Did they coordinate or just annoy you in parallel?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "They swirled together. Felt coordinated",
+          "next": "They_swirled_together__Felt_coordinated"
+        },
+        {
+          "label": "One swirled while the other hung back",
+          "next": "They_swirled_together__Felt_coordinated"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "They_swirled_together__Felt_coordinated": {
+      "id": "They_swirled_together__Felt_coordinated",
+      "type": "scene",
+      "title": "",
+      "text": "Roland: ''nods rapidly'' Yes. The paired gust pattern. I have been trying to prove that for weeks.\n\n''He underlines something twice.''\n\nRoland: Whispering Woods. Cryo pair. This is the important one. Did they slow you down or just try to freeze you in place?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "They tried to freeze me in place",
+          "next": "They_tried_to_freeze_me_in_place"
+        },
+        {
+          "label": "Slowed me down first, then pressed in",
+          "next": "They_tried_to_freeze_me_in_place"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "They_tried_to_freeze_me_in_place": {
+      "id": "They_tried_to_freeze_me_in_place",
+      "type": "scene",
+      "title": "",
+      "text": "Roland: ''stops writing. Looks at you.''\n\nRoland: That is... that is a complete data set. Three elements, five specimens, behavioural notes from direct engagement. ''voice getting faster'' I can finish the regional chapter. I can actually finish it.\n\n''He fumbles in his coat and produces a small stack of silver.''\n\nRoland: Payment. Fair rate. Plus a little extra for not making me fight anything myself, which I appreciate on a personal level.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Glad it helped",
+          "next": "Slimes_In_Your_Area__Field_Research_Complete"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Slimes_In_Your_Area__Field_Research_Complete": {
+      "id": "Slimes_In_Your_Area__Field_Research_Complete",
+      "type": "ending",
+      "title": "Field Research Complete",
+      "text": "Roland: ''pressing the silver into your hand'' It helped enormously. The guide will have a whole section on Mondstadt slimes that is not just me squinting from fifty paces.\n\n''He settles back onto the stool, already flipping to a fresh page.''\n\nRoland: If you find any unusual specimens, let me know. I am always in the area. ''waves vaguely at Windrise'' Somewhere in the area. Probably here. I like the statue.\n\n''He is already writing before you leave.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 275,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 140,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

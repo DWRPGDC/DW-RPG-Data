@@ -1,0 +1,335 @@
+{
+  "meta": {
+    "requirement": "Explore Windrise (30%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Windrise|Windrise]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Strange Hilichurls",
+      "text": "''Past the statue, tucked in the lee of a fallen oak, a man has made a camp out of chalk circles, stacked masks, and the kind of confidence that usually precedes something going wrong.''\n\n''He is crouched over a notebook, muttering numbers under his breath. Three stained hilichurl masks hang from a branch like laundry. He does not notice you until you are almost on top of the outer chalk ring.''\n\nLukas: ''startled'' Ah! Traveller. Perfect timing. You look like someone who ventures near hilichurls without screaming.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What are you doing out here?",
+          "next": "What_are_you_doing_out_here"
+        },
+        {
+          "label": "Is this... a summoning circle?",
+          "next": "What_are_you_doing_out_here"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_are_you_doing_out_here": {
+      "id": "What_are_you_doing_out_here",
+      "type": "scene",
+      "title": "",
+      "text": "Lukas: ''straightens, suddenly formal'' Lukas. Independent ethnographer. Hilichurls, specifically. ''gestures at the masks'' Everyone treats them like mindless brutes. I think they respond to ritual cues, mask patterns, the right offerings. Mondstadt's guilds want proof before they fund a proper study.\n\n''He taps the chalk ring.''\n\nLukas: I am very close. I need one thing I cannot get without help. Stained Masks. Fifteen of them. The kind adventurers toss aside after a hunt. To me they are data.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You want me to bring you masks?",
+          "next": "You_want_me_to_bring_you_masks"
+        },
+        {
+          "label": "What happens when you have them?",
+          "next": "You_want_me_to_bring_you_masks"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_want_me_to_bring_you_masks": {
+      "id": "You_want_me_to_bring_you_masks",
+      "type": "scene",
+      "title": "",
+      "text": "Lukas: ''eyes bright'' I perform the summoning pattern I reconstructed from three separate camps. If my theory holds, it should draw Anemo Samachurls. Controlled specimens. Documentable behaviour.\n\n''He pauses, then adds with complete honesty:''\n\nLukas: I cannot fight them. I tried negotiating with a hilichurl once. It went poorly and I still have the scar. I need someone who can engage them while I observe from a safe distance.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Fifteen masks. I can do that",
+          "next": "Fifteen_masks__I_can_do_that"
+        },
+        {
+          "label": "Summoning hilichurls sounds unwise",
+          "next": "Summoning_hilichurls_sounds_unwise"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Summoning_hilichurls_sounds_unwise": {
+      "id": "Summoning_hilichurls_sounds_unwise",
+      "type": "scene",
+      "title": "",
+      "text": "Lukas: ''nods solemnly'' Entirely unwise. Also how most field breakthroughs happen. Soren at the Mondstadt archive has been waiting months for usable data. If this works, you will be listed in the acknowledgements. ''beat'' And paid. I have been setting Silver aside for exactly this.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Fine. Fifteen Stained Masks",
+          "next": "Fifteen_masks__I_can_do_that"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Fifteen_masks__I_can_do_that": {
+      "id": "Fifteen_masks__I_can_do_that",
+      "type": "scene",
+      "title": "",
+      "text": "Lukas: ''scribbles your name in the margin of his notebook'' Excellent. Scientific partnership begins now. Bring the masks here and do not worry about the chalk, it washes off.\n\n''He returns to arranging the circle with the focus of a man who has been waiting weeks for this moment.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Lukas 15 Stained Masks for his hilichurl research at Windrise",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Bring_Lukas_the_Stained_Masks",
+          "label": "Do /rpg again and click on Bring Lukas the Stained Masks"
+        }
+      ]
+    },
+    "Bring_Lukas_the_Stained_Masks": {
+      "id": "Bring_Lukas_the_Stained_Masks",
+      "type": "scene",
+      "title": "",
+      "text": "''Lukas looks up as you approach, chalk dust on both sleeves.''\n\nLukas: You have them? Please tell me you have them.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Hand over 15 Stained Masks",
+          "next": "Hand_over_15_Stained_Masks_",
+          "best": true,
+          "itemReq": "Need 15x[img:../Textures/Items/Stained_Mask_icon.png]'''Stained Mask'''"
+        },
+        {
+          "label": "Still gathering. I'll be back",
+          "next": "Still_gathering__I_ll_be_back"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_gathering__I_ll_be_back": {
+      "id": "Still_gathering__I_ll_be_back",
+      "type": "scene",
+      "title": "",
+      "text": "Lukas: ''waves you off without looking up from the circle'' Take your time. The ritual will keep. Fifteen Stained Masks, whenever you can spare them.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Lukas 15 Stained Masks for his hilichurl research at Windrise",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Hand_over_15_Stained_Masks_": {
+      "id": "Hand_over_15_Stained_Masks_",
+      "type": "scene",
+      "title": "",
+      "text": "''You count out fifteen Stained Masks into his waiting arms. Lukas arranges them around the inner ring with surgical care, murmuring notes after each placement.''\n\nLukas: Perfect. The pattern is complete. ''he steps back, suddenly nervous'' This is the part where I ask you to stand ready.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "15x [img:../Textures/Items/Stained_Mask_icon.png]'''Stained Mask'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'm ready",
+          "next": "I_m_ready"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_m_ready": {
+      "id": "I_m_ready",
+      "type": "scene",
+      "title": "",
+      "text": "''Lukas raises both hands over the masks and begins a low, rhythmic chant. The grass stirs without wind. The chalk lines seem to brighten at the edges.''\n\n''Then the air tears open with a shriek of Anemo energy and two masked shamans materialize inside the circle, staff raised, eyes burning with violet light.''\n\nLukas: ''from behind a tree, notebook already out'' They're here! Both of them! Please don't let them reach me!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the two Anemo Samachurls Lukas summoned at Windrise",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Summoned_Samachurls",
+          "label": "Do /rpg again and then click on Fight the Summoned Samachurls. Defeat 2 [[Anemo Samachurl]]s"
+        }
+      ]
+    },
+    "Fight_the_Summoned_Samachurls": {
+      "id": "Fight_the_Summoned_Samachurls",
+      "type": "scene",
+      "title": "",
+      "text": "''The last samachurl dissolves into wind and mask fragments. The chalk circle is scorched in places, but Lukas is already creeping back toward the site, scribbling furiously.''\n\nLukas: Incredible. The gust timing, the paired casting, the retreat pattern when pressured. ''he looks up at you'' You survived. Good. I have a great deal to write down.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Lukas at Windrise after the fight",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Lukas",
+          "label": "Do /rpg again and then click on Talk to Lukas"
+        }
+      ]
+    },
+    "Talk_to_Lukas": {
+      "id": "Talk_to_Lukas",
+      "type": "scene",
+      "title": "",
+      "text": "''Lukas has filled three pages in the time it took you to catch your breath. He tears the top sheet free, folds it twice, and seals it with a wax stamp from his coat.''\n\nLukas: Soren at the Mondstadt archive commissioned this study. He needs the field report tonight if it is going to make the guild review. ''presses the packet into your hands'' Corner of the market district. He will know what it is.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll get it to him",
+          "next": "I_ll_get_it_to_him"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_get_it_to_him": {
+      "id": "I_ll_get_it_to_him",
+      "type": "scene",
+      "title": "",
+      "text": "Lukas: ''already writing again'' Tell Soren the ritual worked. Tell him I was right. ''a beat'' And thank you. Without you I would still be shouting at hilichurls from fifty paces.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver Lukas's hilichurl research report to Soren in Mondstadt",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Deliver_the_Report_to_Soren",
+          "label": "Go to Mondstadt City (Mondstadt), so /rpg and click on Deliver the Report to Soren"
+        }
+      ]
+    },
+    "Deliver_the_Report_to_Soren": {
+      "id": "Deliver_the_Report_to_Soren",
+      "type": "scene",
+      "title": "",
+      "text": "''You find Soren in a cramped upstairs study above the market, surrounded by maps, mask rubbings, and teacups in various stages of neglect. He looks up when you knock.''\n\nSoren: ''seeing the sealed report'' Lukas actually did it. ''takes it carefully'' I had half convinced myself he was inventing results from his tent again.\n\n''He breaks the seal and scans the first page. His eyebrows climb.''\n\nSoren: Paired Anemo Samachurls. Documented response to ritual stimulus. ''looks at you'' You fought them?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Both of them. He's still writing notes",
+          "next": "Strange_Hilichurls__Report_Delivered"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Strange_Hilichurls__Report_Delivered": {
+      "id": "Strange_Hilichurls__Report_Delivered",
+      "type": "ending",
+      "title": "Report Delivered",
+      "text": "Soren: ''laughs once, surprised'' Then you have done Mondstadt's researchers a genuine service. Lukas will be insufferable about this for weeks.\n\n''He crosses to a desk drawer and counts out a stack of Silver with practised efficiency, then sets an ornate green orb beside it.''\n\nSoren: Payment from the study fund, and a catalyst from our equipment reserve. Lukas insisted you keep it. Hazard pay, he called it. ''nods toward the report'' This goes to the archive tonight. Thank you, traveller.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 200,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 250,
+          "icon": ""
+        },
+        {
+          "item": "[[Emerald Orb]]",
+          "qty": 0,
+          "icon": "../Textures/Weapons/Weapon_Emerald_Orb.webp"
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

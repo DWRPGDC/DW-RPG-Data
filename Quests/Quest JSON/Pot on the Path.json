@@ -1,0 +1,265 @@
+{
+  "meta": {
+    "requirement": "Explore Whispering Woods (5%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Whispering_Woods|Whispering Woods]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Pot on the Path",
+      "text": "''A woman with a baby on her hip is fishing an empty basket out of a stream.''\n\nJutta: Could you hold the handle a second? He's trying to get in there too.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Got it",
+          "next": "Got_it"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Got_it": {
+      "id": "Got_it",
+      "type": "scene",
+      "title": "",
+      "text": "Jutta: Thanks. My sister's coming off her woodcutting shift and I brought lunch, or I brought the things for lunch. He pushed the basket in while I was getting the pot ready.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Can I get you something?",
+          "next": "Can_I_get_you_something_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Can_I_get_you_something_": {
+      "id": "Can_I_get_you_something_",
+      "type": "scene",
+      "title": "",
+      "text": "Jutta: Two Radish, a Carrot and a Mushroom would do it. I can't go looking with him like this. Would you bring them here?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll find some",
+          "next": "I_ll_find_some"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_find_some": {
+      "id": "I_ll_find_some",
+      "type": "scene",
+      "title": "",
+      "text": "Jutta: That's kind of you. I'll get the water going.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Gather 2 Radish, 1 Carrot and 1 Mushroom and bring them to Jutta in the Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Jutta",
+          "label": "Do /rpg again and then click on Talk to Jutta"
+        }
+      ]
+    },
+    "Talk_to_Jutta": {
+      "id": "Talk_to_Jutta",
+      "type": "scene",
+      "title": "",
+      "text": "Jutta: Have you found anything for the pot?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I've got all of it.",
+          "next": "I_ve_got_all_of_it_",
+          "best": true,
+          "itemReq": "Need 2x[img:../Textures/Items/Item_Radish.webp]'''[[Radish]]''', 1x[img:../Textures/Items/Item_Carrot.webp]'''[[Carrot]]''', 1x[img:../Textures/Items/Mushroom_icon.webp]'''[[Mushroom]]'''"
+        },
+        {
+          "label": "Still looking",
+          "next": "Still_looking"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_looking": {
+      "id": "Still_looking",
+      "type": "scene",
+      "title": "",
+      "text": "Jutta: No rush, he's finally sitting still.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Gather 2 Radish, 1 Carrot and 1 Mushroom and bring them to Jutta in the Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ve_got_all_of_it_": {
+      "id": "I_ve_got_all_of_it_",
+      "type": "scene",
+      "title": "",
+      "text": "''Jutta catches the baby's hand before it reaches the ladle and moves the ladle to the other side of the pot.''\n\nJutta: Those'll do. If you'd like to learn it, you can cook while I hold him.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "2x [img:../Textures/Items/Item_Radish.webp]'''[[Radish]]'''\n1x [img:../Textures/Items/Item_Carrot.webp]'''[[Carrot]]'''\n1x [img:../Textures/Items/Mushroom_icon.webp]'''[[Mushroom]]'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Cook Radish Veggie Soup with Jutta in the Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Cook_with_Jutta",
+          "label": "Do /rpg again and then click on Cook with Jutta"
+        }
+      ]
+    },
+    "Cook_with_Jutta": {
+      "id": "Cook_with_Jutta",
+      "type": "scene",
+      "title": "🍳 Cooking Lesson",
+      "text": "Jutta: Between ten and twelve seconds, then take it off.\n\n[img:../Textures/Items/Foods/Item_Radish_Veggie_Soup.webp]'''Radish Veggie Soup'''\nPerfect: 10-12s\n\n\nFinish the cooking test within 10 minutes to continue. Failing will make you do it again.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Jutta__",
+          "label": "Do /rpg again and then click on Talk to Jutta"
+        }
+      ]
+    },
+    "Talk_to_Jutta__": {
+      "id": "Talk_to_Jutta__",
+      "type": "scene",
+      "title": "",
+      "text": "Jutta: This gives you Haste for three hours, so your Hunt, Explore, Forage and Mine cooldowns are half as long. You can use it three times a week. Eating another just refreshes the three hours.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Can I buy it somewhere too?",
+          "next": "Can_I_buy_it_somewhere_too_"
+        },
+        {
+          "label": "Thanks, I'll keep the recipe",
+          "next": "____Pot_on_the_Path__Lunch_Ready"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Can_I_buy_it_somewhere_too_": {
+      "id": "Can_I_buy_it_somewhere_too_",
+      "type": "scene",
+      "title": "",
+      "text": "Jutta: Mm-hm, Dawn Winery has it on the menu. Buying a bowl counts toward the same limit when you eat it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Thanks",
+          "next": "____Pot_on_the_Path__Lunch_Ready"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Pot_on_the_Path__Lunch_Ready": {
+      "id": "____Pot_on_the_Path__Lunch_Ready",
+      "type": "ending",
+      "title": "Lunch Ready",
+      "text": "Jutta: Here's your bowl and a bit for the trouble. My sister should be along soon, so I'll put hers aside.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Obtained",
+          "text": "[img:../Textures/Items/Foods/Item_Radish_Veggie_Soup.webp]Perfect '''[[Radish Veggie Soup]]'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📖 Learned a recipe",
+          "text": "[img:../Textures/Items/Foods/Item_Radish_Veggie_Soup.webp]'''[[Radish Veggie Soup]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 30,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 60,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

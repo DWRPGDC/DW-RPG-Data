@@ -1,0 +1,104 @@
+{
+  "meta": {
+    "requirement": "Explore Wyrmrest Valley (5%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Wyrmrest_Valley|Wyrmrest Valley]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Frozen Hell",
+      "text": "''The wind in Wyrmrest Valley does not howl. It scrapes. Ice crystals needle your cheeks before you have gone twenty paces.''\n\n''Ahead, a canvas tent sags under a crust of frost. A campfire sputters, half-dead. Someone inside is shouting.''\n\nCamper: ''muffled through the fabric'' Get off! Get— ''a wet crunch, then a sharp yelp'' Not the stove!\n\n''Three pale blue slimes bob around the tent flap, leaving rime wherever they touch the ground. One has already frozen the guy lines to brittle glass.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Rush to help",
+          "next": "rush_to_help",
+          "best": true
+        },
+        {
+          "label": "Keep your distance",
+          "next": "walked_away"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "rush_to_help": {
+      "id": "rush_to_help",
+      "type": "scene",
+      "title": "",
+      "text": "''You burst into the clearing. The camper ducks back through the flap, clutching a dented frying pan like a shield.''\n\nCamper: ''spotting you'' Traveller! Please tell me you brought fire!\n\n''Three Cryo Slimes rotate toward you in unison. Frost blooms across the stones at your boots. The tent creaks as another layer of ice creeps up the poles.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the three Cryo Slimes attacking the camper in Wyrmrest Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "camper_saved",
+          "label": "Do /rpg again and click on Fight the Cryo Slimes. Defeat 3 [[Cryo Slime]]s"
+        }
+      ]
+    },
+    "walked_away": {
+      "id": "walked_away",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "''You pull your collar up and angle away from the campsite. The camper's curses follow you for a moment, then thin out into something less confident.''\n\n''A crystalline pop. A muffled thud against canvas. The wind carries the rest away.''\n\n''Dragonspine does not negotiate with strangers.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "camper_saved": {
+      "id": "camper_saved",
+      "type": "ending",
+      "title": "Camper Saved",
+      "text": "''The slimes shatter into glittering shards. The camper peeks out, breath steaming.''\n\nCamper: ''exhales hard'' Right. That is... that is much better.\n\n''They kick a lump of ice off the stove and dig a handful of coins from a frozen pouch.''\n\nCamper: Not much, but it is yours. You showed up when the valley tried to eat me alive. ''nods once'' Get warm before the wind changes again.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 150,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 100,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

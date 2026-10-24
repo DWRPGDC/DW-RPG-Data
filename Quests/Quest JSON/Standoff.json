@@ -1,0 +1,248 @@
+{
+  "meta": {
+    "requirement": "Explore Stormterror's Lair (20%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Stormterror's_Lair|Stormterror's Lair]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Standoff",
+      "text": "Marek: ''from the stairwell'' I said the ledgers stay with the guild!\n\nHoarder: Yeah? Tower fell. Finders keepers.\n\nMarek: Then come up here and take them.\n\n''Silence. Nobody moves.''\n\nMarek: ''spotting you'' Oh, thank the Anemo. Don't just stand there.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "On my way",
+          "next": "On_my_way"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "On_my_way": {
+      "id": "On_my_way",
+      "type": "scene",
+      "title": "",
+      "text": "Marek: ''without looking at you'' Middle one first. They hate that.\n\nHoarder: Guild sent backup? Fine. We were getting bored anyway.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Break the standoff on the vault stair at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Break_the_Standoff",
+          "label": "Do /rpg again and then click on Break the Standoff. Defeat 3 [[Treasure Hoarder Crusher]]"
+        }
+      ]
+    },
+    "Break_the_Standoff": {
+      "id": "Break_the_Standoff",
+      "type": "scene",
+      "title": "",
+      "text": "Marek: You alright? Good. Me too. Satchel too, mostly.\n\n''He checks the folios and swears once.''\n\nMarek: Pike. Fourth guy, on lookout. While you were swinging he ripped out the index page and ran. Without that page I can't prove what was in the vault before these idiots started shopping.\n\nMarek: I'm slow on this leg. Go to Mondstadt, tell Lenora at the guild counter that Pike's got guild paper and he's running. She'll know what to do.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Marek's report to Lenora at the Adventurers' Guild in Mondstadt City",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Break_the_Standoff",
+          "label": "If you do /rpg again and click on Talk to Marek"
+        },
+        {
+          "next": "Report_to_Lenora",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Report to Lenora"
+        }
+      ]
+    },
+    "Report_to_Lenora": {
+      "id": "Report_to_Lenora",
+      "type": "scene",
+      "title": "",
+      "text": "Lenora: ''still stamping forms'' If you're here about Marek, I already heard the short version from a guard on the west road.\n\n''She sets the stamp down.''\n\nLenora: Pike. Small-time Hoarder lookout, bad knee, worse judgment. He caches stolen goods near the old oak at Windrise. Bren in Springvale buys anything with a seal on it, no questions. Marek is probably right. Pike's trying to sell that page tonight.\n\n''She slides you a scrap of map with two marks.''\n\nLenora: Check Windrise first. If Pike's already moved on, Bren's your last stop before the page ends up in someone's private collection forever.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Who's Bren?",
+          "next": "whos_bren"
+        },
+        {
+          "label": "I'll check the oak",
+          "next": "Windrise_first"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "whos_bren": {
+      "id": "whos_bren",
+      "type": "scene",
+      "title": "",
+      "text": "Lenora: Fence. Buys 'found' paperwork from ruin runs. ''dry'' We have asked him nicely to stop. He asks nicely back. We keep a list.\n\nLenora: Pike is not clever enough to skip the oak. Go look before you knock on Bren's door.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Windrise first",
+          "next": "Windrise_first"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Windrise_first": {
+      "id": "Windrise_first",
+      "type": "scene",
+      "title": "",
+      "text": "Lenora: ''already back to her forms'' Tell Marek I said good work if you see him before I do. And bring the page back in one piece. I do not want to rewrite a vault inventory from memory.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Search for Pike's trail near Windrise",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Search_Pike_s_Trail",
+          "label": "Go to Windrise (Mondstadt), do /rpg and click on Search Pike's Trail"
+        }
+      ]
+    },
+    "Search_Pike_s_Trail": {
+      "id": "Search_Pike_s_Trail",
+      "type": "scene",
+      "title": "",
+      "text": "''Cold ash under the split oak. Someone left in a hurry.''\n\n''Under a flat stone, a note in bad handwriting:''\n\n''Bren won't pay full till he sees the seal. Springvale road fork after dark. Come alone. Signed with a little fish drawing.''\n\n''So much for clever.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Springvale road fork. Got it",
+          "next": "Springvale_road_fork__Got_it"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Springvale_road_fork__Got_it": {
+      "id": "Springvale_road_fork__Got_it",
+      "type": "scene",
+      "title": "",
+      "text": "Lenora was right. Pike cached here and bolted for Springvale.\n\n''If Bren's waiting at that road fork, he is not waiting alone.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Stop Pike from selling the vault ledger page at Springvale",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Confront_Pike_at_the_Road_Fork",
+          "label": "Go to Springvale (Mondstadt), do /rpg and click on Confront Pike at the Road Fork"
+        }
+      ]
+    },
+    "Confront_Pike_at_the_Road_Fork": {
+      "id": "Confront_Pike_at_the_Road_Fork",
+      "type": "scene",
+      "title": "",
+      "text": "Bren: ''from beside a broken cart'' We're closed.\n\nPike: ''too fast, page in hand'' Who's this?\n\nPike: You again? Marek send you? Tell him the page's worth more than his whole satchel!\n\n''He drops the page and reaches for his club.''\n\nBren: ''already backing away'' I didn't touch it! I was only looking!\n\nPike: Bren, you paying or not?\n\nBren: ''from the trees'' Not for this!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Stop Pike from selling the vault ledger page at Springvale",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "____Standoff__Standoff_Broken",
+          "label": "Do /rpg again and then click on Fight Pike and the Hoarders. Defeat 2 [[Treasure Hoarder Crusher]]"
+        }
+      ]
+    },
+    "____Standoff__Standoff_Broken": {
+      "id": "____Standoff__Standoff_Broken",
+      "type": "ending",
+      "title": "Standoff Broken",
+      "text": "Pike: ''face-down in the mud'' I want a lawyer.\n\nMarek: ''jogging in'' You want a bandage. Shut up.\n\n''He picks up the page, checks the seal, and counts coins into your palm.''\n\nMarek: Lenora said double. And Pike can tell the Knights about the vault stairs once he stops spitting mud.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 400,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 200,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

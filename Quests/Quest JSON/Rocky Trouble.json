@@ -1,0 +1,180 @@
+{
+  "meta": {
+    "requirement": "Explore Sal Terrae (1%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Sal_Terrae|Sal Terrae]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Rocky Trouble",
+      "text": "''The salt flats crunch under your boots. Ahead, something heavy is rolling.''\n\n''Two Geo Slimes have a man backed against a cracked stone marker. He clutches a wrapped parcel to his chest with both arms, as if the slimes might try to take it instead of him.''\n\nCourier: ''without looking away'' I am not dropping this! I don't care how rocky you are!\n\n''One slime pulses. The other shifts, slow and patient. The courier's boots slide on the crust.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Step between them",
+          "next": "Step_between_them"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Step_between_them": {
+      "id": "Step_between_them",
+      "type": "scene",
+      "title": "",
+      "text": "''The courier's eyes flick to you for half a second.''\n\nCourier: ''hissing'' Package stays dry. You handle them.\n\n''He drops low behind the marker. Both Geo Slimes turn toward you, shells catching the pale light.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the two Geo Slimes attacking the courier at Sal Terrae",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Geo_Slimes",
+          "label": "Do /rpg again and click on Fight the Geo Slimes. Defeat 2 [[Geo Slime]]s"
+        }
+      ]
+    },
+    "Fight_the_Geo_Slimes": {
+      "id": "Fight_the_Geo_Slimes",
+      "type": "scene",
+      "title": "",
+      "text": "''The slimes crumble to salt and silence. The courier straightens up, still holding the parcel like it might sprout legs.''\n\nCourier: ''breathing hard'' You saved my skin. And the package, which is honestly the part my employer cares about.\n\n''He checks the wrapping twice, then presses it into your hands. It is heavier than it looks, tied with waxed cord and a smear of salt from the flats.''\n\nCourier: Mondstadt City. Ask for Lenora at the guild counter. She will know what it is.\n\n''He wipes his brow with the back of his hand.''\n\nCourier: Tell her I am fine. Tell her the slimes were very rude. And thank you, traveller. Really.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver the package to Mondstadt City",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Geo_Slimes",
+          "label": "If you do /rpg again and click on Talk to the Courier"
+        },
+        {
+          "next": "Deliver_the_Package_to_Lenora",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Deliver the Package to Lenora"
+        }
+      ]
+    },
+    "Deliver_the_Package_to_Lenora": {
+      "id": "Deliver_the_Package_to_Lenora",
+      "type": "scene",
+      "title": "",
+      "text": "''Lenora is at the guild counter, sorting a stack of notices without looking up.''\n\nLenora: Package? ''finally glances at the wrapping'' That is not for me.\n\n''She pushes it back gently.''\n\nLenora: Wrong person, traveller. I told the courier to take this to Springvale. Springvale, not Mondstadt. I don't know how we ended up here, but the recipient is waiting off the main road into town.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Springvale, then",
+          "next": "Springvale_then"
+        },
+        {
+          "label": "Who is it for?",
+          "next": "Springvale_then"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Springvale_then": {
+      "id": "Springvale_then",
+      "type": "scene",
+      "title": "",
+      "text": "Lenora: A trader named Marten. He has been expecting it since yesterday. ''sighs'' If you are already carrying it, just go. Better late than lost on the wrong road.\n\n''She returns to her notices, already moving on to the next problem.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver the package to Springvale",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Deliver_the_Package_to_Marten",
+          "label": "Go to Springvale (Mondstadt), do /rpg and click on Deliver the Package to Marten"
+        }
+      ]
+    },
+    "Deliver_the_Package_to_Marten": {
+      "id": "Deliver_the_Package_to_Marten",
+      "type": "scene",
+      "title": "",
+      "text": "''You find Marten near the road into Springvale, pacing in short lines with his arms folded.''\n\nMarten: ''spotting the parcel'' Finally. Lenora said someone would bring it.\n\n''He takes it, checks the seal, and some of the tension leaves his shoulders.''\n\nMarten: Wrong town, wrong day, but the right package. ''counts out coin from his pouch'' Fifty silver, as agreed. Lenora said to cover your trouble.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Glad it arrived",
+          "next": "Rocky_Trouble__Package_Delivered"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Rocky_Trouble__Package_Delivered": {
+      "id": "Rocky_Trouble__Package_Delivered",
+      "type": "ending",
+      "title": "Package Delivered",
+      "text": "Marten: ''tucking the parcel under his arm'' So am I. Next time I will write the address in bigger letters.\n\n''He heads back toward town, already calling out to someone inside a nearby stall. The salt-stained cord is gone from your hands. The road is quiet again.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 50,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 75,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

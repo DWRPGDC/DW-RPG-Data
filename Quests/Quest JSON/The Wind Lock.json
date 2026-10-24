@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "requirement": "Explore Stormterror's Lair (1%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Stormterror's_Lair|Stormterror's Lair]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "The Wind Lock",
+      "text": "''Wind whistles through the broken ribs of the tower above you. Near a collapsed stairwell, a woman in a guild coat is kneeling beside a half-buried door, running a gloved finger along a grid of dull crystals set into the frame.''\n\nArchivist: ''without looking up'' If you are here to loot the place, save yourself the trouble. Everything worth taking left when the dragon did.\n\n''She taps one crystal. It gives a faint, unhappy hum.''\n\nArchivist: What is left is paperwork. Old supply ledgers from before the storm. And this door, which still will not open no matter what I try.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Can you not pick the lock?",
+          "next": "Can_you_not_pick_the_lock_"
+        },
+        {
+          "label": "What kind of mechanism is it?",
+          "next": "What_kind_of_mechanism_is_it_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Can_you_not_pick_the_lock_": {
+      "id": "Can_you_not_pick_the_lock_",
+      "type": "scene",
+      "title": "",
+      "text": "Archivist: ''dry laugh'' I am an archivist, not a thief. And this is not a lock you pry.\n\n''She steps back from the door, flexing stiff fingers.''\n\nArchivist: I have been at these crystals since dawn. Whatever they want, I have not figured it out yet. If you fare better, I will split whatever stipend the guild pays for these records.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll try the lock",
+          "next": "I_will_try_the_lock"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_try_the_lock": {
+      "id": "I_will_try_the_lock",
+      "type": "scene",
+      "title": "",
+      "text": "''The archivist gives you room at the door. Nine crystals sit in a shallow grid, their cores dark. When you hover a hand over the center stone, the others twitch as if listening for a cue you cannot yet hear.''\n\nArchivist: ''quietly'' I will not get in your way.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Work the crystal lock on the vault door at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "______Wind_Echo_Lock",
+          "label": "Do /rpg again and click on Work the Crystal Lock"
+        }
+      ]
+    },
+    "What_kind_of_mechanism_is_it_": {
+      "id": "What_kind_of_mechanism_is_it_",
+      "type": "scene",
+      "title": "",
+      "text": "Archivist: Pre-storm Knights engineering, or so the registry claims. Nine wind crystals in a grid. ''gestures at the frame'' They stir when you touch them. Sometimes one lights. Sometimes the whole pattern goes dark again.\n\n''She brushes dust from her sleeve.''\n\nArchivist: I have been at it since dawn. If you can finish what I started, the guild stipend is yours to share. The ledgers inside are worthless to anyone but historians like me.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Let me work the crystals",
+          "next": "I_will_try_the_lock"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "______Wind_Echo_Lock": {
+      "id": "______Wind_Echo_Lock",
+      "type": "scene",
+      "title": "🌬️ Wind Echo Lock",
+      "text": "''Nine wind crystals set into the doorframe. They stir when you draw near.''\n\nComplete the Memory Sequence puzzle 3 times within 2 minutes to proceed.\n\nThe first sequence contains 5 numbers\nThe second sequence contains 6 numbers\nThe third sequence contains 7 numbers",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Anemo_Slimes",
+          "label": "Do /rpg after you finished the puzzle, and then click on Fight the Anemo Slimes. Defeat 2 [[Anemo Slime]]s"
+        }
+      ]
+    },
+    "Fight_the_Anemo_Slimes": {
+      "id": "Fight_the_Anemo_Slimes",
+      "type": "scene",
+      "title": "",
+      "text": "''The slimes dissolve into drifting motes. The vault exhales one last time and goes still.''\n\nArchivist: ''peering in'' Shelves. Crates. And yes, ledgers, just as the old maps promised.\n\n''She looks at you properly for the first time.''\n\nArchivist: Go on. Take what is in the lockbox by the threshold. Guild policy. Finders deserve something tangible.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Collect the pre-storm records from the vault at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "____The_Wind_Lock__Records_Recovered",
+          "label": "Do /rpg again and then click on Collect the Lockbox"
+        }
+      ]
+    },
+    "____The_Wind_Lock__Records_Recovered": {
+      "id": "____The_Wind_Lock__Records_Recovered",
+      "type": "ending",
+      "title": "Records Recovered",
+      "text": "''Inside the lockbox, coins sit in neat stacks beside a wax-sealed bundle of notes. The archivist tucks the ledgers under her arm with visible relief.''\n\nArchivist: These will keep three researchers busy for a month. ''counts out a share and presses it into your hand'' You earned this. Next time I need a vault opened, I am sending a note ahead instead of guessing at crystals in a gale.\n\n''She disappears up the broken stair with her prize, leaving you with the wind and the quiet door.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 125,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 100,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

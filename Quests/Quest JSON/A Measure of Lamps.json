@@ -1,0 +1,229 @@
+{
+  "meta": {
+    "requirement": "Explore Whispering Woods (40%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Whispering_Woods|Whispering Woods]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "A Measure of Lamps",
+      "text": "''Someone is sitting between two trees with a row of jars in front of her, counting.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What are you doing out here?",
+          "next": "What_are_you_doing_out_here"
+        },
+        {
+          "label": "Uh... hi?",
+          "next": "What_are_you_doing_out_here"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_are_you_doing_out_here": {
+      "id": "What_are_you_doing_out_here",
+      "type": "scene",
+      "title": "",
+      "text": "Helene: Oh! Sorry, I didn't... I didn't hear anyone coming.\n\nHelene: Um. This is uhh Lamp Grass. I've been out here since morning and I keep losing count so I put them in jars but then I lose count of the jars, so.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What do you need them for?",
+          "next": "What_do_you_need_them_for_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_do_you_need_them_for_": {
+      "id": "What_do_you_need_them_for_",
+      "type": "scene",
+      "title": "",
+      "text": "Helene: It's for medicine! This stuff is really good for inducing sleep. My younger brother kinda needs this because he has trouble sleeping. He gets these nights where he just doesn't sleep at all and it's been getting worse lately so I said I'd make him more.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Can't you buy it?",
+          "next": "Can_t_you_buy_it_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Can_t_you_buy_it_": {
+      "id": "Can_t_you_buy_it_",
+      "type": "scene",
+      "title": "",
+      "text": "Helene: I'm an apothecary actually... I tried to find the ingredients to make it where I work but turns out they just so happened to have a MASSIVE ORDER for these. So they need to be used for something else and I can't use it for personal stuff...\n\nHelene: So now I'm sitting in the woods with jars.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "How many do you need?",
+          "next": "How_many_do_you_need_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "How_many_do_you_need_": {
+      "id": "How_many_do_you_need_",
+      "type": "scene",
+      "title": "",
+      "text": "Helene: I think around forty more? I have a bunch here but if I try with these it'll just come out watery and then it doesn't really do anything.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I think I can get them!",
+          "next": "I_think_I_can_get_them_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_think_I_can_get_them_": {
+      "id": "I_think_I_can_get_them_",
+      "type": "scene",
+      "title": "",
+      "text": "Helene: Really? That would be a huge help!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Helene 40 Small Lamp Grass in Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Deliver_Small_Lamp_Grass_to_Helene",
+          "label": "Do /rpg again and then click on Deliver Small Lamp Grass to Helene"
+        }
+      ]
+    },
+    "Deliver_Small_Lamp_Grass_to_Helene": {
+      "id": "Deliver_Small_Lamp_Grass_to_Helene",
+      "type": "scene",
+      "title": "",
+      "text": "Helene: Oh! You actually came back.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I got them!",
+          "next": "I_got_them_",
+          "best": true,
+          "itemReq": "Need 40x[img:../Textures/Items/Small%20Lamp%20Grass_icon.png]'''Small Lamp Grass'''"
+        },
+        {
+          "label": "Still looking actually",
+          "next": "Still_looking_actually"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_looking_actually": {
+      "id": "Still_looking_actually",
+      "type": "scene",
+      "title": "",
+      "text": "Helene: That's okay! Really. I'm not in a rush... I'll keep looking for some here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Helene 40 Small Lamp Grass in Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_got_them_": {
+      "id": "I_got_them_",
+      "type": "scene",
+      "title": "",
+      "text": "''She counts them out on her knee. Halfway through she stops and starts over.''\n\nHelene: Sorry. Sorry, one second, I lost it again.\n\nHelene: ...thirty-eight, thirty-nine, forty. Okay. Wow that's actually forty!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "40x [img:../Textures/Items/Small%20Lamp%20Grass_icon.png]'''Small Lamp Grass'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Is that enough for him?",
+          "next": "____A_Measure_of_Lamps__Lamps_Measured"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____A_Measure_of_Lamps__Lamps_Measured": {
+      "id": "____A_Measure_of_Lamps__Lamps_Measured",
+      "type": "ending",
+      "title": "Lamps Measured",
+      "text": "Helene: Yes! I mean it's enough for a while.\n\n''She holds out a pouch of silver without really looking up.''\n\nHelene: Here here here. Take it, I'll feel awful if you don't.\n\nHelene: And thank you so much!! I've been out here all day trying to work up the courage to ask someone to help... yeah. Thank you!!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 400,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 225,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

@@ -1,0 +1,262 @@
+{
+  "meta": {
+    "requirement": "Explore Starfell Lake (20%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Starfell_Lake|Starfell Lake]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Paired Winds",
+      "text": "''Near Starfell Lake, Amber crouches between two weathered statues, palms pressed to dull Anemo marks.''\n\nAmber: ''not looking up'' Come on. You lit for one second last time!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Need a hand?",
+          "next": "Need_a_hand"
+        },
+        {
+          "label": "Talking to the statues?",
+          "next": "Need_a_hand"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Need_a_hand": {
+      "id": "Need_a_hand",
+      "type": "scene",
+      "title": "",
+      "text": "''She rocks back, spots you, and brightens.''\n\nAmber: Traveler! Perfect timing. I am stuck.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Stuck how?",
+          "next": "Stuck_how"
+        },
+        {
+          "label": "What are these?",
+          "next": "Stuck_how"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Stuck_how": {
+      "id": "Stuck_how",
+      "type": "scene",
+      "title": "",
+      "text": "Amber: Twin Anemo statues. They woke once when I found them, just a blink. Every time I try alone, one lights and the other stays dead.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Like they want both at once",
+          "next": "Like_they_want_both_at_once"
+        },
+        {
+          "label": "So one person isn't enough?",
+          "next": "Like_they_want_both_at_once"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Like_they_want_both_at_once": {
+      "id": "Like_they_want_both_at_once",
+      "type": "scene",
+      "title": "",
+      "text": "Amber: Exactly! I only have one Anemo blessing. I think they need two travelers answering together.\n\n''She points left, then right. Same faded swirl on each.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll find someone and try",
+          "next": "I_will_find_someone_and_try"
+        },
+        {
+          "label": "What happens when they wake?",
+          "next": "What_happens_when_they_wake_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_happens_when_they_wake_": {
+      "id": "What_happens_when_they_wake_",
+      "type": "scene",
+      "title": "",
+      "text": "Amber: Honestly? No idea. Last time they flickered, the wind went weird for a second. Maybe nothing. Maybe not nothing.\n\n''She grins anyway.'' Worth finding out!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll bring a second traveler",
+          "next": "I_will_find_someone_and_try"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_find_someone_and_try": {
+      "id": "I_will_find_someone_and_try",
+      "type": "scene",
+      "title": "",
+      "text": "Amber: When one flares, the other has to answer fast. And it will not take the same person twice. I already learned that the hard way.\n\n''She steps clear of the ring and clasps her hands.'' Ready when you are!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Resonate the two Anemo statues at Starfell Lake with another traveler",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "______Paired_Winds",
+          "label": "Do /rpg again and then click on Resonate the Statues"
+        }
+      ]
+    },
+    "______Paired_Winds": {
+      "id": "______Paired_Winds",
+      "type": "scene",
+      "title": "🌬️ Paired Winds",
+      "text": "''Two Anemo statues. They will only wake if two travelers answer together.''\n\nNeed 2 players with [img:../Textures/Elements/Element_Anemo.webp]Anemo element in Starfell Lake (Mondstadt)\n\nOne player must imbue left and the other must imbue right at the same time (within a ~3-second window of each other). Complete within 1 minute",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Amber",
+          "label": "Do /rpg again after successfully imbued anemo to the statues, and then click on Talk to Amber"
+        }
+      ]
+    },
+    "Talk_to_Amber": {
+      "id": "Talk_to_Amber",
+      "type": "scene",
+      "title": "",
+      "text": "''Both swirls blaze. Wind tears across the lake, then breaks. The clearing goes too still.''\n\nAmber: That worked! That actually-\n\n''Chanting cuts her off. Two Anemo Samachurls rise from the reeds, staves raised.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Company",
+          "next": "Company"
+        },
+        {
+          "label": "Get ready!",
+          "next": "Company"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Company": {
+      "id": "Company",
+      "type": "scene",
+      "title": "",
+      "text": "Amber: ''nocking an arrow'' Of course something heard that. I will cover you. Take them!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the Anemo Samachurls drawn by the statues at Starfell Lake",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Anemo_Samachurls",
+          "label": "Do /rpg again and then click on Fight the Anemo Samachurls. Defeat 2 [[Anemo Samachurl]]s"
+        }
+      ]
+    },
+    "Fight_the_Anemo_Samachurls": {
+      "id": "Fight_the_Anemo_Samachurls",
+      "type": "scene",
+      "title": "",
+      "text": "''The last staff clatters onto the stone. The wind drops. Both statues glow softly, then dim as if satisfied.''\n\nAmber: Okay. Way more excitement than this patrol needed.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You're welcome",
+          "next": "____Paired_Winds__Statues_Answered"
+        },
+        {
+          "label": "Next time, bring backup first",
+          "next": "____Paired_Winds__Statues_Answered"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Paired_Winds__Statues_Answered": {
+      "id": "____Paired_Winds__Statues_Answered",
+      "type": "ending",
+      "title": "Statues Answered",
+      "text": "''She presses a share of Silver into your hand, then fires her zip line toward the ridge.''\n\nAmber: Deal. See you out there, traveler!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 150,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 125,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

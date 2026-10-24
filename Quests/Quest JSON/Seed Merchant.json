@@ -1,0 +1,201 @@
+{
+  "meta": {
+    "requirement": "Explore Mingyun Village (1%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Mingyun_Village|Mingyun Village]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Seed Merchant",
+      "text": "''Mingyun Village is quieter than most maps admit. Mine carts sit on rotten rails. Houses lean as if listening for footsteps that stopped coming years ago.''\n\n''Near the old square, someone has swept a clear patch of stone and stacked cloth bags against a weathered stall. A woman in practical Liyue travelling clothes is checking a ledger against the bags, muttering numbers under her breath.''\n\nLin: ''without looking up'' If you are looking for a tavern, you took a wrong turn about two ridges ago. If you are looking for ore, the shafts are colder than I am.\n\n''She finally glances up, takes in your pack, and softens half a degree.''\n\nLin: Traveller. Of course. Why else would anyone still walk these streets.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What are you doing out here?",
+          "next": "What_are_you_doing_out_here"
+        },
+        {
+          "label": "Is that a market stall?",
+          "next": "What_are_you_doing_out_here"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_are_you_doing_out_here": {
+      "id": "What_are_you_doing_out_here",
+      "type": "scene",
+      "title": "",
+      "text": "Lin: ''taps the stall with her pen'' It will be. Guild papers say Mingyun can still hold a light commerce mark if someone bothers to keep the register honest. Most folk wrote the village off after the mines quieted. ''a short shrug'' I did not.\n\n''She pats one of the cloth bags. Seeds whisper against fabric.''\n\nLin: Carrot. Sweet Flower. A few harder plants for people who stick around. Travelers still pass through on the Harbor road. They gather. They cook. They never seem to have seeds when they need them.\n\nLin: So I am opening a marketplace. Modest. Useful. Mine-dust optional.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's stopping you?",
+          "next": "What_s_stopping_you_"
+        },
+        {
+          "label": "Sounds like a good idea",
+          "next": "What_s_stopping_you_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_s_stopping_you_": {
+      "id": "What_s_stopping_you_",
+      "type": "scene",
+      "title": "",
+      "text": "Lin: ''snorts'' Money. Always money.\n\n''She flips the ledger toward you just long enough to show a crossed-out shipment line and a circled fee.''\n\nLin: The Harbor supplier will not send the next crates until I cover fifty Silver for carriage and guild duty. I have the stall. I have the permit dust brushed off. I do not have fifty Silver sitting loose while I finish unpacking.\n\n''She looks at you the way merchants look at possible solutions.''\n\nLin: You look like someone who has Silver and nowhere particular to put it this afternoon. Help me stock the first trays and the marketplace stays open to you. Fair trade.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Fifty Silver. I can help",
+          "next": "Fifty_Silver__I_can_help"
+        },
+        {
+          "label": "Why trust a stranger with your stall?",
+          "next": "Why_trust_a_stranger_with_your_stall_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Fifty_Silver__I_can_help": {
+      "id": "Fifty_Silver__I_can_help",
+      "type": "scene",
+      "title": "",
+      "text": "Lin: ''already returning to her bags'' Good. I will be here. Someone has to keep the rats out of the Sweet Flower packets.\n\n''She glances toward the empty square, then back at you.''\n\nLin: Fifty Silver. When that shipment arrives, the marketplace opens. Do not keep my plants waiting.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 50 Silver to Lin at the Mingyun Village marketplace stall",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Lin",
+          "label": "Do /rpg again and then click on Talk to Lin"
+        }
+      ]
+    },
+    "Why_trust_a_stranger_with_your_stall_": {
+      "id": "Why_trust_a_stranger_with_your_stall_",
+      "type": "scene",
+      "title": "",
+      "text": "Lin: ''dry smile'' I am not trusting you with the stall. I am trusting you with fifty Silver that arrives in my hand before anything leaves my shelf.\n\n''She closes the ledger.''\n\nLin: If you walk away, I wait for the next traveller. If you come back with the fee, I open. Simple commerce. No poetry required.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Fair enough. I'll bring it",
+          "next": "Fifty_Silver__I_can_help"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Talk_to_Lin": {
+      "id": "Talk_to_Lin",
+      "type": "scene",
+      "title": "",
+      "text": "''Lin is arranging empty wooden trays on the stall counter like she is practising for customers who have not arrived yet.''\n\nLin: ''looks up'' Back. Do you have the Silver?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 50 Silver",
+          "next": "____Seed_Merchant__Marketplace_Opened",
+          "best": true,
+          "itemReq": "Need 50x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "Not yet",
+          "next": "Not_yet"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Not_yet": {
+      "id": "Not_yet",
+      "type": "scene",
+      "title": "",
+      "text": "Lin: ''nods once'' Then gather. I will keep sweeping rock dust off the counter.\n\n''She returns to the trays without impatience. Merchants who reopen ghost villages learn to wait.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 50 Silver to Lin at the Mingyun Village marketplace stall",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Seed_Merchant__Marketplace_Opened": {
+      "id": "____Seed_Merchant__Marketplace_Opened",
+      "type": "ending",
+      "title": "Marketplace Opened",
+      "text": "''Lin counts the Silver carefully, then seals it into a stamped guild pouch with a practised knot.''\n\nLin: Carriage fee covered. ''she allows herself a real smile'' The Harbor wagon should reach the ridge road by evening.\n\n''She slides three small packets across the counter toward you.''\n\nLin: Carrot seeds. Opening stock, for the traveller who made opening possible. When you want more, the trays will be full.\n\n''Behind her, the old stall looks less abandoned and more like a market again.''\n\nLin: Welcome to the Mingyun Village Marketplace. Do not step on the seed bags.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Obtained",
+          "text": "3x [img:../Textures/Items/Carrot%20Seed_icon.png]'''Carrot Seed'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📦 Gave",
+          "text": "50x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Mingyun Village Marketplace]]",
+      "requirement": ""
+    }
+  }
+}

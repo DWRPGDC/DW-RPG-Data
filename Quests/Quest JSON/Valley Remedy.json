@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "requirement": "Explore Wyrmrest Valley (10%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Wyrmrest_Valley|Wyrmrest Valley]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Valley Remedy",
+      "text": "''Wind scours the shelf where the trail widens into a shallow hollow. A woman in a patched wool coat kneels beside a bundled figure, pressing a cloth to their forehead. Steam rises from a small pot balanced on a flat stone. Three slimes have formed a loose ring around them, pale and patient in the cold.''\n\nElise: ''without looking up'' If you are here to stare, at least do it quietly. If you are here to help, pick a slime and start swinging.\n\n''The injured traveller moans once. One Cryo Slime pulses closer, leaving rime on the gravel.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll handle the slimes",
+          "next": "I_ll_handle_the_slimes"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_handle_the_slimes": {
+      "id": "I_ll_handle_the_slimes",
+      "type": "scene",
+      "title": "",
+      "text": "Elise: ''sharp nod'' Good. Keep them off the pot. The salve is almost reduced and I am not starting over because a blob decided it wanted warmth.\n\n''She ties the cloth tighter and rises just enough to kick a satchel behind the stone. All three slimes turn toward you at once.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the slimes threatening Elise in Wyrmrest Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Slimes",
+          "label": "Do /rpg again and click on Fight the Slimes. Defeat 2 [[Cryo Slime]]s"
+        }
+      ]
+    },
+    "Fight_the_Slimes": {
+      "id": "Fight_the_Slimes",
+      "type": "scene",
+      "title": "",
+      "text": "''The last slime shatters into glittering shards. Elise is already back at the pot, stirring with quick, practiced circles.''\n\nElise: ''breathing out'' Thank you. He would not have lasted another hour in this wind.\n\n''She ladles thick green salve into a clay vial and seals it with wax.''\n\nElise: This needs to reach the Cathedral in Mondstadt tonight. Sister Victoria knows how to finish the blessing on it. I cannot leave him alone long enough to run it myself.\n\n''She presses the vial into your hands. It is warm despite the air.''\n\nElise: Tell her Elise sent you. She will know what to teach you in return.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver Elise's remedy to the Cathedral in Mondstadt",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Slimes",
+          "label": "If you do /rpg again and click on Talk to Elise"
+        },
+        {
+          "next": "mond",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and then click on Deliver the Remedy to the Cathedral"
+        }
+      ]
+    },
+    "mond": {
+      "id": "mond",
+      "type": "scene",
+      "title": "",
+      "text": "''Sister Victoria meets you at the Cathedral steps, as if she were expecting the vial.''\n\nVictoria: Elise's remedy. ''takes it carefully'' Good. The traveller will pull through once this is administered properly.\n\n''She tucks the vial away and looks at you with calm, measuring eyes.''\n\nVictoria: Elise wrote that you held the line while she worked. The Church rewards those who keep others breathing. More than that, she asked me to open a lesson to you.\n\n''She gestures toward the inner hall.''\n\nVictoria: When you are ready, ask the Skill Book for Lesser Heal. A Catalyst focus is required to cast it in battle, but the blessing itself is yours to learn.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll study it",
+          "next": "Valley_Remedy__Remedy_Delivered"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Valley_Remedy__Remedy_Delivered": {
+      "id": "Valley_Remedy__Remedy_Delivered",
+      "type": "ending",
+      "title": "Remedy Delivered",
+      "text": "Victoria: ''small smile'' Then go carefully. Dragonspine does not forgive wasted strength.\n\n''She counts silver from a side ledger into your palm, more than Elise could spare on her own.''\n\nVictoria: For the road, and for the delivery. Lesser Heal will be waiting whenever you return to Mondstadt with the materials and rank to learn it.\n\n''The Cathedral doors stand open behind her. The wind off the valley feels a little less cruel than it did an hour ago.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 200,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 125,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Skills#💚_Lesser_Heal|Lesser Heal]] skill",
+      "requirement": ""
+    }
+  }
+}

@@ -1,0 +1,816 @@
+{
+  "meta": {
+    "requirement": "Explore Whispering Woods (30%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Whispering_Woods|Whispering Woods]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "What the Leaves Keep",
+      "text": "''Dusk gathers under the Whispering Woods, and the leaves move even when the path is still.''\n\n''Near a pale ash tree wound with faded ribbon, a woman stands with one palm flat against the bark. Her lips move. You cannot hear the words. She does not notice you at first.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Are you lost?",
+          "next": "Are_you_lost"
+        },
+        {
+          "label": "Who are you talking to?",
+          "next": "Are_you_lost"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Are_you_lost": {
+      "id": "Are_you_lost",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: ''turns, startled, then softens'' Oh. I am sorry. I forget how strange this looks from outside.\n\nNara: I am Nara. A weaver from the city. This is... my husband's tree. Hal's tree.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Your husband lives out here?",
+          "next": "Your_husband_lives_out_here"
+        },
+        {
+          "label": "What happened?",
+          "next": "Your_husband_lives_out_here"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Your_husband_lives_out_here": {
+      "id": "Your_husband_lives_out_here",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: ''fingers the ribbon'' Three years. Hilichurls took his last patrol. The Guild wrote \"missing, presumed.\" They never brought me a body.\n\nNara: So I come here. The wind in these leaves sounds like him when he was thinking. Hal talked like that. Soft. Careful. As if words might bruise.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You still speak to him",
+          "next": "You_still_speak_to_him"
+        },
+        {
+          "label": "That is a heavy promise to keep",
+          "next": "You_still_speak_to_him"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_still_speak_to_him": {
+      "id": "You_still_speak_to_him",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: Every week. I tell him about the cloth on my loom. About the price of dye. About how the city forgot his name faster than I wanted.\n\nNara: ''a small laugh that does not last'' People worry I am broken. Perhaps I am. But I am not finished loving him. That is not the same thing.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "How can I help?",
+          "next": "How_can_I_help"
+        },
+        {
+          "label": "Do you want company, or answers?",
+          "next": "How_can_I_help"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "How_can_I_help": {
+      "id": "How_can_I_help",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: ''studies you'' Travellers do not usually stay for grieving women and ash bark.\n\nNara: If you mean it... I can think of three things. Help me say a real goodbye somewhere the wind is honest. Dig into what the Guild never finished saying about that night. Or stay here and keep the tree safe while I listen. Hilichurls have been tearing the ribbons down.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Choose how to help Nara with her vigil in Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "I'll help you say goodbye",
+          "next": "I_ll_help_you_say_goodbye_"
+        },
+        {
+          "label": "I'll look into what happened that night",
+          "next": "I_will_look_into_what_happened_that_night",
+          "best": true
+        },
+        {
+          "label": "I'll keep your tree safe",
+          "next": "I_will_keep_your_tree_safe"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_help_you_say_goodbye_": {
+      "id": "I_ll_help_you_say_goodbye_",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: ''eyes shine, then steady'' Goodbye is a hard word. I have been practicing it for three years and still misplace the ending.\n\nNara: Hal used to walk the Windrise trail when he needed to think. He said the oak there heard everything and judged nothing. If I am to stop speaking into these leaves, I should speak under that tree once. Properly.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What do you need?",
+          "next": "What_do_you_need"
+        },
+        {
+          "label": "Windrise, then",
+          "next": "What_do_you_need"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_do_you_need": {
+      "id": "What_do_you_need",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: Five Small Lamp Grass. They glow at dusk the way his campfire used to. Gather them in these woods and bring them here. Then we go to Windrise together.\n\nNara: ''quieter'' I will stay with the ash until you return. Do not rush on my account. Grief already rushes enough.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Gather 5 Small Lamp Grass for Nara's farewell",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Bring_Lamp_Grass_to_Nara",
+          "label": "Do /rpg again and then click on Bring Lamp Grass to Nara"
+        }
+      ]
+    },
+    "Bring_Lamp_Grass_to_Nara": {
+      "id": "Bring_Lamp_Grass_to_Nara",
+      "type": "scene",
+      "title": "",
+      "text": "''Nara is still at the ash, ribbon ends between her fingers. She looks up as if she has been waiting without counting the hours.''\n\nNara: You came back. That already means more than you know. Do you have the lamps?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 5 Small Lamp Grass to Nara at the ash tree in Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Here. Five Small Lamp Grass",
+          "next": "Here__Five_Small_Lamp_Grass_",
+          "itemReq": "Need 5x[img:../Textures/Items/Small%20Lamp%20Grass_icon.png]'''Small Lamp Grass'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Still_gathering"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_gathering": {
+      "id": "Still_gathering",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: Then I will keep the bark warm for you. Small Lamp Grass likes the quieter clearings after noon. Come when you have them.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Gather 5 Small Lamp Grass for Nara's farewell",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Here__Five_Small_Lamp_Grass_": {
+      "id": "Here__Five_Small_Lamp_Grass_",
+      "type": "scene",
+      "title": "",
+      "text": "''She cups the lamps carefully, as if they might bruise. One stem already glows faint green against her sleeve.''\n\nNara: These will do. Hal would have laughed at me for being so formal. He preferred pocket knives and cold tea.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Small%20Lamp%20Grass_icon.png]'''Small Lamp Grass'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "He would understand",
+          "next": "He_would_understand"
+        },
+        {
+          "label": "Ready for Windrise?",
+          "next": "He_would_understand"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "He_would_understand": {
+      "id": "He_would_understand",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: Meet me under the great oak at Windrise. West side of the trunk, where the roots make a seat. I will take the long trail. If I arrive first, I will wait. If you do, wait for me.\n\nNara: ''almost smiles'' We finish this somewhere the leaves do not have to carry every word alone.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Meet Nara under the great oak at Windrise",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Meet_Nara_at_the_Oak",
+          "label": "Go to Windrise (Mondstadt), do /rpg and click on Meet Nara at the Oak"
+        }
+      ]
+    },
+    "Meet_Nara_at_the_Oak": {
+      "id": "Meet_Nara_at_the_Oak",
+      "type": "scene",
+      "title": "",
+      "text": "''The oak at Windrise holds the sky the way a hand holds a bird. Nara stands already beneath it, the Small Lamp Grass laid in a careful crescent at the roots.''\n\nNara: I told him everything at the ash for three years. Under this tree, I only need to say one true thing.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'm here",
+          "next": "____What_the_Leaves_Keep__Goodbye_at_Windrise"
+        },
+        {
+          "label": "Take your time",
+          "next": "____What_the_Leaves_Keep__Goodbye_at_Windrise"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____What_the_Leaves_Keep__Goodbye_at_Windrise": {
+      "id": "____What_the_Leaves_Keep__Goodbye_at_Windrise",
+      "type": "ending",
+      "title": "Goodbye at Windrise",
+      "text": "Nara: ''kneels, voice low'' Hal. I loved you in Mondstadt alleys and Whispering Woods. I loved you in the silence after. I am going to keep loving you. I am also going to stop waiting for an answer that may not be mine to hear.\n\n''The wind moves through the oak. The lamps stir. Nothing miraculous happens, and somehow that feels right.''\n\nNara: ''stands, eyes wet, posture lighter'' Thank you for walking me here. The ash can rest. So can I. Not finished. Just... differently unfinished.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 175,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_look_into_what_happened_that_night": {
+      "id": "I_will_look_into_what_happened_that_night",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: ''flinches, then nods'' I asked once. The clerk said the file was incomplete. Incomplete became forever.\n\nNara: If you go to the Adventurers' Guild in Mondstadt, ask for Venn. He kept Hal's last ledger page when the rest of them stopped caring. Tell him Nara sent you. Tell him I am tired of presumption.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll find Venn",
+          "next": "I_will_find_Venn"
+        },
+        {
+          "label": "What was Hal's last known route?",
+          "next": "What_was_Hal_s_last_known_route_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_find_Venn": {
+      "id": "I_will_find_Venn",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: I will stay with the tree. If the truth is worse than missing, bring it gently. If it is kinder... bring it anyway.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Ask at the Adventurers' Guild in Mondstadt about Hal's last patrol",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Ask_Venn_about_Hal",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Ask Venn about Hal"
+        }
+      ]
+    },
+    "What_was_Hal_s_last_known_route_": {
+      "id": "What_was_Hal_s_last_known_route_",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: Patrol west of Starfell Lake, then into the woods. They found his partner's bow. Not Hal. Not a body. Only mud and broken reed.\n\nNara: Find Venn. Please.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll find Venn",
+          "next": "I_will_find_Venn"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Ask_Venn_about_Hal": {
+      "id": "Ask_Venn_about_Hal",
+      "type": "scene",
+      "title": "",
+      "text": "''The Adventurers' Guild smells like ink and wet cloaks. Venn looks up from a stack of commission slips with the patience of a man who has filed tragedy before.''\n\nVenn: Help you?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Nara sent me. About Hal's last patrol",
+          "next": "Nara_sent_me__About_Hals_last_patrol"
+        },
+        {
+          "label": "I need the ledger on a missing Adventurer named Hal",
+          "next": "Nara_sent_me__About_Hals_last_patrol"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Nara_sent_me__About_Hals_last_patrol": {
+      "id": "Nara_sent_me__About_Hals_last_patrol",
+      "type": "scene",
+      "title": "",
+      "text": "Venn: ''opens a drawer without ceremony'' Hal of Mondstadt. Missing three years. Partner Lenne recovered deceased. Hal listed presumed.\n\nVenn: ''slides a weathered page'' Unofficial addendum. A hunter reported a living man matching Hal's build leaving toward Starfell Lake the morning after. Limping. Alone. Guild never followed. Budget. Weather. Cowardice. Take your pick.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Why wasn't this chased?",
+          "next": "Why_wasn_t_this_chased_"
+        },
+        {
+          "label": "Starfell Lake, then",
+          "next": "I_will_search_Starfell_Lake"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Why_wasn_t_this_chased_": {
+      "id": "Why_wasn_t_this_chased_",
+      "type": "scene",
+      "title": "",
+      "text": "Venn: Because presumption is cheaper than searching, and a widow's hope does not pay the guildhouse lamp oil.\n\nVenn: ''softer'' I kept the page. That is the most honesty I could afford. If you find something real, Nara deserves it before the filing cabinets do.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll search Starfell Lake",
+          "next": "I_will_search_Starfell_Lake"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_search_Starfell_Lake": {
+      "id": "I_will_search_Starfell_Lake",
+      "type": "scene",
+      "title": "",
+      "text": "Venn: Eastern shore. Old reed camps. Look for a man who does not want to be looked for.\n\n''He taps the page once, then returns it to the drawer like a prayer he is not allowed to say aloud.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Search the eastern shore of Starfell Lake for signs of Hal",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Search_the_Eastern_Shore",
+          "label": "Go to Starfell Lake (Mondstadt), do /rpg and click on Search the Eastern Shore"
+        }
+      ]
+    },
+    "Search_the_Eastern_Shore": {
+      "id": "Search_the_Eastern_Shore",
+      "type": "scene",
+      "title": "",
+      "text": "''Starfell Lake lies flat and bright. On the eastern shore, boot trails cut through reeds toward a rough lean-to half hidden by brush. Smoke thins above it. Someone lives here.''\n\n''Between you and the camp, three Hilichurls dig through a torn satchel, laughing in that broken-throat way.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Clear them out",
+          "next": "Clear_them_out"
+        },
+        {
+          "label": "They are between me and answers",
+          "next": "Clear_them_out"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Clear_them_out": {
+      "id": "Clear_them_out",
+      "type": "scene",
+      "title": "",
+      "text": "''The Hilichurls notice you. Clubs rise. The lean-to's canvas stirs once, as if a person inside is deciding whether to run or freeze.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the Hilichurls camping near Hal's trail at Starfell Lake",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Hilichurls",
+          "label": "Do /rpg again and then click on Fight the Hilichurls. Defeat 3 [[Hilichurl]]s"
+        }
+      ]
+    },
+    "Fight_the_Hilichurls": {
+      "id": "Fight_the_Hilichurls",
+      "type": "scene",
+      "title": "",
+      "text": "''The last Hilichurl drops into the reeds. Silence rushes back in. From the lean-to, a man crawls out on a stiff left leg, gray in his beard who does not belong to age alone.''\n\nHal: ''hoarse'' If you are Guild, turn around. If you are bandits, you already lost.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Search the eastern shore of Starfell Lake for signs of Hal",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Nara sent me",
+          "next": "Nara_sent_me"
+        },
+        {
+          "label": "Your wife still talks to an ash tree for you",
+          "next": "Nara_sent_me"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Nara_sent_me": {
+      "id": "Nara_sent_me",
+      "type": "scene",
+      "title": "",
+      "text": "Hal: ''goes still'' Do not say her name like that.\n\nHal: ''sits hard on a crate'' Lenne died because I ran. I told myself I was circling for help. I was circling for an exit. When the Guild wrote presumed, I let them. It was easier than walking home with empty hands.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "She's been waiting three years",
+          "next": "Shes_been_waiting_three_years"
+        },
+        {
+          "label": "Cowardice is not the same as dying",
+          "next": "Shes_been_waiting_three_years"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Shes_been_waiting_three_years": {
+      "id": "Shes_been_waiting_three_years",
+      "type": "scene",
+      "title": "",
+      "text": "Hal: I know what she has been doing. I heard a merchant gossip about a widow who whispers to Whispering Woods. I wanted to go. Every week I wanted to go. Every week I stayed a coward under better weather.\n\nHal: ''looks at you'' If you take me back, I will not ask her to forgive me. I will only stop making her invent my ghost.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Come with me to her tree",
+          "next": "Come_with_me_to_her_tree"
+        },
+        {
+          "label": "She deserves your face, not your silence",
+          "next": "Come_with_me_to_her_tree"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Come_with_me_to_her_tree": {
+      "id": "Come_with_me_to_her_tree",
+      "type": "scene",
+      "title": "",
+      "text": "Hal: ''packs a small bag with shaking hands'' Whispering Woods. The ash with ribbon. I remember. Archons help me, I remember.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Nara at the ash tree in Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Return_to_Nara_with_Hal",
+          "label": "Go to Whispering Woods (Mondstadt), do /rpg and click on Return to Nara with Hal"
+        }
+      ]
+    },
+    "Return_to_Nara_with_Hal": {
+      "id": "Return_to_Nara_with_Hal",
+      "type": "scene",
+      "title": "",
+      "text": "''Nara turns at the sound of steps. For a moment she sees only you. Then Hal steps into the shade of the ash, and the ribbon in her fingers goes slack.''\n\nNara: ''whisper'' ...Hal?\n\nHal: ''does not come closer yet'' I am late by three years and a lifetime of excuses.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll give you both the quiet",
+          "next": "____What_the_Leaves_Keep__A_Living_Ghost"
+        },
+        {
+          "label": "Stay. Listen",
+          "next": "____What_the_Leaves_Keep__A_Living_Ghost"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____What_the_Leaves_Keep__A_Living_Ghost": {
+      "id": "____What_the_Leaves_Keep__A_Living_Ghost",
+      "type": "ending",
+      "title": "A Living Ghost",
+      "text": "Nara: ''laughs once, broken and alive'' You let me talk to leaves.\n\nHal: I listened from too far away. I am done with that, if you will let me stand here without deserving it.\n\nNara: ''crosses the space and takes his sleeve, not his hand, as if choosing carefully'' We will argue. For a long time. Do not vanish into presumption again.\n\n''The wind moves through the Whispering Woods. This time, there are two people under the ash to hear it.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 225,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 175,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_keep_your_tree_safe": {
+      "id": "I_will_keep_your_tree_safe",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: ''relief, then steel'' Good. The Hilichurls have been ripping ribbons and kicking the stones I leave. They do not understand offerings. They understand soft targets.\n\nNara: Drive them off when they come. Stay near the tree. If you find anything under the roots while you are here... Hal used to hide notes in strange places. I have never dug deep. I was afraid of finding nothing.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll defend the tree",
+          "next": "I_will_defend_the_tree"
+        },
+        {
+          "label": "I'll look while I wait",
+          "next": "I_will_defend_the_tree"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_defend_the_tree": {
+      "id": "I_will_defend_the_tree",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: I will step back when the fighting starts. I can sew a sleeve. I cannot take a club. Come back to me when the path is quiet again.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Drive the Hilichurls away from Nara's ash tree in Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Defend_Nara_s_Ash_Tree",
+          "label": "Do /rpg again and then click on Defend Nara's Ash Tree. Defeat 1 [[Hilichurl]] and 1 [[Hilichurl Berserker]]"
+        }
+      ]
+    },
+    "Defend_Nara_s_Ash_Tree": {
+      "id": "Defend_Nara_s_Ash_Tree",
+      "type": "scene",
+      "title": "",
+      "text": "''The Hilichurls break and scatter into deeper shade. Ribbon scraps settle in the dirt. Under a lifted root, something pale catches the dim light: a strip of bark with knife work still sharp after weather and time.''\n\nNara: ''kneels, reads'' \"If the Guild says I am gone, look by Starfell. If you cannot, keep talking to this tree. I will try to listen.\"\n\nNara: ''voice frays'' He wrote this. Before. Or after. I do not know. He wanted me to keep talking.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "He wanted you to hope",
+          "next": "He_wanted_you_to_hope"
+        },
+        {
+          "label": "That is not nothing",
+          "next": "He_wanted_you_to_hope"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "He_wanted_you_to_hope": {
+      "id": "He_wanted_you_to_hope",
+      "type": "scene",
+      "title": "",
+      "text": "Nara: I thought I was inventing him. Perhaps I was answering him instead.\n\nNara: Sit with me a moment. Not forever. Just long enough that the tree remembers I am not always alone under it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll sit",
+          "next": "I_will_sit"
+        },
+        {
+          "label": "As long as you need",
+          "next": "I_will_sit"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_sit": {
+      "id": "I_will_sit",
+      "type": "scene",
+      "title": "",
+      "text": "''She settles against the ash with the carved bark resting on her knee. The woods lean close without demanding an ending.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Sit with Nara at the ash tree in Whispering Woods",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "____What_the_Leaves_Keep__Still_Listening",
+          "label": "Do /rpg again and then click on Sit with Nara"
+        }
+      ]
+    },
+    "____What_the_Leaves_Keep__Still_Listening": {
+      "id": "____What_the_Leaves_Keep__Still_Listening",
+      "type": "ending",
+      "title": "Still Listening",
+      "text": "''You sit. The Whispering Woods do what they always do. Leaves shift. Wind arrives and leaves without explaining itself.''\n\nNara: ''quiet'' I will keep coming. Not because I refuse goodbye. Because love does not always require a closed door to be honest.\n\nNara: Thank you for not telling me to stop. Thank you for making the stoppers bleed instead.\n\n''She ties a new ribbon onto the pale ash. It holds.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 200,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

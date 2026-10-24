@@ -1,0 +1,231 @@
+{
+  "meta": {
+    "requirement": "Explore Wuwang Hill (10%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Wuwang_Hill|Wuwang Hill]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Rock Solid",
+      "text": "''A woman in adventurer gear is sitting on a rock with a pack open, stuffing a coil of rope back.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You going somewhere?",
+          "next": "You_going_somewhere_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_going_somewhere_": {
+      "id": "You_going_somewhere_",
+      "type": "scene",
+      "title": "",
+      "text": "Shan: Yeah I'm heading to Guyun Stone Forest in like three hours.\n\nShan: It's this island out in the sea, people don't really go there, I found a boat.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's out there?",
+          "next": "What_s_out_there_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_s_out_there_": {
+      "id": "What_s_out_there_",
+      "type": "scene",
+      "title": "",
+      "text": "Shan: Giant rocks sticking out of the water. I heard there's a cube on one of them which sounds fake but whatever I wanna see it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Can I come?",
+          "next": "Can_I_come_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Can_I_come_": {
+      "id": "Can_I_come_",
+      "type": "scene",
+      "title": "",
+      "text": "Shan: Sure! I have a spare spot, the boat guy said one extra person is a thousand silver.\n\nShan: Then come back in three hours, I'm not sitting at the dock that whole time so I'll just be right here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here's a thousand",
+          "next": "Here_s_a_thousand",
+          "best": true,
+          "itemReq": "Need 1000x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "I don't have it right now",
+          "next": "I_don_t_have_it_right_now_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_don_t_have_it_right_now_": {
+      "id": "I_don_t_have_it_right_now_",
+      "type": "scene",
+      "title": "",
+      "text": "Shan: No rush, I'll be here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 1000 Silver to Shan on Wuwang Hill",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Shan_Not_yet",
+          "label": "Do /rpg again and then click on Talk to Shan"
+        }
+      ]
+    },
+    "Here_s_a_thousand": {
+      "id": "Here_s_a_thousand",
+      "type": "scene",
+      "title": "",
+      "text": "''She stuffs the coins in a side pocket.''\n\nShan: Okay you're in! See you in three hours.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "1000x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Come back to Shan on Wuwang Hill in 3 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Shan",
+          "label": "Wait for 3 hours, and then do /rpg and click on Talk to Shan"
+        }
+      ]
+    },
+    "Talk_to_Shan_Not_yet": {
+      "id": "Talk_to_Shan_Not_yet",
+      "type": "scene",
+      "title": "",
+      "text": "Shan: You got the thousand?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here's a thousand",
+          "next": "Here_s_a_thousand",
+          "itemReq": "Need 1000x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "Not yet",
+          "next": "Not_yet"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Not_yet": {
+      "id": "Not_yet",
+      "type": "scene",
+      "title": "",
+      "text": "Shan: I'll be here, the rope is still winning.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 1000 Silver to Shan on Wuwang Hill",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Talk_to_Shan": {
+      "id": "Talk_to_Shan",
+      "type": "scene",
+      "title": "",
+      "text": "''She kicks the pack shut and slings it.''\n\nShan: Boat's here. Come on.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Let's go",
+          "next": "____Rock_Solid__Landed_at_Guyun"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Rock_Solid__Landed_at_Guyun": {
+      "id": "____Rock_Solid__Landed_at_Guyun",
+      "type": "ending",
+      "title": "Landed at Guyun",
+      "text": "Shan: Alright that's Guyun. Don't fall in I guess.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "AEXP",
+          "qty": 200,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Locations#Guyun_Stone_Forest|Guyun Stone Forest]] and [[Geo Hypostasis]]",
+      "requirement": ""
+    }
+  }
+}

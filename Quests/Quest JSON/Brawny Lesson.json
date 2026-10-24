@@ -1,0 +1,179 @@
+{
+  "meta": {
+    "requirement": "Explore Stormterror's Lair (10%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Stormterror's_Lair|Stormterror's Lair]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Brawny Lesson",
+      "text": "''A fallen wall blocks the path ahead. Before you can look for a way around it, the whole slab shifts. A massive man in a sleeveless adventurer's vest lifts the stone just high enough to wedge a shoulder beneath it.''\n\nBrant: Little help? Or loud cheering. Both build character.\n\n''With one grunt, he rolls the wall aside. Dust pours off him. He grins like the ruins just handed him breakfast.''\n\nBrant: Name's Brant. You look like you fight. Good. I teach the most important fighting skill there is.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What skill?",
+          "next": "What_skill_"
+        },
+        {
+          "label": "You lifted a wall",
+          "next": "you_lifted_a_wall"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_skill_": {
+      "id": "What_skill_",
+      "type": "scene",
+      "title": "",
+      "text": "Brant: Getting hit on purpose.\n\n''He waits just long enough for that to sound terrible, then laughs.''\n\nBrant: Not dying on purpose. Different lesson. I mean standing so loud and steady that monsters forget your friends exist. You keep their eyes. Your team keeps breathing.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Teach me",
+          "next": "Teach_me"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Teach_me": {
+      "id": "Teach_me",
+      "type": "scene",
+      "title": "",
+      "text": "''Brant points toward a cracked courtyard where shapes move through the dust.''\n\nBrant: Drill is simple. We step in. You make noise, hold ground, and do not flinch when they turn. I watch your stance. If you survive, you learn the trick.\n\nBrant: If you do not survive, you still learn something. Briefly.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Start the drill",
+          "next": "Start_the_drill"
+        },
+        {
+          "label": "Maybe later",
+          "next": "____Brawny_Lesson__Walked_Away"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Start_the_drill": {
+      "id": "Start_the_drill",
+      "type": "scene",
+      "title": "",
+      "text": "Brant: Good. Plant your feet before you shout. Chest open. Eyes forward. If your voice shakes, make it shake louder.\n\n''The courtyard answers with claws on stone and a low, hungry chitter.''\n\nBrant: There they are. Go be interesting.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Run Brant's monster drill at Stormterror's Lair",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Run_Brant_s_Drill",
+          "label": "Do /rpg again and then click on Run Brant's Drill. Defeat 1 [[Hilichurl Berserker]] and 2 [[Anemo Slime]]s"
+        }
+      ]
+    },
+    "you_lifted_a_wall": {
+      "id": "you_lifted_a_wall",
+      "type": "scene",
+      "title": "",
+      "text": "Brant: Wall was in the way. I was also in the way. Mine was the stronger argument.\n\n''He claps the dust from his hands, each clap echoing through the broken tower ribs.''\n\nBrant: But muscle is only half the job. The other half is making every ugly thing in a fight decide you are the problem.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Teach me that",
+          "next": "Teach_me"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Brawny_Lesson__Walked_Away": {
+      "id": "____Brawny_Lesson__Walked_Away",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "Brant: Fair. Courage is easier after lunch.\n\n''He flexes one shoulder, then shoves another chunk of rubble out of the road with his boot.''\n\nBrant: Come back when you want every monster in the yard to hate your face.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "[[Skills#📣_Taunt|Taunt]] skill",
+      "requirement": ""
+    },
+    "Run_Brant_s_Drill": {
+      "id": "Run_Brant_s_Drill",
+      "type": "scene",
+      "title": "",
+      "text": "''The last monster drops. Brant strides in, laughing hard enough to scare dust from the arch above you.''\n\nBrant: That! That was it. Did you feel the moment they all chose you? Ugly, right? Useful, though.\n\n''He taps two fingers against his chest, then points at yours.''\n\nBrant: A taunt is not just noise. It is a promise. You tell the room, hit me first, and then you make that sound true.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Remember the stance",
+          "next": "____Brawny_Lesson__Taunt_Learned"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____Brawny_Lesson__Taunt_Learned": {
+      "id": "____Brawny_Lesson__Taunt_Learned",
+      "type": "ending",
+      "title": "Taunt Learned",
+      "text": "''Brant shows you the stance again: feet wide, shoulders loose, chin up, voice thrown from the ribs instead of the throat.''\n\nBrant: Skill Book should have room for it now. Keep it short. Keep it loud. And if you are protecting friends, do not move unless the ground moves first.\n\n''He gives the ruined courtyard one satisfied nod, then starts looking for another wall to lift.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 175,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 100,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Skills#📣_Taunt|Taunt]] skill",
+      "requirement": ""
+    }
+  }
+}

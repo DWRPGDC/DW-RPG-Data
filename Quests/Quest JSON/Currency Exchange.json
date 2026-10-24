@@ -1,0 +1,291 @@
+{
+  "meta": {
+    "requirement": "Explore Thousand Winds Temple (1%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Thousand_Winds_Temple|Thousand Winds Temple]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Currency Exchange",
+      "text": "''The ruins are quiet except for the wind threading through the broken archways. Someone has set up a modest camp near the far wall, a folded cloth and a leather satchel propped open beside a careful arrangement of small pouches and coin rolls.''\n\n''The man tending to them looks up before you have said anything. He has the easy attention of someone who makes his living noticing people.''\n\nLanda: ''closing one of the pouches'' Ah. A traveller. Good timing, actually. I was hoping for company.\n\n''He pats the stone beside him in a welcoming sort of way.''\n\nLanda: Sit, sit. I don't bite. I only talk. Some would say that's worse.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What are you doing out here?",
+          "next": "What_are_you_doing_out_here_"
+        },
+        {
+          "label": "What is all that?",
+          "next": "what_is_all_that"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_are_you_doing_out_here_": {
+      "id": "What_are_you_doing_out_here_",
+      "type": "scene",
+      "title": "",
+      "text": "Landa: ''gesturing broadly at the ruins'' Resting. Thinking. Making notes. ''taps the satchel'' The usual work of a man whose office has no walls.\n\n''He pulls out a worn ledger and flips through it with the comfort of long habit.''\n\nLanda: I trade currencies. Not goods, not favours, not secrets. Just money itself. The way it changes shape depending on where you stand. ''settles back'' That interests me enormously.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Currencies?",
+          "next": "Currencies_"
+        },
+        {
+          "label": "That sounds unusual",
+          "next": "Currencies_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Currencies_": {
+      "id": "Currencies_",
+      "type": "scene",
+      "title": "",
+      "text": "Landa: ''leaning forward with genuine enthusiasm'' Yes, exactly. Think about it. Silver is the lifeblood of adventurers out here. Solid. Heavy. Real. But step into Mondstadt proper and half the shops quote prices in Mora. The city economy runs on it entirely.\n\n''He spreads his hands.''\n\nLanda: Most people treat the gap between them as an inconvenience. I treat it as an opportunity. Carry Mora out to where Silver dominates and you get a premium. Bring quality Silver into the city and someone will always want it. ''pauses'' It is a beautiful system, really.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "How does the exchange work?",
+          "next": "How_does_the_exchange_work"
+        },
+        {
+          "label": "And you profit from that?",
+          "next": "How_does_the_exchange_work"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "How_does_the_exchange_work": {
+      "id": "How_does_the_exchange_work",
+      "type": "scene",
+      "title": "",
+      "text": "Landa: Profit is one word. ''tilts his head'' I prefer to call it fair compensation for moving things to where they are needed.\n\n''He glances at you with a considering expression.''\n\nLanda: Which brings me to a thought. I am establishing a standing exchange arrangement through my partner in Mondstadt. To do it properly, I need to verify the quality of local Silver first. ''pauses'' Bring me one hundred Silver as a sample consignment. In exchange, Nura will open her stall to you directly. She runs it at two Mora per Silver, up to five hundred Mora a week.\n\nLanda: ''leaning back'' As a thank you for the supply, she will also put fifty Mora aside for you when you arrive. Consider it a welcome gift.\n\nLanda: What do you say?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll bring you the Silver",
+          "next": "I_will_bring_you_the_Silver"
+        },
+        {
+          "label": "Why do you need a sample first?",
+          "next": "y_u_need_sample"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_will_bring_you_the_Silver": {
+      "id": "I_will_bring_you_the_Silver",
+      "type": "scene",
+      "title": "",
+      "text": "Landa: ''making a note in his ledger'' Excellent. Take your time. I will be here for a while yet.\n\n''He glances at the sky, then back at his coin rolls.''\n\nLanda: I do not hurry. Rushing is for people who have not learned that everything arrives eventually.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 100 Silver to Landa at the Thousand Winds Temple",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Return_to_Landa",
+          "label": "Do /rpg again and then click on Return to Landa"
+        }
+      ]
+    },
+    "what_is_all_that": {
+      "id": "what_is_all_that",
+      "type": "scene",
+      "title": "",
+      "text": "Landa: ''with real affection'' My collection. Well, my working stock. Some of these I keep just to look at.\n\n''He picks up a small coin and holds it toward the light.''\n\nLanda: Every place has its own way of measuring value. Silver here, Mora there, shells somewhere further east. I travel between them. I trade them. ''smiles'' Some people collect paintings. I collect what paintings are bought with.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You trade money for money?",
+          "next": "Currencies_"
+        },
+        {
+          "label": "What do you mean by Mora?",
+          "next": "Currencies_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "y_u_need_sample": {
+      "id": "y_u_need_sample",
+      "type": "scene",
+      "title": "",
+      "text": "Landa: ''simply'' Because quality matters more than quantity in this business. I have been handed Silver that was half tin before. Once. That was enough.\n\n''He taps the ledger.''\n\nLanda: One hundred Silver lets me assess the grade properly. If it is what I expect, you earn full access to the exchange rate at Nura's stall. Two Mora per Silver, weekly. That is better than most traders will offer without a long-standing relationship. ''pauses'' I am offering it because you are here, you are paying attention, and I like both of those things.\n\n''He picks up his pen again.''\n\nLanda: The offer stands. Come back when you have it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Understood. I'll get it",
+          "next": "I_will_bring_you_the_Silver"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Return_to_Landa": {
+      "id": "Return_to_Landa",
+      "type": "scene",
+      "title": "",
+      "text": "''Landa is still at his camp, adding a small annotation to his ledger. He looks up when you approach.''\n\nLanda: Back. ''he sets the pen down'' Did you bring the Silver?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 100 Silver",
+          "next": "100_silver",
+          "best": true,
+          "itemReq": "Need 100x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "Not yet. Just checking in",
+          "next": "Not_yet__Just_checking_in"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Not_yet__Just_checking_in": {
+      "id": "Not_yet__Just_checking_in",
+      "type": "scene",
+      "title": "",
+      "text": "Landa: ''nodding, unhurried'' No matter. I will be here.\n\n''He goes back to his ledger. The coin rolls are stacked in a precise row along the edge of the cloth.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 100 Silver to Landa at the Thousand Winds Temple",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "100_silver": {
+      "id": "100_silver",
+      "type": "scene",
+      "title": "",
+      "text": "''Landa takes the Silver and counts it methodically, each coin turned between his fingers before being set aside.''\n\nLanda: ''a pause, then a small nod'' Quality. Clean edges. Good weight. This is properly sourced Silver, not the adulterated kind you find near the southern passes.\n\n''He closes his hand around the coins with an expression of quiet satisfaction.''\n\nLanda: As agreed. Two Mora per Silver. One hundred Silver. ''looks up'' I handle this through my partner in Mondstadt. Her name is Nura. She runs a small stall near the city market.\n\n''He pulls a folded note from the ledger and holds it out.''\n\nLanda: Give her this. She will have the Mora ready. Tell her Landa sends his regards.\n\n''He smiles, and the warmth of it is entirely genuine.''\n\nLanda: A pleasure doing business.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "100x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Travel to Mondstadt City and find Landa's partner at the stall",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "See_Landa_s_Stall",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on See Landa's Stall"
+        }
+      ]
+    },
+    "See_Landa_s_Stall": {
+      "id": "See_Landa_s_Stall",
+      "type": "scene",
+      "title": "",
+      "text": "''The stall is compact and well-organised, a narrow counter with two small crates of assorted goods stacked beside it. The woman behind it is sorting through a stack of cloth-wrapped parcels with the fast, precise movements of someone who does this many times a day.''\n\nNura: ''without looking up'' Help you?\n\n''You mention Landa's name.''\n\nNura: ''pausing, setting down the parcel'' Ah. ''she looks at you now'' He sent word you would come eventually. Wasn't sure when.\n\n''She reaches under the counter and sets a small purse down in front of you.''\n\nNura: Fifty Mora. Welcome gift from Landa, for supplying him quality Silver. His words, not mine. He is very particular about that phrase.\n\n''She slides the purse across.''\n\nNura: He also says the Silver graded well, which means you are now in the system.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What does that mean exactly?",
+          "next": "Currency_Exchange__Exchange_Complete"
+        },
+        {
+          "label": "Good to hear. What happens now?",
+          "next": "Currency_Exchange__Exchange_Complete"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Currency_Exchange__Exchange_Complete": {
+      "id": "Currency_Exchange__Exchange_Complete",
+      "type": "ending",
+      "title": "Exchange Complete",
+      "text": "Nura: ''a brief, dry smile'' It means you can use this stall. Two Mora per Silver. I handle up to five hundred Mora per week, then it resets. Landa's arrangement.\n\n''She goes back to her parcels.''\n\nNura: He is here every few weeks with another ledger full of notes and another theory about value. I do the actual work. ''pauses'' Not that I am complaining. The arrangement is good for both of us.\n\n''She looks up one more time.''\n\nNura: Come back when you have Silver to trade. I will be here.\n\n''She goes back to work without further ceremony.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Mora",
+          "qty": 40,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Landa's Stall]]",
+      "requirement": ""
+    }
+  }
+}

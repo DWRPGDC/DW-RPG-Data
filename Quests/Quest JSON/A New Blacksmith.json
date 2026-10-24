@@ -1,0 +1,225 @@
+{
+  "meta": {
+    "requirement": "Explore Springvale (10%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Springvale|Springvale]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending."
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "A New Blacksmith",
+      "text": "''An old man sits next to a cold forge, staring at an empty cloth sack like it owes him money.''\n\nAldric: Oh. Didn't hear you coming.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's going on?",
+          "next": "What_s_going_on_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_s_going_on_": {
+      "id": "What_s_going_on_",
+      "type": "scene",
+      "title": "",
+      "text": "Aldric: My apprentice left for Mondstadt yesterday, he wanted to open his own forge! Good for him I guess, except the idiot packed in such a rush he forgot to actually bring any iron! Ha ha ha.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "So he can't work?",
+          "next": "So_he_can_t_work_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "So_he_can_t_work_": {
+      "id": "So_he_can_t_work_",
+      "type": "scene",
+      "title": "",
+      "text": "Aldric: Not without something to hit with a hammer, no! And he's not coming back here to ask for any either, he's twenty and thinks asking for help means he failed at something.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Can't you just bring it to him?",
+          "next": "Can_t_you_just_bring_it_to_him"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Can_t_you_just_bring_it_to_him": {
+      "id": "Can_t_you_just_bring_it_to_him",
+      "type": "scene",
+      "title": "",
+      "text": "Aldric: With these knees? Haven't made it to Mondstadt in two years, believe me I'd go if I could. And even then, my own stock's been bare for weeks, this forge hasn't seen a delivery since spring.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I can find some and take it to him",
+          "next": "I_can_find_some_and_take_it_to_him"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_can_find_some_and_take_it_to_him": {
+      "id": "I_can_find_some_and_take_it_to_him",
+      "type": "scene",
+      "title": "",
+      "text": "Aldric: That would be terrific! If only there were more youngins like you around! He'll need about ten chunks to get started, don't worry about finding me first, just take them straight to him. He'll be near the market, dark curly hair, you won't miss him.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Gather 10 Iron Chunks and deliver them to Emre in Mondstadt",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Emre",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Talk to Emre"
+        }
+      ]
+    },
+    "Talk_to_Emre": {
+      "id": "Talk_to_Emre",
+      "type": "scene",
+      "title": "",
+      "text": "''A young man with soot on his hands is glaring at a bare worktable like it personally wronged him.''\n\nEmre: We're not open yet.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I've got iron for you, from Aldric.",
+          "next": "I_ve_got_iron_for_you__from_Aldric_",
+          "best": true,
+          "itemReq": "Need 10x[img:../Textures/Items/Iron%20Chunk_icon.png]'''Iron Chunk'''"
+        },
+        {
+          "label": "Sorry to bother you",
+          "next": "Sorry_to_bother_you"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Sorry_to_bother_you": {
+      "id": "Sorry_to_bother_you",
+      "type": "scene",
+      "title": "",
+      "text": "Emre: ...Okay.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Gather 10 Iron Chunks and deliver them to Emre in Mondstadt",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ve_got_iron_for_you__from_Aldric_": {
+      "id": "I_ve_got_iron_for_you__from_Aldric_",
+      "type": "scene",
+      "title": "",
+      "text": "''He looks at the iron, then at you.''\n\nEmre: He actually sent you? Or did you just feel bad for me?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "He sent me. Said you'd need it",
+          "next": "He_sent_me__Said_you_d_need_it"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "He_sent_me__Said_you_d_need_it": {
+      "id": "He_sent_me__Said_you_d_need_it",
+      "type": "scene",
+      "title": "",
+      "text": "Emre: ''rubs the back of his neck'' ...Course he did. Probably been sitting there with that sack all week, hasn't he.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Pretty much, yeah",
+          "next": "____A_New_Blacksmith__Delivered"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____A_New_Blacksmith__Delivered": {
+      "id": "____A_New_Blacksmith__Delivered",
+      "type": "ending",
+      "title": "Delivered",
+      "text": "Emre: Sounds like him. Tell him thanks for me!\n\n''He starts stacking the iron on the table.''\n\nEmre: Appreciate you carrying it all this way, seriously.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "10x [img:../Textures/Items/Iron%20Chunk_icon.png]'''Iron Chunk'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 120,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 100,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Blacksmith]]",
+      "requirement": ""
+    }
+  }
+}
