@@ -350,7 +350,7 @@
       "dialogues": [
         {
           "speaker": "📦 Gave",
-          "text": "\n200x [img:../Textures/silver.png]'''Silver'''\n1x [img:../Textures/Misc/Item_Cynos_Introduction_Letter.webp]'''[[Mingyu's Letter]]'''",
+          "text": "200x [img:../Textures/silver.png]'''Silver'''\n1x [img:../Textures/Misc/Item_Cynos_Introduction_Letter.webp]'''[[Mingyu's Letter]]'''",
           "collapsed": false
         }
       ],
