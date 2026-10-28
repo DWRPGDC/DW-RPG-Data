@@ -697,11 +697,11 @@
         {
           "level": 2,
           "effect": "Reduces travel time by 20%.",
-          "ar": 1,
+          "ar": 5,
           "materials": [
             {
               "item": "damaged_mask",
-              "qty": 20
+              "qty": 50
             },
             {
               "item": "silver",
@@ -716,7 +716,7 @@
           "ar": 10,
           "materials": [
             {
-              "item": "damaged_mask",
+              "item": "stained_mask",
               "qty": 40
             },
             {
@@ -729,10 +729,10 @@
         {
           "level": 4,
           "effect": "Reduces travel time by 60%.",
-          "ar": 10,
+          "ar": 15,
           "materials": [
             {
-              "item": "damaged_mask",
+              "item": "stained_mask",
               "qty": 80
             },
             {
@@ -748,12 +748,28 @@
           "ar": 20,
           "materials": [
             {
-              "item": "damaged_mask",
-              "qty": 160
+              "item": "ominous_mask",
+              "qty": 90
             },
             {
               "item": "silver",
               "qty": 1600
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 6,
+          "effect": "Reduces travel time by 90%.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "ominous_mask",
+              "qty": 180
+            },
+            {
+              "item": "silver",
+              "qty": 3200
             }
           ],
           "tbd": false
@@ -1316,6 +1332,54 @@
             {
               "item": "silver",
               "qty": 2500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "iron_stomach": {
+      "name": "Iron Stomach",
+      "emoji": "⚙️",
+      "parent": null,
+      "unlock": "Passive skill. Unlocked through the Iron Stomach quest.",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Restore consumes an inventory weapon or artifact to heal 2× its Crucible Silver value in HP.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "slime_concentrate",
+              "qty": 50
+            },
+            {
+              "item": "forbidden_curse_scroll",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Restore heals 3× the consumed gear's Crucible Silver value in HP.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "slime_concentrate",
+              "qty": 100
+            },
+            {
+              "item": "forbidden_curse_scroll",
+              "qty": 100
+            },
+            {
+              "item": "silver",
+              "qty": 1000
             }
           ],
           "tbd": false
@@ -2112,6 +2176,34 @@
             {
               "item": "silver",
               "qty": 2500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "retribution": {
+      "name": "Retribution",
+      "emoji": "🛡",
+      "parent": null,
+      "unlock": "Unlocked through the Electro Statue of the Seven.",
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Uses your turn to reflect the next incoming enemy attack back at its attacker, preventing the hit and dealing 50% of its attack damage to every other enemy. Lasts until triggered; cannot stack. Works with any weapon.",
+          "ar": 1,
+          "materials": [
+            {
+              "item": "forbidden_curse_scroll",
+              "qty": 50
+            },
+            {
+              "item": "sakura_bloom",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 10000
             }
           ],
           "tbd": false
@@ -2985,7 +3077,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "You have no combat cooldowns, including spells and Heavy attacks.",
+          "effect": "Use combat abilities while they are on cooldown, including spells and Heavy attacks, for 5 Mana per use. Abilities that are ready cost no Mana.",
           "ar": null,
           "materials": [
             {
@@ -3010,7 +3102,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "At battle start, each ally gains 25% of your ATK and max HP.",
+          "effect": "At battle start, each ally gains 25% of your ATK and max HP for the battle. HP is scaled based on percentage. Costs 10 Mana per ally.",
           "ar": null,
           "materials": [
             {
@@ -3035,7 +3127,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Deal 2x damage for each enemy still alive.",
+          "effect": "While active, each attack deals 2x damage per living enemy and costs 5 Mana per enemy. Damage scales linearly: 2x, 4x, 6x, 8x, 10x.",
           "ar": null,
           "materials": [
             {
@@ -3060,7 +3152,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Upon death, heal all allies back to full HP.",
+          "effect": "Upon death, restore surviving injured allies to full HP. Costs 5 Mana per ally healed. Does not revive fallen allies.",
           "ar": null,
           "materials": [
             {
@@ -3085,7 +3177,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Every turn you skip multiplies your ATK by 2x.",
+          "effect": "Each voluntary Skip Turn costs 5 Mana and increases your ATK multiplier for the battle: 2x, 4x, 6x, 8x, 10x, and so on. Attacking does not reset the bonus. Forced skips and timeouts grant no bonus.",
           "ar": null,
           "materials": [
             {
@@ -3110,7 +3202,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Take 90% less damage. This effect ends when you attack.",
+          "effect": "Take 90% less damage for 5 Mana each time damage is reduced. This protection ends for the battle when you attack, including damaging spells and missed attacks.",
           "ar": null,
           "materials": [
             {
@@ -3135,7 +3227,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "You never land critical hits, but enemies can never land critical hits either.",
+          "effect": "At battle start, spend 20 Mana once to prevent yourself and all enemies from landing critical hits for the entire battle. Your allies can still land critical hits.",
           "ar": null,
           "materials": [
             {
@@ -3160,7 +3252,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Start each battle with 50% less ATK. Your ATK increases by 20% every turn.",
+          "effect": "At battle start, spend 25 Mana once for 50% ATK on your first turn, then gain 20% of your current ATK on each later regular turn, compounding. Skipped turns count; bonus attacks do not.",
           "ar": null,
           "materials": [
             {
@@ -3185,7 +3277,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Earn twice as much Silver, Mora, drops, and EXP.",
+          "effect": "While active, double item drops for 1 Mana per extra item, Silver rewards for 10 Mana, Mora rewards for half the base Mora amount in Mana (rounded up), and EXP rewards for 5 Mana. Weapons and artifacts are excluded. Items must fit in your pack.",
           "ar": null,
           "materials": [
             {
@@ -3210,7 +3302,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Add the highest-damaging enemy's ATK to your own.",
+          "effect": "At battle start, add the strongest living enemy's ATK range to your own for the whole battle. The enemy with the highest average ATK is chosen. Costs 20 Mana once per battle.",
           "ar": null,
           "materials": [
             {
@@ -3235,7 +3327,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Never act first, but deal 3x damage.",
+          "effect": "Never go first, but deal 3x damage for a flat 10 Mana per attack. Attacks that hit multiple enemies only charge once.",
           "ar": null,
           "materials": [
             {
@@ -3260,7 +3352,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Start each battle with 50% less HP, but deal 2x damage.",
+          "effect": "At battle start, spend 25 Mana once to halve your current HP, never below 1, and deal 2x attack damage for the whole battle. Max HP stays unchanged.",
           "ar": null,
           "materials": [
             {
@@ -3285,7 +3377,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Enemies never act first and become more likely to miss as your HP gets lower.",
+          "effect": "At battle start, spend 20 Mana once to act before enemies and gain 10% enemy miss chance for every full 20% of max HP you are missing. Use the higher of this chance and Dodge. An ally's Pride cancels both turn-order effects.",
           "ar": null,
           "materials": [
             {
@@ -3310,7 +3402,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "Dealing the final blow to a monster heals you for that monster's max HP.",
+          "effect": "Dealing the final blow to a monster heals you for that monster's max HP, up to your max HP, for 10 Mana per monster. No Mana is spent when you are already at full HP or healing is disabled.",
           "ar": null,
           "materials": [
             {
