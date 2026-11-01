@@ -1,0 +1,619 @@
+{
+  "meta": {
+    "requirement": "Explore Tianqiu Valley (10%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Tianqiu_Valley|Tianqiu Valley]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "One More Hand",
+      "text": "''A guy is sitting against a ruined pillar with a wooden bowl in his lap. There's nothing in it except two pebbles.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You okay?",
+          "next": "You_okay_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_okay_": {
+      "id": "You_okay_",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Oh. Hey. Yeah I'm... I'm fine. This is just a bowl. For money. I'm not gonna pretend it's like a hobby or something.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What happened?",
+          "next": "What_happened_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_happened_": {
+      "id": "What_happened_",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: I lost my room in the harbor. And then I lost the next thing. And now I'm here and if I had like fifty silver I could eat and sleep in an actual bed for one night and think. I know how that sounds.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 50 Silver",
+          "next": "Here__50_Silver",
+          "best": true,
+          "itemReq": "Need 50x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "I don't have it right now",
+          "next": "I_don_t_have_it_right_now_1"
+        },
+        {
+          "label": "No",
+          "next": "__One_More_Hand__Walked_Away_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_don_t_have_it_right_now_1": {
+      "id": "I_don_t_have_it_right_now_1",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Okay. I'll be here. I don't have anywhere else to be.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 50 Silver to Chao in Tianqiu Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "What_happened_",
+          "label": "Do /rpg again and then click on Talk to Chao"
+        }
+      ]
+    },
+    "Here__50_Silver": {
+      "id": "Here__50_Silver",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Wait, really?? Oh my god. Thank you. I'll be right here later, I swear I'm not going anywhere.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "50x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Check on Chao in Tianqiu Valley in 12 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "50_silv_gib",
+          "label": "Wait for 12 hours, do /rpg and click on Talk to Chao"
+        }
+      ]
+    },
+    "__One_More_Hand__Walked_Away_1": {
+      "id": "__One_More_Hand__Walked_Away_1",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "Chao: Yeah. Okay. That's fair. Sorry for asking.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "50_silv_gib": {
+      "id": "50_silv_gib",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Oh. It's you. So uhh. Don't be mad.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What happened?",
+          "next": "What_happened_2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_happened_2": {
+      "id": "What_happened_2",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: I lost it. There was a game last night down the road and I thought I had it, I SWEAR I had it, and then I didn't. I still haven't eaten. A hundred would actually do it this time, I wouldn't even look at a table I'd just...",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 100 Silver",
+          "next": "Here__100_Silver",
+          "best": true,
+          "itemReq": "Need 100x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "I don't have it right now.",
+          "next": "I_don_t_have_it_right_now_2"
+        },
+        {
+          "label": "No",
+          "next": "____One_More_Hand__Walked_Away_2"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "____One_More_Hand__Walked_Away_2": {
+      "id": "____One_More_Hand__Walked_Away_2",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "Chao: Yeah I get it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_don_t_have_it_right_now_2": {
+      "id": "I_don_t_have_it_right_now_2",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Yeah. Okay. I'll wait.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 100 Silver to Chao in Tianqiu Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "What_happened_2",
+          "label": "Do /rpg again and then click on Talk to Chao"
+        }
+      ]
+    },
+    "Here__100_Silver": {
+      "id": "Here__100_Silver",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Thank you. Later. I'll still be here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "100x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Check on Chao in Tianqiu Valley in 12 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "100_silv_gib",
+          "label": "Wait for 12 hours, do /rpg and click on Talk to Chao"
+        }
+      ]
+    },
+    "100_silv_gib": {
+      "id": "100_silv_gib",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Before you say anything I know.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "dotdotdot_1"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "dotdotdot_1": {
+      "id": "dotdotdot_1",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Some guys from the harbor came through. Friendly game. I was up and then I wasn't and now the hundred is gone too. Two hundred and I can actually leave this valley, I mean it this time.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 200 Silver",
+          "next": "Here__200_Silver",
+          "best": true,
+          "itemReq": "Need 200x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "I don't have it right now",
+          "next": "I_don_t_have_it_right_now_3"
+        },
+        {
+          "label": "No",
+          "next": "____One_More_Hand__Walked_Away_3"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_don_t_have_it_right_now_3": {
+      "id": "I_don_t_have_it_right_now_3",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: I'll be here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 200 Silver to Chao in Tianqiu Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "dotdotdot_1",
+          "label": "Do /rpg again and then click on Talk to Chao"
+        }
+      ]
+    },
+    "____One_More_Hand__Walked_Away_3": {
+      "id": "____One_More_Hand__Walked_Away_3",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "Chao: Yeah.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Here__200_Silver": {
+      "id": "Here__200_Silver",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Later. I owe you. I know I owe you.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "200x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Check on Chao in Tianqiu Valley in 12 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "200_silv_gib",
+          "label": "Wait for 12 hours, do /rpg again and click on Talk to Chao"
+        }
+      ]
+    },
+    "200_silv_gib": {
+      "id": "200_silv_gib",
+      "type": "scene",
+      "title": "",
+      "text": "''He holds the empty bowl up without standing.''\n\nChao: Don't. I know.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "How",
+          "next": "How"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "How": {
+      "id": "How",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: I doubled down because I was so close it was stupid not to. Four hundred. I hear myself.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 400 Silver",
+          "next": "Here__400_Silver",
+          "best": true,
+          "itemReq": "Need 400x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "I don't have it right now",
+          "next": "I_don_t_have_it_right_now_4"
+        },
+        {
+          "label": "No",
+          "next": "____One_More_Hand__Walked_Away_4"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Here__400_Silver": {
+      "id": "Here__400_Silver",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: I'll be here. You can yell at me then.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "400x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Check on Chao in Tianqiu Valley in 12 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "400_silv_gib",
+          "label": "Wait for 12 hours, then do /rpg again and click on Talk to Chao"
+        }
+      ]
+    },
+    "I_don_t_have_it_right_now_4": {
+      "id": "I_don_t_have_it_right_now_4",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Okay.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 400 Silver to Chao in Tianqiu Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "How",
+          "label": "Do /rpg again and then click on Talk to Chao"
+        }
+      ]
+    },
+    "____One_More_Hand__Walked_Away_4": {
+      "id": "____One_More_Hand__Walked_Away_4",
+      "type": "ending",
+      "title": "Walked Away",
+      "text": "Chao: Can't even be mad.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "400_silv_gib": {
+      "id": "400_silv_gib",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Hey.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Again?",
+          "next": "Again_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Again_": {
+      "id": "Again_",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Yeah. Eight hundred and I stop. I know how that sounds I know I know. Please.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 800 Silver",
+          "next": "Here__800_Silver",
+          "best": true,
+          "itemReq": "Need 800x[img:../Textures/silver.png]'''Silver'''"
+        },
+        {
+          "label": "I don't have it right now",
+          "next": "I_don_t_have_it_right_now_"
+        },
+        {
+          "label": "No",
+          "next": ""
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_don_t_have_it_right_now_": {
+      "id": "I_don_t_have_it_right_now_",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: I'll wait.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 800 Silver to Chao in Tianqiu Valley",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Again_",
+          "label": "Do /rpg again and then click on Talk to Chao"
+        }
+      ]
+    },
+    "Here__800_Silver": {
+      "id": "Here__800_Silver",
+      "type": "scene",
+      "title": "",
+      "text": "Chao: Later. If I'm not here I got eaten by a ruin thing and you can have my bowl.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "800x [img:../Textures/silver.png]'''Silver'''",
+          "collapsed": false
+        },
+        {
+          "speaker": "📌 Objective",
+          "text": "Check on Chao in Tianqiu Valley in 12 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "__One_More_Hand__Jackpot",
+          "label": "Wait for 12 hours, do /rpg again and click on Talk to Chao"
+        }
+      ]
+    },
+    "__One_More_Hand__Jackpot": {
+      "id": "__One_More_Hand__Jackpot",
+      "type": "ending",
+      "title": "Jackpot",
+      "text": "''The bowl is gone. He's standing, tugging at a silk shirt that does not fit him.''\n\nChao: I HIT IT. I actually hit it. Look at this, I bought a shirt and I don't even know if this is how shirts work.\n\n''He shoves a heavy purse at you.''\n\nChao: That's twenty five hundred. For the fifty and the hundred and all of it. Take it. Take it before I do something dumb with it again.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 2500,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 250,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}
