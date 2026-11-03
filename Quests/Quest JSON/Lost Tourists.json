@@ -1,0 +1,314 @@
+{
+  "meta": {
+    "requirement": "Explore Entombed City (20%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Entombed_City|Entombed City]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Lost Tourists",
+      "text": "''Six people in very unsuitable clothes are standing around a map held upside down, one of them in a sunhat.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Uh... need a hand?",
+          "next": "Uh____need_a_hand_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Uh____need_a_hand_": {
+      "id": "Uh____need_a_hand_",
+      "type": "scene",
+      "title": "",
+      "text": "Dorrie: Oh, yes please! We're trying to get back to Mondstadt City and I think we took a wrong turn at the big rock. Or the other big rock.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "How'd you end up up here?",
+          "next": "How_d_you_end_up_up_here_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "How_d_you_end_up_up_here_": {
+      "id": "How_d_you_end_up_up_here_",
+      "type": "scene",
+      "title": "",
+      "text": "Wendell: The guidebook has a shortcut down from here. It didn't say anything about snow.\n\nPip: It said \"scenic\".",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "dotdotdot"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "dotdotdot": {
+      "id": "dotdotdot",
+      "type": "scene",
+      "title": "",
+      "text": "Dorrie: So um, I know this is a lot to ask, but could you walk us down? And, I mean, we did pay for the trip, so if you could maybe show us around a little on the way, only if it's not too much...",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Fine, sure",
+          "next": "Fine__sure"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Fine__sure": {
+      "id": "Fine__sure",
+      "type": "scene",
+      "title": "",
+      "text": "Dorrie: Oh, thank you!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "...",
+          "next": "dot_again"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "dot_again": {
+      "id": "dot_again",
+      "type": "scene",
+      "title": "",
+      "text": "''You lead them past the broken pillars and they have a question about every single one.''\n\nWendell: Right then, and this one? Is it safe to stand under?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Should be fine",
+          "next": "Should_be_fine"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Should_be_fine": {
+      "id": "Should_be_fine",
+      "type": "scene",
+      "title": "",
+      "text": "Pip: Can I touch the big ice thing?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Stay close",
+          "next": "Stay_close"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Stay_close": {
+      "id": "Stay_close",
+      "type": "scene",
+      "title": "",
+      "text": "''A Mirror Maiden and a Frostarm Lawachurl step out from behind the pillars.''\n\nDorrie: Um. Is that part of the tour?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Protect the tourists in Entombed City",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "victory",
+          "label": "Do /rpg again and then click on Fight the Mirror Maiden and Lawachurl. Defeat 1 [[Mirror Maiden]] and 1 [[Frostarm Lawachurl]].\nIf you defeated the enemies:"
+        },
+        {
+          "next": "defeat",
+          "label": "Do /rpg again and then click on Fight the Mirror Maiden and Lawachurl. Defeat 1 [[Mirror Maiden]] and 1 [[Frostarm Lawachurl]].\nIf you got defeated by the enemies:"
+        }
+      ]
+    },
+    "victory": {
+      "id": "victory",
+      "type": "scene",
+      "title": "",
+      "text": "Pip: ...okay that was kind of sick.\n\nDorrie: Thank you!! I mean it, thank you!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Check on the tourists in Entombed City",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_the_tourists",
+          "label": "Do /rpg again and then click on Talk to the tourists"
+        }
+      ]
+    },
+    "defeat": {
+      "id": "defeat",
+      "type": "scene",
+      "title": "",
+      "text": "Dorrie: Oh no oh no, are you okay?? Rest up, we'll hide behind here, okay? Just don't take too long!",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Rest for 3 hours, then protect the tourists again in Entombed City",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "victory",
+          "label": "Wait for 3 hours, do /rpg again and click on Protect the tourists again. Defeat 1 [[Mirror Maiden]] and 1 [[Frostarm Lawachurl]].\nIf you defeated the enemies:"
+        },
+        {
+          "next": "defeat",
+          "label": "Wait for 3 hours, do /rpg again and click on Protect the tourists again. Defeat 1 [[Mirror Maiden]] and 1 [[Frostarm Lawachurl]].\nIf you got defeated by the enemies:"
+        }
+      ]
+    },
+    "Talk_to_the_tourists": {
+      "id": "Talk_to_the_tourists",
+      "type": "scene",
+      "title": "",
+      "text": "''They are sitting in a row on a fallen column and nobody is talking.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Hey, are you guys okay?",
+          "next": "Hey__are_you_guys_okay_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Hey__are_you_guys_okay_": {
+      "id": "Hey__are_you_guys_okay_",
+      "type": "scene",
+      "title": "",
+      "text": "Dorrie: Yeah! Yeah, we're fine, we're totally fine.\n\nPip: I'm not. I wanna go home.\n\nWendell: I think we've seen enough of the tour, if that's all right with everyone.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll take you back",
+          "next": "I_ll_take_you_back"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_take_you_back": {
+      "id": "I_ll_take_you_back",
+      "type": "scene",
+      "title": "",
+      "text": "''You walk them down the mountain trail.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Walk the tourists back to Mondstadt City",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "__Lost_Tourists__Tourists_Returned_Home",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Talk to Dorrie"
+        }
+      ]
+    },
+    "__Lost_Tourists__Tourists_Returned_Home": {
+      "id": "__Lost_Tourists__Tourists_Returned_Home",
+      "type": "ending",
+      "title": "Tourists Returned Home",
+      "text": "Dorrie: We made it!! Thank you, thank you for your help!\n\n''Wendell hands you a pouch of silver.''\n\nPip: ...thanks.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 250,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 150,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

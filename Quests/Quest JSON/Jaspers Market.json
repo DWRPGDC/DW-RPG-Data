@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "requirement": "Explore Glaze Peak (1%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Glaze_Peak|Glaze Peak]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Jasper's Market",
+      "text": "''A merchant holds his cart against a rock while two Ruin Hunters hover over the path, with a Mirror Maiden and an Electro Samachurl below them.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Get away from the cart!",
+          "next": "Get_away_from_the_cart_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Get_away_from_the_cart_": {
+      "id": "Get_away_from_the_cart_",
+      "type": "scene",
+      "title": "",
+      "text": "Jasper: I can't, the wheels keep slipping and they're right there. I tried going around but the woman saw me.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Can you get behind that rock?",
+          "next": "Can_you_get_behind_that_rock_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Can_you_get_behind_that_rock_": {
+      "id": "Can_you_get_behind_that_rock_",
+      "type": "scene",
+      "title": "",
+      "text": "Jasper: If you could keep them off me, please... all four of them, I can't get past.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll fight them. Stay back",
+          "next": "I_ll_fight_them__Stay_back"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_fight_them__Stay_back": {
+      "id": "I_ll_fight_them__Stay_back",
+      "type": "scene",
+      "title": "",
+      "text": "Jasper: Please, yes. I'll stay here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the monsters threatening Jasper at Glaze Peak",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Protect_Jasper",
+          "label": "Do /rpg again and then click on Protect Jasper. Defeat 2 [[Ruin Hunter]]s, 1 [[Mirror Maiden]] and 1 [[Electro Samachurl]]"
+        }
+      ]
+    },
+    "Protect_Jasper": {
+      "id": "Protect_Jasper",
+      "type": "scene",
+      "title": "",
+      "text": "Jasper: You've got them? Oh, I'm very grateful. Come over here, please, when you're ready.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Talk to Jasper at Glaze Peak",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Jasper",
+          "label": "Do /rpg again and then click on Talk to Jasper"
+        }
+      ]
+    },
+    "Talk_to_Jasper": {
+      "id": "Talk_to_Jasper",
+      "type": "scene",
+      "title": "",
+      "text": "''Jasper takes his foot off the cart brake and wedges a stone under the wheel.''\n\nJasper: I'm Jasper. My store's just up the path, you should come by. I sell ores, and there's a fresh batch every day.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll have a look",
+          "next": "__Jasper_s_Market__Jasper_s_Market_Unlocked"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "__Jasper_s_Market__Jasper_s_Market_Unlocked": {
+      "id": "__Jasper_s_Market__Jasper_s_Market_Unlocked",
+      "type": "ending",
+      "title": "Jasper's Market Unlocked",
+      "text": "Jasper: You're welcome any time. And thank you for coming over when you did.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "[[Jasper's Market (Shop)]]",
+      "requirement": ""
+    }
+  }
+}
