@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "requirement": "Explore Falcon Coast (10%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Falcon_Coast|Falcon Coast]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "A Fisherman's Challenge",
+      "text": "''Bram waves you over with his fishing rod.''\n\nBram: Still got that rod I gave you? How about a fishing contest?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What are the rules?",
+          "next": "What_are_the_rules_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_are_the_rules_": {
+      "id": "What_are_the_rules_",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: You've got twelve hours to bring me the biggest fish you can catch. Just one, mind, so make sure it's the one you want to hand in.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You're on",
+          "next": "You_re_on"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_re_on": {
+      "id": "You_re_on",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: Go on then, I'll be here.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Submit your biggest fish to Bram within twelve hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "",
+          "next": ""
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Submit_a_fish_to_Bram",
+          "label": "Do /rpg again and then click on Submit a fish to Bram"
+        }
+      ]
+    },
+    "Submit_a_fish_to_Bram": {
+      "id": "Submit_a_fish_to_Bram",
+      "type": "scene",
+      "title": "",
+      "text": "Bram: Let's have a look, then. You don't get to swap it after.\n\nOnly carried, unfavorited fish appear below.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}
