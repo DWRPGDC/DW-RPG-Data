@@ -1,0 +1,530 @@
+{
+  "meta": {
+    "requirement": "Explore Mingyun Village (20%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Mingyun_Village|Mingyun Village]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "The Third Strike",
+      "text": "''A hammer rings once from an abandoned workshop, then stops halfway through the second stroke.''\n\nQiao: If you came for ore, take the east path. If you came for the noise, mind where you stand.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "That hammer sounded wrong",
+          "next": "That_hammer_sounded_wrong"
+        },
+        {
+          "label": "Someone still works here?",
+          "next": "That_hammer_sounded_wrong"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "That_hammer_sounded_wrong": {
+      "id": "That_hammer_sounded_wrong",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: The hammer is fine. The bench is fine. The thieves who took my striking plate are the part that needs correcting.\n\nQiao: Three matched pieces laid together, three measured strikes. Mingyun made tools that way before the shafts went quiet.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Who took the plate?",
+          "next": "Who_took_the_plate_"
+        },
+        {
+          "label": "Why three pieces?",
+          "next": "Why_three_pieces_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Who_took_the_plate_": {
+      "id": "Who_took_the_plate_",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: Treasure Hoarders. They thought the old plate was a map because miners carved measurements along its edge.\n\nQiao: They are behind the collapsed carts, arguing over which way is north. Go improve the discussion.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll bring the plate back",
+          "next": "I_ll_bring_the_plate_back"
+        },
+        {
+          "label": "Keep the hammer ready",
+          "next": "I_ll_bring_the_plate_back"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_bring_the_plate_back": {
+      "id": "I_ll_bring_the_plate_back",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: Two clean strikes if they listen. Three if they do not.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Drive the Treasure Hoarders away from Qiao's forge in Mingyun Village",
+          "collapsed": false
+        },
+        {
+          "speaker": "Objective",
+          "text": "",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Recover_Qiao_s_Striking_Plate",
+          "label": "Do /rpg again and then click on Recover Qiao's Striking Plate. Defeat 2 [[Treasure Hoarder Crusher]]s and 1 [[Treasure Hoarder Marksman]]"
+        }
+      ]
+    },
+    "Why_three_pieces_": {
+      "id": "Why_three_pieces_",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: One piece remembers every weakness in the ore. Three spread the strain. Done properly, the weld comes back stronger each time.\n\nQiao: Done badly, you own three broken tools and one impressive noise.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Who took the plate?",
+          "next": "Who_took_the_plate_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Recover_Qiao_s_Striking_Plate": {
+      "id": "Recover_Qiao_s_Striking_Plate",
+      "type": "scene",
+      "title": "",
+      "text": "''The last Hoarder drops the heavy plate. Its corner has split, and pale scoring runs through the old metal.''\n\nQiao: There it is. Returned, and naturally returned broken.\n\nQiao: Twelve Iron Chunks for the body. Eight Crystal Chunks to keep the face hard. Three Noctilucous Jade for the binding seam.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Qiao 12 Iron Chunks, 8 Crystal Chunks, and 3 Noctilucous Jade",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Qiao",
+          "label": "Do /rpg again and then click on Talk to Qiao"
+        }
+      ]
+    },
+    "Talk_to_Qiao": {
+      "id": "Talk_to_Qiao",
+      "type": "scene",
+      "title": "",
+      "text": "''The last Hoarder drops the heavy plate. Its corner has split, and pale scoring runs through the old metal.''\n\nQiao: There it is. Returned, and naturally returned broken.\n\nQiao: Twelve Iron Chunks for the body. Eight Crystal Chunks to keep the face hard. Three Noctilucous Jade for the binding seam.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Qiao 12 Iron Chunks, 8 Crystal Chunks, and 3 Noctilucous Jade",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "Jade belongs in an anvil?",
+          "next": "Jade_belongs_in_an_anvil_"
+        },
+        {
+          "label": "I'll gather what you need",
+          "next": "I_ll_gather_the_materials"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Jade_belongs_in_an_anvil_": {
+      "id": "Jade_belongs_in_an_anvil_",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: Not in the anvil. Between what it was and what it must become. Jade carries heat through the crack without letting the plate pull apart.\n\nQiao: That is the part outsiders never wrote down.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll gather the materials",
+          "next": "I_ll_gather_the_materials"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_gather_the_materials": {
+      "id": "I_ll_gather_the_materials",
+      "type": "scene",
+      "title": "",
+      "text": "''Qiao clears the old bench and lays the broken plate across two stone blocks.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Qiao 12 Iron Chunks, 8 Crystal Chunks, and 3 Noctilucous Jade",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Qiaoz",
+          "label": "Do /rpg again and then click on Talk to Qiao"
+        }
+      ]
+    },
+    "Talk_to_Qiaoz": {
+      "id": "Talk_to_Qiaoz",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: Put it on the bench. I can tell good ore by the sound it makes when someone stops carrying it.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Everything you asked for",
+          "next": "Everything_you_asked_for",
+          "best": true,
+          "itemReq": "Need 12x[img:../Textures/Items/Iron Chunk_icon.png]'''[[Iron Chunk]]''', 8x[img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]''', 3x[img:../Textures/Items/Noctilucous Jade_icon.webp]'''[[Noctilucous Jade]]'''"
+        },
+        {
+          "label": "I'm still gathering",
+          "next": "I_m_still_gathering"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_m_still_gathering": {
+      "id": "I_m_still_gathering",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: Then the crack waits. Old metal has more patience than either of us.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Qiao 12 Iron Chunks, 8 Crystal Chunks, and 3 Noctilucous Jade",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Everything_you_asked_for": {
+      "id": "Everything_you_asked_for",
+      "type": "scene",
+      "title": "",
+      "text": "''Qiao tests each piece, rejects none, and feeds the forge until the broken plate glows along its crack.''\n\nQiao: Iron gives it shape. Crystal gives it refusal. Jade gives both sides a reason to stay together.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "12x [img:../Textures/Items/Iron Chunk_icon.png]'''[[Iron Chunk]]'''\n8x [img:../Textures/Items/Crystal Chunk_icon.png]'''[[Crystal Chunk]]'''\n3x [img:../Textures/Items/Noctilucous Jade_icon.webp]'''[[Noctilucous Jade]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "How long before it is ready?",
+          "next": "How_long_before_it_is_ready_"
+        },
+        {
+          "label": "You have done this before",
+          "next": "You_have_done_this_before"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "How_long_before_it_is_ready_": {
+      "id": "How_long_before_it_is_ready_",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: Twelve hours. Touch it early and the jade seam turns brittle.\n\nQiao: Go find something that does not improve when struck with a hammer.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll return in twelve hours",
+          "next": "I_ll_return_in_twelve_hours"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_return_in_twelve_hours": {
+      "id": "I_ll_return_in_twelve_hours",
+      "type": "scene",
+      "title": "",
+      "text": "''The repaired plate cools under a layer of pale ash.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Return to Qiao in Mingyun Village after the plate sets for 12 hours",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Check_Qiao_s_Striking_Plate",
+          "label": "Wait for 12 hours, and after that do /rpg again and click on Check Qiao's Striking Plate"
+        }
+      ]
+    },
+    "You_have_done_this_before": {
+      "id": "You_have_done_this_before",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: I learned here. That is not the same as doing it alone.\n\nQiao: Six smiths held the plate steady the first time. I am the only one left to complain about their grip.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "How long before it is ready",
+          "next": "How_long_before_it_is_ready_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Check_Qiao_s_Striking_Plate": {
+      "id": "Check_Qiao_s_Striking_Plate",
+      "type": "scene",
+      "title": "",
+      "text": "''Qiao brushes the ash away. The jade seam has darkened into a thin green line, straight and unbroken.''\n\nQiao: It held. Now it needs a forge that still expects tomorrow.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Emre's forge in Mondstadt",
+          "next": "Emre_s_forge_in_Mondstadt"
+        },
+        {
+          "label": "You could use it here",
+          "next": "You_could_use_it_here_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Emre_s_forge_in_Mondstadt": {
+      "id": "Emre_s_forge_in_Mondstadt",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: Emre understands heat, and he is young enough to argue with instructions. Good. Give him the plate and this rule.\n\nQiao: Three matching weapons. Never mix the stars already in the metal. Every new weld asks more silver and more jade, because strength is expensive after the first lesson.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll take it to him",
+          "next": "I_ll_take_it_to_him"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_take_it_to_him": {
+      "id": "I_ll_take_it_to_him",
+      "type": "scene",
+      "title": "",
+      "text": "''Qiao wraps the plate in old forge cloth and knots it for the road.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Qiao's threefold forging plate to Emre in Mondstadt",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Bring_the_Plate_to_Emre",
+          "label": "Go to Mondstadt City (Mondstadt), do /rpg and click on Bring the Plate to Emre"
+        }
+      ]
+    },
+    "You_could_use_it_here_": {
+      "id": "You_could_use_it_here_",
+      "type": "scene",
+      "title": "",
+      "text": "Qiao: I could preserve it here. Polish it every week. Explain it to empty houses.\n\nQiao: A craft kept behind glass is only a well-maintained ghost.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Then Emre should have it",
+          "next": "Emre_s_forge_in_Mondstadt"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Bring_the_Plate_to_Emre": {
+      "id": "Bring_the_Plate_to_Emre",
+      "type": "scene",
+      "title": "",
+      "text": "''Emre clears a place on his bench as soon as he sees the weight of the bundle.''\n\nEmre: That is either a very small door or a very serious piece of forgework.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "It came from Qiao in Mingyun Village",
+          "next": "It_came_from_Qiao_in_Mingyun_Village"
+        },
+        {
+          "label": "It's a threefold striking plate",
+          "next": "It_came_from_Qiao_in_Mingyun_Village"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "It_came_from_Qiao_in_Mingyun_Village": {
+      "id": "It_came_from_Qiao_in_Mingyun_Village",
+      "type": "scene",
+      "title": "",
+      "text": "Emre: Qiao. Aldric mentioned him once, then refused to explain why six smiths needed one hammering plate.\n\nEmre: ''traces the jade seam'' This repair is fresh. You helped him bring it back.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "He wants the method used, not preserved",
+          "next": "He_wants_the_method_used__not_preserved"
+        },
+        {
+          "label": "Three matching weapons become one stronger weapon",
+          "next": "He_wants_the_method_used__not_preserved"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "He_wants_the_method_used__not_preserved": {
+      "id": "He_wants_the_method_used__not_preserved",
+      "type": "scene",
+      "title": "",
+      "text": "Emre: Three matching bodies, one fresh roll through the weld. The old traits burn out, but the pattern returns stronger.\n\nEmre: It will take a full day under pressure. And nobody gets near that plate without paying for the silver flux and jade binding.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Can your forge do it?",
+          "next": "__The_Third_Strike__The_Third_Strike"
+        },
+        {
+          "label": "Sounds like you already want to try",
+          "next": "__The_Third_Strike__The_Third_Strike"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "__The_Third_Strike__The_Third_Strike": {
+      "id": "__The_Third_Strike__The_Third_Strike",
+      "type": "ending",
+      "title": "The Third Strike",
+      "text": "''Emre seats the plate into a recessed block beside his forge. It settles with a low iron note that seems too large for the room.''\n\nEmre: The Anvil is open. Bring me three copies of the same weapon or artifact at the same star rank. Come back a day later, and we will see what survives the third strike.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 500,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Blacksmith#Anvil|Anvil]] and [[Blacksmith#Evolve|Evolve]]",
+      "requirement": ""
+    }
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "requirement": "Explore Mt. Aocang (1%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Mt._Aocang|Mt. Aocang]]"
+    ],
+    "questType": "normal",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Cold Tea Path",
+      "text": "''Mt. Aocang's lake holds the sky like a second mountain. Along the shore path, frost has glued last night's footprints into pale scars.''\n\n''An elderly man sits on a flat rock with a cloth-wrapped tea packet in his lap. Two Cryo Whopperflowers block the only trail down, vines glittering with rime.''\n\nTao: ''mildly'' They arrived after I finished packing. Rude timing. I can wait out cold. I cannot wait out wilted leaves.\n\n''One flower pulses. Ice creaks under the path stones.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll clear the path",
+          "next": "I_ll_clear_the_path"
+        },
+        {
+          "label": "Stay with the packet",
+          "next": "I_ll_clear_the_path"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "I_ll_clear_the_path": {
+      "id": "I_ll_clear_the_path",
+      "type": "scene",
+      "title": "",
+      "text": "Tao: ''small nod'' Break the flowers. Leave the lake. The water has enough opinions without more ice in it.\n\n''Both Cryo Whopperflowers peel off the trail and come for you, frost lifting off the pebbles.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Defeat the Cryo Whopperflowers blocking the lakeside path on Mt. Aocang",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Fight_the_Cryo_Whopperflowers",
+          "label": "Do /rpg again and then click on Fight the Cryo Whopperflowers. Defeat 2 [[Cryo Whopperflower]]s"
+        }
+      ]
+    },
+    "Fight_the_Cryo_Whopperflowers": {
+      "id": "Fight_the_Cryo_Whopperflowers",
+      "type": "scene",
+      "title": "",
+      "text": "''The last vine sinks into meltwater. Tao stands without hurry, as if the fight were weather that finally passed.''\n\nTao: Path open. Packet still dry. That is a good morning.\n\n''He places the tea packet in your hands. It smells faintly of Qingxin and toasted grain.''\n\nTao: Wangshu Inn. Kitchen. Lan. She ordered this blend for travelers who arrive before dawn and pretend they are not shaking.\n\n''He glances once at the lake, then back to you.''\n\nTao: I climb these slopes well. My knees do not sprint. Carry it down while the wrap is still cold and honest. Lan pays when the leaves arrive without frostburn.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Deliver the tea packet to Lan at Wangshu Inn",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Deliver_the_Tea_to_Lan",
+          "label": "Go to Wangshu Inn (Liyue), do /rpg and click on Deliver the Tea to Lan"
+        },
+        {
+          "next": "Fight_the_Cryo_Whopperflowers",
+          "label": "If you do /rpg again and click on Talk to Tao"
+        }
+      ]
+    },
+    "Deliver_the_Tea_to_Lan": {
+      "id": "Deliver_the_Tea_to_Lan",
+      "type": "scene",
+      "title": "",
+      "text": "''Wangshu's kitchen is loud enough to hear from the stair. Lan spots the cloth wrap, points with a spatula, and does not slow her pans.''\n\nLan: Tao's knot. Aocang cold still in the cloth. Put it there. Do not set it near the oil.\n\n''You set the packet on the clear board she indicated. She cracks the wrap with one clean motion, sniffs, and almost smiles.''\n\nLan: Leaves clean. Good. Dawn rush will complain less when the tea is right.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Tao cleared the wait. I cleared the flowers",
+          "next": "Tao_cleared_the_wait__I_cleared_the_flowers"
+        },
+        {
+          "label": "Glad it made the kitchen",
+          "next": "Tao_cleared_the_wait__I_cleared_the_flowers"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Tao_cleared_the_wait__I_cleared_the_flowers": {
+      "id": "Tao_cleared_the_wait__I_cleared_the_flowers",
+      "type": "scene",
+      "title": "",
+      "text": "Lan: ''counts silver with the hand not holding a spatula'' Then take the runner fee. Tell Tao the Inn still drinks what he packs.\n\nLan: And if you see more Cryo blossoms on that trail, crush them before they invent new ways to ruin breakfast.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "I'll tell him",
+          "next": "__Cold_Tea_Path__Tea_Delivered"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "__Cold_Tea_Path__Tea_Delivered": {
+      "id": "__Cold_Tea_Path__Tea_Delivered",
+      "type": "ending",
+      "title": "Tea Delivered",
+      "text": "''Orders keep landing on the pass. Lan is already back in the fire's weather.''\n\n''Somewhere far above, Mt. Aocang keeps its quiet lake. Your part of the cold path is finished.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 215,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 190,
+          "icon": ""
+        }
+      ],
+      "unlocks": "",
+      "requirement": ""
+    }
+  }
+}

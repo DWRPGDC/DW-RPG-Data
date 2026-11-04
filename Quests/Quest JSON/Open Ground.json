@@ -1,0 +1,316 @@
+{
+  "meta": {
+    "requirement": "Explore Mingyun Village (5%+ exploration) to trigger this quest.",
+    "locations": [
+      "[[Locations#Mingyun_Village|Mingyun Village]]"
+    ],
+    "questType": "special",
+    "customTabs": [
+      {
+        "id": "tip1",
+        "label": "TIP",
+        "color": "#ff0000",
+        "content": "You can click the '''Collapse''' button and the '''Best Route''' → '''Important Only''' button at the top to minimize it.\n''Some quests will not have a Best Route choice, because the best choice is subjective or not yet found.''\n\nYou can also click the '''Endings''' button at the top to view all possible endings, and clicking an ending will show the options needed to reach that ending.",
+        "collapsible": true
+      }
+    ]
+  },
+  "scenes": {
+    "start": {
+      "id": "start",
+      "type": "start",
+      "title": "Open Ground",
+      "text": "''Beyond the square, where Lin's marketplace trays catch what little dust-free sun reaches Mingyun, a narrow path dips behind the last intact wall.''\n\n''There, five small plots sit like stubborn memories. Weeds claim most of them. One corner has been scraped clear by hand. An old man kneels there with a broken hoe, testing the soil as if arguing with it.''\n\nBao: ''without standing'' Traveller. You smelled of fresh seeds a street away. Lin's work, I expect.\n\n''He taps the cracked hoe blade. It rings wrong.''\n\nBao: These plots used to feed the miners. Then the mines quieted, the people left, and the weeds learned patience. I stayed. Patience is cheaper than moving.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "You're still farming out here?",
+          "next": "You_re_still_farming_out_here_"
+        },
+        {
+          "label": "What happened to the tools?",
+          "next": "What_s_stopping_you_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "You_re_still_farming_out_here_": {
+      "id": "You_re_still_farming_out_here_",
+      "type": "scene",
+      "title": "",
+      "text": "Bao: ''short laugh'' Farming is a grand word for arguing with dirt. But yes. A little. Enough to remember why the village was more than ore carts.\n\n''He looks across the five plots, measuring what could grow if the ground were open again.''\n\nBao: Lin stocks seeds now. That is half the work. The other half is having somewhere honest to plant them.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "What's stopping you?",
+          "next": "What_s_stopping_you_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_s_stopping_you_": {
+      "id": "What_s_stopping_you_",
+      "type": "scene",
+      "title": "",
+      "text": "Bao: ''lifts the hoe'' This. And the fence braces. And every other tool that spent twenty winters learning to fail.\n\n''He scrapes a line of soil with his palm instead.''\n\nBao: I can clear weeds with my hands. I cannot remake an edge without iron. Eight Iron Chunks would do it. Hoe, braces, one spare spike for the path posts.\n\n''He studies you the way miners study someone who might still care about rock.''\n\nBao: Bring me that iron and we can talk about opening these five plots. Watering, planting, arguing with dirt. One step at a time.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Eight Iron Chunks. I'll get them",
+          "next": "Eight_Iron_Chunks__I_ll_get_them"
+        },
+        {
+          "label": "Why open the farm to a stranger?",
+          "next": "Why_open_the_farm_to_a_stranger_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Eight_Iron_Chunks__I_ll_get_them": {
+      "id": "Eight_Iron_Chunks__I_ll_get_them",
+      "type": "scene",
+      "title": "",
+      "text": "Bao: ''nods once'' Good. I will keep the clear corner from growing over while you dig.\n\n''He points toward the ridge path without looking up.''\n\nBao: Iron Chunks. Eight. Do not bring me rust and call it charity.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 8 Iron Chunks to Bao at the Mingyun Village farm plots",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Talk_to_Bao",
+          "label": "Do /rpg again and then click on Talk to Bao"
+        }
+      ]
+    },
+    "Why_open_the_farm_to_a_stranger_": {
+      "id": "Why_open_the_farm_to_a_stranger_",
+      "type": "scene",
+      "title": "",
+      "text": "Bao: Because strangers leave. Plots do not. ''gestures at the scraped corner'' If you plant here, you tend here. That is the contract. Lin sells the seed. I keep the ground. You do the middle part if you want food that did not come out of a chest.\n\n''He sets the broken hoe aside with surprising gentleness.''\n\nBao: Also, my knees are tired of doing all three jobs alone.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Understood. I'll bring the iron",
+          "next": "Eight_Iron_Chunks__I_ll_get_them"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Talk_to_Bao": {
+      "id": "Talk_to_Bao",
+      "type": "scene",
+      "title": "",
+      "text": "''Bao is binding a loose fence rail with twine, still kneeling as if standing would waste a full conversation.''\n\nBao: Back already? Or just checking whether the weeds won?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 8 Iron Chunks",
+          "next": "Here__8_Iron_Chunks_",
+          "best": true,
+          "itemReq": "Need 8x[img:../Textures/Items/Iron Chunk_icon.png]'''[[Iron Chunk]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Still_gathering"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_gathering": {
+      "id": "Still_gathering",
+      "type": "scene",
+      "title": "",
+      "text": "Bao: ''grunts'' Then gather. Dirt waits. Tools do not invent themselves.\n\n''He returns to the twine. The cleared corner stays stubbornly empty for you.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring 8 Iron Chunks to Bao at the Mingyun Village farm plots",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Here__8_Iron_Chunks_": {
+      "id": "Here__8_Iron_Chunks_",
+      "type": "scene",
+      "title": "",
+      "text": "''Bao takes the Iron Chunks one by one, weighing each against his palm the way old mine hands still do.''\n\nBao: Enough. ''a quiet satisfaction'' Edge for the hoe. Braces for the fence. Spike for the post that always leans west.\n\n''He sets the chunks beside the broken blade, then presses two fingers into the scraped soil and frowns.''\n\nBao: Tools will open the ground. They will not tell me if the ground is still willing. These plots have slept under weed and dust too long. Before I trust seed to them, I want living flowers in my hands. Proof the soil still remembers softness.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "8x [img:../Textures/Items/Iron Chunk_icon.png]'''[[Iron Chunk]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [
+        {
+          "label": "What do you need?",
+          "next": "What_do_you_need_"
+        },
+        {
+          "label": "Flowers? From where?",
+          "next": "What_do_you_need_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "What_do_you_need_": {
+      "id": "What_do_you_need_",
+      "type": "scene",
+      "title": "",
+      "text": "Bao: Five of each. Sweet Flower. Windwheel Aster. Small Lamp Grass. Valberry. Cecilia.\n\n''He counts them on weathered fingers without apology for the list.''\n\nBao: Gather them wild if you must. Buy seeds from Lin and grow them yourself if you are patient. I do not care how they arrive, only that they arrive fresh.\n\n''He brushes dirt from his palm.''\n\nBao: When I have all five kinds, five apiece, these plots open to you. Until then, the farm stays closed. Bad soil teaches expensive lessons.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Five of each. I'll bring them",
+          "next": "Five_of_each__I_ll_bring_them"
+        },
+        {
+          "label": "Sweet Flower, Aster, Lamp Grass, Valberry, Cecilia",
+          "next": "Five_of_each__I_ll_bring_them"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Five_of_each__I_ll_bring_them": {
+      "id": "Five_of_each__I_ll_bring_them",
+      "type": "scene",
+      "title": "",
+      "text": "Bao: ''already turning back to the hoe edge'' Good. I will finish the braces while you walk.\n\n''He glances once at the five empty plots.''\n\nBao: Do not bruise them into pulp on the road. I need flowers, not confessions.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Bao 5 Sweet Flower, 5 Windwheel Aster, 5 Small Lamp Grass, 5 Valberry, and 5 Cecilia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": "",
+      "continues": [
+        {
+          "next": "Deliver_flowers_to_Bao",
+          "label": "Do /rpg again and then click on Deliver flowers to Bao"
+        }
+      ]
+    },
+    "Deliver_flowers_to_Bao": {
+      "id": "Deliver_flowers_to_Bao",
+      "type": "scene",
+      "title": "",
+      "text": "''Bao has fitted a new blade onto the old hoe. The fence rail stands straighter than before. He looks up as you approach.''\n\nBao: Well? Did the hills give you flowers, or only opinions?",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [],
+      "choices": [
+        {
+          "label": "Here. 5 of each flower",
+          "next": "__Open_Ground__Farm_Opened",
+          "best": true,
+          "itemReq": "Need 5x[img:../Textures/Items/Item_Sweet_Flower.webp]'''[[Sweet Flower]]''', 5x[img:../Textures/Items/Windwheel Aster_icon.png]'''[[Windwheel Aster]]''', 5x[img:../Textures/Items/Small Lamp Grass_icon.png]'''[[Small Lamp Grass]]''', 5x[img:../Textures/Items/Valberry_icon.webp]'''[[Valberry]]''', 5x[img:../Textures/Items/Cecilia_icon.webp]'''[[Cecilia]]'''"
+        },
+        {
+          "label": "Still gathering",
+          "next": "Still_gathering_"
+        }
+      ],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "Still_gathering_": {
+      "id": "Still_gathering_",
+      "type": "scene",
+      "title": "",
+      "text": "Bao: ''grunts'' Then keep walking. Lin's stall and the ridges around Mingyun both grow answers if you look long enough.\n\n''He scrapes another weed from the cleared corner and waits.''",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📌 Objective",
+          "text": "Bring Bao 5 Sweet Flower, 5 Windwheel Aster, 5 Small Lamp Grass, 5 Valberry, and 5 Cecilia",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [],
+      "unlocks": "",
+      "requirement": ""
+    },
+    "__Open_Ground__Farm_Opened": {
+      "id": "__Open_Ground__Farm_Opened",
+      "type": "ending",
+      "title": "Farm Opened",
+      "text": "''Bao lays the flowers in five neat rows along the plot edge, checking colour and stem the way he checked iron.''\n\nBao: Sweet Flower soft. Aster stubborn. Lamp Grass stubborn in a different direction. Valberry sharp. Cecilia proud. ''nods'' The soil will take seed after this.\n\n''He gathers the flowers into a cloth and tucks them beside the repaired tools.''\n\nBao: They are yours to work now. Plant what Lin sells. Water when the soil goes pale. Harvest when the ground is ready, not when you are impatient.\n\n''Somewhere behind him, a length of fence finally stands upright.''\n\nBao: Welcome to the Mingyun Village Farm. Try not to plant shoes.",
+      "embedUrl": "",
+      "embedLabel": "",
+      "dialogues": [
+        {
+          "speaker": "📦 Gave",
+          "text": "5x [img:../Textures/Items/Item_Sweet_Flower.webp]'''[[Sweet Flower]]'''\n5x [img:../Textures/Items/Windwheel Aster_icon.png]'''[[Windwheel Aster]]'''\n5x [img:../Textures/Items/Small Lamp Grass_icon.png]'''[[Small Lamp Grass]]'''\n5x [img:../Textures/Items/Valberry_icon.webp]'''[[Valberry]]'''\n5x [img:../Textures/Items/Cecilia_icon.webp]'''[[Cecilia]]'''",
+          "collapsed": false
+        }
+      ],
+      "choices": [],
+      "rewards": [
+        {
+          "item": "Silver",
+          "qty": 50,
+          "icon": ""
+        },
+        {
+          "item": "AEXP",
+          "qty": 200,
+          "icon": ""
+        }
+      ],
+      "unlocks": "[[Farm]]",
+      "requirement": ""
+    }
+  }
+}
