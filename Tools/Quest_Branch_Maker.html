@@ -2148,13 +2148,14 @@ document.querySelectorAll('.pv-tchoices').forEach(function(group){
 group.querySelectorAll(':scope>.pv-tc-vert,:scope>.pv-tc-horiz').forEach(function(el){el.remove();});
 var choices=Array.from(group.querySelectorAll(':scope>.pv-tchoice'));
 if(!choices.length)return;
-var isDashed=group.classList.contains('pv-tcontinues');
+var groupDashed=group.classList.contains('pv-tcontinues');
 var bestIdx=parseInt(group.dataset.bestIdx);
 var groupRect=group.getBoundingClientRect();
 var prevStubY=-5;
 choices.forEach(function(ch,i){
 var chRect=ch.getBoundingClientRect();
 var stubY=chRect.top-groupRect.top+17;
+var isDashed=groupDashed||ch.classList.contains('pv-tcont-item');
 var vertColor=isDashed?((bestIdx>=0&&i<=bestIdx)?RED:BLUE):((bestIdx>=0&&i<=bestIdx)?RED:GREY);
 var horizColor=isDashed?((i===bestIdx)?RED:BLUE):((i===bestIdx)?RED:GREY);
 var vert=document.createElement('div');
@@ -2219,7 +2220,37 @@ if(s.type==='ending'&&s.rewards&&s.rewards.length)html+='<div class="pv-treward"
 if(s.type==='ending'&&s.unlocks)html+='<div class="pv-tunlocks">🔓 '+renderWiki(s.unlocks)+'</div>';
 html+='</div>';
 }
-if(s.choices&&s.choices.length){
+const _mxBest=s.choices?s.choices.filter(c=>c.best):[];
+const _mxVis=(s.choices&&s.choices.length)?(((pvBestRouteMode>0)&&_mxBest.length>0)?_mxBest:s.choices):[];
+const _mxCA=getContinues(s).filter(c=>c.next&&scenes[c.next]);
+const _mxCB=_mxCA.filter(c=>c.best);
+const _mxC=((pvBestRouteMode>0)&&_mxCB.length>0)?_mxCB:_mxCA;
+const _pvMixed=_mxVis.length>0&&_mxC.length>0;
+if(_pvMixed){
+const items=[];
+_mxVis.forEach(c=>items.push({c:c,k:'choice'}));
+_mxC.forEach(c=>items.push({c:c,k:'cont'}));
+const mBest=items.findIndex(it=>it.c.best);
+html+='<div class="pv-tchoices'+(mBest>=0?' pv-has-best':'')+'" data-best-idx="'+mBest+'">';
+items.forEach((it,i)=>{
+const c=it.c;const last=i===items.length-1;
+html+='<div class="pv-tchoice'+(last?' pv-tchoice-last':'')+(c.best?' pv-best-branch':'')+(it.k==='cont'?' pv-tcont-item':'')+'">';
+if(it.k==='cont'){
+html+='<div class="pv-tcontinue-label'+(c.best?' pv-tchoice-best':'')+'"><span class="pv-tcontinue-label-text">'+(c.label?renderWiki(c.label):'Continues to')+'</span>'+(c.best?' <span class="best-route-badge">⭐ Best Route</span>':'')+'</div>';
+html+=pvBuildTreeNode(c.next,last,isBestDest||c.best,c.label);
+} else {
+const cObjs=(c.objectives&&c.objectives.length)?c.objectives.map(obj=>obj.collapsed?'<details style="background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden"><summary style="padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none">'+esc(obj.speaker||'Objective')+'</summary><span style="display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)">'+renderWiki(obj.text)+'</span></details>':'<div class="pv-tdlg" style="margin-top:4px"><span class="pv-tdlg-spk">'+esc(obj.speaker||'Objective')+'</span><span>'+renderWiki(obj.text)+'</span></div>').join(''):'';
+html+='<div class="pv-tchoice-label'+(c.best?' pv-tchoice-best':'')+'"><span class="pv-tchoice-label-text">'+(renderWiki(c.label)||'...')+'</span>'+(c.best?' <span class="best-route-badge">⭐ Best Route</span>':'')+((c.itemReq&&c.itemReq.trim())?' <span class="pv-tchoice-itemreq">🔒 '+renderWiki(c.itemReq)+'</span>':'')+'</div>';
+if(cObjs)html+='<div style="margin:2px 0 4px">'+cObjs+'</div>';
+if(c.next&&scenes[c.next])html+=pvBuildTreeNode(c.next,last,c.best,c.label);
+else if(c.responseText)html+='<div style="font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5">'+renderWiki(c.responseText)+'</div>';
+else html+='<div class="pv-tmissing">(no destination)</div>';
+}
+html+='</div>';
+});
+html+='</div>';
+}
+if(!_pvMixed&&s.choices&&s.choices.length){
 const bestChoices=s.choices.filter(c=>c.best);
 const visChoices=(pvBestRouteMode>0)&&bestChoices.length>0?bestChoices:s.choices;
 if(visChoices.length===1){
@@ -2253,7 +2284,7 @@ html+='</div>';
 const _pvVisLen=s.choices&&s.choices.length?((pvBestRouteMode>0)&&s.choices.filter(c=>c.best).length>0?s.choices.filter(c=>c.best).length:s.choices.length):0;
 const _pvContsAll=getContinues(s).filter(c=>c.next&&scenes[c.next]);
 const _pvContBest=_pvContsAll.filter(c=>c.best);
-const _pvConts=(pvBestRouteMode>0)&&_pvContBest.length>0?_pvContBest:_pvContsAll;
+const _pvConts=_pvMixed?[]:((pvBestRouteMode>0)&&_pvContBest.length>0?_pvContBest:_pvContsAll);
 if(_pvConts.length>1){
 const _pvContBestIdx=_pvConts.findIndex(c=>c.best);
 html+='<div class="pv-tchoices pv-tcontinues" style="margin-top:8px" data-best-idx="'+_pvContBestIdx+'">';
@@ -3401,7 +3432,38 @@ const js = [
 '    if(s.type==="ending"&&s.unlocks){html+="<div class=\\"tunlocks-inline\\">\uD83D\uDD13 Unlocks: "+wl(s.unlocks)+"</div>";}',
 '    html+="</div>";',
 '  }',
-'  if(s.choices&&s.choices.length){',
+'var _mxBest=s.choices?s.choices.filter(function(c){return c.best;}):[];',
+'var _mxVis=(s.choices&&s.choices.length)?((bestRouteMode>0&&_mxBest.length>0)?_mxBest:s.choices):[];',
+'var _mxCA=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});',
+'var _mxCB=_mxCA.filter(function(c){return c.best;});',
+'var _mxC=((bestRouteMode>0)&&_mxCB.length>0)?_mxCB:_mxCA;',
+'var _mixed=_mxVis.length>0&&_mxC.length>0;',
+'if(_mixed){',
+'  var _mItems=[];',
+'  _mxVis.forEach(function(c){_mItems.push({c:c,k:"choice"});});',
+'  _mxC.forEach(function(c){_mItems.push({c:c,k:"cont"});});',
+'  var _mBest=-1;',
+'  _mItems.forEach(function(it,i){if(it.c.best)_mBest=i;});',
+'  html+="<div class=\\"tchoices"+(_mBest>=0?" has-best":"")+"\\">";',
+'  _mItems.forEach(function(it,i){',
+'    var c=it.c,last=i===_mItems.length-1;',
+'    html+="<div class=\\"tchoice"+(last?" tchoice-last":"")+(c.best?" best-branch":"")+(it.k==="cont"?" tcont-item":"")+"\\">";',
+'    if(it.k==="cont"){',
+'      html+="<div class=\\"tcontinue-label"+(c.best?" tchoice-best":"")+"\\"><span class=\\"tcontinue-label-text\\">"+(c.label?wl(c.label):"Continues to")+"</span>"+(c.best?" <span class=\\"best-route-badge\\">⭐ Best Route</span>":"")+"</div>";',
+'      html+=buildTreeNode(c.next,last,isBestDest||c.best,c.label);',
+'    } else {',
+'      var mObjs=(c.objectives&&c.objectives.length)?c.objectives.map(function(obj){return obj.collapsed?"<details style=\\"background:var(--bg3);border:1px solid var(--border);border-radius:3px;margin-top:4px;overflow:hidden\\"><summary style=\\"padding:4px 7px;font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;list-style:none\\">"+eh(obj.speaker||"Objective")+"</summary><span style=\\"display:block;padding:3px 7px 5px;font-size:11px;color:var(--text2)\\">"+wl(obj.text||"")+"</span></details>":"<div class=\\"tdlg\\" style=\\"margin-top:4px\\"><span class=\\"tdlg-spk\\">"+eh(obj.speaker||"Objective")+"</span><span class=\\"tdlg-txt\\">"+wl(obj.text||"")+"</span></div>";}).join(""):"";',
+'      html+="<div class=\\"tchoice-label"+(c.best?" tchoice-best":"")+"\\"><span class=\\"tchoice-label-text\\">"+(wl(c.label)||"...")+"</span>"+(c.best?" <span class=\\"best-route-badge\\">⭐ Best Route</span>":"")+((c.itemReq&&c.itemReq.trim())?" <span class=\\"tchoice-itemreq\\">🔒 "+wl(c.itemReq)+"</span>":"")+"</div>";',
+'      if(mObjs)html+="<div style=\\"margin:2px 0 4px\\">"+mObjs+"</div>";',
+'      if(c.next&&scenes[c.next]){html+=buildTreeNode(c.next,last,c.best,c.label);}',
+'      else if(c.responseText){html+="<div style=\\"font-size:13px;color:var(--text2);padding:3px 4px;line-height:1.5\\">"+wl(c.responseText)+"</div>";}',
+'      else{html+="<div class=\\"tmissing\\">(no destination)</div>";}',
+'    }',
+'    html+="</div>";',
+'  });',
+'  html+="</div>";',
+'}',
+'  if(!_mixed&&s.choices&&s.choices.length){',
 '    var bestChoices=s.choices.filter(function(c){return c.best;});',
 '    var visibleChoices=bestRouteMode>0&&bestChoices.length>0?bestChoices:s.choices;',
 '    if(visibleChoices.length===1){',
@@ -3435,7 +3497,7 @@ const js = [
 '  var _visLen=(s.choices&&s.choices.length)?(bestRouteMode>0&&_bestC.length>0?_bestC.length:s.choices.length):0;',
 '  var _contsAll=(s.continues||[]).filter(function(c){return c.next&&scenes[c.next];});',
 '  var _contsBest=_contsAll.filter(function(c){return c.best;});',
-'  var _conts=(bestRouteMode>0)&&_contsBest.length>0?_contsBest:_contsAll;',
+'  var _conts=_mixed?[]:((bestRouteMode>0)&&_contsBest.length>0?_contsBest:_contsAll);',
 '  if(_conts.length>1){',
 '    html+="<div class=\\"tchoices tcontinues\\" style=\\"margin-top:8px\\">";',
 '    _conts.forEach(function(c,ci){',
@@ -3463,7 +3525,7 @@ const js = [
 '    });',
 '    var choices=Array.from(group.querySelectorAll(":scope>.tchoice"));',
 '    if(!choices.length)return;',
-'    var isDashed=group.classList.contains("tcontinues");',
+'    var groupDashed=group.classList.contains("tcontinues");',
 '    var bestIdx=-1;',
 '    choices.forEach(function(ch,i){if(ch.classList.contains("best-branch"))bestIdx=i;});',
 '    var groupRect=group.getBoundingClientRect();',
@@ -3471,6 +3533,7 @@ const js = [
 '    choices.forEach(function(ch,i){',
 '      var chRect=ch.getBoundingClientRect();',
 '      var stubY=chRect.top-groupRect.top+19;',
+'      var isDashed=groupDashed||ch.classList.contains("tcont-item");',
 '      var vertColor=isDashed?((bestIdx>=0&&i<=bestIdx)?RED:BLUE):((bestIdx>=0&&i<=bestIdx)?RED:GREY);',
 '      var horizColor=isDashed?((i===bestIdx)?RED:BLUE):((i===bestIdx)?RED:GREY);',
 '      var horizH=(i===bestIdx&&!isDashed)?4:2;',
