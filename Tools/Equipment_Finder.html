@@ -1325,6 +1325,8 @@
             <option value="defRate-asc">DEF Rate (low-high)</option>
             <option value="defValue-desc">DEF Value (high-low)</option>
             <option value="defValue-asc">DEF Value (low-high)</option>
+            <option value="dodge-desc">Dodge (high-low)</option>
+            <option value="dodge-asc">Dodge (low-high)</option>
           </select>
         </div>
       </div>
@@ -1352,6 +1354,7 @@
             <option value="critValue">Crit Value</option>
             <option value="defRate">DEF Rate</option>
             <option value="defValue">DEF Value</option>
+            <option value="dodge">Dodge</option>
           </select>
           <button type="button" class="compare-sort-dir is-desc" id="compareSortDirBtn" title="Toggle ascending/descending" aria-label="Toggle sort direction" disabled>
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
@@ -1442,6 +1445,8 @@
             <option value="defRate-asc">DEF Rate (low-high)</option>
             <option value="defValue-desc">DEF Value (high-low)</option>
             <option value="defValue-asc">DEF Value (low-high)</option>
+            <option value="dodge-desc">Dodge (high-low)</option>
+            <option value="dodge-asc">Dodge (low-high)</option>
           </select>
         </div>
       </div>
@@ -1594,18 +1599,18 @@
     'Jaded':    { DV:1.5, HP:1.2 },
     'Scornful': { ATK:2, CV:0.5 },
     'Spicy':    { CR:2, CV:2 },
-    'Cursed':   { ATK:-1, HP:-1, CR:-1, CV:-1, DR:-1, DV:-1 },
+    'Cursed':   { ATK:-1, HP:-1, CR:-1, CV:-1, DR:-1, DV:-1, DODGE:-1 },
     'Gilded':   { CR:1.5, DV:-2 },
     'Revered':  { HP:2, CR:-1.5 },
     'Salty':    { ATK:2, HP:-1.5 },
     'Strange':  { CR:2, CV:-1.5 },
-    'Ancient':  { ATK:2.5, HP:2.5, CR:2.5, CV:2.5, DR:2.5, DV:2.5 }
+    'Ancient':  { ATK:2.5, HP:2.5, CR:2.5, CV:2.5, DR:2.5, DV:2.5, DODGE:2.5 }
   };
   var PREFIX_NAMES = Object.keys(PREFIXES);
   // Maps a weapon's raw field name to the canonical stat key PREFIXES is keyed by.
   var WEAPON_FIELD_TO_STATKEY = {
     hp: "HP", atkRoll: "ATK", atkRollMin: "ATK", atkRollMax: "ATK",
-    critRate: "CR", critValue: "CV", defRate: "DR", defValue: "DV"
+    critRate: "CR", critValue: "CV", defRate: "DR", defValue: "DV", dodge: "DODGE"
   };
   function prefixFactor(prefixName, statKey){
     var p = PREFIXES[prefixName || "None"] || {};
@@ -1984,6 +1989,8 @@
     })
     .then(function(data){
       weapons = data;
+      // Only some weapons roll Dodge; show "-" for the rest, like every other unrolled stat.
+      weapons.forEach(function(w){ if(w.dodge === undefined) w.dodge = "-"; });
       populateFilters();
       restoreSelections();
       updateCompareBadge();
@@ -2181,6 +2188,7 @@
           statRow("Crit Value", pct(w.critValue)) +
           statRow("DEF Rate", pct(w.defRate)) +
           statRow("DEF Value", w.defValue) +
+          statRow("Dodge", pct(w.dodge)) +
           (w.ability
             ? '<div class="modal-ability compare-ability"><div class="modal-ability-label">Ability</div><div class="modal-ability-text">' + escapeHtml(w.ability) + '</div></div>'
             : '') +
@@ -2409,6 +2417,7 @@
       case "critValue": r = parseRange(w.critValue); return r ? avgRange(r) : -Infinity;
       case "defRate": r = parseRange(w.defRate); return r ? avgRange(r) : -Infinity;
       case "defValue": r = parseRange(w.defValue); return r ? avgRange(r) : -Infinity;
+      case "dodge": r = parseRange(w.dodge); return r ? avgRange(r) : -Infinity;
       default: return 0;
     }
   }
@@ -2669,6 +2678,8 @@
         case "defRate-desc": sorted.sort(function(a,b){ return compareSortValue(b,"defRate") - compareSortValue(a,"defRate"); }); break;
         case "defValue-asc": sorted.sort(function(a,b){ return compareSortValue(a,"defValue") - compareSortValue(b,"defValue"); }); break;
         case "defValue-desc": sorted.sort(function(a,b){ return compareSortValue(b,"defValue") - compareSortValue(a,"defValue"); }); break;
+        case "dodge-asc": sorted.sort(function(a,b){ return compareSortValue(a,"dodge") - compareSortValue(b,"dodge"); }); break;
+        case "dodge-desc": sorted.sort(function(a,b){ return compareSortValue(b,"dodge") - compareSortValue(a,"dodge"); }); break;
       }
       return sorted;
     }
@@ -2802,6 +2813,7 @@
         '<tr><td>Crit Value</td><td>' + d.critValue + (d.critValue !== "-" ? "%" : "") + '</td></tr>' +
         '<tr><td>DEF Rate</td><td>' + d.defRate + (d.defRate !== "-" ? "%" : "") + '</td></tr>' +
         '<tr><td>DEF Value</td><td>' + d.defValue + '</td></tr>' +
+        '<tr><td>Dodge</td><td>' + d.dodge + (d.dodge !== "-" ? "%" : "") + '</td></tr>' +
       '</table>' +
       (w.atkType === "minMax"
         ? '<div class="modal-note">This weapon rolls two separate values: one added to your minimum ATK, another added to your maximum ATK.</div>'
@@ -2914,7 +2926,10 @@
 
   function bonusStatMap(list){
     var map = {};
-    (list || []).forEach(function(entry){ map[entry.stat] = entry.value; });
+    (list || []).forEach(function(entry){
+      var key = String(entry.stat).toLowerCase() === "dodge" ? "DODGE" : entry.stat;
+      map[key] = entry.value;
+    });
     return map;
   }
 
@@ -3119,6 +3134,7 @@
     rows.push(buildDiffRow("Crit Value", a.critValue, b.critValue, { suffix:"%" }));
     rows.push(buildDiffRow("DEF Rate", a.defRate, b.defRate, { suffix:"%" }));
     rows.push(buildDiffRow("DEF Value", a.defValue, b.defValue, {}));
+    rows.push(buildDiffRow("Dodge", a.dodge, b.dodge, { suffix:"%" }));
 
     rows = rows.filter(Boolean);
 
@@ -3160,9 +3176,9 @@
   var artifactSets = [];
   var PIECE_ORDER = ["flower", "plume", "sands", "goblet", "circlet"];
   var PIECE_LABEL = { flower: "Flower", plume: "Plume", sands: "Sands", goblet: "Goblet", circlet: "Circlet" };
-  var STAT_LABEL = { HP: "HP", ATK: "ATK", CR: "Crit Rate", CV: "Crit Value", DR: "DEF Rate", DV: "DEF Value" };
-  var STAT_ORDER = ["HP", "ATK", "CR", "CV", "DR", "DV"];
-  var PCT_STATS = { CR: true, CV: true, DR: true };
+  var STAT_LABEL = { HP: "HP", ATK: "ATK", CR: "Crit Rate", CV: "Crit Value", DR: "DEF Rate", DV: "DEF Value", DODGE: "Dodge" };
+  var STAT_ORDER = ["HP", "ATK", "CR", "CV", "DR", "DV", "DODGE"];
+  var PCT_STATS = { CR: true, CV: true, DR: true, DODGE: true };
 
   // Returns a deep-scaled copy of an artifact set for MODAL DISPLAY ONLY — every
   // piece's main/sub stat range multiplied by the given Anvil star level AND the
@@ -3233,6 +3249,17 @@
     .then(function(res){ if(!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
     .then(function(data){
       artifactSets = Array.isArray(data) ? data : [];
+      // Accept "dodge" / "Dodge" / "DODGE" as the piece stat key.
+      artifactSets.forEach(function(s){
+        if(!s.pieces) return;
+        Object.keys(s.pieces).forEach(function(slot){
+          var st = s.pieces[slot] && s.pieces[slot].stats;
+          if(!st) return;
+          ["dodge", "Dodge"].forEach(function(k){
+            if(st[k] !== undefined && st.DODGE === undefined){ st.DODGE = st[k]; delete st[k]; }
+          });
+        });
+      });
       artifactSets.forEach(function(s){
         [["setBonus2pc", "setBonus2pcStats"], ["setBonus4pc", "setBonus4pcStats"]].forEach(function(pair){
           if(s[pair[0]] && !Array.isArray(s[pair[1]])){
@@ -3320,6 +3347,8 @@
         case "defRate-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"DR") - artifactStatValue(a,"DR"); }); break;
         case "defValue-asc": sorted.sort(function(a,b){ return artifactStatValue(a,"DV") - artifactStatValue(b,"DV"); }); break;
         case "defValue-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"DV") - artifactStatValue(a,"DV"); }); break;
+        case "dodge-asc": sorted.sort(function(a,b){ return artifactStatValue(a,"DODGE") - artifactStatValue(b,"DODGE"); }); break;
+        case "dodge-desc": sorted.sort(function(a,b){ return artifactStatValue(b,"DODGE") - artifactStatValue(a,"DODGE"); }); break;
       }
       return sorted;
     }
