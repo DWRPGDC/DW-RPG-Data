@@ -368,7 +368,7 @@
   }
 
   .star-toggle-row{
-    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
     margin-top:12px; padding:8px 10px;
     border:1px solid var(--line); border-radius:8px;
   }
@@ -380,6 +380,7 @@
     background:var(--card); color:var(--ink);
     cursor:pointer;
   }
+  .star-evolve-btn{ margin-left:8px; }
   .star-toggle-btn.is-active{
     background:var(--gold); border-color:var(--gold);
     color:var(--bg);
@@ -1582,6 +1583,23 @@
     weapon:   [1, 1.5, 2, 2.5],
     artifact: [1, 1.5, 2, 2.5]
   };
+  // Evolve: same packing as Build Calculator. A "star" value holds the star level in
+  // bits 0-1 (0-3) and the Evolve flag in bit 2 (value 4). Evolved stars use their own
+  // multiplier table (2x / 4x / 6x).
+  var EVOLVED_STAR_MULTS = [1, 2, 4, 6];
+  var EVOLVE_FLAG = 4;
+  function starMultOf(kind, v){
+    v = v | 0;
+    var table = (v & EVOLVE_FLAG) ? EVOLVED_STAR_MULTS : STAR_MULTS[kind];
+    return table[v & 3];
+  }
+  // New packed star value after clicking a star-toggle button (level button keeps the
+  // current Evolve flag; the Evolve button flips it).
+  function starValueAfterClick(current, btn){
+    current = current | 0;
+    if(btn.dataset.evolve) return current ^ EVOLVE_FLAG;
+    return (parseInt(btn.dataset.starLevel, 10) & 3) | (current & EVOLVE_FLAG);
+  }
 
   // Same Prefix system as Build Calculator — multiplies specific stats on a piece
   // of gear. Kept in sync manually; update both files if the game's prefix list changes.
@@ -1724,7 +1742,7 @@
     container.innerHTML = starToggleHtml(state.star, idPrefix) + prefixRowHtml(state.prefix, idPrefix);
     container.querySelectorAll("#" + idPrefix + "StarToggle .star-toggle-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
-        state.star = parseInt(btn.dataset.starLevel, 10);
+        state.star = starValueAfterClick(state.star, btn);
         renderStarPrefixBar(containerId, idPrefix, state, onChange);
         onChange();
       });
@@ -2166,7 +2184,7 @@
     }
 
     scrollWrap.innerHTML = compareList.map(function(idx){
-      var w = scaleWeapon(weapons[idx], STAR_MULTS.weapon[compareWeaponStarPrefix.star], compareWeaponStarPrefix.prefix);
+      var w = scaleWeapon(weapons[idx], starMultOf("weapon", compareWeaponStarPrefix.star), compareWeaponStarPrefix.prefix);
       return (
         '<div class="compare-card" data-idx="' + idx + '">' +
           '<div class="compare-card-top">' +
@@ -2770,12 +2788,18 @@
     renderCardDiffStates();
   }
 
-  function starToggleHtml(activeLevel, idPrefix){
-    var labels = ["Off", "✪", "✪✪", "✪✪✪"];
+  function starToggleHtml(activeValue, idPrefix){
+    activeValue = activeValue | 0;
+    var activeLevel = activeValue & 3;
+    var evolved = !!(activeValue & EVOLVE_FLAG);
+    var glyph = evolved ? "\u235F" : "\u272A"; // ⍟ when evolved, ✪ otherwise
+    var labels = ["Off", glyph, glyph + glyph, glyph + glyph + glyph];
     var buttons = labels.map(function(label, lvl){
       return '<button type="button" class="star-toggle-btn' + (lvl === activeLevel ? ' is-active' : '') +
         '" data-star-level="' + lvl + '">' + label + '</button>';
     }).join("");
+    buttons += '<button type="button" class="star-toggle-btn star-evolve-btn' + (evolved ? ' is-active' : '') +
+      '" data-evolve="1" title="Evolve: stars scale 2x / 4x / 6x instead of 1.5x / 2x / 2.5x">Evolve</button>';
     return '<div class="star-toggle-row" id="' + idPrefix + 'StarToggle">' +
       '<span class="star-toggle-label">Anvil Star preview:</span>' +
       '<div class="star-toggle-group">' + buttons + '</div>' +
@@ -2783,9 +2807,9 @@
   }
 
   function renderWeaponModal(w, starLevel, prefixName){
-    starLevel = Math.max(0, Math.min(3, starLevel || 0));
+    starLevel = Math.max(0, Math.min(7, starLevel || 0));
     prefixName = prefixName || "None";
-    var starMult = STAR_MULTS.weapon[starLevel];
+    var starMult = starMultOf("weapon", starLevel);
     var d = scaleWeapon(w, starMult, prefixName); // display copy — original `w` (and the `weapons` array) never mutated
 
     var modal = document.getElementById("modalContent");
@@ -2826,7 +2850,7 @@
     document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
     modal.querySelectorAll("#weaponModalStarToggle .star-toggle-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
-        renderWeaponModal(w, parseInt(btn.dataset.starLevel, 10), prefixName);
+        renderWeaponModal(w, starValueAfterClick(starLevel, btn), prefixName);
       });
     });
     var prefixSelect = document.getElementById("weaponModalPrefixSelect");
@@ -3118,8 +3142,8 @@
     }
     emptyEl.style.display = "none";
 
-    var a = scaleWeapon(weapons[idxA], STAR_MULTS.weapon[diffWeaponStarPrefix.star], diffWeaponStarPrefix.prefix);
-    var b = scaleWeapon(weapons[idxB], STAR_MULTS.weapon[diffWeaponStarPrefix.star], diffWeaponStarPrefix.prefix);
+    var a = scaleWeapon(weapons[idxA], starMultOf("weapon", diffWeaponStarPrefix.star), diffWeaponStarPrefix.prefix);
+    var b = scaleWeapon(weapons[idxB], starMultOf("weapon", diffWeaponStarPrefix.star), diffWeaponStarPrefix.prefix);
 
     var rows = [
       buildDiffRow("World Level", a.worldLevel, b.worldLevel, { neutral:true }),
@@ -3453,9 +3477,9 @@
   }
 
   function renderArtifactModal(s, starLevel, prefixName, openPieces){
-    starLevel = Math.max(0, Math.min(3, starLevel || 0));
+    starLevel = Math.max(0, Math.min(7, starLevel || 0));
     prefixName = prefixName || "None";
-    var starMult = STAR_MULTS.artifact[starLevel];
+    var starMult = starMultOf("artifact", starLevel);
     var d = scaleArtifactSet(s, starMult, prefixName); // display copy — original `s` (and `artifactSets`) never mutated
     var modal = document.getElementById("modalContent");
 
@@ -3520,7 +3544,7 @@
     document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
     modal.querySelectorAll("#artifactModalStarToggle .star-toggle-btn").forEach(function(btn){
       btn.addEventListener("click", function(){
-        renderArtifactModal(s, parseInt(btn.dataset.starLevel, 10), prefixName, openPieces);
+        renderArtifactModal(s, starValueAfterClick(starLevel, btn), prefixName, openPieces);
       });
     });
     var prefixSelect = document.getElementById("artifactModalPrefixSelect");
@@ -3648,7 +3672,7 @@
     sortArtifactCompareList();
 
     var items = artifactCompareList.map(function(idx){
-      return { idx: idx, s: scaleArtifactSet(artifactSets[idx], STAR_MULTS.artifact[compareArtifactStarPrefix.star], compareArtifactStarPrefix.prefix) };
+      return { idx: idx, s: scaleArtifactSet(artifactSets[idx], starMultOf("artifact", compareArtifactStarPrefix.star), compareArtifactStarPrefix.prefix) };
     });
     var cols = items.length;
 
@@ -4131,8 +4155,8 @@
     }
     emptyEl.style.display = "none";
 
-    var a = scaleArtifactSet(artifactSets[idxA], STAR_MULTS.artifact[diffArtifactStarPrefix.star], diffArtifactStarPrefix.prefix);
-    var b = scaleArtifactSet(artifactSets[idxB], STAR_MULTS.artifact[diffArtifactStarPrefix.star], diffArtifactStarPrefix.prefix);
+    var a = scaleArtifactSet(artifactSets[idxA], starMultOf("artifact", diffArtifactStarPrefix.star), diffArtifactStarPrefix.prefix);
+    var b = scaleArtifactSet(artifactSets[idxB], starMultOf("artifact", diffArtifactStarPrefix.star), diffArtifactStarPrefix.prefix);
 
     var header =
       '<div class="diff-header">' +
