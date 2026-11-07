@@ -281,6 +281,18 @@
     "tier": 3,
     "group": "boss"
   },
+  "dvalins_sigh": {
+    "name": "Dvalin's Sigh",
+    "icon": "Item Dvalins Sigh.webp",
+    "category": "drops",
+    "group": "boss"
+  },
+  "dvalins_plume": {
+    "name": "Dvalin's Plume",
+    "icon": "Item Dvalins Plume.webp",
+    "category": "drops",
+    "group": "boss"
+  },
   "berry": {
     "name": "Berry",
     "icon": "Item Berry.webp",
@@ -399,6 +411,24 @@
   "cecilia_seed": {
     "name": "Cecilia Seed",
     "icon": "Cecilia Seed icon.webp",
+    "category": "misc",
+    "group": "seeds"
+  },
+  "naku_weed_seed": {
+    "name": "Naku Weed Seed",
+    "icon": "Item Naku Weed Seed.webp",
+    "category": "misc",
+    "group": "seeds"
+  },
+  "silk_flower_seed": {
+    "name": "Silk Flower Seed",
+    "icon": "Item Silk Flower Seed.webp",
+    "category": "misc",
+    "group": "seeds"
+  },
+  "qingxin_seed": {
+    "name": "Qingxin Seed",
+    "icon": "Item Qingxin Seed.webp",
     "category": "misc",
     "group": "seeds"
   },
@@ -552,6 +582,12 @@
     "category": "misc",
     "group": "ores"
   },
+  "magical_crystal_chunk": {
+    "name": "Magical Crystal Chunk",
+    "icon": "Item Magical Crystal Chunk.webp",
+    "category": "misc",
+    "group": "ores"
+  },
   "electro_sigil": {
     "name": "Electro Sigil",
     "icon": "Item Electro Sigil.webp",
@@ -687,7 +723,7 @@
     "name": "Sunset Berry Tea",
     "icon": "Foods/Item Sunset Berry Tea.webp",
     "category": "consumables",
-    "group": "dawn_winery_menu"
+    "group": "cookable"
   },
   "unmoving_essential_oil": {
     "name": "Unmoving Essential Oil",
