@@ -242,7 +242,7 @@
     "defValue": "-",
     "type": "Catalyst",
     "icon": "Weapon_Lost_Prayer_to_the_Sacred_Winds.webp",
-    "ability": "After casting a spell, cast one more spell during the same turn. The second cast may repeat the first spell or target a different enemy."
+    "ability": "After casting a spell, cast one more spell during the same turn. The second cast may repeat the first spell or target a different enemy. This ability does not work on Bosses."
   },
   {
     "name": "Pocket Grimoire",
@@ -411,7 +411,7 @@
     "defValue": "-",
     "type": "Polearm",
     "icon": "Weapon_Staff_of_Homa.webp",
-    "ability": "Deal more damage the lower your HP is."
+    "ability": "Deal more damage the lower your HP is. This ability does not work on Bosses."
   },
   {
     "name": "The Bell",
@@ -537,7 +537,7 @@
     "defValue": "-",
     "type": "Polearm",
     "icon": "Weapon_Primordial_Jade_Winged-Spear.webp",
-    "ability": "Unlock the Slash action. Deal 100% of your attack to all enemies (1 turn cooldown). Heal for 10% of the total damage dealt."
+    "ability": "Unlock the Slash action. Deal 100% of your attack to all enemies (1 turn cooldown). Heal for 10% of the total damage dealt. This ability does not work on Bosses."
   },
   {
     "name": "Sacrificial Jade",
@@ -677,7 +677,7 @@
     "defValue": "-",
     "type": "Claymore",
     "icon": "Weapon_Song_of_Broken_Pines.webp",
-    "ability": "Every 4th attack deals 10x damage."
+    "ability": "Every 4th attack deals 10x damage. This ability does not work on Bosses."
   },
   {
     "name": "Dodoco Tales",
@@ -742,23 +742,43 @@
     "icon": "Weapon_Dragonspine_Spear.webp"
   },
   {
+    "name": "Hamayumi",
+    "worldLevel": 7,
+    "crucible": 175,
+    "weight": 1.5,
+    "hp": "-700 to -300",
+    "atkType": "flat",
+    "atkRoll": "-",
+    "critRate": "-",
+    "critValue": "-",
+    "defRate": "-",
+    "defValue": "-",
+    "dodge": "10 to 20",
+    "type": "Bow",
+    "icon": "Weapon_Hamayumi.webp"
+  },
+  {
     "name": "Tulaytullah's Remembrance",
     "worldLevel": 7,
+    "crucible": 175,
+    "weight": 2,
     "hp": "100 to 200",
     "atkType": "minMax",
-    "atkRoll": "-",
+    "atkRollMin": "340 to 425",
+    "atkRollMax": "442 to 510",
     "critRate": "14 to 22",
     "critValue": "48 to 72",
     "defRate": "-",
     "defValue": "-",
     "type": "Catalyst",
     "icon": "Weapon_Tulaytullahs_Remembrance.webp",
-    "atkRollMin": "340 to 425",
-    "atkRollMax": "442 to 510"
+    "ability": "Spend a turn to Mark one enemy. When that enemy dies, it joins your team at full HP with the same stats. On its turn, you choose who it attacks. Enemies can attack it. When it falls, it is gone. This ability does not work on Bosses."
   },
   {
     "name": "Hakushin Ring",
     "worldLevel": 7,
+    "crucible": 175,
+    "weight": 1.5,
     "hp": "400 to 600",
     "atkType": "flat",
     "atkRoll": "400 to 600",
@@ -770,35 +790,25 @@
     "icon": "Weapon_Hakushin_Ring.webp"
   },
   {
-    "name": "Hamayumi",
+    "name": "Kitain Cross Spear",
     "worldLevel": 7,
-    "hp": "-700 to -300",
+    "crucible": 175,
+    "weight": 3,
+    "hp": "-",
     "atkType": "flat",
-    "atkRoll": "-",
-    "critRate": "-",
-    "critValue": "-",
+    "atkRoll": "500 to 700",
+    "critRate": "30 to 45",
+    "critValue": "80 to 120",
     "defRate": "-",
     "defValue": "-",
-    "type": "Bow",
-    "icon": "Weapon_Hamayumi.webp",
-    "dodge": "10 to 20"
-  },
-  {
-    "name": "Kagotsurube Isshin",
-    "worldLevel": 7,
-    "hp": "300 to 400",
-    "atkType": "flat",
-    "atkRoll": "300 to 400",
-    "critRate": "-",
-    "critValue": "-",
-    "defRate": "-",
-    "defValue": "300 to 400",
-    "type": "Sword",
-    "icon": "Weapon_Kagotsurube_Isshin.webp"
+    "type": "Polearm",
+    "icon": "Weapon_Kitain_Cross_Spear.webp"
   },
   {
     "name": "Katsuragikiri Nagamasa",
     "worldLevel": 7,
+    "crucible": 175,
+    "weight": 4,
     "hp": "200",
     "atkType": "flat",
     "atkRoll": "300",
@@ -810,16 +820,18 @@
     "icon": "Weapon_Katsuragikiri_Nagamasa.webp"
   },
   {
-    "name": "Kitain Cross Spear",
+    "name": "Kagotsurube Isshin",
     "worldLevel": 7,
-    "hp": "-",
+    "crucible": 175,
+    "weight": 2,
+    "hp": "300 to 400",
     "atkType": "flat",
-    "atkRoll": "500 to 700",
-    "critRate": "30 to 45",
-    "critValue": "80 to 120",
+    "atkRoll": "300 to 400",
+    "critRate": "-",
+    "critValue": "-",
     "defRate": "-",
-    "defValue": "-",
-    "type": "Polearm",
-    "icon": "Weapon_Kitain_Cross_Spear.webp"
+    "defValue": "300 to 400",
+    "type": "Sword",
+    "icon": "Weapon_Kagotsurube_Isshin.webp"
   }
 ]

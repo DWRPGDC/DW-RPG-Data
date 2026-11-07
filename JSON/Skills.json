@@ -616,6 +616,62 @@
         }
       ]
     },
+    "hex": {
+      "name": "Hex",
+      "emoji": "🔮",
+      "parent": "curse",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Cast Hex on one enemy instead of attacking, making their next attack 20% weaker. One turn startup, three turn cooldown.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "dismal_prism",
+              "qty": 20
+            },
+            {
+              "item": "crystal_prism",
+              "qty": 15
+            },
+            {
+              "item": "silver",
+              "qty": 2000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "plague": {
+      "name": "Plague",
+      "emoji": "🦠",
+      "parent": "curse",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Cast Plague to mark all enemies instead of attacking. The next attack on each marked enemy deals 1.2x damage if it hits. Attacks consume only that enemy's marks, even on a miss or dodge. Other enemies keep theirs until attacked.",
+          "ar": 25,
+          "materials": [
+            {
+              "item": "dormant_fungal_nucleus",
+              "qty": 30
+            },
+            {
+              "item": "robust_fungal_nucleus",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 6000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
     "effortless_victory": {
       "name": "Effortless Victory",
       "emoji": "🧘",
@@ -666,6 +722,114 @@
             {
               "item": "silver",
               "qty": 1000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "salvage": {
+      "name": "Salvage",
+      "emoji": "🎒",
+      "parent": "effortless_victory",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Upon victory in combat, have a 10% chance to receive double loot.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "silver_raven_insignia",
+              "qty": 20
+            },
+            {
+              "item": "chaos_device",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 1500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "Upon victory in combat, have a 20% chance to receive double loot.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "silver_raven_insignia",
+              "qty": 35
+            },
+            {
+              "item": "chaos_device",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "Upon victory in combat, have a 30% chance to receive double loot.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "silver_raven_insignia",
+              "qty": 50
+            },
+            {
+              "item": "chaos_circuit",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 3500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 4,
+          "effect": "Upon victory in combat, have a 40% chance to receive double loot.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "silver_raven_insignia",
+              "qty": 70
+            },
+            {
+              "item": "chaos_circuit",
+              "qty": 40
+            },
+            {
+              "item": "silver",
+              "qty": 4500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 5,
+          "effect": "Upon victory in combat, have a 50% chance to receive double loot.",
+          "ar": 10,
+          "materials": [
+            {
+              "item": "silver_raven_insignia",
+              "qty": 90
+            },
+            {
+              "item": "chaos_circuit",
+              "qty": 60
+            },
+            {
+              "item": "silver",
+              "qty": 6000
             }
           ],
           "tbd": false
@@ -1322,7 +1486,7 @@
       "levels": [
         {
           "level": 1,
-          "effect": "The first time you would fall in a battle, there is a 75% chance you survive at 1 HP instead. The charge is spent even if it fails.",
+          "effect": "The first time you would fall in a battle, there is a 60% chance you survive at 1 HP instead.",
           "ar": 17,
           "materials": [
             {
@@ -1332,6 +1496,190 @@
             {
               "item": "silver",
               "qty": 2500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "The first time you would fall in a battle, there is an 80% chance you survive at 1 HP instead.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "sealed_scroll",
+              "qty": 100
+            },
+            {
+              "item": "prithiva_topaz_fragment",
+              "qty": 100
+            },
+            {
+              "item": "silver",
+              "qty": 5000
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "The first time you would fall in a battle, you are guaranteed to survive at 1 HP instead. This can happen once per battle.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "sealed_scroll",
+              "qty": 200
+            },
+            {
+              "item": "prithiva_topaz_fragment",
+              "qty": 200
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "one_for_all": {
+      "name": "One for All",
+      "emoji": "🤝",
+      "parent": "fortress",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "The first time you would fall each battle, you have a 50% chance to survive at 1 HP. When you die, heal every living ally for 100% of your Max HP, up to their HP cap.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "kageuchi_handguard",
+              "qty": 50
+            },
+            {
+              "item": "famed_handguard",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "merciful": {
+      "name": "Merciful",
+      "emoji": "🕊",
+      "parent": "one_for_all",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Upon death, heal all allies to Max HP and revive yourself once.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "dvalins_sigh",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "all_for_one": {
+      "name": "All for One",
+      "emoji": "💥",
+      "parent": "fortress",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "The first time you would fall each battle, you have a 50% chance to survive at 1 HP. When you die, deal 100% of your Max HP as damage to every living enemy.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "kageuchi_handguard",
+              "qty": 50
+            },
+            {
+              "item": "famed_handguard",
+              "qty": 25
+            },
+            {
+              "item": "silver",
+              "qty": 2500
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 2,
+          "effect": "The first time you would fall each battle, you have a 50% chance to survive at 1 HP. When you die, deal 200% of your Max HP as damage to every living enemy.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "kageuchi_handguard",
+              "qty": 100
+            },
+            {
+              "item": "famed_handguard",
+              "qty": 50
+            },
+            {
+              "item": "silver",
+              "qty": 5000
+            }
+          ],
+          "tbd": false
+        },
+        {
+          "level": 3,
+          "effect": "The first time you would fall each battle, you have a 50% chance to survive at 1 HP. When you die, deal 300% of your Max HP as damage to every living enemy.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "kageuchi_handguard",
+              "qty": 200
+            },
+            {
+              "item": "famed_handguard",
+              "qty": 100
+            },
+            {
+              "item": "silver",
+              "qty": 10000
+            }
+          ],
+          "tbd": false
+        }
+      ]
+    },
+    "merciless": {
+      "name": "Merciless",
+      "emoji": "⚔️",
+      "parent": "all_for_one",
+      "unlock": null,
+      "levels": [
+        {
+          "level": 1,
+          "effect": "Upon death, deal 200% of your Max HP to all monsters and revive yourself once.",
+          "ar": 20,
+          "materials": [
+            {
+              "item": "dvalins_plume",
+              "qty": 20
+            },
+            {
+              "item": "silver",
+              "qty": 10000
             }
           ],
           "tbd": false
