@@ -1247,7 +1247,7 @@
         <ul>
           <li><strong>Prefix</strong> multiplies that specific weapon or artifact piece's own rolled stats — pick one from the dropdown on its detail panel. Hover/read the option text to see exactly which stats it affects and by how much.</li>
           <li><strong>Anvil Star</strong> is a separate multiplier stacked on top of the prefix, also applied to that piece's own rolls. It has 4 levels: OFF, ✪, ✪✪, and ✪✪✪ — weapons and artifacts both scale 1.5x / 2x / 2.5x per star.</li>
-          <li><strong>Evolve</strong> is an on/off toggle under the Anvil Star control. When on, the stars become ⍟ and scale 2x / 4x / 6x instead. Normally an item can only evolve if its World Level is at least 2 below yours (WL 7 → items up to WL 5, WL 6 → up to WL 4). The button shows a "Needs WL N+" hint when you don't meet that, but you can still turn it on, since higher-WL players can trade evolved items to lower-WL players.</li>
+          <li><strong>Evolve</strong> is an on/off toggle under the Anvil Star control. When on, the stars become ⍟ and scale 2x / 4x / 6x instead. It isn't limited by World Level, since higher-WL players can trade evolved items to lower-WL players.</li>
           <li>Change how you set the Anvil Star level in <strong>Settings → Anvil Star Control</strong>: <strong>Tap to Cycle</strong> (tap through OFF → ✪ → ✪✪ → ✪✪✪ → back to OFF), <strong>Dropdown</strong> (pick a level directly), or <strong>+ / − Buttons</strong> (step one level at a time).</li>
         </ul>
       </div>
@@ -1384,18 +1384,16 @@ function setWorldLevel(setName){
   return set ? set.worldLevel : null;
 }
 
-// Anvil Star control + Evolve on/off toggle (the button shows a "Needs WL N+" hint but is never disabled).
+// Anvil Star control + Evolve on/off toggle (never gated by WL).
 function makeStarToggle(currentValue, onChange, itemWL){
   const box = document.createElement('div');
   box.appendChild(makeStarControl(currentValue, onChange));
 
   const evo = isEvolved(currentValue);
-  const ok = evolveEligible(itemWL);
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'star-toggle' + (evo ? ' is-active' : '');
-  const need = itemWL != null ? itemWL + EVOLVE_WL_GAP : null;
-  btn.innerHTML = `<span>Evolve</span><span>${evo ? '⍟ ON' : (ok ? 'OFF' : (need ? `Needs WL ${need}+` : 'Unavailable'))}</span>`;
+  btn.innerHTML = `<span>Evolve</span><span>${evo ? '⍟ ON' : 'OFF'}</span>`;
   btn.addEventListener('click', () => onChange(evo ? (currentValue & 3) : ((currentValue & 3) | EVOLVE_FLAG)));
   box.appendChild(btn);
   return box;
