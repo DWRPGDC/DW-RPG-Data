@@ -1355,6 +1355,10 @@ function makePrefixSelect(currentValue, onChange){
   if(enhanced) enhanced.wrap.classList.add('full-width');
   return wrap;
 }
+// The game floors a piece's stat after applying Prefix x Anvil Star (e.g. 460.5 -> 460, -10.5 -> -11).
+// The tiny epsilon stops float error (17.9999999) from dropping an exact whole number.
+function floorStat(x){ return Math.floor(x + 1e-9); }
+
 // Anvil star enhancement multipliers (level 0 = off). Shared by weapons and artifacts.
 // A "starred" value packs the star level (bits 0-1, 0-3) and the Evolve flag (bit 2, value 4):
 // e.g. 2 = ✪✪, 6 = ⍟⍟ (evolved, level 2). Evolved stars use their own multiplier table.
@@ -2848,7 +2852,7 @@ function renderArtifactSlotDetail(slot, options){
         current.rolls[statKey] = val; renderTotals();
       }, current.rolls[statKey], isPctStat(statKey) ? '%' : '', (v) => {
         const m = prefixFactor(current.prefix, statKey) * starMult(current.starred);
-        return m !== 1 ? Math.round(v * m) : null;
+        return m !== 1 ? floorStat(v * m) : null;
       }));
     });
 
@@ -3274,7 +3278,7 @@ function computeAndRenderTotals(){
     const aStar = starMult(a.starred);
     Object.entries(a.rolls).forEach(([statKey, val]) => {
       if(val === undefined) return;
-      addStatToTotals(totals, statKey, Math.round(val * prefixFactor(aPfx, statKey) * aStar));
+      addStatToTotals(totals, statKey, floorStat(val * prefixFactor(aPfx, statKey) * aStar));
     });
     if(a.special && a.specialRoll !== undefined){
       specials.push(`${a.setName} (${a.pieceName}): ${a.special.label} — ${a.specialRoll}${a.special.suffix || ''}`);
@@ -3805,7 +3809,7 @@ function renderQuickAddEditor(){
         quickAdd.rolls[statKey] = val;
       }, quickAdd.rolls[statKey], isPctStat(statKey) ? '%' : '', (v) => {
         const m = prefixFactor(quickAdd.prefix, statKey) * starMult(quickAdd.starred);
-        return m !== 1 ? Math.round(v * m) : null;
+        return m !== 1 ? floorStat(v * m) : null;
       }));
     });
 
@@ -5282,7 +5286,7 @@ function computeTotalsForLoadout(weaponRolls, weaponPrefix, weaponStarred, artif
     const aStar = starMult(a.starred);
     Object.entries(a.rolls || {}).forEach(([statKey, val]) => {
       if(val === undefined) return;
-      addStatToTotals(totals, statKey, Math.round(val * prefixFactor(aPfx, statKey) * aStar));
+      addStatToTotals(totals, statKey, floorStat(val * prefixFactor(aPfx, statKey) * aStar));
     });
   });
 
@@ -5477,7 +5481,7 @@ function precomputeArtifactDelta(a){
   const aStar = starMult(a.starred);
   Object.entries(a.rolls || {}).forEach(([statKey, val]) => {
     if(val === undefined) return;
-    addStatToTotals(delta, statKey, Math.round(val * prefixFactor(aPfx, statKey) * aStar));
+    addStatToTotals(delta, statKey, floorStat(val * prefixFactor(aPfx, statKey) * aStar));
   });
   return delta;
 }
